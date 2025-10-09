@@ -1,5 +1,5 @@
 ## development
-this repo includes..
+this repo includes a..
 - Go API and sqlite3 database in [/api](api)
 - Svelte + TypeScript website in [/web](web)
 
@@ -17,5 +17,5 @@ to start the website..
 ```sh
 cd web
 npm i
-go run .
+npm run dev
 ```
