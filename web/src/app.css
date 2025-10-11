@@ -1,1 +1,41 @@
 @import 'tailwindcss';
+/* catppuccin dark */
+@import '@catppuccin/tailwindcss/mocha.css';
+
+/* import fonts */
+@font-face {
+	font-family: 'dongle';
+	src: url('./lib/fonts/dongle/Dongle-Light.ttf') format('truetype');
+}
+
+/* global */
+@layer base {
+	html {
+		font-size: theme(--text-base);
+		font-family: theme(--font-dongle);
+		background-color: theme(--color-jfgray-900);
+		color: theme(--color-ctp-lavender-50);
+	}
+
+	body {
+		@apply text-3xl;
+	}
+}
+
+/* extend tailwind theme */
+@theme {
+	--font-dongle: 'dongle', 'ui-sans-serif', 'sans-serif', 'system-ui';
+	/* jf-purple */
+	/* https://oklch-palette.vercel.app/#60,0.225,290,100 */
+	--color-jfpurple-50: #f5f4ff;
+	--color-jfpurple-100: #dbd7ff;
+	--color-jfpurple-200: #c3bbff;
+	--color-jfpurple-300: #ad9dff;
+	--color-jfpurple-400: #987dff;
+	--color-jfpurple-500: #845afa;
+	--color-jfpurple-600: #7134eb;
+	--color-jfpurple-700: #5500bf;
+	--color-jfpurple-800: #36007e;
+	--color-jfpurple-900: #1c0049;
+	--color-jfgray-900: oklch(25.53% 0.006 258.36);
+}
