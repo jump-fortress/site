@@ -7,33 +7,52 @@ package database
 
 import (
 	"context"
-	"database/sql"
 )
 
 const insertPlayer = `-- name: InsertPlayer :one
-insert or ignore into player (steam_id, display_name, soldier_division, demo_division)
-  values (?, ?, ?, ?)
-  returning id, steam_id, steam_trade_token, tempus_id, discord_id, display_name, soldier_division, demo_division, created_at
+insert or ignore into player (steam_id, steam_pfp_id, display_name)
+  values (?, ?, ?)
+  returning id, role, steam_id, steam_pfp_id, steam_trade_token, tempus_id, discord_id, display_name, soldier_division, demo_division, created_at
 `
 
 type InsertPlayerParams struct {
-	SteamID         string
-	DisplayName     string
-	SoldierDivision sql.NullString
-	DemoDivision    sql.NullString
+	SteamID     string
+	SteamPfpID  string
+	DisplayName string
 }
 
 func (q *Queries) InsertPlayer(ctx context.Context, arg InsertPlayerParams) (Player, error) {
-	row := q.db.QueryRowContext(ctx, insertPlayer,
-		arg.SteamID,
-		arg.DisplayName,
-		arg.SoldierDivision,
-		arg.DemoDivision,
-	)
+	row := q.db.QueryRowContext(ctx, insertPlayer, arg.SteamID, arg.SteamPfpID, arg.DisplayName)
 	var i Player
 	err := row.Scan(
 		&i.ID,
+		&i.Role,
 		&i.SteamID,
+		&i.SteamPfpID,
+		&i.SteamTradeToken,
+		&i.TempusID,
+		&i.DiscordID,
+		&i.DisplayName,
+		&i.SoldierDivision,
+		&i.DemoDivision,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const selectPlayer = `-- name: SelectPlayer :one
+select id, role, steam_id, steam_pfp_id, steam_trade_token, tempus_id, discord_id, display_name, soldier_division, demo_division, created_at from player
+  where id = ?
+`
+
+func (q *Queries) SelectPlayer(ctx context.Context, id int64) (Player, error) {
+	row := q.db.QueryRowContext(ctx, selectPlayer, id)
+	var i Player
+	err := row.Scan(
+		&i.ID,
+		&i.Role,
+		&i.SteamID,
+		&i.SteamPfpID,
 		&i.SteamTradeToken,
 		&i.TempusID,
 		&i.DiscordID,

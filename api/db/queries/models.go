@@ -68,7 +68,9 @@ type Motw struct {
 
 type Player struct {
 	ID              int64
+	Role            string
 	SteamID         string
+	SteamPfpID      string
 	SteamTradeToken sql.NullString
 	TempusID        sql.NullInt64
 	DiscordID       sql.NullString
@@ -82,7 +84,7 @@ type PlayerPoint struct {
 	ID            int64
 	PlayerID      int64
 	SoldierPoints int64
-	DemoPoints    interface{}
+	DemoPoints    int64
 }
 
 type PlayerTime struct {
@@ -99,5 +101,5 @@ type Quest struct {
 	CompetitionID   int64
 	Type            string
 	Time            sql.NullFloat64
-	CompletionLimit interface{}
+	CompletionLimit string
 }

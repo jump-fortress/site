@@ -2,7 +2,9 @@
 -- player
 create table player(
   id integer not null primary key autoincrement,
+  role text not null default 'player',
   steam_id text unique not null,
+  steam_pfp_id text not null,
   steam_trade_token text unique,
   tempus_id integer unique,
   discord_id text unique,
@@ -18,7 +20,7 @@ create table competition(
   starts_at datetime not null,
   ends_at datetime not null,
   created_at datetime not null default current_timestamp,
-  check (class in ("soldier", "demo"))
+  check (class in ('soldier', 'demo'))
 );
 -- "stardust points" for a player
 -- relates to player (id)
@@ -26,7 +28,7 @@ create table player_points(
   id integer not null primary key autoincrement,
   player_id integer not null,
   soldier_points integer not null default 0,
-  demo_points not null default 0,
+  demo_points integer not null default 0,
   foreign key (player_id) references player (id)
 );
 -- time for a competition's player
@@ -92,7 +94,7 @@ create table bounty(
   type text not null,
   time float,
   foreign key (competition_id) references competition (id),
-  check (type in ("target time", "record"))
+  check (type in ('target time', 'record'))
 );
 -- quest, a type of competition
 -- relates to competition (id)
@@ -101,9 +103,9 @@ create table quest(
   competition_id integer not null,
   type text not null,
   time float,
-  completion_limit,
+  completion_limit text not null,
   foreign key (competition_id) references competition (id),
-  check (type in ("target time", "completion"))
+  check (type in ('target time', 'completion'))
 );
 -- deleted record from any table
 create table deleted_record(
