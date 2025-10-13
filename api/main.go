@@ -6,63 +6,57 @@ import (
 	_ "embed"
 	"log"
 	"net/http"
-	"strconv"
 
-	"github.com/gin-gonic/gin"
+	"github.com/danielgtaylor/huma/v2"
+	"github.com/danielgtaylor/huma/v2/adapters/humachi"
+
+	"github.com/go-chi/chi/v5"
 	_ "github.com/mattn/go-sqlite3"
 	database "github.com/spiritov/jump/api/db/queries"
 )
 
+var (
+	queries *database.Queries
+)
+
+type PlayerIDInput struct {
+	ID int64 `path:"id" minimum:"1" doc:"player ID"`
+}
+
+type PlayerOutput struct {
+	Body database.Player
+}
+
+func GetPlayer(ctx context.Context, input *PlayerIDInput) (*PlayerOutput, error) {
+	player, err := queries.SelectPlayer(ctx, input.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	resp := &PlayerOutput{Body: player}
+	return resp, nil
+}
+
 func main() {
+
 	db, err := sql.Open("sqlite3", "db/jump.db")
 	if err != nil {
 		log.Fatalf("[fatal] failed to open db: %v", err)
 	}
 	defer db.Close()
 
-	queries := database.New(db)
-	ctx := context.Background()
+	queries = database.New(db)
 
-	player, err := queries.InsertPlayer(ctx, database.InsertPlayerParams{
-		SteamID:     "1",
-		SteamPfpID:  "1",
-		DisplayName: "spiritov",
-	})
-	if err != nil {
-		//log.Fatal(err)
-	} else {
-		log.Println(player)
-	}
+	router := chi.NewMux()
+	api := humachi.New(router, huma.DefaultConfig("api", "1.0.0"))
 
-	r := gin.Default()
+	huma.Register(api, huma.Operation{
+		Method:      http.MethodGet,
+		Path:        "/players/{id}",
+		Summary:     "Get Player",
+		Description: "Get a Player by ID",
+		Tags:        []string{"Player"},
+	}, GetPlayer)
 
-	r.GET("/players/:id", func(c *gin.Context) {
-		idParam := c.Param("id")
-		_, err := strconv.ParseInt(idParam, 10, 64)
-		if err != nil {
-			return
-		}
-
-		// select player from db
-		player, err := queries.SelectPlayer(ctx, 1)
-		if err != nil {
-			c.JSON(http.StatusNotFound, gin.H{"message": "player not found"})
-		}
-
-		c.JSON(http.StatusOK, player)
-	})
-
-	r.POST("/players", func(c *gin.Context) {
-		var player database.InsertPlayerParams
-
-		if err := c.BindJSON(&player); err != nil {
-			return
-		}
-
-		// add player to db
-		queries.InsertPlayer(ctx, player)
-		c.JSON(http.StatusCreated, player)
-	})
-
-	r.Run("localhost:8080")
+	http.ListenAndServe("localhost:8000", router)
 }
