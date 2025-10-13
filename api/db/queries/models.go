@@ -11,95 +11,95 @@ import (
 )
 
 type Bounty struct {
-	ID            int64
-	CompetitionID int64
-	Map           string
-	Type          string
-	Time          sql.NullFloat64
+	ID            int64           `json:"id"`
+	CompetitionID int64           `json:"competition_id"`
+	Map           string          `json:"map"`
+	Type          string          `json:"type"`
+	Time          sql.NullFloat64 `json:"time"`
 }
 
 type Competition struct {
-	ID        int64
-	Class     string
-	StartsAt  time.Time
-	EndsAt    time.Time
-	CreatedAt time.Time
+	ID        int64     `json:"id"`
+	Class     string    `json:"class"`
+	StartsAt  time.Time `json:"starts_at"`
+	EndsAt    time.Time `json:"ends_at"`
+	CreatedAt time.Time `json:"created_at"`
 }
 
 type CompetitionDivision struct {
-	ID            int64
-	CompetitionID int64
-	Division      string
-	Map           string
+	ID            int64  `json:"id"`
+	CompetitionID int64  `json:"competition_id"`
+	Division      string `json:"division"`
+	Map           string `json:"map"`
 }
 
 type CompetitionPrize struct {
-	ID            int64
-	CompetitionID int64
-	Placement     int64
-	Amount        int64
+	ID            int64 `json:"id"`
+	CompetitionID int64 `json:"competition_id"`
+	Placement     int64 `json:"placement"`
+	Amount        int64 `json:"amount"`
 }
 
 type CompetitionResult struct {
-	CompetitionID int64
-	PlayerID      int64
-	Placement     int64
-	Points        int64
-	CreatedAt     time.Time
+	CompetitionID int64     `json:"competition_id"`
+	PlayerID      int64     `json:"player_id"`
+	Placement     int64     `json:"placement"`
+	Points        int64     `json:"points"`
+	CreatedAt     time.Time `json:"created_at"`
 }
 
 type DeletedRecord struct {
-	ID          int64
-	SourceTable string
-	SourceID    string
-	Data        json.RawMessage
-	DeletedAt   time.Time
+	ID          int64           `json:"id"`
+	SourceTable string          `json:"source_table"`
+	SourceID    string          `json:"source_id"`
+	Data        json.RawMessage `json:"data"`
+	DeletedAt   time.Time       `json:"deleted_at"`
 }
 
 type Marathon struct {
-	ID            int64
-	CompetitionID int64
+	ID            int64 `json:"id"`
+	CompetitionID int64 `json:"competition_id"`
 }
 
 type Motw struct {
-	ID            int64
-	CompetitionID int64
+	ID            int64 `json:"id"`
+	CompetitionID int64 `json:"competition_id"`
 }
 
 type Player struct {
-	ID              int64
-	Role            string
-	SteamID         string
-	SteamPfpID      string
-	SteamTradeToken sql.NullString
-	TempusID        sql.NullInt64
-	DiscordID       sql.NullString
-	DisplayName     string
-	SoldierDivision sql.NullString
-	DemoDivision    sql.NullString
-	CreatedAt       time.Time
+	ID              int64          `json:"id"`
+	Role            string         `json:"role"`
+	SteamID         string         `json:"steam_id"`
+	SteamPfpID      string         `json:"steam_pfp_id"`
+	SteamTradeToken sql.NullString `json:"steam_trade_token"`
+	TempusID        sql.NullInt64  `json:"tempus_id"`
+	DiscordID       sql.NullString `json:"discord_id"`
+	DisplayName     string         `json:"display_name"`
+	SoldierDivision sql.NullString `json:"soldier_division"`
+	DemoDivision    sql.NullString `json:"demo_division"`
+	CreatedAt       time.Time      `json:"created_at"`
 }
 
 type PlayerPoint struct {
-	ID            int64
-	PlayerID      int64
-	SoldierPoints int64
-	DemoPoints    int64
+	ID            int64 `json:"id"`
+	PlayerID      int64 `json:"player_id"`
+	SoldierPoints int64 `json:"soldier_points"`
+	DemoPoints    int64 `json:"demo_points"`
 }
 
 type PlayerTime struct {
-	ID            int64
-	CompetitionID int64
-	PlayerID      int64
-	RunTime       float64
-	Verified      bool
-	CreatedAt     time.Time
+	ID            int64     `json:"id"`
+	CompetitionID int64     `json:"competition_id"`
+	PlayerID      int64     `json:"player_id"`
+	RunTime       float64   `json:"run_time"`
+	Verified      bool      `json:"verified"`
+	CreatedAt     time.Time `json:"created_at"`
 }
 
 type Quest struct {
-	ID              int64
-	CompetitionID   int64
-	Type            string
-	Time            sql.NullFloat64
-	CompletionLimit string
+	ID              int64           `json:"id"`
+	CompetitionID   int64           `json:"competition_id"`
+	Type            string          `json:"type"`
+	Time            sql.NullFloat64 `json:"time"`
+	CompletionLimit string          `json:"completion_limit"`
 }

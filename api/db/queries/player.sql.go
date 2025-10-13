@@ -16,9 +16,9 @@ insert or ignore into player (steam_id, steam_pfp_id, display_name)
 `
 
 type InsertPlayerParams struct {
-	SteamID     string
-	SteamPfpID  string
-	DisplayName string
+	SteamID     string `json:"steam_id"`
+	SteamPfpID  string `json:"steam_pfp_id"`
+	DisplayName string `json:"display_name"`
 }
 
 func (q *Queries) InsertPlayer(ctx context.Context, arg InsertPlayerParams) (Player, error) {
