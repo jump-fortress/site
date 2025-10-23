@@ -11,7 +11,9 @@ create table player(
   display_name text not null,
   soldier_division text,
   demo_division text,
+  preferred_class text not null default 'soldier',
   created_at datetime not null default current_timestamp
+  check (preferred_class in ('soldier', 'demo', 'both'))
 );
 -- competition
 create table competition(
