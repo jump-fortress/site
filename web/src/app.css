@@ -2,6 +2,8 @@
 /* catppuccin dark */
 @import '@catppuccin/tailwindcss/mocha.css';
 
+@plugin "@iconify/tailwind4";
+
 /* import fonts */
 @font-face {
 	font-family: 'dongle';
@@ -18,7 +20,19 @@
 	}
 
 	body {
-		@apply text-3xl;
+		@apply text-3xl leading-5 selection:bg-ctp-lavender-950 selection:text-ctp-lavender-50;
+	}
+
+	span {
+		@apply overflow-hidden;
+	}
+
+	th {
+		@apply overflow-hidden font-normal;
+	}
+
+	td {
+		@apply overflow-hidden;
 	}
 }
 
@@ -38,4 +52,13 @@
 	--color-jfpurple-800: #36007e;
 	--color-jfpurple-900: #1c0049;
 	--color-jfgray-900: oklch(25.53% 0.006 258.36);
+	--color-jfgray-800: oklch(30% 0.008 258.36);
+	--color-jfgray-700: oklch(35% 0.008 258.36);
+
+	--animate-reverse-spin: reverse-spin 1s infinite;
+	@keyframes reverse-spin {
+		from {
+			transform: rotate(360deg);
+		}
+	}
 }
