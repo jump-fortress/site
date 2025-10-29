@@ -51,25 +51,23 @@
 	{#snippet header()}
 		<th class="w-1/14">rank</th>
 		<th class="w-1/14">div rank</th>
-		<th class="w-1/42"></th>
 		<th></th>
-		<th class="w-1/12">monthlies played</th>
-		<th class="w-1/12">MOTWs played</th>
+		<th class="text-ctp-lavender-50/75 w-1/12">monthlies played</th>
+		<th class="text-ctp-lavender-50/75 w-1/12">MOTWs played</th>
 		<th class="w-1/8">last 3 monthlies</th>
 		<th class="w-1/8">last 9 MOTWs</th>
-		<th class="w-1/8">total points</th>
+		<th class="text-ctp-lavender-50/75 w-1/8">total points</th>
 		<th></th>
 	{/snippet}
 	{#snippet row()}
 		<td>#1</td>
 		<td>#1</td>
-		<td></td>
-		<td class="text-ctp-sky text-start">vice</td>
-		<td>4</td>
-		<td>10</td>
+		<td class="text-ctp-sky pl-4 text-start">vice</td>
+		<td class="text-ctp-lavender-50/75">4</td>
+		<td class="text-ctp-lavender-50/75">10</td>
 		<td>300000</td>
 		<td>900000</td>
-		<td>48732894</td>
+		<td class="text-ctp-lavender-50/75">48732894</td>
 	{/snippet}
 </Table>
 
