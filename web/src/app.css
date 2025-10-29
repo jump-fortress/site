@@ -4,6 +4,10 @@
 
 @plugin "@iconify/tailwind4";
 
+/* safelist */
+@source inline("text-division-{wood,steel,bronze,silver,gold,platinum,diamond}");
+@source inline("bg-division-{wood,steel,bronze,silver,gold,platinum,diamond}");
+
 /* import fonts */
 @font-face {
 	font-family: 'dongle';
@@ -39,21 +43,16 @@
 /* extend tailwind theme */
 @theme {
 	--font-dongle: 'dongle', 'ui-sans-serif', 'sans-serif', 'system-ui';
-	/* jf-purple */
-	/* https://oklch-palette.vercel.app/#60,0.225,290,100 */
-	--color-jfpurple-50: #f5f4ff;
-	--color-jfpurple-100: #dbd7ff;
-	--color-jfpurple-200: #c3bbff;
-	--color-jfpurple-300: #ad9dff;
-	--color-jfpurple-400: #987dff;
-	--color-jfpurple-500: #845afa;
-	--color-jfpurple-600: #7134eb;
-	--color-jfpurple-700: #5500bf;
-	--color-jfpurple-800: #36007e;
-	--color-jfpurple-900: #1c0049;
 	--color-jfgray-900: oklch(25.53% 0.006 258.36);
 	--color-jfgray-800: oklch(30% 0.008 258.36);
 	--color-jfgray-700: oklch(35% 0.008 258.36);
+
+	--color-division-wood: theme(--color-ctp-flamingo);
+	--color-division-bronze: theme(--color-ctp-maroon);
+	--color-division-silver: theme(--color-ctp-pink);
+	--color-division-gold: theme(--color-ctp-yellow);
+	--color-division-platinum: theme(--color-ctp-sapphire);
+	--color-division-diamond: theme(--color-ctp-teal);
 
 	--animate-reverse-spin: reverse-spin 1s infinite;
 	@keyframes reverse-spin {
