@@ -5,7 +5,7 @@
 </script>
 
 <div class="size-128 animate-[spin_120s_linear_infinite] select-none">
-	<img class="absolute z-10" src={overlay} alt="" />
+	<img class="absolute z-10 select-none" src={overlay} alt="" draggable="false" />
 	<div style={`mask-image: url(${mask})`} class="mask-alpha mask-center mask-no-repeat">
 		<img class="animate-[reverse-spin_120s_linear_infinite]" src={bg} alt="" />
 	</div>
