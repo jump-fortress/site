@@ -20,7 +20,7 @@
 <Nav {route} />
 
 <div class="mt-6 flex w-full flex-col items-center">
-	<div class="w-5xl bg-jfgray-800 flex flex-col gap-4 p-4">
+	<div class="bg-jfgray-800 w-5xl flex flex-col gap-4 px-8 py-4">
 		{@render children?.()}
 	</div>
 </div>
