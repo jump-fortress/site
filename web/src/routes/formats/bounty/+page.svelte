@@ -36,7 +36,7 @@
 			<th class="w-12"></th>
 			<th class="w-1/10">amount</th>
 			<th>map</th>
-			<th class="w-1/10">goal time</th>
+			<th class="w-1/10">target time</th>
 			<th class="w-1/6">placed by</th>
 			<th class="w-1/10">date active</th>
 		{/snippet}
@@ -61,7 +61,7 @@
 			<th class="w-1/6">claimed by</th>
 			<th>map</th>
 			<th class="w-1/8">run time</th>
-			<th class="w-1/10">goal time</th>
+			<th class="w-1/10">target time</th>
 			<th class="w-1/6">placed by</th>
 			<th class="w-1/10">date active</th>
 		{/snippet}
