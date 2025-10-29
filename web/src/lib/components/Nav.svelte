@@ -1,35 +1,82 @@
 <script lang="ts">
+	import { slide } from 'svelte/transition';
+	import FullDivider from './FullDivider.svelte';
+
 	let { route }: { route: string } = $props();
 	let login = true;
-
-	$inspect(route);
+	let showNavMenu = $state(false);
 </script>
+
+<svelte:document
+	onclick={(e) => {
+		// @ts-ignore
+		if (!e.target.dataset.nav) {
+			showNavMenu = false;
+		}
+	}}
+/>
 
 <nav
 	class="bg-jfgray-900/75 fixed z-50 flex h-16 w-full select-none justify-center backdrop-blur-sm"
 >
-	<div
-		class="w-5xl hover:text-ctp-lavender-50/75 flex items-center justify-between transition-colors"
-	>
+	<div class="w-5xl flex items-center justify-between transition-colors">
 		<!-- left nav -->
-		<div class="flex h-full">
+		<div class="hover:text-ctp-lavender-50/75 flex h-full grow">
 			{@render NavPage('')}
 			{@render NavPage('ladder')}
 			{@render NavPage('formats')}
 			{@render NavPage('help')}
 		</div>
 		<!-- right nav -->
-		<div class="flex h-16 flex-row-reverse items-center">
+		<div class="relative flex h-16 flex-row-reverse items-center" data-nav="true">
 			{#if !login}
-				<img class="cursor-pointer" src="src/lib/assets/static/sits_small.png" alt="" />
+				<img
+					class="cursor-pointer"
+					src="src/lib/assets/static/sits_small.png"
+					alt=""
+					data-nav="true"
+				/>
 			{:else}
-				<a class="group px-4" href="/players/1">
+				<button
+					class="group relative cursor-pointer px-4"
+					onclick={() => {
+						showNavMenu = true;
+					}}
+					data-nav="true"
+				>
 					<img
-						class="group-hover:border-ctp-lavender-50 border-jfgray-800 size-14 rounded-full border-2 transition-colors"
+						class="group-hover:border-ctp-lavender/50 border-jfgray-800 size-14 rounded-full border-2 transition-colors"
 						src="https://avatars.akamai.steamstatic.com/55f57bf80f543b1e7261f9e0a17b8e12b992de28_full.jpg"
 						alt=""
+						data-nav="true"
 					/>
-				</a>
+					{#if showNavMenu}
+						<ul
+							in:slide
+							class="bg-jfgray-900/90 starting:border-b-ctp-lavender/0 border-ctp-lavender/50 absolute -top-2 right-0 -z-10 flex size-fit w-44 cursor-default flex-col gap-1 rounded-b-lg border-2 p-2 pt-16 text-start transition-colors delay-150"
+							data-nav="true"
+						>
+							<a
+								href="/players/1"
+								data-nav="true"
+								class="hover:bg-jfgray-700 overflow-ellipsis text-nowrap rounded-lg p-1 pl-2 transition-colors"
+								>mur</a
+							>
+
+							<FullDivider />
+
+							<a
+								href="/settings"
+								data-nav="true"
+								class="hover:bg-jfgray-700 rounded-lg p-1 pl-2 transition-colors">settings</a
+							>
+							<span
+								data-nav="true"
+								class="hover:bg-jfgray-700 rounded-lg p-1 pl-2 transition-colors">logout</span
+							>
+						</ul>
+					{/if}
+				</button>
 				<a
 					class="text-ctp-lavender-50 flex items-center px-2 opacity-75 transition-opacity hover:opacity-100"
 					href="/support"
