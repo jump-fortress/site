@@ -73,9 +73,9 @@ create table competition_prize(
   amount integer not null,
   foreign key (competition_id) references competition (id)
 );
--- marathon, a type of competition
+-- monthly, a type of competition
 -- relates to competition (id)
-create table marathon(
+create table monthly(
   id integer not null primary key autoincrement,
   competition_id integer not null,
   foreign key (competition_id) references competition (id)

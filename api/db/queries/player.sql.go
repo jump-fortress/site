@@ -12,7 +12,7 @@ import (
 const insertPlayer = `-- name: InsertPlayer :one
 insert or ignore into player (steam_id, steam_pfp_id, display_name)
   values (?, ?, ?)
-  returning id, role, steam_id, steam_pfp_id, steam_trade_token, tempus_id, discord_id, display_name, soldier_division, demo_division, created_at
+  returning id, role, steam_id, steam_pfp_id, steam_trade_token, tempus_id, discord_id, display_name, soldier_division, demo_division, preferred_class, created_at
 `
 
 type InsertPlayerParams struct {
@@ -35,13 +35,14 @@ func (q *Queries) InsertPlayer(ctx context.Context, arg InsertPlayerParams) (Pla
 		&i.DisplayName,
 		&i.SoldierDivision,
 		&i.DemoDivision,
+		&i.PreferredClass,
 		&i.CreatedAt,
 	)
 	return i, err
 }
 
 const selectPlayer = `-- name: SelectPlayer :one
-select id, role, steam_id, steam_pfp_id, steam_trade_token, tempus_id, discord_id, display_name, soldier_division, demo_division, created_at from player
+select id, role, steam_id, steam_pfp_id, steam_trade_token, tempus_id, discord_id, display_name, soldier_division, demo_division, preferred_class, created_at from player
   where id = ?
 `
 
@@ -59,6 +60,7 @@ func (q *Queries) SelectPlayer(ctx context.Context, id int64) (Player, error) {
 		&i.DisplayName,
 		&i.SoldierDivision,
 		&i.DemoDivision,
+		&i.PreferredClass,
 		&i.CreatedAt,
 	)
 	return i, err

@@ -56,7 +56,7 @@ type DeletedRecord struct {
 	DeletedAt   time.Time       `json:"deleted_at"`
 }
 
-type Marathon struct {
+type Monthly struct {
 	ID            int64 `json:"id"`
 	CompetitionID int64 `json:"competition_id"`
 }
@@ -77,6 +77,7 @@ type Player struct {
 	DisplayName     string         `json:"display_name"`
 	SoldierDivision sql.NullString `json:"soldier_division"`
 	DemoDivision    sql.NullString `json:"demo_division"`
+	PreferredClass  string         `json:"preferred_class"`
 	CreatedAt       time.Time      `json:"created_at"`
 }
 
