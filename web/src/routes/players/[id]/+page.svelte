@@ -5,6 +5,7 @@
 	import tempus from '$lib/assets/static/players/tempus.png';
 	import zigzagoon from '$lib/assets/static/players/zigzagoon.gif';
 	import DataSection from '$lib/components/DataSection.svelte';
+	import DivisionTag from '$lib/components/DivisionTag.svelte';
 	import FullDivider from '$lib/components/FullDivider.svelte';
 	import Table from '$lib/components/Table.svelte';
 
@@ -31,7 +32,7 @@
 		<!-- name and div -->
 		<div class="flex flex-col">
 			<span class="text-6xl/10">mur</span>
-			<span class="text-ctp-teal text-4xl/6">Platinum Soldier</span>
+			<span class="text-division-diamond text-4xl/6">Platinum Soldier</span>
 		</div>
 
 		<!-- points -->
@@ -142,16 +143,18 @@
 	<Table data={[{}]}>
 		{#snippet header()}
 			<th class="w-12"></th>
+			<th class="w-1/10"></th>
 			<th class="w-1/8">format</th>
 			<th>map</th>
 			<th class="w-1/10">time</th>
 			<th class="w-1/16">place</th>
 			<th class="w-1/12">points</th>
 			<th class="w-1/10">date</th>
-			<th class="w-12">link</th>
+			<th class="w-14">results</th>
 		{/snippet}
 		{#snippet row()}
 			<td><img src={rocket} class="m-auto size-8" alt="" /></td>
+			<td><div class="flex justify-center"><DivisionTag div="platinum" /></div></td>
 			<td>monthly #1</td>
 			<td class="relative">
 				{@render TableMap('jump_escape_rc4')}
