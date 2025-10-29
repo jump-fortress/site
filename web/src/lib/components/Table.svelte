@@ -7,7 +7,7 @@
 		row: Snippet<object[]>;
 	}
 
-	let { data, header, row }: { data: object[]; header: Snippet; row: Snippet<[any]> } = $props();
+	let { data, header, row }: Props = $props();
 </script>
 
 <table class="bg-jfgray-900 mt-2 table-fixed rounded-t-lg">
