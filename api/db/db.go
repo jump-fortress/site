@@ -16,7 +16,7 @@ var (
 
 func OpenDB(path string) *sql.DB {
 	// os.Remove("./db/jump.db")
-	db, err := sql.Open("sqlite3", "./db/jump.db")
+	db, err := sql.Open("sqlite3", path)
 	if err != nil {
 		log.Fatalf("[fatal] failed to open db: %v", err)
 	}

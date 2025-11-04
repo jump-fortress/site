@@ -35,7 +35,7 @@ func main() {
 		"JUMP_OID_REALM",
 	)
 
-	database := db.OpenDB("api/db/jump.db")
+	database := db.OpenDB("./db/jump.db")
 	defer database.Close()
 
 	log.Print("db uppies")
