@@ -4,7 +4,7 @@ import (
 	_ "embed"
 	"log"
 
-	db "github.com/spiritov/jump/api/db"
+	responses "github.com/spiritov/jump/api/db/responses"
 	env "github.com/spiritov/jump/api/env"
 	internal "github.com/spiritov/jump/api/internal"
 )
@@ -35,7 +35,8 @@ func main() {
 		"JUMP_OID_REALM",
 	)
 
-	database := db.OpenDB("./db/jump.db")
+	// open db to use with api
+	database := responses.OpenDB("./db/jump.db")
 	defer database.Close()
 
 	log.Print("db uppies")
