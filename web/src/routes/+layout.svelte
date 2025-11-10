@@ -1,7 +1,7 @@
 <script lang="ts">
 	import '../app.css';
 	import favicon from '$lib/assets/favicon.svg';
-	import AnimatedLogo from '$lib/components/AnimatedLogo.svelte';
+	import AnimatedLogo from '$lib/components/assets/AnimatedLogo.svelte';
 	import Nav from '$lib/components/Nav.svelte';
 	import { page } from '$app/state';
 

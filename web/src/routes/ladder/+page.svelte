@@ -8,15 +8,20 @@
 
 <div class="flex justify-between">
 	<!-- sort by -->
-	<div class="hover:text-ctp-lavender-50/75 flex items-end transition-colors">
-		<span class="text-ctp-lavender mr-2">sort by</span>
-		<div class="relative flex">
-			<hr
-				class="border-1 w-17/18 border-jfgray-700 absolute -bottom-0.5 left-1 right-0 z-0 m-auto rounded-full"
-			/>
-			{@render SortButton('last 3 monthlies', 'monthly')}
-			{@render SortButton('last 9 MOTWs', 'motw')}
-			{@render SortButton('total points', 'points')}
+	<div class="flex flex-col justify-between">
+		<div class="flex h-full items-center">
+			<span class="text-5xl/8">soldier ladder</span>
+		</div>
+		<div class="hover:text-ctp-lavender-50/75 flex items-end transition-colors">
+			<span class="text-ctp-lavender mr-2">sort by</span>
+			<div class="relative flex">
+				<hr
+					class="border-1 w-17/18 border-jfgray-700 absolute -bottom-0.5 left-1 right-0 z-0 m-auto rounded-full"
+				/>
+				{@render SortButton('last 3 monthlies', 'monthly')}
+				{@render SortButton('last 9 MOTWs', 'motw')}
+				{@render SortButton('total points', 'points')}
+			</div>
 		</div>
 	</div>
 
