@@ -1,4 +1,4 @@
-package db
+package responses
 
 import database "github.com/spiritov/jump/api/db/queries"
 
