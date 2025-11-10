@@ -38,6 +38,10 @@
 	td {
 		@apply overflow-hidden;
 	}
+
+	.span-ellipsis {
+		@apply text-nowrap overflow-ellipsis;
+	}
 }
 
 /* extend tailwind theme */

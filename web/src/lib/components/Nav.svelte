@@ -8,7 +8,7 @@
 </script>
 
 <svelte:document
-	onclick={(e) => {
+	onmousedown={(e) => {
 		// @ts-ignore
 		if (!e.target.dataset.nav) {
 			showNavMenu = false;
@@ -39,7 +39,7 @@
 			{:else}
 				<button
 					class="group relative cursor-pointer px-4"
-					onclick={() => {
+					onmousedown={() => {
 						showNavMenu = true;
 					}}
 					data-nav="true"
@@ -59,7 +59,7 @@
 							<a
 								href="/players/1"
 								data-nav="true"
-								class="hover:bg-jfgray-700 overflow-ellipsis text-nowrap rounded-lg p-1 pl-2 transition-colors"
+								class="hover:bg-jfgray-700 span-ellipsis rounded-lg p-1 pl-2 transition-colors"
 								>mur</a
 							>
 

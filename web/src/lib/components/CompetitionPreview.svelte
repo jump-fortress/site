@@ -9,10 +9,13 @@
 <!--
 @component
 Preview for monthly / motw competitions
-- supports 3 or 4 maps
+- should support 3 or 4 maps
 -->
-<ul class="text-shadow-sm/75 relative flex h-64 w-full justify-between overflow-hidden rounded-2xl">
+<div
+	class="text-shadow-sm/50 relative flex h-64 w-full justify-between overflow-hidden rounded-2xl"
+>
 	<!-- top left -->
+
 	<li class="absolute z-10 m-2 flex h-12 items-center gap-2">
 		<img src={rocket} alt="soldier" class="h-full object-contain" />
 		<span class="text-4xl/6">monthly #1</span>
@@ -42,7 +45,7 @@ Preview for monthly / motw competitions
 		/>
 		<div class="absolute bottom-0 z-10 m-2">
 			<div class="flex flex-col gap-2">
-				<span class="overflow-ellipsis text-nowrap">jump_mirage</span>
+				<span class="span-ellipsis">jump_mirage</span>
 				<div class="flex gap-2 text-2xl/4">
 					<DivisionTag div="diamond" />
 					<DivisionTag div="platinum" />
@@ -60,8 +63,8 @@ Preview for monthly / motw competitions
 		/>
 		<div class="absolute bottom-0 right-0 z-10 m-2">
 			<div class="flex flex-col gap-2">
-				<span class="overflow-ellipsis text-nowrap">jump_pokus_rc4</span>
-				<div class="flex justify-end gap-2 text-2xl/4">
+				<span class="span-ellipsis">jump_pokus_rc4</span>
+				<div class="flex justify-end gap-2">
 					<DivisionTag div="steel" />
 					<DivisionTag div="wood" />
 				</div>
@@ -80,8 +83,8 @@ Preview for monthly / motw competitions
 			/>
 			<div class="right-1/16 absolute bottom-0 z-10 m-2 flex w-full justify-center">
 				<div class="flex flex-col items-center gap-2">
-					<span class="overflow-ellipsis text-nowrap">jump_jurf2_a1</span>
-					<div class="flex gap-2 text-2xl/4">
+					<span class="span-ellipsis">jump_jurf2_a1</span>
+					<div class="flex gap-2">
 						<DivisionTag div="silver" />
 						<DivisionTag div="bronze" />
 					</div>
@@ -89,4 +92,4 @@ Preview for monthly / motw competitions
 			</div>
 		</div>
 	</li>
-</ul>
+</div>

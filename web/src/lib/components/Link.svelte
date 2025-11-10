@@ -3,5 +3,5 @@
 </script>
 
 <a {href} {title} class="opacity-50 transition-opacity hover:opacity-100">
-	<span class="icon-[ri--link-m] size-6"></span></a
->
+	<span class="icon-[ri--link-m] size-6"></span>
+</a>
