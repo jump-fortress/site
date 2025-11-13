@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	queries *database.Queries
+	Queries *database.Queries
 )
 
 func OpenDB(path string) *sql.DB {
@@ -21,12 +21,12 @@ func OpenDB(path string) *sql.DB {
 		log.Fatalf("[fatal] failed to open db: %v", err)
 	}
 
-	queries = database.New(db)
+	Queries = database.New(db)
 	return db
 }
 
 func GetPlayer(ctx context.Context, input *PlayerIDInput) (*PlayerResponse, error) {
-	player, err := queries.SelectPlayer(ctx, input.ID)
+	player, err := Queries.SelectPlayer(ctx, input.ID)
 	if err != nil {
 		return nil, err
 	}

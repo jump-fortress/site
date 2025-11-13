@@ -56,6 +56,11 @@ type DeletedRecord struct {
 	DeletedAt   time.Time       `json:"deleted_at"`
 }
 
+type DisallowToken struct {
+	TokenID   string      `json:"token_id"`
+	CreatedAt interface{} `json:"created_at"`
+}
+
 type Monthly struct {
 	ID            int64 `json:"id"`
 	CompetitionID int64 `json:"competition_id"`
@@ -66,15 +71,24 @@ type Motw struct {
 	CompetitionID int64 `json:"competition_id"`
 }
 
+type OpenidNonce struct {
+	ID          int64     `json:"id"`
+	Endpoint    string    `json:"endpoint"`
+	NonceTime   time.Time `json:"nonce_time"`
+	NonceString string    `json:"nonce_string"`
+	CreatedAt   time.Time `json:"created_at"`
+}
+
 type Player struct {
 	ID              int64          `json:"id"`
 	Role            string         `json:"role"`
-	SteamID         string         `json:"steam_id"`
-	SteamPfpID      string         `json:"steam_pfp_id"`
+	SteamId64       string         `json:"steam_id64"`
+	SteamId3        sql.NullString `json:"steam_id3"`
 	SteamTradeToken sql.NullString `json:"steam_trade_token"`
+	SteamPfpID      sql.NullString `json:"steam_pfp_id"`
 	TempusID        sql.NullInt64  `json:"tempus_id"`
 	DiscordID       sql.NullString `json:"discord_id"`
-	DisplayName     string         `json:"display_name"`
+	DisplayName     sql.NullString `json:"display_name"`
 	SoldierDivision sql.NullString `json:"soldier_division"`
 	DemoDivision    sql.NullString `json:"demo_division"`
 	PreferredClass  string         `json:"preferred_class"`
@@ -103,4 +117,11 @@ type Quest struct {
 	Type            string          `json:"type"`
 	Time            sql.NullFloat64 `json:"time"`
 	CompletionLimit string          `json:"completion_limit"`
+}
+
+type Session struct {
+	ID        int64     `json:"id"`
+	PlayerID  int64     `json:"player_id"`
+	TokenID   string    `json:"token_id"`
+	CreatedAt time.Time `json:"created_at"`
 }

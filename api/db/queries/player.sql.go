@@ -10,26 +10,22 @@ import (
 )
 
 const insertPlayer = `-- name: InsertPlayer :one
-insert or ignore into player (steam_id, steam_pfp_id, display_name)
-  values (?, ?, ?)
-  returning id, role, steam_id, steam_pfp_id, steam_trade_token, tempus_id, discord_id, display_name, soldier_division, demo_division, preferred_class, created_at
+insert into player (steam_id64)
+  values (?)
+  on conflict do update set steam_id64 = steam_id64
+  returning id, role, steam_id64, steam_id3, steam_trade_token, steam_pfp_id, tempus_id, discord_id, display_name, soldier_division, demo_division, preferred_class, created_at
 `
 
-type InsertPlayerParams struct {
-	SteamID     string `json:"steam_id"`
-	SteamPfpID  string `json:"steam_pfp_id"`
-	DisplayName string `json:"display_name"`
-}
-
-func (q *Queries) InsertPlayer(ctx context.Context, arg InsertPlayerParams) (Player, error) {
-	row := q.db.QueryRowContext(ctx, insertPlayer, arg.SteamID, arg.SteamPfpID, arg.DisplayName)
+func (q *Queries) InsertPlayer(ctx context.Context, steamId64 string) (Player, error) {
+	row := q.db.QueryRowContext(ctx, insertPlayer, steamId64)
 	var i Player
 	err := row.Scan(
 		&i.ID,
 		&i.Role,
-		&i.SteamID,
-		&i.SteamPfpID,
+		&i.SteamId64,
+		&i.SteamId3,
 		&i.SteamTradeToken,
+		&i.SteamPfpID,
 		&i.TempusID,
 		&i.DiscordID,
 		&i.DisplayName,
@@ -42,7 +38,7 @@ func (q *Queries) InsertPlayer(ctx context.Context, arg InsertPlayerParams) (Pla
 }
 
 const selectPlayer = `-- name: SelectPlayer :one
-select id, role, steam_id, steam_pfp_id, steam_trade_token, tempus_id, discord_id, display_name, soldier_division, demo_division, preferred_class, created_at from player
+select id, role, steam_id64, steam_id3, steam_trade_token, steam_pfp_id, tempus_id, discord_id, display_name, soldier_division, demo_division, preferred_class, created_at from player
   where id = ?
 `
 
@@ -52,9 +48,10 @@ func (q *Queries) SelectPlayer(ctx context.Context, id int64) (Player, error) {
 	err := row.Scan(
 		&i.ID,
 		&i.Role,
-		&i.SteamID,
-		&i.SteamPfpID,
+		&i.SteamId64,
+		&i.SteamId3,
 		&i.SteamTradeToken,
+		&i.SteamPfpID,
 		&i.TempusID,
 		&i.DiscordID,
 		&i.DisplayName,

@@ -1,29 +1,38 @@
 -- initial schema
 -- player
+-- todo: consider what "roles" should exist, and if this is the correct implementation
 create table player(
   id integer not null primary key autoincrement,
   role text not null default 'player',
-  steam_id text unique not null,
-  steam_pfp_id text not null,
+  steam_id64 text unique not null,
+  steam_id3 text unique,
   steam_trade_token text unique,
+  -- steam_pfp_id can be non-unique for default and points shop avatars
+  steam_pfp_id text,
   tempus_id integer unique,
   discord_id text unique,
-  display_name text not null,
+  display_name text,
   soldier_division text,
   demo_division text,
   preferred_class text not null default 'soldier',
+
   created_at datetime not null default current_timestamp
+
   check (preferred_class in ('soldier', 'demo', 'both'))
 );
+
 -- competition
 create table competition(
   id integer not null primary key autoincrement,
   class text not null,
   starts_at datetime not null,
   ends_at datetime not null,
+
   created_at datetime not null default current_timestamp,
+
   check (class in ('soldier', 'demo'))
 );
+
 -- "stardust points" for a player
 -- relates to player (id)
 create table player_points(
@@ -31,8 +40,10 @@ create table player_points(
   player_id integer not null,
   soldier_points integer not null default 0,
   demo_points integer not null default 0,
+
   foreign key (player_id) references player (id)
 );
+
 -- time for a competition's player
 -- relates to player (id) and competition (id)
 create table player_time(
@@ -41,8 +52,10 @@ create table player_time(
   player_id integer not null,
   run_time float not null,
   verified boolean not null,
+
   created_at datetime not null default current_timestamp
 );
+
 -- info for a division's competition
 -- relates to competition (id)
 create table competition_division(
@@ -50,8 +63,10 @@ create table competition_division(
   competition_id integer not null,
   division text not null,
   map text not null,
+
   foreign key (competition_id) references competition (id)
 );
+
 -- end result for a competition (placement and points)
 -- relates to competition (id) and player (id)
 create table competition_result(
@@ -59,11 +74,14 @@ create table competition_result(
   player_id integer not null,
   placement integer not null,
   points integer not null,
+
   created_at datetime not null default current_timestamp,
+
   primary key (competition_id, player_id),
   foreign key (competition_id) references competition (id),
   foreign key (player_id) references player (id)
 );
+
 -- prize for a competition (keys)
 -- relates to competition (id)
 create table competition_prize(
@@ -71,22 +89,28 @@ create table competition_prize(
   competition_id integer not null,
   placement integer not null,
   amount integer not null,
+
   foreign key (competition_id) references competition (id)
 );
+
 -- monthly, a type of competition
 -- relates to competition (id)
 create table monthly(
   id integer not null primary key autoincrement,
   competition_id integer not null,
+
   foreign key (competition_id) references competition (id)
 );
+
 -- map of the week, a type of competition
 -- relates to competition (id)
 create table motw(
   id integer not null primary key autoincrement,
   competition_id integer not null,
+
   foreign key (competition_id) references competition (id)
 );
+
 -- bounty, a type of competition with no division relation
 -- relates to competition (id)
 create table bounty(
@@ -95,9 +119,11 @@ create table bounty(
   map text not null,
   type text not null,
   time float,
+  
   foreign key (competition_id) references competition (id),
   check (type in ('target time', 'record'))
 );
+
 -- quest, a type of competition
 -- relates to competition (id)
 create table quest(
@@ -106,14 +132,50 @@ create table quest(
   type text not null,
   time float,
   completion_limit text not null,
+
   foreign key (competition_id) references competition (id),
   check (type in ('target time', 'completion'))
 );
+
 -- deleted record from any table
 create table deleted_record(
   id integer not null primary key autoincrement,
   source_table text not null,
   source_id text not null,
   data jsonb not null,
+
   deleted_at datetime not null default current_timestamp
 );
+
+-- openid_nonce
+create table openid_nonce(
+  id integer not null primary key autoincrement,
+  endpoint text not null,
+  nonce_time datetime not null,
+  nonce_string text not null,
+
+  created_at datetime not null default current_timestamp,
+  
+  unique (endpoint, nonce_string)
+);
+
+-- player openid session
+create table session(
+  id integer not null primary key autoincrement,
+  player_id integer not null,
+  token_id text not null unique,
+  
+  created_at datetime not null default current_timestamp,
+  foreign key (player_id) references player (id)
+);
+
+-- player token blacklist
+create table disallow_token(
+  token_id text not null unique,
+
+  created_at datetime not null default current_timestamp,
+
+  foreign key (token_id) references session (token_id)
+);
+
+-- todo: deleted record table?

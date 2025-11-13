@@ -1,6 +1,7 @@
 -- name: InsertPlayer :one
-insert or ignore into player (steam_id, steam_pfp_id, display_name)
-  values (?, ?, ?)
+insert into player (steam_id64)
+  values (?)
+  on conflict do update set steam_id64 = steam_id64
   returning *;
 
 -- name: SelectPlayer :one

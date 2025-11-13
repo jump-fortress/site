@@ -9,4 +9,14 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.32
 	github.com/rotisserie/eris v0.5.4
 	github.com/rs/cors v1.11.1
+	github.com/yohcop/openid-go v1.0.1
+)
+
+require github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
+
+require (
+	github.com/gofrs/uuid v4.4.0+incompatible
+	github.com/golang-jwt/jwt/v5 v5.3.0
+	github.com/hashicorp/go-retryablehttp v0.7.8
+	golang.org/x/net v0.40.0 // indirect
 )

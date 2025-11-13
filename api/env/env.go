@@ -22,7 +22,6 @@ func GetString(key string) string {
 	return os.Getenv(key)
 }
 
-// spiritov - todo: (aa) eris
 func GetMapped[T any](key string, into map[string]T) (T, error) {
 	value, exists := os.LookupEnv(key)
 	if !exists {
@@ -65,8 +64,6 @@ func Require(keys ...string) {
 		log.Fatalf("Missing required environment variables: %s", strings.Join(missing, ", "))
 	}
 }
-
-// spiritov - todo: how does loading function?
 
 // Load loads .env files, using the environment variable keyed by envKey to determine which .env files to load.
 //
