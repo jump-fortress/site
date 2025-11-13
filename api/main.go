@@ -11,14 +11,12 @@ import (
 )
 
 func main() {
-	// spiritov - todo: purpose of providing key JUMP_ENV?
+	// todo: purpose of providing key JUMP_ENV?
 	// env is a wrapper around the `godotenv` library
 	if err := env.Load("JUMP_ENV"); err != nil {
 		log.Fatalf("[fatal] error loading .env: %v", err)
 	}
 
-	// spiritov - todo: what's required?
-	// spiritov - todo: move required env strings to separate variable / place?
 	env.Require(
 		"JUMP_SLOG_LEVEL",
 		"JUMP_SLOG_MODE",
@@ -36,7 +34,10 @@ func main() {
 		"JUMP_OID_REALM",
 	)
 
-	// open db to use with api
+	if err := slog.Setup(); err != nil {
+		log.Fatal(err)
+	}
+
 	database := responses.OpenDB("./db/jump.db")
 	defer database.Close()
 
