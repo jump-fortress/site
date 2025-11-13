@@ -246,8 +246,23 @@ func registerAuth(sessionApi *huma.Group, internalApi *huma.Group) {
 	//   with some information about the user's auth session
 	// - `/internal/session/steam/callback` creates a new session token for the user
 	// - the user is redirected back to home with their session cookies set
-	huma.Get(sessionApi, "/steam/discover", handleSteamDiscover)
-	huma.Get(sessionApi, "/steam/callback", handleSteamCallback)
+	huma.Register(sessionApi, huma.Operation{
+		Method:      http.MethodGet,
+		Path:        "/steam-discover",
+		OperationID: "steam-discover",
+		Summary:     "Steam discover",
+		Description: "steam discover",
+		Tags:        []string{"Auth"},
+	}, handleSteamDiscover)
+
+	huma.Register(sessionApi, huma.Operation{
+		Method:      http.MethodGet,
+		Path:        "/steam/callback",
+		OperationID: "steam-callback",
+		Summary:     "Steam callback",
+		Description: "steam callback",
+		Tags:        []string{"Auth"},
+	}, handleSteamCallback)
 
 	var sessionCookieSecurityMap = []map[string][]string{{"Steam": {}}}
 	var requireUserSessionMiddlewares = huma.Middlewares{UserAuthHandler, CreateRequireUserAuthHandler(internalApi)}
@@ -257,7 +272,8 @@ func registerAuth(sessionApi *huma.Group, internalApi *huma.Group) {
 		Path:        "/steam/profile",
 		OperationID: "steam-profile",
 		Summary:     "Steam profile",
-		Description: "Get the authenticated user's steam profile info",
+		Tags:        []string{"Steam"},
+		Description: "get the authenticated user's steam profile info",
 		Errors:      []int{http.StatusUnauthorized},
 
 		Security:    sessionCookieSecurityMap,
@@ -269,7 +285,8 @@ func registerAuth(sessionApi *huma.Group, internalApi *huma.Group) {
 		Path:        "/sign-out",
 		OperationID: "sign-out",
 		Summary:     "Sign out",
-		Description: "Sign out & clear session",
+		Description: "sign out & clear session",
+		Tags:        []string{"Auth"},
 		Errors:      []int{http.StatusUnauthorized},
 
 		Security:    sessionCookieSecurityMap,

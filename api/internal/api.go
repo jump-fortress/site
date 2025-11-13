@@ -69,8 +69,8 @@ func registerRoutes() {
 	huma.Register(internalApi, huma.Operation{
 		Method:      http.MethodGet,
 		Path:        "/players/{id}",
-		Summary:     "Get Player",
-		Description: "Get a Player by ID",
+		Summary:     "Player",
+		Description: "get a Player by ID",
 		Tags:        []string{"Player"},
 	}, responses.GetPlayer)
 }
