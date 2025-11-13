@@ -4,8 +4,8 @@ import (
 	"log/slog"
 	"os"
 
-	eris "github.com/rotisserie/eris"
-	env "github.com/spiritov/jump/api/env"
+	"github.com/rotisserie/eris"
+	"github.com/spiritov/jump/api/env"
 )
 
 var Logger *slog.Logger

@@ -5,11 +5,11 @@ import (
 	"log"
 	"net/http"
 
-	huma "github.com/danielgtaylor/huma/v2"
-	humachi "github.com/danielgtaylor/huma/v2/adapters/humachi"
-	chi "github.com/go-chi/chi/v5"
-	cors "github.com/rs/cors"
-	responses "github.com/spiritov/jump/api/db/responses"
+	"github.com/danielgtaylor/huma/v2"
+	"github.com/danielgtaylor/huma/v2/adapters/humachi"
+	"github.com/go-chi/chi/v5"
+	"github.com/rs/cors"
+	"github.com/spiritov/jump/api/db/responses"
 )
 
 var (

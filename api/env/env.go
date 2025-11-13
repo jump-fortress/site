@@ -9,8 +9,8 @@ import (
 	"slices"
 	"strings"
 
-	godotenv "github.com/joho/godotenv"
-	eris "github.com/rotisserie/eris"
+	"github.com/joho/godotenv"
+	"github.com/rotisserie/eris"
 )
 
 func GetBool(key string) bool {

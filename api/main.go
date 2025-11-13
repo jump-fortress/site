@@ -4,9 +4,10 @@ import (
 	_ "embed"
 	"log"
 
-	responses "github.com/spiritov/jump/api/db/responses"
-	env "github.com/spiritov/jump/api/env"
-	internal "github.com/spiritov/jump/api/internal"
+	"github.com/spiritov/jump/api/db/responses"
+	"github.com/spiritov/jump/api/env"
+	"github.com/spiritov/jump/api/internal"
+	"github.com/spiritov/jump/api/slog"
 )
 
 func main() {
