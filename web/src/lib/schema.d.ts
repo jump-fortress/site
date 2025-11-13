@@ -4,7 +4,7 @@
  */
 
 export interface paths {
-    "/players/{id}": {
+    "/internal/players/{id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -55,7 +55,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/readyz": {
+    "/internal/readyz": {
         parameters: {
             query?: never;
             header?: never;
@@ -67,6 +67,80 @@ export interface paths {
          * @description Get whether or not the API is ready to process requests
          */
         get: operations["readyz"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/session/sign-out": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Sign out
+         * @description Sign out & clear session
+         */
+        get: operations["sign-out"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/session/steam/callback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get session steam callback */
+        get: operations["get-session-steam-callback"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/session/steam/discover": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get session steam discover */
+        get: operations["get-session-steam-discover"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/session/steam/profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Steam profile
+         * @description Get the authenticated user's steam profile info
+         */
+        get: operations["steam-profile"];
         put?: never;
         post?: never;
         delete?: never;
@@ -146,16 +220,31 @@ export interface components {
             created_at: string;
             demo_division: components["schemas"]["NullString"];
             discord_id: components["schemas"]["NullString"];
-            display_name: string;
+            display_name: components["schemas"]["NullString"];
             /** Format: int64 */
             id: number;
             preferred_class: string;
             role: string;
             soldier_division: components["schemas"]["NullString"];
-            steam_id: string;
-            steam_pfp_id: string;
+            steam_id3: components["schemas"]["NullString"];
+            steam_id64: string;
+            steam_pfp_id: components["schemas"]["NullString"];
             steam_trade_token: components["schemas"]["NullString"];
             tempus_id: components["schemas"]["NullInt64"];
+        };
+        SteamProfile: {
+            /**
+             * Format: uri
+             * @description A URL to the JSON Schema for this object.
+             * @example https://example.com/schemas/SteamProfile.json
+             */
+            readonly $schema?: string;
+            avatarFullUrl: string;
+            avatarMediumUrl: string;
+            avatarUrl: string;
+            personaName: string;
+            profileUrl: string;
+            steamId: string;
         };
     };
     responses: never;
@@ -169,6 +258,7 @@ export type ErrorModel = components['schemas']['ErrorModel'];
 export type NullInt64 = components['schemas']['NullInt64'];
 export type NullString = components['schemas']['NullString'];
 export type Player = components['schemas']['Player'];
+export type SteamProfile = components['schemas']['SteamProfile'];
 export type $defs = Record<string, never>;
 export interface operations {
     readyz: {
@@ -199,8 +289,144 @@ export interface operations {
             };
         };
     };
+    "sign-out": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    "Set-Cookie"?: string;
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "get-session-steam-callback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    Location?: string;
+                    "Set-Cookie"?: string;
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "get-session-steam-discover": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    Location?: string;
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "steam-profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SteamProfile"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
 }
 export enum ApiPaths {
-    GetPlayers = "/players/{id}",
-    readyz = "/readyz"
+    GetInternalPlayers = "/internal/players/{id}",
+    readyz = "/internal/readyz",
+    sign_out = "/session/sign-out",
+    get_session_steam_callback = "/session/steam/callback",
+    get_session_steam_discover = "/session/steam/discover",
+    steam_profile = "/session/steam/profile"
 }
