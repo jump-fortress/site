@@ -1,7 +1,6 @@
 package responses
 
 import (
-	"context"
 	"database/sql"
 	"log"
 
@@ -23,14 +22,4 @@ func OpenDB(path string) *sql.DB {
 
 	Queries = database.New(db)
 	return db
-}
-
-func GetPlayer(ctx context.Context, input *PlayerIDInput) (*PlayerResponse, error) {
-	player, err := Queries.SelectPlayer(ctx, input.ID)
-	if err != nil {
-		return nil, err
-	}
-
-	resp := &PlayerResponse{Body: player}
-	return resp, nil
 }
