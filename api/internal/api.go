@@ -9,7 +9,6 @@ import (
 	"github.com/danielgtaylor/huma/v2/adapters/humachi"
 	"github.com/go-chi/chi/v5"
 	"github.com/rs/cors"
-	"github.com/spiritov/jump/api/db/responses"
 )
 
 var (
@@ -72,7 +71,7 @@ func registerRoutes() {
 		Summary:     "Player",
 		Description: "get a Player by ID",
 		Tags:        []string{"Player"},
-	}, responses.GetPlayer)
+	}, HandleGetPlayer)
 }
 
 // A readiness endpoint is important - it can be used to inform your infrastructure
