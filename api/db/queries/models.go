@@ -57,8 +57,8 @@ type DeletedRecord struct {
 }
 
 type DisallowToken struct {
-	TokenID   string      `json:"token_id"`
-	CreatedAt interface{} `json:"created_at"`
+	TokenID   string    `json:"token_id"`
+	CreatedAt time.Time `json:"created_at"`
 }
 
 type Monthly struct {
@@ -83,9 +83,8 @@ type Player struct {
 	ID              int64          `json:"id"`
 	Role            string         `json:"role"`
 	SteamId64       string         `json:"steam_id64"`
-	SteamId3        sql.NullString `json:"steam_id3"`
+	SteamAvatarUrl  sql.NullString `json:"steam_avatar_url"`
 	SteamTradeToken sql.NullString `json:"steam_trade_token"`
-	SteamPfpID      sql.NullString `json:"steam_pfp_id"`
 	TempusID        sql.NullInt64  `json:"tempus_id"`
 	DiscordID       sql.NullString `json:"discord_id"`
 	DisplayName     sql.NullString `json:"display_name"`

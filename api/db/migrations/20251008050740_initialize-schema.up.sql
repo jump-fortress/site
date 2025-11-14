@@ -5,10 +5,9 @@ create table player(
   id integer not null primary key autoincrement,
   role text not null default 'player',
   steam_id64 text unique not null,
-  steam_id3 text unique,
+  -- steam_avatar_url can be non-unique for default and points shop avatars
+  steam_avatar_url text,
   steam_trade_token text unique,
-  -- steam_pfp_id can be non-unique for default and points shop avatars
-  steam_pfp_id text,
   tempus_id integer unique,
   discord_id text unique,
   display_name text,

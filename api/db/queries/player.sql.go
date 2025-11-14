@@ -7,13 +7,13 @@ package queries
 
 import (
 	"context"
+	"database/sql"
 )
 
 const insertPlayer = `-- name: InsertPlayer :one
 insert into player (steam_id64)
   values (?)
-  on conflict do update set steam_id64 = steam_id64
-  returning id, role, steam_id64, steam_id3, steam_trade_token, steam_pfp_id, tempus_id, discord_id, display_name, soldier_division, demo_division, preferred_class, created_at
+  returning id, role, steam_id64, steam_avatar_url, steam_trade_token, tempus_id, discord_id, display_name, soldier_division, demo_division, preferred_class, created_at
 `
 
 func (q *Queries) InsertPlayer(ctx context.Context, steamId64 string) (Player, error) {
@@ -23,9 +23,8 @@ func (q *Queries) InsertPlayer(ctx context.Context, steamId64 string) (Player, e
 		&i.ID,
 		&i.Role,
 		&i.SteamId64,
-		&i.SteamId3,
+		&i.SteamAvatarUrl,
 		&i.SteamTradeToken,
-		&i.SteamPfpID,
 		&i.TempusID,
 		&i.DiscordID,
 		&i.DisplayName,
@@ -38,7 +37,7 @@ func (q *Queries) InsertPlayer(ctx context.Context, steamId64 string) (Player, e
 }
 
 const selectPlayer = `-- name: SelectPlayer :one
-select id, role, steam_id64, steam_id3, steam_trade_token, steam_pfp_id, tempus_id, discord_id, display_name, soldier_division, demo_division, preferred_class, created_at from player
+select id, role, steam_id64, steam_avatar_url, steam_trade_token, tempus_id, discord_id, display_name, soldier_division, demo_division, preferred_class, created_at from player
   where id = ?
 `
 
@@ -49,9 +48,67 @@ func (q *Queries) SelectPlayer(ctx context.Context, id int64) (Player, error) {
 		&i.ID,
 		&i.Role,
 		&i.SteamId64,
-		&i.SteamId3,
+		&i.SteamAvatarUrl,
 		&i.SteamTradeToken,
-		&i.SteamPfpID,
+		&i.TempusID,
+		&i.DiscordID,
+		&i.DisplayName,
+		&i.SoldierDivision,
+		&i.DemoDivision,
+		&i.PreferredClass,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const selectPlayerFromSteamID64 = `-- name: SelectPlayerFromSteamID64 :one
+select id, role, steam_id64, steam_avatar_url, steam_trade_token, tempus_id, discord_id, display_name, soldier_division, demo_division, preferred_class, created_at from player
+  where steam_id64 = ?
+`
+
+func (q *Queries) SelectPlayerFromSteamID64(ctx context.Context, steamId64 string) (Player, error) {
+	row := q.db.QueryRowContext(ctx, selectPlayerFromSteamID64, steamId64)
+	var i Player
+	err := row.Scan(
+		&i.ID,
+		&i.Role,
+		&i.SteamId64,
+		&i.SteamAvatarUrl,
+		&i.SteamTradeToken,
+		&i.TempusID,
+		&i.DiscordID,
+		&i.DisplayName,
+		&i.SoldierDivision,
+		&i.DemoDivision,
+		&i.PreferredClass,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const updatePlayerSessionInfo = `-- name: UpdatePlayerSessionInfo :one
+update player
+  set steam_avatar_url = ?,
+  display_name = ?
+  where steam_id64 = ?
+  returning id, role, steam_id64, steam_avatar_url, steam_trade_token, tempus_id, discord_id, display_name, soldier_division, demo_division, preferred_class, created_at
+`
+
+type UpdatePlayerSessionInfoParams struct {
+	SteamAvatarUrl sql.NullString `json:"steam_avatar_url"`
+	DisplayName    sql.NullString `json:"display_name"`
+	SteamId64      string         `json:"steam_id64"`
+}
+
+func (q *Queries) UpdatePlayerSessionInfo(ctx context.Context, arg UpdatePlayerSessionInfoParams) (Player, error) {
+	row := q.db.QueryRowContext(ctx, updatePlayerSessionInfo, arg.SteamAvatarUrl, arg.DisplayName, arg.SteamId64)
+	var i Player
+	err := row.Scan(
+		&i.ID,
+		&i.Role,
+		&i.SteamId64,
+		&i.SteamAvatarUrl,
+		&i.SteamTradeToken,
 		&i.TempusID,
 		&i.DiscordID,
 		&i.DisplayName,
