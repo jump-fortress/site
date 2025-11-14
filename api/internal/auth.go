@@ -248,7 +248,7 @@ func registerAuth(sessionApi *huma.Group, internalApi *huma.Group) {
 	// - the user is redirected back to home with their session cookies set
 	huma.Register(sessionApi, huma.Operation{
 		Method:      http.MethodGet,
-		Path:        "/steam-discover",
+		Path:        "/steam/discover",
 		OperationID: "steam-discover",
 		Summary:     "Steam discover",
 		Description: "steam discover",
@@ -278,7 +278,19 @@ func registerAuth(sessionApi *huma.Group, internalApi *huma.Group) {
 
 		Security:    sessionCookieSecurityMap,
 		Middlewares: requireUserSessionMiddlewares,
-	}, handleSteamProfile)
+	}, HandleSteamProfile)
+
+	huma.Register(sessionApi, huma.Operation{
+		Method:      http.MethodGet,
+		Path:        "/",
+		OperationID: "session",
+		Summary:     "session profile",
+		Description: "get the authenticated user's session profile",
+		Errors:      []int{http.StatusUnauthorized},
+
+		Security:    sessionCookieSecurityMap,
+		Middlewares: requireUserSessionMiddlewares,
+	}, HandleSession)
 
 	huma.Register(sessionApi, huma.Operation{
 		Method:      http.MethodGet,

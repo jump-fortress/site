@@ -61,16 +61,10 @@ type PlayerSummaries struct {
 	}
 }
 
-func handleSteamProfile(ctx context.Context, _ *struct{}) (*SteamProfileOutput, error) {
-	// if we don't have a principal, that means the user is not signed in or their session has expired.
-	principal, ok := GetPrincipal(ctx)
-	if !ok {
-		return nil, huma.Error401Unauthorized("a session is required")
-	}
-
+func FetchProfileSummary(steamId uint64) (*PlayerSummary, error) {
 	// the ISteamUser::GetPlayerSummaries API requires a steam API key...
 	encodedKey := url.QueryEscape(SteamApiKey)
-	encodedSteamID := url.QueryEscape(strconv.FormatUint(principal.SteamID, 10))
+	encodedSteamID := url.QueryEscape(strconv.FormatUint(steamId, 10))
 	summaryUrl := fmt.Sprintf("https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2?key=%s&steamids=%s", encodedKey, encodedSteamID)
 
 	// retryablehttp uses an exponential backoff by default. If the first request fails, it will retry
@@ -98,8 +92,23 @@ func handleSteamProfile(ctx context.Context, _ *struct{}) (*SteamProfileOutput, 
 		return nil, huma.Error500InternalServerError("Unexpected player summaries in steam response")
 	}
 
+	return &summaries.Response.Players[0], nil
+}
+
+func HandleSteamProfile(ctx context.Context, _ *struct{}) (*SteamProfileOutput, error) {
+	// if we don't have a principal, that means the user is not signed in or their session has expired.
+	principal, ok := GetPrincipal(ctx)
+	if !ok {
+		return nil, huma.Error401Unauthorized("a session is required")
+	}
+
+	summary, err := FetchProfileSummary(principal.SteamID)
+	if err != nil {
+		return nil, err
+	}
+
 	// map the steam response to only the fields we care about.
 	return &SteamProfileOutput{
-		Body: SteamProfileFromSummary(summaries.Response.Players[0]),
+		Body: SteamProfileFromSummary(*summary),
 	}, nil
 }
