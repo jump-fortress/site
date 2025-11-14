@@ -278,7 +278,7 @@ func registerAuth(sessionApi *huma.Group, internalApi *huma.Group) {
 
 		Security:    sessionCookieSecurityMap,
 		Middlewares: requireUserSessionMiddlewares,
-	}, HandleSteamProfile)
+	}, HandleGetSteamProfile)
 
 	huma.Register(sessionApi, huma.Operation{
 		Method:      http.MethodGet,
@@ -291,7 +291,7 @@ func registerAuth(sessionApi *huma.Group, internalApi *huma.Group) {
 
 		Security:    sessionCookieSecurityMap,
 		Middlewares: requireUserSessionMiddlewares,
-	}, HandleSession)
+	}, HandleGetSession)
 
 	huma.Register(sessionApi, huma.Operation{
 		Method:      http.MethodPost,

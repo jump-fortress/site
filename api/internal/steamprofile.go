@@ -95,7 +95,7 @@ func FetchProfileSummary(steamId uint64) (*PlayerSummary, error) {
 	return &summaries.Response.Players[0], nil
 }
 
-func HandleSteamProfile(ctx context.Context, _ *struct{}) (*SteamProfileOutput, error) {
+func HandleGetSteamProfile(ctx context.Context, _ *struct{}) (*SteamProfileOutput, error) {
 	// if we don't have a principal, that means the user is not signed in or their session has expired.
 	principal, ok := GetPrincipal(ctx)
 	if !ok {

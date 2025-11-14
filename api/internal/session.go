@@ -10,6 +10,8 @@ import (
 	"github.com/spiritov/jump/api/db/responses"
 )
 
+// todo: error handling / logging
+
 // map a database player to the session fields we want
 func SessionFromPlayer(player queries.Player) responses.Session {
 	return responses.Session{
@@ -19,7 +21,7 @@ func SessionFromPlayer(player queries.Player) responses.Session {
 	}
 }
 
-func HandleSession(ctx context.Context, _ *struct{}) (*responses.SessionOutput, error) {
+func HandleGetSession(ctx context.Context, _ *struct{}) (*responses.SessionOutput, error) {
 	principal, ok := GetPrincipal(ctx)
 	if !ok {
 		return nil, huma.Error401Unauthorized("a session is required")
