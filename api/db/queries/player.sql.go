@@ -13,6 +13,8 @@ import (
 const insertPlayer = `-- name: InsertPlayer :one
 insert into player (steam_id64)
   values (?)
+  on conflict do update
+  set steam_id64 = steam_id64
   returning id, role, steam_id64, steam_avatar_url, steam_trade_token, tempus_id, discord_id, display_name, soldier_division, demo_division, preferred_class, created_at
 `
 

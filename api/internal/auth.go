@@ -31,7 +31,7 @@ const (
 	PrincipalContextKey = "principal"
 
 	SteamOidcIssuer      = "https://steamcommunity.com/openid/"
-	SteamOidRedirectPath = "/session/steam/callback"
+	SteamOidRedirectPath = "internal/session/steam/callback"
 )
 
 var (
@@ -282,9 +282,10 @@ func registerAuth(sessionApi *huma.Group, internalApi *huma.Group) {
 
 	huma.Register(sessionApi, huma.Operation{
 		Method:      http.MethodGet,
-		Path:        "/",
+		Path:        "",
 		OperationID: "session",
 		Summary:     "session profile",
+		Tags:        []string{"Auth"},
 		Description: "get the authenticated user's session profile",
 		Errors:      []int{http.StatusUnauthorized},
 
@@ -293,7 +294,7 @@ func registerAuth(sessionApi *huma.Group, internalApi *huma.Group) {
 	}, HandleSession)
 
 	huma.Register(sessionApi, huma.Operation{
-		Method:      http.MethodGet,
+		Method:      http.MethodPost,
 		Path:        "/sign-out",
 		OperationID: "sign-out",
 		Summary:     "Sign out",

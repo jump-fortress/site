@@ -61,14 +61,14 @@ func ServeAPI(address string) {
 
 func registerRoutes() {
 	internalApi := huma.NewGroup(api, "/internal")
-	sessionApi := huma.NewGroup(api, "/session")
+	sessionApi := huma.NewGroup(internalApi, "/session")
 	registerHealthCheck(internalApi)
 	registerAuth(sessionApi, internalApi)
 
 	huma.Register(internalApi, huma.Operation{
 		Method:      http.MethodGet,
 		Path:        "/players/{id}",
-		Summary:     "Player",
+		Summary:     "Get Player",
 		Description: "get a Player by ID",
 		Tags:        []string{"Player"},
 	}, HandleGetPlayer)

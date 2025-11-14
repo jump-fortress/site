@@ -1,10 +1,16 @@
 <script lang="ts">
 	import { slide } from 'svelte/transition';
 	import FullDivider from './FullDivider.svelte';
+	import type { Session } from '$lib/schema';
 
-	let { route }: { route: string } = $props();
-	let login = true;
+	type Props = {
+		route: string;
+		session?: Session | null;
+	};
+
+	let { route, session = null }: Props = $props();
 	let showNavMenu = $state(false);
+	$inspect(session);
 </script>
 
 <svelte:document
@@ -29,13 +35,15 @@
 		</div>
 		<!-- right nav -->
 		<div class="relative flex h-16 flex-row-reverse items-center" data-nav="true">
-			{#if !login}
-				<img
-					class="cursor-pointer"
-					src="src/lib/assets/static/sits_small.png"
-					alt=""
-					data-nav="true"
-				/>
+			{#if !session}
+				<a href="http://localhost:8000/internal/session/steam/discover">
+					<img
+						class="cursor-pointer"
+						src="src/lib/assets/static/sits_small.png"
+						alt=""
+						data-nav="true"
+					/>
+				</a>
 			{:else}
 				<button
 					class="group relative cursor-pointer px-4"
@@ -46,7 +54,7 @@
 				>
 					<img
 						class="group-hover:border-ctp-lavender/50 border-jfgray-800 size-14 rounded-full border-2 transition-colors"
-						src="https://avatars.akamai.steamstatic.com/55f57bf80f543b1e7261f9e0a17b8e12b992de28_full.jpg"
+						src={session.steamAvatarUrl}
 						alt=""
 						data-nav="true"
 					/>
@@ -57,10 +65,10 @@
 							data-nav="true"
 						>
 							<a
-								href="/players/1"
+								href="/players/{session.id}"
 								data-nav="true"
 								class="hover:bg-jfgray-700 span-ellipsis rounded-lg p-1 pl-2 transition-colors"
-								>mur</a
+								>{session.displayName}</a
 							>
 
 							<FullDivider />
@@ -70,10 +78,14 @@
 								data-nav="true"
 								class="hover:bg-jfgray-700 rounded-lg p-1 pl-2 transition-colors">settings</a
 							>
-							<span
+							<a
+								href="/logout"
+								data-sveltekit-preload-data="tap"
 								data-nav="true"
-								class="hover:bg-jfgray-700 rounded-lg p-1 pl-2 transition-colors">logout</span
+								class="hover:bg-jfgray-700 rounded-lg p-1 pl-2 transition-colors"
 							>
+								logout
+							</a>
 						</ul>
 					{/if}
 				</button>
