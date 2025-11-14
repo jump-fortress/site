@@ -14,7 +14,9 @@
 	let route = $derived(page.url.pathname.substring(1));
 
 	onMount(() => {
-		if (!session) invalidateAll();
+		if (!session) {
+			invalidateAll();
+		}
 	});
 </script>
 
