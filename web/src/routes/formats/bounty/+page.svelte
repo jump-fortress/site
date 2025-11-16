@@ -2,7 +2,6 @@
 	import rocket from '$lib/assets/static/classes/rocket.png';
 	import sticky from '$lib/assets/static/classes/sticky.png';
 	import DataSection from '$lib/components/DataSection.svelte';
-	import FullDivider from '$lib/components/FullDivider.svelte';
 	import Table from '$lib/components/Table.svelte';
 
 	const activeBountiesDummyData = [
@@ -50,8 +49,6 @@
 		{/snippet}
 	</Table>
 </DataSection>
-
-<FullDivider />
 
 <DataSection title="Claimed Bounties">
 	<Table data={claimedBountiesDummyData}>

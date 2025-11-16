@@ -4,7 +4,6 @@
 
 	import rocket from '$lib/assets/static/classes/rocket.png';
 	import sticky from '$lib/assets/static/classes/sticky.png';
-	import FullDivider from '$lib/components/FullDivider.svelte';
 	import TableMap from '$lib/components/TableMap.svelte';
 	import Link from '$lib/components/Link.svelte';
 	import DivisionTag from '$lib/components/DivisionTag.svelte';
@@ -36,8 +35,6 @@
 		{/snippet}
 	</Table>
 </DataSection>
-
-<FullDivider />
 
 <DataSection title="Past Quests">
 	<Table data={[{}]}>
