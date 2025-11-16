@@ -5,6 +5,9 @@
 </script>
 
 <div class="flex flex-col gap-1">
-	<span class="text-ctp-lavender">{title}</span>
+	<div class="flex items-center gap-2">
+		<span class="text-ctp-lavender">{title}</span>
+		<div class="border-jfgray-700 grow border-t-2"></div>
+	</div>
 	{@render children()}
 </div>
