@@ -95,10 +95,12 @@ type Player struct {
 }
 
 type PlayerPoint struct {
-	ID            int64 `json:"id"`
-	PlayerID      int64 `json:"player_id"`
-	SoldierPoints int64 `json:"soldier_points"`
-	DemoPoints    int64 `json:"demo_points"`
+	ID           int64  `json:"id"`
+	Class        string `json:"class"`
+	PlayerID     int64  `json:"player_id"`
+	Total        int64  `json:"total"`
+	Last9Motw    int64  `json:"last_9_motw"`
+	Last3Monthly int64  `json:"last_3_monthly"`
 }
 
 type PlayerTime struct {
