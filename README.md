@@ -11,7 +11,7 @@ development tracking currently takes place within a private Linear workspace
 
 the database uses [migrate cli](https://github.com/golang-migrate/migrate) to manage migrations, and [sqlc](https://github.com/sqlc-dev/sqlc) to generate code from SQL
 
-api documentation is provided at [JUMP_HTTP_ADDRESS/docs](JUMP_HTTP_ADDRESS/docs) (see [.env.local.example](api/env/.env.local.example))
+api documentation is provided at `/docs` (see [.env.local.example](api/env/.env.local.example?plain=1#L17))
 
 > [!IMPORTANT]
 > make sure the migrate cli is installed, and you have an up-to-date database
