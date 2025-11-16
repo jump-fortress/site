@@ -36,7 +36,7 @@ func HandleGetSession(ctx context.Context, _ *struct{}) (*responses.SessionOutpu
 
 	var session responses.Session
 
-	// if this is a new player, set these required fields with their Steam info
+	// if this player is missing fields, set these required fields with their Steam info
 	if !player.DisplayName.Valid || !player.SteamAvatarUrl.Valid {
 		steamProfileSummary, err := FetchProfileSummary(principal.SteamID)
 		if err != nil {

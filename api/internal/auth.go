@@ -145,9 +145,25 @@ func handleSteamCallback(ctx context.Context, input *CallbackInput) (*CallbackOu
 	}
 
 	// if the user doesn't already exist in the database, we need to ensure they exist
-	_, dbErr := db.Queries.InsertPlayer(ctx, steamID)
+	player, dbErr := db.Queries.InsertPlayer(ctx, steamID)
 	if dbErr != nil {
 		return nil, eris.Wrap(dbErr, "Error creating new user")
+	}
+
+	err = db.Queries.InsertPlayerPoints(ctx, queries.InsertPlayerPointsParams{
+		Class:    "Soldier",
+		PlayerID: player.ID,
+	})
+	if err != nil {
+		return nil, eris.Wrapf(err, "Error creating soldier points for new user %d, ID %s", player.ID, player.DisplayName.String)
+	}
+
+	err = db.Queries.InsertPlayerPoints(ctx, queries.InsertPlayerPointsParams{
+		Class:    "Demo",
+		PlayerID: player.ID,
+	})
+	if err != nil {
+		return nil, eris.Wrapf(err, "Error creating demo points for new user %d, ID %s", player.ID, player.DisplayName.String)
 	}
 
 	// AddSession will create a new session UUIDv7 token entry and link it to the user.

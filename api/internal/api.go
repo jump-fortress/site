@@ -69,9 +69,17 @@ func registerRoutes() {
 		Method:      http.MethodGet,
 		Path:        "/players/{id}",
 		Summary:     "Get Player",
-		Description: "get a Player by ID",
+		Description: "get a player by ID",
 		Tags:        []string{"Player"},
 	}, HandleGetPlayer)
+
+	huma.Register(internalApi, huma.Operation{
+		Method:      http.MethodGet,
+		Path:        "/players/profile/{id}",
+		Summary:     "Get Player Profile",
+		Description: "get info for a player's profile by ID",
+		Tags:        []string{"Player"},
+	}, HandleGetPlayerProfile)
 }
 
 // A readiness endpoint is important - it can be used to inform your infrastructure
