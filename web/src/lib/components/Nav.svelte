@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { slide } from 'svelte/transition';
-	import FullDivider from './FullDivider.svelte';
 	import type { Session } from '$lib/schema';
+	import steam_signin_button from '$lib/assets/static/sits_small.png';
+	import { onMount } from 'svelte';
+	import { invalidateAll } from '$app/navigation';
 
 	type Props = {
 		route: string;
@@ -11,6 +13,12 @@
 	let { route, session = null }: Props = $props();
 	let showNavMenu = $state(false);
 	$inspect(session);
+
+	onMount(() => {
+		if (!session) {
+			invalidateAll();
+		}
+	});
 </script>
 
 <svelte:document
@@ -37,12 +45,7 @@
 		<div class="relative flex h-16 flex-row-reverse items-center" data-nav="true">
 			{#if !session}
 				<a href="http://localhost:8000/internal/session/steam/discover">
-					<img
-						class="cursor-pointer"
-						src="src/lib/assets/static/sits_small.png"
-						alt=""
-						data-nav="true"
-					/>
+					<img class="cursor-pointer" src={steam_signin_button} alt="" data-nav="true" />
 				</a>
 			{:else}
 				<button
@@ -71,7 +74,7 @@
 								>{session.displayName}</a
 							>
 
-							<FullDivider />
+							<hr class="border-jfgray-700 border-2" />
 
 							<a
 								href="/settings"
