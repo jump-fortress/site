@@ -1,4 +1,5 @@
 -- initial schema
+
 -- player
 -- todo: consider what "roles" should exist, and if this is the correct implementation
 create table player(
@@ -13,11 +14,11 @@ create table player(
   display_name text,
   soldier_division text,
   demo_division text,
-  preferred_class text not null default 'soldier',
+  preferred_class text not null default 'Soldier',
 
   created_at datetime not null default current_timestamp
 
-  check (preferred_class in ('soldier', 'demo', 'both'))
+  check (preferred_class in ('Soldier', 'Demo'))
 );
 
 -- competition
@@ -29,18 +30,22 @@ create table competition(
 
   created_at datetime not null default current_timestamp,
 
-  check (class in ('soldier', 'demo'))
+  check (class in ('Soldier', 'Demo'))
 );
 
 -- "stardust points" for a player
 -- relates to player (id)
 create table player_points(
   id integer not null primary key autoincrement,
+  class text not null,
   player_id integer not null,
-  soldier_points integer not null default 0,
-  demo_points integer not null default 0,
+  total integer not null default 0,
+  last_9_motw integer not null default 0,
+  last_3_monthly integer not null default 0,
 
-  foreign key (player_id) references player (id)
+  foreign key (player_id) references player (id),
+
+  check (class in ('Soldier', 'Demo'))
 );
 
 -- time for a competition's player
@@ -120,7 +125,7 @@ create table bounty(
   time float,
   
   foreign key (competition_id) references competition (id),
-  check (type in ('target time', 'record'))
+  check (type in ('Target Time', 'Record'))
 );
 
 -- quest, a type of competition
@@ -133,7 +138,7 @@ create table quest(
   completion_limit text not null,
 
   foreign key (competition_id) references competition (id),
-  check (type in ('target time', 'completion'))
+  check (type in ('Target Time', 'Completion'))
 );
 
 -- deleted record from any table
@@ -177,4 +182,56 @@ create table disallow_token(
   foreign key (token_id) references session (token_id)
 );
 
+-- triggers
+-- todo: view instead?
+
+-- total points
+create trigger update_player_points_total_after_insert 
+after insert on competition_result
+begin
+  update player_points
+  set total = (
+    select sum(points) from competition_result cr
+    join competition c on cr.competition_id = c.id
+    where cr.player_id = new.player_id
+      and c.class = player_points.class
+  )
+  where player_id = new.player_id;
+end;
+
+-- last 9 motw
+create trigger update_player_points_last_9_motw_after_insert
+after insert on competition_result
+begin
+  update player_points
+  set last_9_motw = (
+    select sum(points) from competition_result cr
+    join competition c on cr.competition_id = c.id
+    join motw m on m.competition_id = c.id
+    where cr.player_id = new.player_id
+      and c.class = player_points.class
+    order by cr.created_at desc
+    limit 9
+  )
+  where player_id = new.player_id;
+end;
+
+-- last 3 monthly
+create trigger update_player_points_last_3_monthly_after_insert
+after insert on competition_result
+begin
+  update player_points
+  set last_3_monthly = (
+    select sum(points) from competition_result cr
+    join competition c on cr.competition_id = c.id
+    join monthly m on m.competition_id = c.id
+    where cr.player_id = new.player_id
+      and c.class = player_points.class
+    order by cr.created_at desc
+    limit 3
+  )
+  where player_id = new.player_id;
+end;
+
 -- todo: deleted record table?
+
