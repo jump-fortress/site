@@ -1,115 +1,40 @@
 <script lang="ts">
+	import { page } from '$app/state';
 	import rocket from '$lib/assets/static/classes/rocket.png';
 	import sticky from '$lib/assets/static/classes/sticky.png';
-	import plaza from '$lib/assets/static/players/plaza.png';
-	import tempus from '$lib/assets/static/players/tempus.png';
-	import zigzagoon from '$lib/assets/static/players/zigzagoon.gif';
 	import DataSection from '$lib/components/DataSection.svelte';
 	import DivisionTag from '$lib/components/DivisionTag.svelte';
-	import FullDivider from '$lib/components/FullDivider.svelte';
-	import Link from '$lib/components/Link.svelte';
 	import Table from '$lib/components/Table.svelte';
 	import TableMap from '$lib/components/TableMap.svelte';
+	import { Client } from '$lib/internalApi.js';
+	import type { PlayerProfile, Session } from '$lib/schema';
+	import type { PageData } from './$types';
+	import Header from './Header.svelte';
 
 	let showSoldier = $state(true);
 	let showDemo = $state(false);
 	let me = $state(true);
+
+	let { data: pageData }: { data: PageData } = $props();
+	let session: Session | null = $derived(pageData.session);
+
+	const playerID = Number.parseInt(page.params.id as string);
+	const { data } = await Client.GET('/internal/players/profile/{id}', {
+		fetch: fetch,
+		params: {
+			path: { id: playerID }
+		}
+	});
+
+	let player: PlayerProfile | undefined = $derived(data);
+	$inspect(player);
 </script>
 
-<!-- top profile -->
-<div class="h-46 relative flex gap-4">
-	<img
-		class="size-46"
-		src="https://avatars.akamai.steamstatic.com/55f57bf80f543b1e7261f9e0a17b8e12b992de28_full.jpg"
-		alt=""
-	/>
-	<img
-		style="image-rendering: pixelated"
-		src={zigzagoon}
-		alt=""
-		class="scale-200 absolute bottom-0"
-	/>
-
-	<div class="flex h-full grow flex-col justify-between">
-		<!-- name and div -->
-		<div class="flex flex-col">
-			<span class="text-5xl/8">mur</span>
-			<span class="text-division-platinum text-4xl/6">Platinum Soldier</span>
-		</div>
-
-		<!-- points -->
-		<div class="flex flex-col gap-2">
-			<div class="text-ctp-blue/50 flex">
-				<a
-					href="https://tempusplaza.xyz/players/254279"
-					class="hover:text-ctp-blue flex items-end gap-1 pr-2 decoration-1 transition-colors hover:underline"
-				>
-					<img src={plaza} class="size-6" alt="" />
-					<span class="flex">Plaza</span>
-				</a>
-				<a
-					href="https://tempus2.xyz/players/254279"
-					class="hover:text-ctp-blue flex items-end gap-1 pl-2 decoration-1 transition-colors hover:underline"
-				>
-					<img src={tempus} class="size-6" alt="" />
-					<span class="flex">Tempus</span>
-				</a>
-			</div>
-
-			<div class="flex w-full gap-2">
-				<div class="bg-jfgray-900 flex flex-col px-2 py-1">
-					<span class="text-2xl/4 opacity-75">last 3 monthlies</span>
-					<div class="flex items-center gap-2">
-						<span>555555</span>
-						<span class="ml-auto text-2xl/4">(#51)</span>
-					</div>
-				</div>
-				<div class="bg-jfgray-900 flex flex-col px-2 py-1">
-					<span class="text-2xl/4 opacity-75">last 9 MOTWs</span>
-					<div class="flex items-center gap-2">
-						<span>123456</span>
-						<span class="ml-auto text-2xl/4">(#12)</span>
-					</div>
-				</div>
-				<div class="bg-jfgray-900 flex flex-col px-2 py-1">
-					<span class="text-2xl/4 opacity-75">total points</span>
-					<div class="flex items-center gap-2">
-						<span>4738291</span>
-						<span class="ml-auto text-2xl/4">(#21)</span>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- class select -->
-	<div class="flex h-full flex-col">
-		<div
-			class="bg-jfgray-900 flex basis-1/2 cursor-pointer items-center p-3 pt-4 opacity-100 hover:opacity-100"
-		>
-			<img
-				class="size-16 select-none"
-				style="filter: brightness(0) saturate(100%) invert(97%) sepia(49%) saturate(6023%) hue-rotate(179deg) brightness(100%) contrast(108%)"
-				src={rocket}
-				alt=""
-				draggable="false"
-			/>
-		</div>
-		<div
-			class="flex basis-1/2 cursor-pointer items-center p-3 pb-4 opacity-50 transition-opacity hover:opacity-100"
-		>
-			<img
-				class="size-16 select-none"
-				style="filter: brightness(0) saturate(100%) invert(97%) sepia(49%) saturate(6023%) hue-rotate(179deg) brightness(100%) contrast(108%)"
-				src={sticky}
-				alt=""
-				draggable="false"
-			/>
-		</div>
-	</div>
-</div>
-
-<FullDivider />
+<svelte:boundary>
+	{#if player}
+		<Header {player} />
+	{/if}
+</svelte:boundary>
 
 <DataSection title="Bounties Claimed">
 	<div class="flex flex-wrap gap-x-4 gap-y-3">
@@ -119,8 +44,6 @@
 	</div>
 </DataSection>
 
-<FullDivider />
-
 <DataSection title="Trophies">
 	<div class="flex flex-wrap gap-2">
 		{#each { length: 1 }}
@@ -129,8 +52,6 @@
 	</div>
 </DataSection>
 
-<FullDivider />
-
 <DataSection title="Quests Claimed">
 	<div class="flex flex-wrap gap-2">
 		{#each { length: 1 }}
@@ -138,8 +59,6 @@
 		{/each}
 	</div>
 </DataSection>
-
-<FullDivider />
 
 <DataSection title="Competition History">
 	<Table data={[{}]}>

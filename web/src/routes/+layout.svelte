@@ -6,18 +6,10 @@
 	import { page } from '$app/state';
 	import type { LayoutProps } from './$types';
 	import type { Session } from '$lib/schema';
-	import { invalidate, invalidateAll } from '$app/navigation';
-	import { onMount } from 'svelte';
 
 	let { data, children }: LayoutProps = $props();
 	let session: Session | null = $derived(data.session);
 	let route = $derived(page.url.pathname.substring(1));
-
-	onMount(() => {
-		if (!session) {
-			invalidateAll();
-		}
-	});
 </script>
 
 <svelte:head>

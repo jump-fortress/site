@@ -5,7 +5,6 @@
 	import TableMap from '$lib/components/TableMap.svelte';
 	import rocket from '$lib/assets/static/classes/rocket.png';
 	import sticky from '$lib/assets/static/classes/sticky.png';
-	import FullDivider from '$lib/components/FullDivider.svelte';
 </script>
 
 <DataSection title={'Details'}>
@@ -33,8 +32,6 @@
 		{/snippet}
 	</Table>
 </DataSection>
-
-<FullDivider />
 
 <DataSection title={'Results'}>
 	<Table data={[{}]}>
