@@ -1,14 +1,16 @@
-## development
+# site
 
 this repo includes a..
 
 - Go API and sqlite3 database in [/api](api)
-- Svelte + TypeScript website in [/web](web)
+- Svelte + TypeScript frontend in [/web](web)
+
+development tracking currently takes place within a private Linear workspace
+
+## starting the api
 
 the database uses [migrate cli](https://github.com/golang-migrate/migrate) to manage migrations, and [sqlc](https://github.com/sqlc-dev/sqlc) to generate code from SQL
 
-
-## starting the api
 > [!IMPORTANT]
 > make sure the migrate cli is installed, and you have an up-to-date database
 >
@@ -31,6 +33,9 @@ go run .
 > ```
 
 ## starting the website
+
+the frontend uses [openapi-typescript](https://github.com/openapi-ts/openapi-typescript) to generate types from the API's schema.
+
 ```sh
 cd web
 npm i
@@ -38,7 +43,7 @@ npm run dev
 ```
 
 > [!TIP]
-> to generate typescript types from the api.. (with the api up)
+> to generate typescript types from the api.. (with the api up!!)
 >
 > ```sh
 > cd web
@@ -46,4 +51,6 @@ npm run dev
 > ```
 
 ### todo
+
 - document migrations
+- document file tree
