@@ -46,6 +46,7 @@ type PlayerProfileOutput struct {
 
 type Session struct {
 	ID             int64  `json:"id"`
+	Role           string `json:"role"`
 	DisplayName    string `json:"displayName"`
 	SteamAvatarURL string `json:"steamAvatarUrl"`
 }

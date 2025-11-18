@@ -16,6 +16,7 @@ import (
 func SessionFromPlayer(player queries.Player) responses.Session {
 	return responses.Session{
 		ID:             player.ID,
+		Role:           player.Role,
 		DisplayName:    player.DisplayName.String,
 		SteamAvatarURL: player.SteamAvatarUrl.String,
 	}

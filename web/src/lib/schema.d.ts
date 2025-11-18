@@ -4,361 +4,362 @@
  */
 
 export interface paths {
-	'/internal/players/profile/{id}': {
-		parameters: {
-			query?: never;
-			header?: never;
-			path?: never;
-			cookie?: never;
-		};
-		/**
-		 * Get Player Profile
-		 * @description get info for a player's profile by ID
-		 */
-		get: {
-			parameters: {
-				query?: never;
-				header?: never;
-				path: {
-					/** @description player ID */
-					id: number;
-				};
-				cookie?: never;
-			};
-			requestBody?: never;
-			responses: {
-				/** @description OK */
-				200: {
-					headers: {
-						[name: string]: unknown;
-					};
-					content: {
-						'application/json': components['schemas']['PlayerProfile'];
-					};
-				};
-				/** @description Error */
-				default: {
-					headers: {
-						[name: string]: unknown;
-					};
-					content: {
-						'application/problem+json': components['schemas']['ErrorModel'];
-					};
-				};
-			};
-		};
-		put?: never;
-		post?: never;
-		delete?: never;
-		options?: never;
-		head?: never;
-		patch?: never;
-		trace?: never;
-	};
-	'/internal/players/{id}': {
-		parameters: {
-			query?: never;
-			header?: never;
-			path?: never;
-			cookie?: never;
-		};
-		/**
-		 * Get Player
-		 * @description get a player by ID
-		 */
-		get: {
-			parameters: {
-				query?: never;
-				header?: never;
-				path: {
-					/** @description player ID */
-					id: number;
-				};
-				cookie?: never;
-			};
-			requestBody?: never;
-			responses: {
-				/** @description OK */
-				200: {
-					headers: {
-						[name: string]: unknown;
-					};
-					content: {
-						'application/json': components['schemas']['Player'];
-					};
-				};
-				/** @description Error */
-				default: {
-					headers: {
-						[name: string]: unknown;
-					};
-					content: {
-						'application/problem+json': components['schemas']['ErrorModel'];
-					};
-				};
-			};
-		};
-		put?: never;
-		post?: never;
-		delete?: never;
-		options?: never;
-		head?: never;
-		patch?: never;
-		trace?: never;
-	};
-	'/internal/readyz': {
-		parameters: {
-			query?: never;
-			header?: never;
-			path?: never;
-			cookie?: never;
-		};
-		/**
-		 * Get Readiness
-		 * @description Get whether or not the API is ready to process requests
-		 */
-		get: operations['readyz'];
-		put?: never;
-		post?: never;
-		delete?: never;
-		options?: never;
-		head?: never;
-		patch?: never;
-		trace?: never;
-	};
-	'/internal/session': {
-		parameters: {
-			query?: never;
-			header?: never;
-			path?: never;
-			cookie?: never;
-		};
-		/**
-		 * session profile
-		 * @description get the authenticated user's session profile
-		 */
-		get: operations['session'];
-		put?: never;
-		post?: never;
-		delete?: never;
-		options?: never;
-		head?: never;
-		patch?: never;
-		trace?: never;
-	};
-	'/internal/session/sign-out': {
-		parameters: {
-			query?: never;
-			header?: never;
-			path?: never;
-			cookie?: never;
-		};
-		get?: never;
-		put?: never;
-		/**
-		 * Sign out
-		 * @description sign out & clear session
-		 */
-		post: operations['sign-out'];
-		delete?: never;
-		options?: never;
-		head?: never;
-		patch?: never;
-		trace?: never;
-	};
-	'/internal/session/steam/callback': {
-		parameters: {
-			query?: never;
-			header?: never;
-			path?: never;
-			cookie?: never;
-		};
-		/**
-		 * Steam callback
-		 * @description steam callback
-		 */
-		get: operations['steam-callback'];
-		put?: never;
-		post?: never;
-		delete?: never;
-		options?: never;
-		head?: never;
-		patch?: never;
-		trace?: never;
-	};
-	'/internal/session/steam/discover': {
-		parameters: {
-			query?: never;
-			header?: never;
-			path?: never;
-			cookie?: never;
-		};
-		/**
-		 * Steam discover
-		 * @description steam discover
-		 */
-		get: operations['steam-discover'];
-		put?: never;
-		post?: never;
-		delete?: never;
-		options?: never;
-		head?: never;
-		patch?: never;
-		trace?: never;
-	};
-	'/internal/session/steam/profile': {
-		parameters: {
-			query?: never;
-			header?: never;
-			path?: never;
-			cookie?: never;
-		};
-		/**
-		 * Steam profile
-		 * @description get the authenticated user's steam profile info
-		 */
-		get: operations['steam-profile'];
-		put?: never;
-		post?: never;
-		delete?: never;
-		options?: never;
-		head?: never;
-		patch?: never;
-		trace?: never;
-	};
+    "/internal/players/profile/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Player Profile
+         * @description get info for a player's profile by ID
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description player ID */
+                    id: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PlayerProfile"];
+                    };
+                };
+                /** @description Error */
+                default: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ErrorModel"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/internal/players/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Player
+         * @description get a player by ID
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description player ID */
+                    id: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Player"];
+                    };
+                };
+                /** @description Error */
+                default: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/problem+json": components["schemas"]["ErrorModel"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/internal/readyz": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Readiness
+         * @description Get whether or not the API is ready to process requests
+         */
+        get: operations["readyz"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/internal/session": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * session profile
+         * @description get the authenticated user's session profile
+         */
+        get: operations["session"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/internal/session/sign-out": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Sign out
+         * @description sign out & clear session
+         */
+        post: operations["sign-out"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/internal/session/steam/callback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Steam callback
+         * @description steam callback
+         */
+        get: operations["steam-callback"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/internal/session/steam/discover": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Steam discover
+         * @description steam discover
+         */
+        get: operations["steam-discover"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/internal/session/steam/profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Steam profile
+         * @description get the authenticated user's steam profile info
+         */
+        get: operations["steam-profile"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
-	schemas: {
-		ErrorDetail: {
-			/** @description Where the error occurred, e.g. 'body.items[3].tags' or 'path.thing-id' */
-			location?: string;
-			/** @description Error message text */
-			message?: string;
-			/** @description The value at the given location */
-			value?: unknown;
-		};
-		ErrorModel: {
-			/**
-			 * Format: uri
-			 * @description A URL to the JSON Schema for this object.
-			 * @example https://example.com/schemas/ErrorModel.json
-			 */
-			readonly $schema?: string;
-			/**
-			 * @description A human-readable explanation specific to this occurrence of the problem.
-			 * @example Property foo is required but is missing.
-			 */
-			detail?: string;
-			/** @description Optional list of individual error details */
-			errors?: components['schemas']['ErrorDetail'][] | null;
-			/**
-			 * Format: uri
-			 * @description A URI reference that identifies the specific occurrence of the problem.
-			 * @example https://example.com/error-log/abc123
-			 */
-			instance?: string;
-			/**
-			 * Format: int64
-			 * @description HTTP status code
-			 * @example 400
-			 */
-			status?: number;
-			/**
-			 * @description A short, human-readable summary of the problem type. This value should not change between occurrences of the error.
-			 * @example Bad Request
-			 */
-			title?: string;
-			/**
-			 * Format: uri
-			 * @description A URI reference to human-readable documentation for the error.
-			 * @default about:blank
-			 * @example https://example.com/errors/example
-			 */
-			type: string;
-		};
-		Player: {
-			/**
-			 * Format: uri
-			 * @description A URL to the JSON Schema for this object.
-			 * @example https://example.com/schemas/Player.json
-			 */
-			readonly $schema?: string;
-			/** Format: date-time */
-			created_at: string;
-			demo_division?: string;
-			display_name: string;
-			/** Format: int64 */
-			id: number;
-			preferred_class: string;
-			role: string;
-			soldier_division?: string;
-			steam_avatar_url: string;
-			/** Format: int64 */
-			tempus_id?: number;
-		};
-		PlayerPoints: {
-			/** Format: int64 */
-			last_3_monthly: number;
-			/** Format: int64 */
-			last_9_motw: number;
-			/** Format: int64 */
-			total: number;
-		};
-		PlayerProfile: {
-			/**
-			 * Format: uri
-			 * @description A URL to the JSON Schema for this object.
-			 * @example https://example.com/schemas/PlayerProfile.json
-			 */
-			readonly $schema?: string;
-			/** Format: date-time */
-			created_at: string;
-			demo_division?: string;
-			demo_points: components['schemas']['PlayerPoints'];
-			display_name: string;
-			/** Format: int64 */
-			id: number;
-			preferred_class: string;
-			role: string;
-			soldier_division?: string;
-			soldier_points: components['schemas']['PlayerPoints'];
-			steam_avatar_url: string;
-			/** Format: int64 */
-			tempus_id?: number;
-		};
-		Session: {
-			/**
-			 * Format: uri
-			 * @description A URL to the JSON Schema for this object.
-			 * @example https://example.com/schemas/Session.json
-			 */
-			readonly $schema?: string;
-			displayName: string;
-			/** Format: int64 */
-			id: number;
-			steamAvatarUrl: string;
-		};
-		SteamProfile: {
-			/**
-			 * Format: uri
-			 * @description A URL to the JSON Schema for this object.
-			 * @example https://example.com/schemas/SteamProfile.json
-			 */
-			readonly $schema?: string;
-			avatarFullUrl: string;
-			avatarMediumUrl: string;
-			avatarUrl: string;
-			personaName: string;
-			profileUrl: string;
-			steamId: string;
-		};
-	};
-	responses: never;
-	parameters: never;
-	requestBodies: never;
-	headers: never;
-	pathItems: never;
+    schemas: {
+        ErrorDetail: {
+            /** @description Where the error occurred, e.g. 'body.items[3].tags' or 'path.thing-id' */
+            location?: string;
+            /** @description Error message text */
+            message?: string;
+            /** @description The value at the given location */
+            value?: unknown;
+        };
+        ErrorModel: {
+            /**
+             * Format: uri
+             * @description A URL to the JSON Schema for this object.
+             * @example https://example.com/schemas/ErrorModel.json
+             */
+            readonly $schema?: string;
+            /**
+             * @description A human-readable explanation specific to this occurrence of the problem.
+             * @example Property foo is required but is missing.
+             */
+            detail?: string;
+            /** @description Optional list of individual error details */
+            errors?: components["schemas"]["ErrorDetail"][] | null;
+            /**
+             * Format: uri
+             * @description A URI reference that identifies the specific occurrence of the problem.
+             * @example https://example.com/error-log/abc123
+             */
+            instance?: string;
+            /**
+             * Format: int64
+             * @description HTTP status code
+             * @example 400
+             */
+            status?: number;
+            /**
+             * @description A short, human-readable summary of the problem type. This value should not change between occurrences of the error.
+             * @example Bad Request
+             */
+            title?: string;
+            /**
+             * Format: uri
+             * @description A URI reference to human-readable documentation for the error.
+             * @default about:blank
+             * @example https://example.com/errors/example
+             */
+            type: string;
+        };
+        Player: {
+            /**
+             * Format: uri
+             * @description A URL to the JSON Schema for this object.
+             * @example https://example.com/schemas/Player.json
+             */
+            readonly $schema?: string;
+            /** Format: date-time */
+            created_at: string;
+            demo_division?: string;
+            display_name: string;
+            /** Format: int64 */
+            id: number;
+            preferred_class: string;
+            role: string;
+            soldier_division?: string;
+            steam_avatar_url: string;
+            /** Format: int64 */
+            tempus_id?: number;
+        };
+        PlayerPoints: {
+            /** Format: int64 */
+            last_3_monthly: number;
+            /** Format: int64 */
+            last_9_motw: number;
+            /** Format: int64 */
+            total: number;
+        };
+        PlayerProfile: {
+            /**
+             * Format: uri
+             * @description A URL to the JSON Schema for this object.
+             * @example https://example.com/schemas/PlayerProfile.json
+             */
+            readonly $schema?: string;
+            /** Format: date-time */
+            created_at: string;
+            demo_division?: string;
+            demo_points: components["schemas"]["PlayerPoints"];
+            display_name: string;
+            /** Format: int64 */
+            id: number;
+            preferred_class: string;
+            role: string;
+            soldier_division?: string;
+            soldier_points: components["schemas"]["PlayerPoints"];
+            steam_avatar_url: string;
+            /** Format: int64 */
+            tempus_id?: number;
+        };
+        Session: {
+            /**
+             * Format: uri
+             * @description A URL to the JSON Schema for this object.
+             * @example https://example.com/schemas/Session.json
+             */
+            readonly $schema?: string;
+            displayName: string;
+            /** Format: int64 */
+            id: number;
+            role: string;
+            steamAvatarUrl: string;
+        };
+        SteamProfile: {
+            /**
+             * Format: uri
+             * @description A URL to the JSON Schema for this object.
+             * @example https://example.com/schemas/SteamProfile.json
+             */
+            readonly $schema?: string;
+            avatarFullUrl: string;
+            avatarMediumUrl: string;
+            avatarUrl: string;
+            personaName: string;
+            profileUrl: string;
+            steamId: string;
+        };
+    };
+    responses: never;
+    parameters: never;
+    requestBodies: never;
+    headers: never;
+    pathItems: never;
 }
 export type ErrorDetail = components['schemas']['ErrorDetail'];
 export type ErrorModel = components['schemas']['ErrorModel'];
@@ -369,212 +370,212 @@ export type Session = components['schemas']['Session'];
 export type SteamProfile = components['schemas']['SteamProfile'];
 export type $defs = Record<string, never>;
 export interface operations {
-	readyz: {
-		parameters: {
-			query?: never;
-			header?: never;
-			path?: never;
-			cookie?: never;
-		};
-		requestBody?: never;
-		responses: {
-			/** @description No Content */
-			204: {
-				headers: {
-					OK?: boolean;
-					[name: string]: unknown;
-				};
-				content?: never;
-			};
-			/** @description Error */
-			default: {
-				headers: {
-					[name: string]: unknown;
-				};
-				content: {
-					'application/problem+json': components['schemas']['ErrorModel'];
-				};
-			};
-		};
-	};
-	session: {
-		parameters: {
-			query?: never;
-			header?: never;
-			path?: never;
-			cookie?: never;
-		};
-		requestBody?: never;
-		responses: {
-			/** @description OK */
-			200: {
-				headers: {
-					[name: string]: unknown;
-				};
-				content: {
-					'application/json': components['schemas']['Session'];
-				};
-			};
-			/** @description Unauthorized */
-			401: {
-				headers: {
-					[name: string]: unknown;
-				};
-				content: {
-					'application/problem+json': components['schemas']['ErrorModel'];
-				};
-			};
-			/** @description Internal Server Error */
-			500: {
-				headers: {
-					[name: string]: unknown;
-				};
-				content: {
-					'application/problem+json': components['schemas']['ErrorModel'];
-				};
-			};
-		};
-	};
-	'sign-out': {
-		parameters: {
-			query?: never;
-			header?: never;
-			path?: never;
-			cookie?: never;
-		};
-		requestBody?: never;
-		responses: {
-			/** @description No Content */
-			204: {
-				headers: {
-					'Set-Cookie'?: string;
-					[name: string]: unknown;
-				};
-				content?: never;
-			};
-			/** @description Unauthorized */
-			401: {
-				headers: {
-					[name: string]: unknown;
-				};
-				content: {
-					'application/problem+json': components['schemas']['ErrorModel'];
-				};
-			};
-			/** @description Internal Server Error */
-			500: {
-				headers: {
-					[name: string]: unknown;
-				};
-				content: {
-					'application/problem+json': components['schemas']['ErrorModel'];
-				};
-			};
-		};
-	};
-	'steam-callback': {
-		parameters: {
-			query?: never;
-			header?: never;
-			path?: never;
-			cookie?: never;
-		};
-		requestBody?: never;
-		responses: {
-			/** @description No Content */
-			204: {
-				headers: {
-					Location?: string;
-					'Set-Cookie'?: string;
-					[name: string]: unknown;
-				};
-				content?: never;
-			};
-			/** @description Error */
-			default: {
-				headers: {
-					[name: string]: unknown;
-				};
-				content: {
-					'application/problem+json': components['schemas']['ErrorModel'];
-				};
-			};
-		};
-	};
-	'steam-discover': {
-		parameters: {
-			query?: never;
-			header?: never;
-			path?: never;
-			cookie?: never;
-		};
-		requestBody?: never;
-		responses: {
-			/** @description No Content */
-			204: {
-				headers: {
-					Location?: string;
-					[name: string]: unknown;
-				};
-				content?: never;
-			};
-			/** @description Error */
-			default: {
-				headers: {
-					[name: string]: unknown;
-				};
-				content: {
-					'application/problem+json': components['schemas']['ErrorModel'];
-				};
-			};
-		};
-	};
-	'steam-profile': {
-		parameters: {
-			query?: never;
-			header?: never;
-			path?: never;
-			cookie?: never;
-		};
-		requestBody?: never;
-		responses: {
-			/** @description OK */
-			200: {
-				headers: {
-					[name: string]: unknown;
-				};
-				content: {
-					'application/json': components['schemas']['SteamProfile'];
-				};
-			};
-			/** @description Unauthorized */
-			401: {
-				headers: {
-					[name: string]: unknown;
-				};
-				content: {
-					'application/problem+json': components['schemas']['ErrorModel'];
-				};
-			};
-			/** @description Internal Server Error */
-			500: {
-				headers: {
-					[name: string]: unknown;
-				};
-				content: {
-					'application/problem+json': components['schemas']['ErrorModel'];
-				};
-			};
-		};
-	};
+    readyz: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    OK?: boolean;
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    session: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Session"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "sign-out": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    "Set-Cookie"?: string;
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "steam-callback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    Location?: string;
+                    "Set-Cookie"?: string;
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "steam-discover": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    Location?: string;
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "steam-profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SteamProfile"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
 }
 export enum ApiPaths {
-	GetInternalPlayersProfile = '/internal/players/profile/{id}',
-	GetInternalPlayers = '/internal/players/{id}',
-	readyz = '/internal/readyz',
-	session = '/internal/session',
-	sign_out = '/internal/session/sign-out',
-	steam_callback = '/internal/session/steam/callback',
-	steam_discover = '/internal/session/steam/discover',
-	steam_profile = '/internal/session/steam/profile'
+    GetInternalPlayersProfile = "/internal/players/profile/{id}",
+    GetInternalPlayers = "/internal/players/{id}",
+    readyz = "/internal/readyz",
+    session = "/internal/session",
+    sign_out = "/internal/session/sign-out",
+    steam_callback = "/internal/session/steam/callback",
+    steam_discover = "/internal/session/steam/discover",
+    steam_profile = "/internal/session/steam/profile"
 }
