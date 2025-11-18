@@ -20,7 +20,7 @@
 	<AnimatedLogo />
 </div>
 
-<div data-sveltekit-reload>
+<div>
 	<Nav {route} {session} />
 </div>
 
