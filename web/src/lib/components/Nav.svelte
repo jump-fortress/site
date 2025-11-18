@@ -12,7 +12,6 @@
 
 	let { route, session = null }: Props = $props();
 	let showNavMenu = $state(false);
-	$inspect(session);
 
 	onMount(() => {
 		if (!session) {
@@ -74,7 +73,18 @@
 								>{session.displayName}</a
 							>
 
-							<hr class="border-jfgray-700 border-2" />
+							<hr class="border-jfgray-700 border-1" />
+
+							{#if session.role === 'admin' || session.role === 'mod'}
+								<a
+									href="/moderation"
+									data-nav="true"
+									class="hover:bg-jfgray-700 span-ellipsis rounded-lg p-1 pl-2 transition-colors"
+									>moderation</a
+								>
+							{/if}
+
+							<hr class="border-jfgray-700 border-1" />
 
 							<a
 								href="/settings"

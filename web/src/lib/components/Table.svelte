@@ -10,7 +10,7 @@
 	let { data, header, row }: Props = $props();
 </script>
 
-<table class="bg-jfgray-900 table-fixed overflow-hidden rounded-2xl">
+<table class="bg-jfgray-900 table-fixed overflow-hidden rounded-t-2xl">
 	<thead>
 		<tr class="border-ctp-lavender/50 h-6 border-b-2 text-2xl/4">
 			{@render header()}
