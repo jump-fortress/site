@@ -5,7 +5,7 @@
 	import tempus from '$lib/assets/static/players/tempus.png';
 	import zigzagoon from '$lib/assets/static/players/zigzagoon.gif';
 	import Link from '$lib/components/Link.svelte';
-	import ClassSelect from '$lib/components/ClassSelect.svelte';
+	import ClassSelect from './ClassSelect.svelte';
 	import Points from './Points.svelte';
 	import type { PlayerProfile } from '$lib/schema';
 

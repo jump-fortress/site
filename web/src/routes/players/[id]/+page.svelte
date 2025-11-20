@@ -1,32 +1,40 @@
 <script lang="ts">
-	import { page } from '$app/state';
 	import rocket from '$lib/assets/static/classes/rocket.png';
 	import sticky from '$lib/assets/static/classes/sticky.png';
 	import DataSection from '$lib/components/DataSection.svelte';
 	import DivisionTag from '$lib/components/DivisionTag.svelte';
 	import Table from '$lib/components/Table.svelte';
 	import TableMap from '$lib/components/TableMap.svelte';
-	import { Client } from '$lib/internalApi.js';
 	import type { PlayerProfile, Session } from '$lib/schema';
+	import { onMount } from 'svelte';
 	import type { PageData } from './$types';
 	import Header from './Header.svelte';
+	import { pageStore } from './pageStore.svelte';
+	import { fade } from 'svelte/transition';
 
-	let { data: pageData }: { data: PageData } = $props();
-	let session: Session | null = $derived(pageData.session);
+	let { data }: { data: PageData } = $props();
+	let session: Session | null = $derived(data.session);
+	let player: PlayerProfile | null = $derived(data.player);
 
-	const playerID = Number.parseInt(page.params.id as string);
-	const { data: playerData } = await Client.GET('/internal/players/profile/{id}', {
-		fetch: fetch,
-		params: {
-			path: { id: playerID }
-		}
+	// keep store synced
+	$effect(() => {
+		pageStore.ownProfile = data.ownProfile ?? false;
 	});
 
-	let player: PlayerProfile | undefined = $derived(playerData);
+	onMount(() => {
+		pageStore.preferredClass.set = false;
+	});
 </script>
 
 <svelte:boundary {pending}>
 	{#if player}
+		{#if pageStore.preferredClass.set === true}
+			<div transition:fade class="absolute top-6 z-10 flex w-full justify-center">
+				<span class="bg-jfgray-900/75 text-ctp-lavender p-2 backdrop-blur-sm">
+					preferred class set to {pageStore.preferredClass.class}
+				</span>
+			</div>
+		{/if}
 		<Header {player} />
 	{:else}
 		todo no player
