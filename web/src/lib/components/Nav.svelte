@@ -13,6 +13,7 @@
 	let { route, session = null }: Props = $props();
 	let showNavMenu = $state(false);
 
+	// todo: is this still necessary for updating the navbar when logging in / out?
 	onMount(() => {
 		if (!session) {
 			invalidateAll();
@@ -82,9 +83,9 @@
 									class="hover:bg-jfgray-700 span-ellipsis rounded-lg p-1 pl-2 transition-colors"
 									>moderation</a
 								>
-							{/if}
 
-							<hr class="border-jfgray-700 border-1" />
+								<hr class="border-jfgray-700 border-1" />
+							{/if}
 
 							<a
 								href="/settings"
