@@ -4,6 +4,66 @@
  */
 
 export interface paths {
+    "/internal/moderator/players": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get full info on all Players
+         * @description get full info on all players
+         */
+        get: operations["get-all-full-players"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/internal/players": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get all Players
+         * @description get all players
+         */
+        get: operations["get-all-players"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/internal/players/preferredclass/{class}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Set a Player's preferred class
+         * @description set a player's preferred class by class name
+         */
+        put: operations["set-preferredclass"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/internal/players/profile/{id}": {
         parameters: {
             query?: never;
@@ -12,41 +72,10 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Get Player Profile
+         * Get a Player Profile
          * @description get info for a player's profile by ID
          */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    /** @description player ID */
-                    id: number;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description OK */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["PlayerProfile"];
-                    };
-                };
-                /** @description Error */
-                default: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/problem+json": components["schemas"]["ErrorModel"];
-                    };
-                };
-            };
-        };
+        get: operations["get-player-profile"];
         put?: never;
         post?: never;
         delete?: never;
@@ -63,41 +92,10 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Get Player
+         * Get a Player
          * @description get a player by ID
          */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    /** @description player ID */
-                    id: number;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description OK */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Player"];
-                    };
-                };
-                /** @description Error */
-                default: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/problem+json": components["schemas"]["ErrorModel"];
-                    };
-                };
-            };
-        };
+        get: operations["get-player"];
         put?: never;
         post?: never;
         delete?: never;
@@ -277,6 +275,23 @@ export interface components {
              */
             type: string;
         };
+        FullPlayer: {
+            /** Format: date-time */
+            created_at: string;
+            demo_division?: string;
+            discord_id?: string;
+            display_name: string;
+            /** Format: int64 */
+            id: number;
+            preferred_class: string;
+            role: string;
+            soldier_division?: string;
+            steam_avatar_url: string;
+            steam_id64: string;
+            steam_trade_token?: string;
+            /** Format: int64 */
+            tempus_id?: number;
+        };
         Player: {
             /**
              * Format: uri
@@ -363,6 +378,7 @@ export interface components {
 }
 export type ErrorDetail = components['schemas']['ErrorDetail'];
 export type ErrorModel = components['schemas']['ErrorModel'];
+export type FullPlayer = components['schemas']['FullPlayer'];
 export type Player = components['schemas']['Player'];
 export type PlayerPoints = components['schemas']['PlayerPoints'];
 export type PlayerProfile = components['schemas']['PlayerProfile'];
@@ -370,6 +386,157 @@ export type Session = components['schemas']['Session'];
 export type SteamProfile = components['schemas']['SteamProfile'];
 export type $defs = Record<string, never>;
 export interface operations {
+    "get-all-full-players": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FullPlayer"][] | null;
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "get-all-players": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Player"][] | null;
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "set-preferredclass": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                class: PathsInternalPlayersPreferredclassClassPutParametersPathClass;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "get-player-profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description player ID */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlayerProfile"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "get-player": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description player ID */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Player"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
     readyz: {
         parameters: {
             query?: never;
@@ -569,9 +736,16 @@ export interface operations {
         };
     };
 }
+export enum PathsInternalPlayersPreferredclassClassPutParametersPathClass {
+    Soldier = "Soldier",
+    Demo = "Demo"
+}
 export enum ApiPaths {
-    GetInternalPlayersProfile = "/internal/players/profile/{id}",
-    GetInternalPlayers = "/internal/players/{id}",
+    get_all_full_players = "/internal/moderator/players",
+    get_all_players = "/internal/players",
+    set_preferredclass = "/internal/players/preferredclass/{class}",
+    get_player_profile = "/internal/players/profile/{id}",
+    get_player = "/internal/players/{id}",
     readyz = "/internal/readyz",
     session = "/internal/session",
     sign_out = "/internal/session/sign-out",
