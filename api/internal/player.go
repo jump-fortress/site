@@ -4,6 +4,7 @@ import (
 	"context"
 	"strconv"
 
+	"github.com/danielgtaylor/huma/v2"
 	"github.com/spiritov/jump/api/db/queries"
 	"github.com/spiritov/jump/api/db/responses"
 )
@@ -15,6 +16,23 @@ func PlayerResponseFromPlayer(player queries.Player) responses.Player {
 		Role:            player.Role,
 		SteamAvatarUrl:  player.SteamAvatarUrl.String,
 		TempusID:        player.TempusID.Int64,
+		DisplayName:     player.DisplayName.String,
+		SoldierDivision: player.SoldierDivision.String,
+		DemoDivision:    player.DemoDivision.String,
+		PreferredClass:  player.PreferredClass,
+		CreatedAt:       player.CreatedAt,
+	}
+}
+
+func FullPlayerResponseFromPlayer(player queries.Player) responses.FullPlayer {
+	return responses.FullPlayer{
+		ID:              player.ID,
+		Role:            player.Role,
+		SteamId64:       player.SteamId64,
+		SteamAvatarUrl:  player.SteamAvatarUrl.String,
+		SteamTradeToken: player.SteamTradeToken.String,
+		TempusID:        player.TempusID.Int64,
+		DiscordID:       player.DiscordID.String,
 		DisplayName:     player.DisplayName.String,
 		SoldierDivision: player.SoldierDivision.String,
 		DemoDivision:    player.DemoDivision.String,
@@ -83,5 +101,57 @@ func HandleGetPlayerProfile(ctx context.Context, input *responses.PlayerIDInput)
 			},
 		},
 	}
+	return resp, nil
+}
+
+func HandlePutPlayerPreferredClass(ctx context.Context, input *responses.ClassNameInput) (*struct{}, error) {
+	principal, ok := GetPrincipal(ctx)
+	if !ok {
+		return nil, huma.Error401Unauthorized("a session is required")
+	}
+	steamID64_string := strconv.FormatUint(principal.SteamID, 10)
+	if err := responses.Queries.UpdatePlayerPreferredClassFromSteamID64(ctx, queries.UpdatePlayerPreferredClassFromSteamID64Params{
+		PreferredClass: input.Class,
+		SteamId64:      steamID64_string,
+	}); err != nil {
+		return nil, err
+	}
+
+	return nil, nil
+
+}
+
+func HandleGetAllPlayers(ctx context.Context, _ *struct{}) (*responses.ManyPlayersOutput, error) {
+	players, err := responses.Queries.SelectAllPlayers(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	resp := &responses.ManyPlayersOutput{
+		Body: []responses.Player{},
+	}
+
+	for _, p := range players {
+		playerResponse := PlayerResponseFromPlayer(p)
+		resp.Body = append(resp.Body, playerResponse)
+	}
+	return resp, nil
+}
+
+func HandleGetAllPlayersFull(ctx context.Context, _ *struct{}) (*responses.ManyFullPlayersOutput, error) {
+	players, err := responses.Queries.SelectAllPlayers(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	resp := &responses.ManyFullPlayersOutput{
+		Body: []responses.FullPlayer{},
+	}
+
+	for _, p := range players {
+		fullPlayerResponse := FullPlayerResponseFromPlayer(p)
+		resp.Body = append(resp.Body, fullPlayerResponse)
+	}
+
 	return resp, nil
 }

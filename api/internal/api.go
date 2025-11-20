@@ -68,15 +68,26 @@ func registerRoutes() {
 	huma.Register(internalApi, huma.Operation{
 		Method:      http.MethodGet,
 		Path:        "/players/{id}",
-		Summary:     "Get Player",
+		OperationID: "get-player",
+		Summary:     "Get a Player",
 		Description: "get a player by ID",
 		Tags:        []string{"Player"},
 	}, HandleGetPlayer)
 
 	huma.Register(internalApi, huma.Operation{
 		Method:      http.MethodGet,
+		Path:        "/players",
+		OperationID: "get-all-players",
+		Summary:     "Get all Players",
+		Description: "get all players",
+		Tags:        []string{"Player"},
+	}, HandleGetAllPlayers)
+
+	huma.Register(internalApi, huma.Operation{
+		Method:      http.MethodGet,
 		Path:        "/players/profile/{id}",
-		Summary:     "Get Player Profile",
+		OperationID: "get-player-profile",
+		Summary:     "Get a Player Profile",
 		Description: "get info for a player's profile by ID",
 		Tags:        []string{"Player"},
 	}, HandleGetPlayerProfile)
@@ -90,9 +101,9 @@ func registerHealthCheck(internalApi *huma.Group) {
 	type ReadyResponse struct{ OK bool }
 
 	huma.Register(internalApi, huma.Operation{
-		OperationID: "readyz",
 		Method:      http.MethodGet,
 		Path:        "/readyz",
+		OperationID: "readyz",
 		Summary:     "Get Readiness",
 		Description: "Get whether or not the API is ready to process requests",
 		Tags:        []string{"Health Check"},

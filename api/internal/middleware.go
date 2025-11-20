@@ -100,3 +100,51 @@ func CreateRequireUserAuthHandler(api huma.API) func(ctx huma.Context, next func
 		next(ctx)
 	}
 }
+
+func CreateRequireUserModeratorHandler(api huma.API) func(ctx huma.Context, next func(huma.Context)) {
+	return func(ctx huma.Context, next func(huma.Context)) {
+		principal, ok := GetPrincipal(ctx.Context())
+		if !ok {
+			_ = huma.WriteErr(api, ctx, http.StatusUnauthorized, "")
+			return
+		}
+		steamID64_string := strconv.FormatUint(principal.SteamID, 10)
+
+		player, err := responses.Queries.SelectPlayerFromSteamID64(ctx.Context(), steamID64_string)
+		if err != nil {
+			_ = huma.WriteErr(api, ctx, http.StatusInternalServerError, "")
+			return
+		}
+
+		if player.Role != "mod" && player.Role != "admin" {
+			_ = huma.WriteErr(api, ctx, http.StatusUnauthorized, "")
+			return
+		}
+
+		next(ctx)
+	}
+}
+
+func CreateRequireUserAdminHandler(api huma.API) func(ctx huma.Context, next func(huma.Context)) {
+	return func(ctx huma.Context, next func(huma.Context)) {
+		principal, ok := GetPrincipal(ctx.Context())
+		if !ok {
+			_ = huma.WriteErr(api, ctx, http.StatusUnauthorized, "")
+			return
+		}
+		steamID64_string := strconv.FormatUint(principal.SteamID, 10)
+
+		player, err := responses.Queries.SelectPlayerFromSteamID64(ctx.Context(), steamID64_string)
+		if err != nil {
+			_ = huma.WriteErr(api, ctx, http.StatusInternalServerError, "")
+			return
+		}
+
+		if player.Role != "admin" {
+			_ = huma.WriteErr(api, ctx, http.StatusUnauthorized, "")
+			return
+		}
+
+		next(ctx)
+	}
+}
