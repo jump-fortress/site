@@ -38,6 +38,46 @@ func (q *Queries) InsertPlayer(ctx context.Context, steamId64 string) (Player, e
 	return i, err
 }
 
+const selectAllPlayers = `-- name: SelectAllPlayers :many
+select id, role, steam_id64, steam_avatar_url, steam_trade_token, tempus_id, discord_id, display_name, soldier_division, demo_division, preferred_class, created_at from player
+`
+
+func (q *Queries) SelectAllPlayers(ctx context.Context) ([]Player, error) {
+	rows, err := q.db.QueryContext(ctx, selectAllPlayers)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Player
+	for rows.Next() {
+		var i Player
+		if err := rows.Scan(
+			&i.ID,
+			&i.Role,
+			&i.SteamId64,
+			&i.SteamAvatarUrl,
+			&i.SteamTradeToken,
+			&i.TempusID,
+			&i.DiscordID,
+			&i.DisplayName,
+			&i.SoldierDivision,
+			&i.DemoDivision,
+			&i.PreferredClass,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const selectPlayer = `-- name: SelectPlayer :one
 select id, role, steam_id64, steam_avatar_url, steam_trade_token, tempus_id, discord_id, display_name, soldier_division, demo_division, preferred_class, created_at from player
   where id = ?
@@ -86,6 +126,22 @@ func (q *Queries) SelectPlayerFromSteamID64(ctx context.Context, steamId64 strin
 		&i.CreatedAt,
 	)
 	return i, err
+}
+
+const updatePlayerPreferredClassFromSteamID64 = `-- name: UpdatePlayerPreferredClassFromSteamID64 :exec
+update player
+  set preferred_class = ?
+  where steam_id64 = ?
+`
+
+type UpdatePlayerPreferredClassFromSteamID64Params struct {
+	PreferredClass string `json:"preferred_class"`
+	SteamId64      string `json:"steam_id64"`
+}
+
+func (q *Queries) UpdatePlayerPreferredClassFromSteamID64(ctx context.Context, arg UpdatePlayerPreferredClassFromSteamID64Params) error {
+	_, err := q.db.ExecContext(ctx, updatePlayerPreferredClassFromSteamID64, arg.PreferredClass, arg.SteamId64)
+	return err
 }
 
 const updatePlayerSessionInfo = `-- name: UpdatePlayerSessionInfo :one

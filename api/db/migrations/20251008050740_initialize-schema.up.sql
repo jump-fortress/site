@@ -141,6 +141,8 @@ create table quest(
   check (type in ('Target Time', 'Completion'))
 );
 
+-- todo create views for competition types
+
 -- deleted record from any table
 create table deleted_record(
   id integer not null primary key autoincrement,

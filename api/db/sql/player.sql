@@ -9,6 +9,9 @@ insert into player (steam_id64)
 select * from player
   where id = ?;
 
+-- name: SelectAllPlayers :many
+select * from player;
+
 -- name: SelectPlayerFromSteamID64 :one
 select * from player
   where steam_id64 = ?;
@@ -19,3 +22,8 @@ update player
   display_name = ?
   where steam_id64 = ?
   returning *;
+
+-- name: UpdatePlayerPreferredClassFromSteamID64 :exec
+update player
+  set preferred_class = ?
+  where steam_id64 = ?;

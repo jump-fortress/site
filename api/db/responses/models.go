@@ -24,8 +24,35 @@ type Player struct {
 	CreatedAt       time.Time `json:"created_at"`
 }
 
+type FullPlayer struct {
+	ID              int64     `json:"id"`
+	Role            string    `json:"role"`
+	SteamId64       string    `json:"steam_id64"`
+	SteamAvatarUrl  string    `json:"steam_avatar_url"`
+	SteamTradeToken string    `json:"steam_trade_token,omitempty"`
+	TempusID        int64     `json:"tempus_id,omitempty"`
+	DiscordID       string    `json:"discord_id,omitempty"`
+	DisplayName     string    `json:"display_name"`
+	SoldierDivision string    `json:"soldier_division,omitempty"`
+	DemoDivision    string    `json:"demo_division,omitempty"`
+	PreferredClass  string    `json:"preferred_class"`
+	CreatedAt       time.Time `json:"created_at"`
+}
+
 type PlayerOutput struct {
 	Body Player
+}
+
+type ManyPlayersOutput struct {
+	Body []Player
+}
+
+type FullPlayerOutput struct {
+	Body []FullPlayer
+}
+
+type ManyFullPlayersOutput struct {
+	Body []FullPlayer
 }
 
 type PlayerPoints struct {
@@ -53,4 +80,8 @@ type Session struct {
 
 type SessionOutput struct {
 	Body Session
+}
+
+type ClassNameInput struct {
+	Class string `path:"class" enum:"Soldier,Demo"`
 }
