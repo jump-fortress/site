@@ -1,6 +1,6 @@
 // See https://svelte.dev/docs/kit/types#app.d.ts
 
-import type { Session } from '$lib/schema';
+import type { FullPlayer, PlayerProfile, Session } from '$lib/schema';
 
 // for information about these interfaces
 declare global {
@@ -9,7 +9,12 @@ declare global {
 		interface Locals {
 			session: Session;
 		}
-		// interface PageData {}
+		interface PageData {
+			session?: Session | null;
+			player?: PlayerProfile;
+			players?: PlayerProfile[];
+			fullPlayers?: FullPlayer[];
+		}
 		// interface PageState {}
 		// interface Platform {}
 	}
