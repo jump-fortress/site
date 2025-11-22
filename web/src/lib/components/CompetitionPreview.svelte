@@ -18,17 +18,17 @@ Preview for monthly / motw competitions
 
 	<li class="absolute z-10 m-2 flex h-12 items-center gap-2">
 		<img src={rocket} alt="soldier" class="h-full object-contain" />
-		<span class="text-4xl/6">monthly #1</span>
+		<span class="text-xl">monthly #1</span>
 	</li>
 
 	<!-- top right -->
 	<li class="absolute right-0 z-10 mr-2 flex h-16 items-center gap-2">
 		<div class="flex flex-col items-end gap-1">
-			<div class="flex items-end gap-1">
+			<div class="flex items-center gap-1">
 				<span>400 keys</span>
 				<span class="icon-[ri--star-line] size-6"></span>
 			</div>
-			<div class="flex items-end gap-1">
+			<div class="flex items-center gap-1">
 				<span>10/28/25 15:00 UTC</span>
 				<span class="icon-[ri--time-line] size-6"></span>
 			</div>
@@ -44,9 +44,9 @@ Preview for monthly / motw competitions
 			class="absolute size-full select-none object-cover"
 		/>
 		<div class="absolute bottom-0 z-10 m-2">
-			<div class="flex flex-col gap-2">
+			<div class="flex flex-col gap-1">
 				<span class="span-ellipsis">jump_mirage</span>
-				<div class="flex gap-2 text-2xl/4">
+				<div class="flex gap-2">
 					<DivisionTag div="diamond" />
 					<DivisionTag div="platinum" />
 					<DivisionTag div="gold" />
@@ -62,7 +62,7 @@ Preview for monthly / motw competitions
 			class="absolute size-full select-none object-cover"
 		/>
 		<div class="absolute bottom-0 right-0 z-10 m-2">
-			<div class="flex flex-col gap-2">
+			<div class="flex flex-col gap-1">
 				<span class="span-ellipsis">jump_pokus_rc4</span>
 				<div class="flex justify-end gap-2">
 					<DivisionTag div="steel" />
@@ -82,7 +82,7 @@ Preview for monthly / motw competitions
 				class="absolute size-full select-none object-cover"
 			/>
 			<div class="right-1/16 absolute bottom-0 z-10 m-2 flex w-full justify-center">
-				<div class="flex flex-col items-center gap-2">
+				<div class="flex flex-col items-center gap-1">
 					<span class="span-ellipsis">jump_jurf2_a1</span>
 					<div class="flex gap-2">
 						<DivisionTag div="silver" />

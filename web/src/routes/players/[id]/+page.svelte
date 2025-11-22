@@ -3,12 +3,12 @@
 	import sticky from '$lib/assets/static/classes/sticky.png';
 	import DataSection from '$lib/components/DataSection.svelte';
 	import DivisionTag from '$lib/components/DivisionTag.svelte';
-	import Table from '$lib/components/Table.svelte';
+	import Table from '$lib/components/table/Table.svelte';
 	import TableMap from '$lib/components/TableMap.svelte';
 	import type { PlayerProfile, Session } from '$lib/schema';
 	import { onMount } from 'svelte';
 	import type { PageData } from './$types';
-	import Header from './Header.svelte';
+	import Header from '../../../lib/components/PlayerHeader.svelte';
 	import { pageStore } from './pageStore.svelte';
 	import { fade } from 'svelte/transition';
 
@@ -42,7 +42,7 @@
 </svelte:boundary>
 
 <DataSection title="Bounties Claimed">
-	<div class="grid w-full grid-cols-3 gap-2">
+	<div class="grid w-full grid-cols-3 gap-2 text-base leading-5">
 		{#each { length: 1 }}
 			{@render testBounty()}
 		{/each}
@@ -50,7 +50,7 @@
 </DataSection>
 
 <DataSection title="Trophies">
-	<div class="grid w-full grid-cols-4 gap-2">
+	<div class="grid w-full grid-cols-4 gap-2 text-base leading-5">
 		{#each { length: 1 }}
 			{@render testTrophy()}
 		{/each}
@@ -58,7 +58,7 @@
 </DataSection>
 
 <DataSection title="Quests Claimed">
-	<div class="grid w-full grid-cols-4 gap-2">
+	<div class="grid w-full grid-cols-4 gap-2 text-base leading-5">
 		{#each { length: 1 }}
 			{@render testQuest()}
 		{/each}
@@ -96,14 +96,14 @@
 		></span>
 		<div class="absolute z-10 size-full p-1">
 			<div class="ml-10 flex h-full flex-col justify-between">
-				<div class="flex flex-col">
+				<div class="flex flex-col leading-4">
 					<div class="flex items-center gap-2">
-						<span class="text-ctp-yellow text-shadow-2xs text-shadow-ctp-yellow">1st</span>
-						<span class="span-ellipsis text-2xl/4">jump_escape_rc4</span>
+						<span class="text-ctp-yellow text-shadow-2xs text-shadow-ctp-yellow text-lg">1st</span>
+						<span class="span-ellipsis">jump_escape_rc4</span>
 					</div>
 					<span class="font-semibold">3:53.00</span>
 				</div>
-				<span class="text-2xl/4 opacity-75">monthly #1</span>
+				<span class="text-base opacity-75">monthly #1</span>
 			</div>
 		</div>
 		<div
@@ -119,13 +119,13 @@
 			class="icon-[ri--star-line] bg-linear-to-b from-ctp-lavender-950 to-ctp-lavender-50 absolute -left-12 z-0 size-28"
 		></span>
 		<div class="absolute z-10 size-full p-2">
-			<div class="ml-6 flex h-full flex-col gap-0">
-				<div class="flex items-center gap-2">
-					<span class="text-shadow-xs text-shadow-ctp-lavender">100 keys</span>
-					<span class="text-2xl/4 opacity-90">for sub 4:00</span>
+			<div class=" ml-8 flex h-full flex-col">
+				<div class="flex items-center gap-1.5">
+					<span class="text-shadow-xs text-shadow-ctp-lavender text-lg">100 keys</span>
+					<span class="opacity-90">for sub 4:00</span>
 				</div>
-				<span class="span-ellipsis ml-9 text-2xl/4">jump_escape_rc4</span>
-				<span class="text-ctp-lavender ml-9 mt-3 text-4xl/6 font-semibold">3:53.00</span>
+				<span class="span-ellipsis ml-8 text-base">jump_escape_rc4</span>
+				<span class="text-ctp-lavender ml-8 mt-2 text-xl font-semibold">3:53.00</span>
 			</div>
 		</div>
 		<div
@@ -140,9 +140,9 @@
 		<span class="icon-[ri--treasure-map-line] text-ctp-teal absolute -left-6 z-0 size-14"></span>
 		<div class="absolute z-10 size-full p-1">
 			<div class="flex h-full flex-col">
-				<div class="ml-10 flex flex-col text-2xl/4">
+				<div class="ml-10 flex flex-col">
 					<span class="span-ellipsis">jump_escape_rc4</span>
-					<span>completion</span>
+					<span class="opacity-75">completion</span>
 				</div>
 			</div>
 		</div>

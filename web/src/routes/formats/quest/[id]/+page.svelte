@@ -1,14 +1,14 @@
 <script lang="ts">
 	import DataSection from '$lib/components/DataSection.svelte';
 	import Link from '$lib/components/Link.svelte';
-	import Table from '$lib/components/Table.svelte';
+	import Table from '$lib/components/table/Table.svelte';
 	import TableMap from '$lib/components/TableMap.svelte';
 	import rocket from '$lib/assets/static/classes/rocket.png';
 	import sticky from '$lib/assets/static/classes/sticky.png';
 </script>
 
 <DataSection title={'Details'}>
-	<span class="text-2xl/4">quest #1</span>
+	<span class="text-base">quest #1</span>
 	<Table data={[{}]}>
 		{#snippet header()}
 			<th class="w-14"></th>

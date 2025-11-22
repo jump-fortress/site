@@ -70,7 +70,7 @@
 							<a
 								href="/players/{session.id}"
 								data-nav="true"
-								class="hover:bg-jfgray-700 span-ellipsis rounded-lg p-1 pl-2 transition-colors"
+								class="hover:bg-jfgray-700 span-ellipsis rounded-lg pl-2 transition-colors"
 								>{session.displayName}</a
 							>
 
@@ -80,7 +80,7 @@
 								<a
 									href="/moderation"
 									data-nav="true"
-									class="hover:bg-jfgray-700 span-ellipsis rounded-lg p-1 pl-2 transition-colors"
+									class="hover:bg-jfgray-700 span-ellipsis rounded-lg pl-2 transition-colors"
 									>moderation</a
 								>
 
@@ -90,13 +90,13 @@
 							<a
 								href="/settings"
 								data-nav="true"
-								class="hover:bg-jfgray-700 rounded-lg p-1 pl-2 transition-colors">settings</a
+								class="hover:bg-jfgray-700 rounded-lg pl-2 transition-colors">settings</a
 							>
 							<a
 								href="/logout"
 								data-sveltekit-preload-data="tap"
 								data-nav="true"
-								class="hover:bg-jfgray-700 rounded-lg p-1 pl-2 transition-colors"
+								class="hover:bg-jfgray-700 rounded-lg pl-2 transition-colors"
 							>
 								logout
 							</a>

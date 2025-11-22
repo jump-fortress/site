@@ -2,7 +2,7 @@
 	import rocket from '$lib/assets/static/classes/rocket.png';
 	import sticky from '$lib/assets/static/classes/sticky.png';
 	import DataSection from '$lib/components/DataSection.svelte';
-	import Table from '$lib/components/Table.svelte';
+	import Table from '$lib/components/table/Table.svelte';
 
 	const activeBountiesDummyData = [
 		{

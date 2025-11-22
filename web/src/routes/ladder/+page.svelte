@@ -1,7 +1,7 @@
 <script lang="ts">
 	import rocket from '$lib/assets/static/classes/rocket.png';
 	import sticky from '$lib/assets/static/classes/sticky.png';
-	import Table from '$lib/components/Table.svelte';
+	import Table from '$lib/components/table/Table.svelte';
 
 	let sortBy = $state('monthly');
 </script>
@@ -10,7 +10,7 @@
 	<!-- sort by -->
 	<div class="flex flex-col justify-between">
 		<div class="flex h-full items-center">
-			<span class="text-5xl/8">soldier ladder</span>
+			<span class="text-3xl">soldier ladder</span>
 		</div>
 		<div class="hover:text-ctp-lavender-50/75 flex items-end transition-colors">
 			<span class="text-ctp-lavender mr-2">sort by</span>
