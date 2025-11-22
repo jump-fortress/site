@@ -17,7 +17,7 @@ export const load: LayoutServerLoad = async ({ fetch, locals }) => {
 		});
 
 		return {
-			players: data as FullPlayer[]
+			fullPlayers: data as FullPlayer[]
 		};
 	} else {
 		redirect(302, '/');
