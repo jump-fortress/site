@@ -10,18 +10,18 @@
 	let { data, header, row }: Props = $props();
 </script>
 
-<table class="bg-jfgray-900 table-fixed overflow-hidden rounded-t-2xl">
+<table class="bg-jfgray-900 table-fixed rounded-t-2xl">
 	<thead>
-		<tr class="border-ctp-lavender/50 h-6 border-b-2 text-2xl/4">
+		<tr class="border-ctp-lavender/50 h-6 border-b-2 text-base leading-4">
 			{@render header()}
 		</tr>
 	</thead>
 
 	<tbody>
-		<tr class="even:bg-jfgray-800/75 odd:bg-jfgray-900 h-10 text-center text-2xl/4">
-			{#each data as d}
+		{#each data as d}
+			<tr class="even:bg-jfgray-800/25 odd:bg-jfgray-900 h-10 text-center text-base">
 				{@render row(d)}
-			{/each}
-		</tr>
+			</tr>
+		{/each}
 	</tbody>
 </table>
