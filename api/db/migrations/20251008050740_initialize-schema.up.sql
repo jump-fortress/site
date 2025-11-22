@@ -46,6 +46,7 @@ create table player_points(
   foreign key (player_id) references player (id),
 
   check (class in ('Soldier', 'Demo'))
+  unique (class, player_id)
 );
 
 -- time for a competition's player
