@@ -1,6 +1,6 @@
 <script lang="ts">
 	let { selected_class = $bindable() } = $props();
-	import { pageStore } from './pageStore.svelte';
+	import { pageStore } from '../../routes/players/[id]/pageStore.svelte';
 
 	import rocket from '$lib/assets/static/classes/rocket.png';
 	import sticky from '$lib/assets/static/classes/sticky.png';
@@ -19,12 +19,12 @@
 			}
 		});
 
-		if (response.ok) {
-			pageStore.preferredClass.set = true;
-			setTimeout(() => {
-				pageStore.preferredClass.set = false;
-			}, 2000);
-		}
+		// if (response.ok) {
+		// 	pageStore.preferredClass.set = true;
+		// 	setTimeout(() => {
+		// 		pageStore.preferredClass.set = false;
+		// 	}, 2000);
+		// }
 	}
 </script>
 
