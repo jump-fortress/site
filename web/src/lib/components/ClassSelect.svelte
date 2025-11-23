@@ -1,6 +1,5 @@
 <script lang="ts">
 	let { selected_class = $bindable() } = $props();
-	import { pageStore } from '../../routes/players/[id]/pageStore.svelte';
 
 	import rocket from '$lib/assets/static/classes/rocket.png';
 	import sticky from '$lib/assets/static/classes/sticky.png';
@@ -32,10 +31,7 @@
 	<button
 		onclick={() => {
 			selected_class = 'Soldier';
-			if (pageStore.ownProfile) {
-				pageStore.preferredClass.class = 'Soldier';
-				handleUpdatePreferredClass(classToEnum('Soldier'));
-			}
+			handleUpdatePreferredClass(classToEnum('Soldier'));
 		}}
 		class="{selected_class === 'Soldier'
 			? 'bg-jfgray-900 opacity-100'
@@ -46,10 +42,7 @@
 	<button
 		onclick={() => {
 			selected_class = 'Demo';
-			if (pageStore.ownProfile) {
-				pageStore.preferredClass.class = 'Demo';
-				handleUpdatePreferredClass(classToEnum('Demo'));
-			}
+			handleUpdatePreferredClass(classToEnum('Demo'));
 		}}
 		class="{selected_class === 'Demo'
 			? 'bg-jfgray-900 opacity-100'

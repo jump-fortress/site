@@ -14,18 +14,18 @@
 <DataSection title="Profile">
 	<div class="flex flex-col gap-2">
 		<label for="update_display_name" class="relative mt-2 w-72 text-nowrap">
-			<span class="absolute -top-0.5 left-2 bg-jfgray-800 px-1 leading-1"
+			<span class="bg-jfgray-800 leading-1 absolute -top-0.5 left-2 px-1"
 				>request display name change
 			</span>
 			<input
-				class="w-full border-2 border-ctp-lavender-50/50 p-1 text-ctp-lavender hover:bg-jfgray-700 focus:bg-jfgray-700"
+				class="border-ctp-lavender-50/50 text-ctp-lavender hover:bg-jfgray-700 focus:bg-jfgray-700 w-full border-2 p-1"
 				id="update_display_name"
 				type="text"
 			/>
 		</label>
 
-		<div class="relative mt-2 flex h-18 w-fit border-2 border-ctp-lavender-50/50 text-nowrap">
-			<span class="absolute -top-1 left-2 z-10 bg-jfgray-800 px-1 leading-1">fav class</span>
+		<div class="h-18 border-ctp-lavender-50/50 relative mt-2 flex w-fit text-nowrap border-2">
+			<span class="bg-jfgray-800 leading-1 absolute -top-1 left-2 z-10 px-1">fav class</span>
 			<button
 				onclick={() => {
 					// todo: use api response to update on client?
@@ -38,7 +38,7 @@
 					alt=""
 					class="{favoriteClass === 'Soldier'
 						? 'bg-jfgray-900 opacity-100'
-						: 'opacity-50'} h-15 w-18 cursor-pointer object-contain pt-2 pb-1 transition-opacity"
+						: 'opacity-50'} h-15 w-18 cursor-pointer object-contain pb-1 pt-2 transition-opacity hover:opacity-100"
 				/>
 			</button>
 			<button
@@ -52,7 +52,7 @@
 					alt=""
 					class="{favoriteClass === 'Demo'
 						? 'bg-jfgray-900 opacity-100'
-						: 'opacity-50'} h-15 w-18 cursor-pointer object-contain pt-2 pb-1 transition-opacity"
+						: 'opacity-50'} h-15 w-18 cursor-pointer object-contain pb-1 pt-2 transition-opacity hover:opacity-100"
 				/>
 			</button>
 		</div>
@@ -74,6 +74,6 @@
 	@reference "../../app.css";
 
 	.settings-button {
-		@apply size-fit cursor-pointer rounded-lg border-b-2 border-ctp-lavender-50/50 bg-ctp-lavender-950 px-2 py-1;
+		@apply border-ctp-lavender-50/50 bg-ctp-lavender-950 size-fit cursor-pointer rounded-lg border-b-2 px-2 py-1;
 	}
 </style>
