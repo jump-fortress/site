@@ -43,6 +43,10 @@
 	.span-ellipsis {
 		@apply text-nowrap overflow-ellipsis;
 	}
+
+	.settings-button {
+		@apply size-fit cursor-pointer rounded-lg border-2 border-jfgray-700 border-b-ctp-lavender/50 bg-jfgray-800 px-2 py-1 transition-colors hover:bg-ctp-lavender-950/50;
+	}
 }
 
 /* extend tailwind theme */

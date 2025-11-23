@@ -13,18 +13,29 @@
 
 <DataSection title="Profile">
 	<div class="flex flex-col gap-2">
-		<label for="update_display_name" class="relative mt-2 w-72 text-nowrap">
+		<label
+			for="update_display_name"
+			class="border-jfgray-700 focus-within:border-ctp-lavender-50/50 hover:border-ctp-lavender-50/50 relative mt-2 w-80 text-nowrap border-2 transition-colors"
+		>
 			<span class="bg-jfgray-800 leading-1 absolute -top-0.5 left-2 px-1"
 				>request display name change
 			</span>
-			<input
-				class="border-ctp-lavender-50/50 text-ctp-lavender hover:bg-jfgray-700 focus:bg-jfgray-700 w-full border-2 p-1"
-				id="update_display_name"
-				type="text"
-			/>
+			<div class="flex h-10">
+				<input
+					class="text-ctp-lavender focus:bg-jfgray-900 bg-jfgray-800 group peer w-full bg-clip-padding p-1 transition-colors"
+					id="update_display_name"
+					type="text"
+				/>
+				<!-- svelte-ignore a11y_consider_explicit_label -->
+				<button
+					class="bg-jfgray-800 peer-focus:bg-jfgray-800 flex h-full w-12 cursor-pointer items-center justify-center transition-colors"
+				>
+					<span class="icon-[ri--send-plane-line]"></span>
+				</button>
+			</div>
 		</label>
 
-		<div class="h-18 border-ctp-lavender-50/50 relative mt-2 flex w-fit text-nowrap border-2">
+		<div class="h-18 border-jfgray-700 relative mt-2 flex w-fit text-nowrap border-2">
 			<span class="bg-jfgray-800 leading-1 absolute -top-1 left-2 z-10 px-1">fav class</span>
 			<button
 				onclick={() => {
@@ -38,7 +49,7 @@
 					alt=""
 					class="{favoriteClass === 'Soldier'
 						? 'bg-jfgray-900 opacity-100'
-						: 'opacity-50'} h-15 w-18 cursor-pointer object-contain pb-1 pt-2 transition-opacity hover:opacity-100"
+						: 'opacity-50'} h-full w-20 cursor-pointer object-contain pb-2 pt-3 transition-opacity hover:opacity-100"
 				/>
 			</button>
 			<button
@@ -52,7 +63,7 @@
 					alt=""
 					class="{favoriteClass === 'Demo'
 						? 'bg-jfgray-900 opacity-100'
-						: 'opacity-50'} h-15 w-18 cursor-pointer object-contain pb-1 pt-2 transition-opacity hover:opacity-100"
+						: 'opacity-50'} h-full w-20 cursor-pointer object-contain pb-2 pt-3 transition-opacity hover:opacity-100"
 				/>
 			</button>
 		</div>
@@ -74,6 +85,6 @@
 	@reference "../../app.css";
 
 	.settings-button {
-		@apply border-ctp-lavender-50/50 bg-ctp-lavender-950 size-fit cursor-pointer rounded-lg border-b-2 px-2 py-1;
+		@apply opacity-100;
 	}
 </style>
