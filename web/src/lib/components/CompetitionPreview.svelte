@@ -12,7 +12,7 @@ Preview for monthly / motw competitions
 - should support 3 or 4 maps
 -->
 <div
-	class="text-shadow-sm/50 relative flex h-64 w-full justify-between overflow-hidden rounded-2xl"
+	class="relative flex h-64 w-full justify-between overflow-hidden rounded-2xl text-shadow-sm/50"
 >
 	<!-- top left -->
 
@@ -41,7 +41,7 @@ Preview for monthly / motw competitions
 			src="https://tempusplaza.xyz/map-backgrounds/jump_mirage.jpg"
 			alt=""
 			draggable="false"
-			class="absolute size-full select-none object-cover"
+			class="absolute size-full object-cover select-none"
 		/>
 		<div class="absolute bottom-0 z-10 m-2">
 			<div class="flex flex-col gap-1">
@@ -59,9 +59,9 @@ Preview for monthly / motw competitions
 			src="https://tempusplaza.xyz/map-backgrounds/jump_pokus_rc4.jpg"
 			alt=""
 			draggable="false"
-			class="absolute size-full select-none object-cover"
+			class="absolute size-full object-cover select-none"
 		/>
-		<div class="absolute bottom-0 right-0 z-10 m-2">
+		<div class="absolute right-0 bottom-0 z-10 m-2">
 			<div class="flex flex-col gap-1">
 				<span class="span-ellipsis">jump_pokus_rc4</span>
 				<div class="flex justify-end gap-2">
@@ -73,15 +73,15 @@ Preview for monthly / motw competitions
 	</li>
 
 	<!-- centered maps -->
-	<li class="absolute left-0 right-0 flex h-full justify-center">
-		<div class="w-3/7 relative overflow-hidden [clip-path:polygon(20%_0,100%_0,80%_100%,0_100%)]">
+	<li class="absolute right-0 left-0 flex h-full justify-center">
+		<div class="relative w-3/7 overflow-hidden [clip-path:polygon(20%_0,100%_0,80%_100%,0_100%)]">
 			<img
 				src="https://tempusplaza.xyz/map-backgrounds/jump_jurf2_a1.jpg"
 				alt=""
 				draggable="false"
-				class="absolute size-full select-none object-cover"
+				class="absolute size-full object-cover select-none"
 			/>
-			<div class="right-1/16 absolute bottom-0 z-10 m-2 flex w-full justify-center">
+			<div class="absolute right-1/16 bottom-0 z-10 m-2 flex w-full justify-center">
 				<div class="flex flex-col items-center gap-1">
 					<span class="span-ellipsis">jump_jurf2_a1</span>
 					<div class="flex gap-2">

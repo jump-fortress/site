@@ -22,8 +22,8 @@
 		{/snippet}
 		{#snippet row()}
 			<td><img src={rocket} class="m-auto size-8" alt="" /></td>
-			<td class="text-ctp-teal text-left">Platinum</td>
-			<td class="text-shadow-xs text-shadow-ctp-lavender">5 keys</td>
+			<td class="text-left text-ctp-teal">Platinum</td>
+			<td class="text-shadow-ctp-lavender text-shadow-xs">5 keys</td>
 			<td>0/20</td>
 			<td class="relative"><TableMap map="jump_beef" /></td>
 			<td>completion</td>
@@ -44,7 +44,7 @@
 		{/snippet}
 		{#snippet row()}
 			<td>1</td>
-			<td class="text-ctp-sky text-left">mur</td>
+			<td class="text-left text-ctp-sky">mur</td>
 			<td>00:54.23</td>
 			<td>12/23/25</td>
 			<td><Link href="/formats/quest/1" title="results" /></td>

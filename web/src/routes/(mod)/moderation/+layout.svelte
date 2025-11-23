@@ -65,7 +65,7 @@
 							selectedPlayer = p.id;
 							playerProfile = await getPlayerProfile(p.id);
 						}}
-						class="hover:bg-jfgray-800 transition-colors hover:cursor-pointer hover:underline"
+						class="transition-colors hover:cursor-pointer hover:bg-jfgray-800 hover:underline"
 					>
 						<PlayerPreview src={p.steam_avatar_url} name={p.display_name} />
 					</td>

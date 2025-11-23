@@ -19,7 +19,7 @@
 	let selected_class = $derived(player.preferred_class);
 </script>
 
-<div class="h-46 relative flex gap-4">
+<div class="relative flex h-46 gap-4">
 	<img class="size-46" src={player.steam_avatar_url} alt="" />
 	<!--
 	<img
@@ -102,7 +102,7 @@
 {#snippet externalLink(src: string, href: string, name: string)}
 	<a
 		{href}
-		class="hover:text-ctp-blue text-ctp-blue/50 flex items-end gap-1 pl-2 decoration-1 transition-colors first:pl-0 hover:underline"
+		class="flex items-end gap-1 pl-2 text-ctp-blue/50 decoration-1 transition-colors first:pl-0 hover:text-ctp-blue hover:underline"
 	>
 		<img {src} class="size-6" alt="" />
 		<span class="flex">{name}</span>

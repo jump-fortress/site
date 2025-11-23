@@ -25,7 +25,7 @@
 </div>
 
 <div class="mt-6 flex w-full flex-col items-center">
-	<div class="bg-jfgray-800 w-5xl relative flex flex-col gap-4 px-8 py-4">
+	<div class="relative flex w-5xl flex-col gap-4 bg-jfgray-800 px-8 py-4">
 		{@render children?.()}
 	</div>
 </div>

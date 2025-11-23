@@ -11,7 +11,7 @@
 </script>
 
 <div class="flex gap-2 leading-6">
-	<div class="bg-jfgray-900 flex flex-col px-2 py-1">
+	<div class="flex flex-col bg-jfgray-900 px-2 py-1">
 		<span class="text-base opacity-75">last 3 monthlies</span>
 		<div class="flex items-center gap-2">
 			{#if selected_class === 'Soldier'}
@@ -23,7 +23,7 @@
 			{/if}
 		</div>
 	</div>
-	<div class="bg-jfgray-900 flex flex-col px-2 py-1">
+	<div class="flex flex-col bg-jfgray-900 px-2 py-1">
 		<span class="text-base opacity-75">last 9 MOTWs</span>
 		<div class="flex items-center gap-2">
 			{#if selected_class === 'Soldier'}
@@ -35,7 +35,7 @@
 			{/if}
 		</div>
 	</div>
-	<div class="bg-jfgray-900 flex flex-col px-2 py-1">
+	<div class="flex flex-col bg-jfgray-900 px-2 py-1">
 		<span class="text-base opacity-75">total points</span>
 		<div class="flex items-center gap-2">
 			{#if selected_class === 'Soldier'}

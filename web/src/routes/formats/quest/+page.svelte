@@ -25,7 +25,7 @@
 		{#snippet row()}
 			<td><img src={rocket} class="m-auto size-8" alt="" /></td>
 			<td><div class="flex justify-center"><DivisionTag div="diamond" /></div></td>
-			<td class="text-shadow-xs text-shadow-ctp-lavender">5 keys</td>
+			<td class="text-shadow-ctp-lavender text-shadow-xs">5 keys</td>
 			<td>0/20</td>
 			<td class="relative"><TableMap map="jump_beef" /></td>
 			<td>completion</td>
@@ -52,7 +52,7 @@
 		{#snippet row()}
 			<td><img src={rocket} class="m-auto size-8" alt="" /></td>
 			<td><div class="flex justify-center"><DivisionTag div="diamond" /></div></td>
-			<td class="text-shadow-xs text-shadow-ctp-lavender">5 keys</td>
+			<td class="text-shadow-ctp-lavender text-shadow-xs">5 keys</td>
 			<td>0/20</td>
 			<td class="relative"><TableMap map="jump_beef" /></td>
 			<td>completion</td>

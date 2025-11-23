@@ -7,7 +7,7 @@
 <div class="flex flex-col gap-1">
 	<div class="flex items-center gap-2">
 		<span class="text-ctp-lavender">{title}</span>
-		<div class="border-jfgray-700 border-y-1 grow"></div>
+		<div class="grow border-y-1 border-jfgray-700"></div>
 	</div>
 	{@render children()}
 </div>

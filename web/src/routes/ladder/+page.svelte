@@ -12,11 +12,11 @@
 		<div class="flex h-full items-center">
 			<span class="text-3xl">soldier ladder</span>
 		</div>
-		<div class="hover:text-ctp-lavender-50/75 flex items-end transition-colors">
-			<span class="text-ctp-lavender mr-2">sort by</span>
+		<div class="flex items-end transition-colors hover:text-ctp-lavender-50/75">
+			<span class="mr-2 text-ctp-lavender">sort by</span>
 			<div class="relative flex">
 				<hr
-					class="border-1 w-17/18 border-jfgray-700 absolute -bottom-0.5 left-1 right-0 z-0 m-auto rounded-full"
+					class="absolute right-0 -bottom-0.5 left-1 z-0 m-auto w-17/18 rounded-full border-1 border-jfgray-700"
 				/>
 				{@render SortButton('last 3 monthlies', 'monthly')}
 				{@render SortButton('last 9 MOTWs', 'motw')}
@@ -28,7 +28,7 @@
 	<!-- class select -->
 	<div class="flex h-full">
 		<div
-			class="bg-jfgray-900 flex basis-1/2 cursor-pointer items-center p-3 pl-4 opacity-100 hover:opacity-100"
+			class="flex basis-1/2 cursor-pointer items-center bg-jfgray-900 p-3 pl-4 opacity-100 hover:opacity-100"
 		>
 			<img
 				class="size-max select-none"
@@ -57,17 +57,17 @@
 		<th class="w-1/14">rank</th>
 		<th class="w-1/14">div rank</th>
 		<th></th>
-		<th class="text-ctp-lavender-50/75 w-1/12">monthlies played</th>
-		<th class="text-ctp-lavender-50/75 w-1/12">MOTWs played</th>
+		<th class="w-1/12 text-ctp-lavender-50/75">monthlies played</th>
+		<th class="w-1/12 text-ctp-lavender-50/75">MOTWs played</th>
 		<th class="w-1/8">last 3 monthlies</th>
 		<th class="w-1/8">last 9 MOTWs</th>
-		<th class="text-ctp-lavender-50/75 w-1/8">total points</th>
+		<th class="w-1/8 text-ctp-lavender-50/75">total points</th>
 		<th></th>
 	{/snippet}
 	{#snippet row()}
 		<td>#1</td>
 		<td>#1</td>
-		<td class="text-ctp-sky pl-4 text-start">vice</td>
+		<td class="pl-4 text-start text-ctp-sky">vice</td>
 		<td class="text-ctp-lavender-50/75">4</td>
 		<td class="text-ctp-lavender-50/75">10</td>
 		<td>300000</td>
@@ -78,7 +78,7 @@
 
 {#snippet SortButton(name: string, sort: string)}
 	<button
-		class="hover:text-ctp-lavender-50 relative cursor-pointer px-2 transition-colors"
+		class="relative cursor-pointer px-2 transition-colors hover:text-ctp-lavender-50"
 		onclick={() => {
 			sortBy = sort;
 		}}
@@ -86,7 +86,7 @@
 		<span>{name}</span>
 		{#if sortBy === sort}
 			<hr
-				class="text-ctp-lavender border-1 absolute left-0 right-0 m-auto flex w-5/6 rounded-full text-center"
+				class="absolute right-0 left-0 m-auto flex w-5/6 rounded-full border-1 text-center text-ctp-lavender"
 			/>
 		{/if}
 	</button>

@@ -12,5 +12,7 @@
 			}
 		}
 	],
-	"tailwindStylesheet": "./src/app.css"
+	"tailwindStylesheet": "./src/app.css",
+	"bracketSameLine": false,
+	"endOfLine": "crlf"
 }

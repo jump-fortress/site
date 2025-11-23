@@ -41,7 +41,7 @@
 		{/snippet}
 		{#snippet row(d)}
 			<td><img src={rocket} class="m-auto size-8" alt="" /></td>
-			<td class="text-shadow-xs text-shadow-ctp-lavender">{d.amount}</td>
+			<td class="text-shadow-ctp-lavender text-shadow-xs">{d.amount}</td>
 			<td class="relative">{@render TableMap(d.map)}</td>
 			<td>{d.goal}</td>
 			<td>{d.placedby}</td>
@@ -64,7 +64,7 @@
 		{/snippet}
 		{#snippet row(d)}
 			<td><img src={rocket} class="m-auto size-8" alt="" /></td>
-			<td class="text-shadow-xs text-shadow-ctp-lavender">{d.amount}</td>
+			<td class="text-shadow-ctp-lavender text-shadow-xs">{d.amount}</td>
 			<td class="text-ctp-sky">{d.claimedby}</td>
 			<td class="relative">{@render TableMap(d.map)}</td>
 			<td>
@@ -84,7 +84,7 @@
 	<span class="span-ellipsis relative z-10">{map}</span>
 	<div
 		style={`background-image: url("https://tempusplaza.xyz/map-backgrounds/${map}.jpg")`}
-		class="mask-x-from-80% absolute top-0 size-full bg-cover bg-right bg-no-repeat opacity-50"
+		class="absolute top-0 size-full mask-x-from-80% bg-cover bg-right bg-no-repeat opacity-50"
 	></div>
 {/snippet}
 
