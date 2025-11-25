@@ -2,89 +2,116 @@
 	import DataSection from '$lib/components/DataSection.svelte';
 	import rocket from '$lib/assets/static/classes/rocket.png';
 	import sticky from '$lib/assets/static/classes/sticky.png';
+	import stock from '$lib/assets/static/rocketlaunchers/stock.png';
+	import original from '$lib/assets/static/rocketlaunchers/original.png';
+	import mangler from '$lib/assets/static/rocketlaunchers/mangler.png';
 	import type { PageData } from './$types';
 	import { updatePreferredClass } from '$lib/internalApi';
 	import { classToEnum } from '$lib/enums';
+	import Input from '$lib/components/input/Input.svelte';
+	import SelectButtons from '$lib/components/input/SelectButtons.svelte';
+	import type { PlayerProfile } from '$lib/schema';
 
 	let { data }: { data: PageData } = $props();
-	let player = $derived(data.player);
-	let favoriteClass = $derived(player.preferred_class);
+	let player: PlayerProfile | null = $derived(data.player);
+	let favoriteClass = $derived(player?.preferred_class ?? '');
+	// todo: update with preferred_launcher
+	let favoriteLauncher = $state('stock');
 </script>
 
 <DataSection title="Profile">
-	<div class="flex flex-col gap-2">
-		<label
-			for="update_display_name"
-			class="border-jfgray-700 focus-within:border-ctp-lavender-50/50 hover:border-ctp-lavender-50/50 relative mt-2 w-80 text-nowrap border-2 transition-colors"
-		>
-			<span class="bg-jfgray-800 leading-1 absolute -top-0.5 left-2 px-1"
-				>request display name change
-			</span>
-			<div class="flex h-10">
-				<input
-					class="text-ctp-lavender focus:bg-jfgray-900 bg-jfgray-800 group peer w-full bg-clip-padding p-1 transition-colors"
-					id="update_display_name"
-					type="text"
-				/>
-				<!-- svelte-ignore a11y_consider_explicit_label -->
-				<button
-					class="bg-jfgray-800 peer-focus:bg-jfgray-800 flex h-full w-12 cursor-pointer items-center justify-center transition-colors"
-				>
-					<span class="icon-[ri--send-plane-line]"></span>
-				</button>
-			</div>
-		</label>
+	<SelectButtons
+		title="fav class"
+		options={[
+			{ src: rocket, value: 'Soldier' },
+			{ src: sticky, value: 'Demo' }
+		]}
+		selectedOption={favoriteClass}
+		onSelect={(value: string) => {
+			updatePreferredClass(classToEnum(value as 'Soldier' | 'Demo'));
+			favoriteClass = value;
+		}}
+	/>
 
-		<div class="h-18 border-jfgray-700 relative mt-2 flex w-fit text-nowrap border-2">
-			<span class="bg-jfgray-800 leading-1 absolute -top-1 left-2 z-10 px-1">fav class</span>
-			<button
-				onclick={() => {
-					// todo: use api response to update on client?
-					updatePreferredClass(classToEnum('Soldier'));
-					favoriteClass = 'Soldier';
-				}}
-			>
-				<img
-					src={rocket}
-					alt=""
-					class="{favoriteClass === 'Soldier'
-						? 'bg-jfgray-900 opacity-100'
-						: 'opacity-50'} h-full w-20 cursor-pointer object-contain pb-2 pt-3 transition-opacity hover:opacity-100"
-				/>
-			</button>
-			<button
-				onclick={() => {
-					updatePreferredClass(classToEnum('Demo'));
-					favoriteClass = 'Demo';
-				}}
-			>
-				<img
-					src={sticky}
-					alt=""
-					class="{favoriteClass === 'Demo'
-						? 'bg-jfgray-900 opacity-100'
-						: 'opacity-50'} h-full w-20 cursor-pointer object-contain pb-2 pt-3 transition-opacity hover:opacity-100"
-				/>
-			</button>
-		</div>
+	<SelectButtons
+		title="fav launcher"
+		options={[
+			{ src: stock, value: 'Stock' },
+			{ src: original, value: 'Original' },
+			{ src: mangler, value: 'Mangler' }
+		]}
+		selectedOption={favoriteLauncher}
+		onSelect={(value: string) => {
+			// todo: update launcher
+			favoriteLauncher = value;
+		}}
+	/>
+
+	<div class="flex flex-col gap-2">
+		<Input
+			label={'request display name change'}
+			submitInput={(val: string) => {
+				if (val === '') {
+					return {
+						error: true,
+						message: 'empty input'
+					};
+				} else {
+					return {
+						error: false,
+						message: 'request sent!'
+					};
+				}
+			}}
+		/>
 
 		<button class="settings-button">update avatar from steam</button>
 	</div>
 </DataSection>
 
 <DataSection title={'Rank'}>
-	{#if !player.soldier_division}
+	{#if !player?.soldier_division}
 		<button class="settings-button">request soldier placement</button>
 	{/if}
-	{#if !player.demo_division}
+	{#if !player?.demo_division}
 		<button class="settings-button">request demo placement</button>
 	{/if}
 </DataSection>
 
-<style lang="postcss">
-	@reference "../../app.css";
+<DataSection title="Connections">
+	<Input
+		label="Tempus ID"
+		submitInput={(val: string) => {
+			if (val === '') {
+				return {
+					error: true,
+					message: 'empty input'
+				};
+			} else {
+				return {
+					error: false,
+					message: 'request sent!'
+				};
+			}
+		}}
+	/>
 
-	.settings-button {
-		@apply opacity-100;
-	}
-</style>
+	<Input
+		label="Steam Trade URL"
+		submitInput={(val: string) => {
+			if (val === '') {
+				return {
+					error: true,
+					message: 'empty input'
+				};
+			} else {
+				return {
+					error: false,
+					message: 'request sent!'
+				};
+			}
+		}}
+	/>
+
+	<span>connect discord (not implemented)</span>
+</DataSection>
