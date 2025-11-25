@@ -1,9 +1,9 @@
 import { PUBLIC_JUMP_API_URL } from '$env/static/public';
 
 interface JumpConfig {
-	apiBaseUrl: string;
+  apiBaseUrl: string;
 }
 
 export default {
-	apiBaseUrl: PUBLIC_JUMP_API_URL
+  apiBaseUrl: PUBLIC_JUMP_API_URL
 } as JumpConfig;

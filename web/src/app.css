@@ -10,64 +10,64 @@
 
 /* import fonts */
 @font-face {
-	font-family: 'dongle';
-	src: url('./lib/fonts/dongle/Dongle-Light.ttf') format('truetype');
+  font-family: 'dongle';
+  src: url('./lib/fonts/dongle/Dongle-Light.ttf') format('truetype');
 }
 
 @font-face {
-	font-family: 'fredoka';
-	src: url('./lib/fonts/fredoka/static/Fredoka-Regular.ttf') format('truetype');
+  font-family: 'fredoka';
+  src: url('./lib/fonts/fredoka/static/Fredoka-Regular.ttf') format('truetype');
 }
 
 /* global */
 @layer base {
-	html {
-		/* font-size: theme(--text-base); */
-		font-family: theme(--font-fredoka);
-		background-color: theme(--color-jfgray-900);
-		color: theme(--color-ctp-lavender-50);
-	}
+  html {
+    /* font-size: theme(--text-base); */
+    font-family: theme(--font-fredoka);
+    background-color: theme(--color-jfgray-900);
+    color: theme(--color-ctp-lavender-50);
+  }
 
-	body {
-		@apply text-lg selection:bg-ctp-lavender-950 selection:text-ctp-lavender-50;
-	}
+  body {
+    @apply text-lg selection:bg-ctp-lavender-950 selection:text-ctp-lavender-50;
+  }
 
-	input {
-		@apply focus:outline-0;
-	}
+  input {
+    @apply focus:outline-0;
+  }
 
-	th {
-		@apply font-normal;
-	}
+  th {
+    @apply font-normal;
+  }
 
-	.span-ellipsis {
-		@apply text-nowrap overflow-ellipsis;
-	}
+  .span-ellipsis {
+    @apply text-nowrap overflow-ellipsis;
+  }
 
-	.settings-button {
-		@apply size-fit cursor-pointer rounded-lg border-2 border-jfgray-700 border-b-ctp-lavender/50 bg-jfgray-800 px-2 py-1 text-base transition-colors hover:bg-ctp-lavender-950/50;
-	}
+  .settings-button {
+    @apply size-fit cursor-pointer rounded-lg border-2 border-jfgray-700 border-b-ctp-lavender/50 bg-jfgray-800 px-2 py-1 text-base transition-colors hover:bg-ctp-lavender-950/50;
+  }
 }
 
 /* extend tailwind theme */
 @theme {
-	--font-dongle: 'dongle', 'ui-sans-serif', 'sans-serif', 'system-ui';
-	--font-fredoka: 'fredoka', 'ui-sans-serif', 'sans-serif', 'system-ui';
-	--color-jfgray-900: oklch(25.53% 0.006 258.36);
-	--color-jfgray-800: oklch(30% 0.008 258.36);
-	--color-jfgray-700: oklch(35% 0.008 258.36);
+  --font-dongle: 'dongle', 'ui-sans-serif', 'sans-serif', 'system-ui';
+  --font-fredoka: 'fredoka', 'ui-sans-serif', 'sans-serif', 'system-ui';
+  --color-jfgray-900: oklch(25.53% 0.006 258.36);
+  --color-jfgray-800: oklch(30% 0.008 258.36);
+  --color-jfgray-700: oklch(35% 0.008 258.36);
 
-	--color-division-wood: theme(--color-ctp-flamingo);
-	--color-division-bronze: theme(--color-ctp-maroon);
-	--color-division-silver: theme(--color-ctp-pink);
-	--color-division-gold: theme(--color-ctp-yellow);
-	--color-division-platinum: theme(--color-ctp-sapphire);
-	--color-division-diamond: theme(--color-ctp-teal);
+  --color-division-wood: theme(--color-ctp-flamingo);
+  --color-division-bronze: theme(--color-ctp-maroon);
+  --color-division-silver: theme(--color-ctp-pink);
+  --color-division-gold: theme(--color-ctp-yellow);
+  --color-division-platinum: theme(--color-ctp-sapphire);
+  --color-division-diamond: theme(--color-ctp-teal);
 
-	--animate-reverse-spin: reverse-spin 1s infinite;
-	@keyframes reverse-spin {
-		from {
-			transform: rotate(360deg);
-		}
-	}
+  --animate-reverse-spin: reverse-spin 1s infinite;
+  @keyframes reverse-spin {
+    from {
+      transform: rotate(360deg);
+    }
+  }
 }

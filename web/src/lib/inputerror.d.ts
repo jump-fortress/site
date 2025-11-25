@@ -1,8 +1,8 @@
 declare global {
-	interface InputError {
-		error: boolean;
-		message: string;
-	}
+  interface InputError {
+    error: boolean;
+    message: string;
+  }
 }
 
 export {};
