@@ -80,18 +80,19 @@ type OpenidNonce struct {
 }
 
 type Player struct {
-	ID              int64          `json:"id"`
-	Role            string         `json:"role"`
-	SteamId64       string         `json:"steam_id64"`
-	SteamAvatarUrl  sql.NullString `json:"steam_avatar_url"`
-	SteamTradeToken sql.NullString `json:"steam_trade_token"`
-	TempusID        sql.NullInt64  `json:"tempus_id"`
-	DiscordID       sql.NullString `json:"discord_id"`
-	DisplayName     sql.NullString `json:"display_name"`
-	SoldierDivision sql.NullString `json:"soldier_division"`
-	DemoDivision    sql.NullString `json:"demo_division"`
-	PreferredClass  string         `json:"preferred_class"`
-	CreatedAt       time.Time      `json:"created_at"`
+	ID                int64          `json:"id"`
+	Role              string         `json:"role"`
+	SteamId64         string         `json:"steam_id64"`
+	SteamAvatarUrl    sql.NullString `json:"steam_avatar_url"`
+	SteamTradeToken   sql.NullString `json:"steam_trade_token"`
+	TempusID          sql.NullInt64  `json:"tempus_id"`
+	DiscordID         sql.NullString `json:"discord_id"`
+	DisplayName       sql.NullString `json:"display_name"`
+	SoldierDivision   sql.NullString `json:"soldier_division"`
+	DemoDivision      sql.NullString `json:"demo_division"`
+	PreferredClass    string         `json:"preferred_class"`
+	PreferredLauncher string         `json:"preferred_launcher"`
+	CreatedAt         time.Time      `json:"created_at"`
 }
 
 type PlayerPoint struct {

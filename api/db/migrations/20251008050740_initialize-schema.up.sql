@@ -4,7 +4,7 @@
 -- todo: consider what "roles" should exist, and if this is the correct implementation
 create table player(
   id integer not null primary key autoincrement,
-  role text not null default 'player',
+  role text not null default 'Player',
   steam_id64 text unique not null,
   -- steam_avatar_url can be non-unique for default and points shop avatars
   steam_avatar_url text,
@@ -15,10 +15,12 @@ create table player(
   soldier_division text,
   demo_division text,
   preferred_class text not null default 'Soldier',
+  preferred_launcher text not null default 'None',
 
-  created_at datetime not null default current_timestamp
+  created_at datetime not null default current_timestamp,
 
-  check (preferred_class in ('Soldier', 'Demo'))
+  check (preferred_class in ('Soldier', 'Demo')),
+  check (preferred_launcher in ('Stock', 'Original', 'Mangler', 'None'))
 );
 
 -- competition
@@ -45,7 +47,7 @@ create table player_points(
 
   foreign key (player_id) references player (id),
 
-  check (class in ('Soldier', 'Demo'))
+  check (class in ('Soldier', 'Demo')),
   unique (class, player_id)
 );
 

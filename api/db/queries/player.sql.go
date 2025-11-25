@@ -15,7 +15,7 @@ insert into player (steam_id64)
   values (?)
   on conflict do update
   set steam_id64 = steam_id64
-  returning id, role, steam_id64, steam_avatar_url, steam_trade_token, tempus_id, discord_id, display_name, soldier_division, demo_division, preferred_class, created_at
+  returning id, role, steam_id64, steam_avatar_url, steam_trade_token, tempus_id, discord_id, display_name, soldier_division, demo_division, preferred_class, preferred_launcher, created_at
 `
 
 func (q *Queries) InsertPlayer(ctx context.Context, steamId64 string) (Player, error) {
@@ -33,13 +33,14 @@ func (q *Queries) InsertPlayer(ctx context.Context, steamId64 string) (Player, e
 		&i.SoldierDivision,
 		&i.DemoDivision,
 		&i.PreferredClass,
+		&i.PreferredLauncher,
 		&i.CreatedAt,
 	)
 	return i, err
 }
 
 const selectAllPlayers = `-- name: SelectAllPlayers :many
-select id, role, steam_id64, steam_avatar_url, steam_trade_token, tempus_id, discord_id, display_name, soldier_division, demo_division, preferred_class, created_at from player
+select id, role, steam_id64, steam_avatar_url, steam_trade_token, tempus_id, discord_id, display_name, soldier_division, demo_division, preferred_class, preferred_launcher, created_at from player
 `
 
 func (q *Queries) SelectAllPlayers(ctx context.Context) ([]Player, error) {
@@ -63,6 +64,7 @@ func (q *Queries) SelectAllPlayers(ctx context.Context) ([]Player, error) {
 			&i.SoldierDivision,
 			&i.DemoDivision,
 			&i.PreferredClass,
+			&i.PreferredLauncher,
 			&i.CreatedAt,
 		); err != nil {
 			return nil, err
@@ -79,7 +81,7 @@ func (q *Queries) SelectAllPlayers(ctx context.Context) ([]Player, error) {
 }
 
 const selectPlayer = `-- name: SelectPlayer :one
-select id, role, steam_id64, steam_avatar_url, steam_trade_token, tempus_id, discord_id, display_name, soldier_division, demo_division, preferred_class, created_at from player
+select id, role, steam_id64, steam_avatar_url, steam_trade_token, tempus_id, discord_id, display_name, soldier_division, demo_division, preferred_class, preferred_launcher, created_at from player
   where id = ?
 `
 
@@ -98,13 +100,14 @@ func (q *Queries) SelectPlayer(ctx context.Context, id int64) (Player, error) {
 		&i.SoldierDivision,
 		&i.DemoDivision,
 		&i.PreferredClass,
+		&i.PreferredLauncher,
 		&i.CreatedAt,
 	)
 	return i, err
 }
 
 const selectPlayerFromSteamID64 = `-- name: SelectPlayerFromSteamID64 :one
-select id, role, steam_id64, steam_avatar_url, steam_trade_token, tempus_id, discord_id, display_name, soldier_division, demo_division, preferred_class, created_at from player
+select id, role, steam_id64, steam_avatar_url, steam_trade_token, tempus_id, discord_id, display_name, soldier_division, demo_division, preferred_class, preferred_launcher, created_at from player
   where steam_id64 = ?
 `
 
@@ -123,6 +126,7 @@ func (q *Queries) SelectPlayerFromSteamID64(ctx context.Context, steamId64 strin
 		&i.SoldierDivision,
 		&i.DemoDivision,
 		&i.PreferredClass,
+		&i.PreferredLauncher,
 		&i.CreatedAt,
 	)
 	return i, err
@@ -149,7 +153,7 @@ update player
   set steam_avatar_url = ?,
   display_name = ?
   where steam_id64 = ?
-  returning id, role, steam_id64, steam_avatar_url, steam_trade_token, tempus_id, discord_id, display_name, soldier_division, demo_division, preferred_class, created_at
+  returning id, role, steam_id64, steam_avatar_url, steam_trade_token, tempus_id, discord_id, display_name, soldier_division, demo_division, preferred_class, preferred_launcher, created_at
 `
 
 type UpdatePlayerSessionInfoParams struct {
@@ -173,6 +177,7 @@ func (q *Queries) UpdatePlayerSessionInfo(ctx context.Context, arg UpdatePlayerS
 		&i.SoldierDivision,
 		&i.DemoDivision,
 		&i.PreferredClass,
+		&i.PreferredLauncher,
 		&i.CreatedAt,
 	)
 	return i, err
