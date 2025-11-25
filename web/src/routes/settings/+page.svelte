@@ -5,6 +5,7 @@
   import stock from '$lib/assets/static/rocketlaunchers/stock.png';
   import original from '$lib/assets/static/rocketlaunchers/original.png';
   import mangler from '$lib/assets/static/rocketlaunchers/mangler.png';
+  import no_option from '$lib/assets/static/no_option.png';
   import type { PageData } from './$types';
   import { updatePreferredClass } from '$lib/internalApi';
   import { classToEnum } from '$lib/enums';
@@ -38,7 +39,8 @@
     options={[
       { src: stock, value: 'Stock' },
       { src: original, value: 'Original' },
-      { src: mangler, value: 'Mangler' }
+      { src: mangler, value: 'Mangler' },
+      { src: no_option, value: 'None' }
     ]}
     selectedOption={favoriteLauncher}
     onSelect={(value: string) => {
