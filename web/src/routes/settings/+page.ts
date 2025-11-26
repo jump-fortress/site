@@ -1,24 +1,18 @@
 import { Client } from '$lib/internalApi';
-import type { PlayerProfile, Session } from '$lib/schema';
+import type { FullPlayer } from '$lib/schema';
 import type { PageLoad } from './$types';
 
-// parent is used here since +page.ts cannot access locals
-export const load: PageLoad = async ({ parent, fetch }) => {
+export const load: PageLoad = async ({ fetch }) => {
   // todo: error handling
-  const session = (await parent()).session as Session;
-
-  const { data } = await Client.GET('/internal/players/profile/{id}', {
-    fetch: fetch,
-    params: {
-      path: { id: session.id }
-    }
+  const { data } = await Client.GET('/internal/players', {
+    fetch: fetch
   });
 
   if (!data) {
-    return { player: null };
+    return { fullPlayer: null };
   }
 
   return {
-    player: data as PlayerProfile
+    fullPlayer: data as FullPlayer
   };
 };
