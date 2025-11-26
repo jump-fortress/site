@@ -280,9 +280,6 @@ func registerAuth(sessionApi *huma.Group, internalApi *huma.Group) {
 		Tags:        []string{"Auth"},
 	}, handleSteamCallback)
 
-	sessionCookieSecurityMap := []map[string][]string{{"Steam": {}}}
-	requireUserSessionMiddlewares := huma.Middlewares{UserAuthHandler, CreateRequireUserAuthHandler(internalApi)}
-
 	huma.Register(sessionApi, huma.Operation{
 		Method:      http.MethodGet,
 		Path:        "/steam/profile",
@@ -321,34 +318,4 @@ func registerAuth(sessionApi *huma.Group, internalApi *huma.Group) {
 		Security:    sessionCookieSecurityMap,
 		Middlewares: requireUserSessionMiddlewares,
 	}, handleSteamSignOut)
-
-	huma.Register(internalApi, huma.Operation{
-		Method:      http.MethodPut,
-		Path:        "/players/preferredclass/{class}",
-		OperationID: "set-preferredclass",
-		Summary:     "Set a Player's preferred class",
-		Description: "set a player's preferred class by class name",
-		Tags:        []string{"Player"},
-		Security:    sessionCookieSecurityMap,
-		Middlewares: requireUserSessionMiddlewares,
-	}, HandlePutPlayerPreferredClass)
-
-	moderatorApi := huma.NewGroup(internalApi, "/moderator")
-	adminApi := huma.NewGroup(internalApi, "/admin")
-
-	requireUserModeratorMiddlewares := huma.Middlewares{UserAuthHandler, CreateRequireUserModeratorHandler(moderatorApi)}
-	requireUserAdminMiddlewares := huma.Middlewares{UserAuthHandler, CreateRequireUserAdminHandler(adminApi)}
-
-	moderatorApi.UseMiddleware(requireUserModeratorMiddlewares...)
-	adminApi.UseMiddleware(requireUserAdminMiddlewares...)
-
-	huma.Register(moderatorApi, huma.Operation{
-		Method:      http.MethodGet,
-		Path:        "/players",
-		OperationID: "get-all-full-players",
-		Summary:     "Get full info on all Players",
-		Description: "get full info on all players",
-		Tags:        []string{"Moderator"},
-		Security:    sessionCookieSecurityMap,
-	}, HandleGetAllPlayersFull)
 }

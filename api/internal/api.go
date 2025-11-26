@@ -12,7 +12,11 @@ import (
 )
 
 var (
-	api huma.API
+	api                             huma.API
+	sessionCookieSecurityMap        = []map[string][]string{{"Steam": {}}}
+	requireUserSessionMiddlewares   huma.Middlewares
+	requireUserModeratorMiddlewares huma.Middlewares
+	requireUserAdminMiddlewares     huma.Middlewares
 )
 
 func setupRouter() *chi.Mux {
@@ -62,21 +66,42 @@ func ServeAPI(address string) {
 func registerRoutes() {
 	internalApi := huma.NewGroup(api, "/internal")
 	sessionApi := huma.NewGroup(internalApi, "/session")
+	moderatorApi := huma.NewGroup(internalApi, "/moderator")
+	adminApi := huma.NewGroup(internalApi, "/admin")
+
+	requireUserSessionMiddlewares = huma.Middlewares{UserAuthHandler, CreateRequireUserAuthHandler(internalApi)}
+	requireUserModeratorMiddlewares = huma.Middlewares{UserAuthHandler, CreateRequireUserModeratorHandler(moderatorApi)}
+	requireUserAdminMiddlewares = huma.Middlewares{UserAuthHandler, CreateRequireUserAdminHandler(adminApi)}
+
+	moderatorApi.UseMiddleware(requireUserModeratorMiddlewares...)
+	adminApi.UseMiddleware(requireUserAdminMiddlewares...)
+
 	registerHealthCheck(internalApi)
 	registerAuth(sessionApi, internalApi)
 
 	huma.Register(internalApi, huma.Operation{
 		Method:      http.MethodGet,
-		Path:        "/players/{id}",
+		Path:        "/players",
 		OperationID: "get-player",
-		Summary:     "Get a Player",
-		Description: "get a player by ID",
+		Summary:     "Get the current session's Player",
+		Description: "get the current session's player",
 		Tags:        []string{"Player"},
+		Security:    sessionCookieSecurityMap,
+		Middlewares: requireUserSessionMiddlewares,
 	}, HandleGetPlayer)
 
 	huma.Register(internalApi, huma.Operation{
 		Method:      http.MethodGet,
-		Path:        "/players",
+		Path:        "/players/{id}",
+		OperationID: "get-player-by-id",
+		Summary:     "Get a Player",
+		Description: "get a player by ID",
+		Tags:        []string{"Player"},
+	}, HandleGetPlayerByID)
+
+	huma.Register(internalApi, huma.Operation{
+		Method:      http.MethodGet,
+		Path:        "/players/all",
 		OperationID: "get-all-players",
 		Summary:     "Get all Players",
 		Description: "get all players",
@@ -86,11 +111,75 @@ func registerRoutes() {
 	huma.Register(internalApi, huma.Operation{
 		Method:      http.MethodGet,
 		Path:        "/players/profile/{id}",
-		OperationID: "get-player-profile",
+		OperationID: "get-player-profile-by-id",
 		Summary:     "Get a Player Profile",
 		Description: "get info for a player's profile by ID",
 		Tags:        []string{"Player"},
-	}, HandleGetPlayerProfile)
+	}, HandleGetPlayerProfileByID)
+
+	huma.Register(internalApi, huma.Operation{
+		Method:      http.MethodPut,
+		Path:        "/players/preferredclass/{class}",
+		OperationID: "set-player-preferredclass",
+		Summary:     "Set Player's preferred class",
+		Description: "set the current session player's preferred class by class name",
+		Tags:        []string{"Player"},
+		Security:    sessionCookieSecurityMap,
+		Middlewares: requireUserSessionMiddlewares,
+	}, HandlePutPlayerPreferredClass)
+
+	huma.Register(internalApi, huma.Operation{
+		Method:      http.MethodPut,
+		Path:        "/players/preferredlauncher/{launcher}",
+		OperationID: "set-player-preferredlauncher",
+		Summary:     "Set Player's preferred rocket launcher",
+		Description: "set the current session player's preferred rocket launcher by launcher name",
+		Tags:        []string{"Player"},
+		Security:    sessionCookieSecurityMap,
+		Middlewares: requireUserSessionMiddlewares,
+	}, HandlePutPlayerPreferredLauncher)
+
+	huma.Register(internalApi, huma.Operation{
+		Method:      http.MethodPut,
+		Path:        "/players/tempusid/{tempus_id}",
+		OperationID: "set-player-tempusid",
+		Summary:     "Set a Player's own Tempus ID",
+		Description: "set a player's own Tempus ID, found at https://tempus2.xyz",
+		Tags:        []string{"Player"},
+		Security:    sessionCookieSecurityMap,
+		Middlewares: requireUserSessionMiddlewares,
+	}, HandlePutPlayerTempusID)
+
+	huma.Register(internalApi, huma.Operation{
+		Method:      http.MethodPut,
+		Path:        "/players/steamtradetoken/{url}",
+		OperationID: "set-player-steam-trade-token",
+		Summary:     "Set a Player's own Steam trade token",
+		Description: "set a player's own Steam trade token from their Steam Trade URL, found at https://steamcommunity.com/id/{steamid}/tradeoffers/privacy",
+		Tags:        []string{"Player"},
+		Security:    sessionCookieSecurityMap,
+		Middlewares: requireUserSessionMiddlewares,
+	}, HandlePutPlayerSteamTradeToken)
+
+	huma.Register(moderatorApi, huma.Operation{
+		Method:      http.MethodGet,
+		Path:        "/players/all",
+		OperationID: "get-all-full-players",
+		Summary:     "Get full info on all Players",
+		Description: "get full info on all players",
+		Tags:        []string{"Moderator"},
+		Security:    sessionCookieSecurityMap,
+	}, HandleGetAllPlayersFull)
+
+	huma.Register(moderatorApi, huma.Operation{
+		Method:      http.MethodPut,
+		Path:        "/players/displayname/{id}/{name}",
+		OperationID: "set-player-displayname",
+		Summary:     "Set a Player's display name",
+		Description: "set a player's display name",
+		Tags:        []string{"Moderator"},
+		Security:    sessionCookieSecurityMap,
+	}, HandlePutPlayerDisplayName)
 }
 
 // A readiness endpoint is important - it can be used to inform your infrastructure
