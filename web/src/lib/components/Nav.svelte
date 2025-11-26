@@ -76,7 +76,7 @@
 
               <hr class="border-1 border-jfgray-700" />
 
-              {#if session.role === 'admin' || session.role === 'mod'}
+              {#if session.role === 'Admin' || session.role === 'Mod'}
                 <a
                   href="/moderation"
                   data-nav="true"
