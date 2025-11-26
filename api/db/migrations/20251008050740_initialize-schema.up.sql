@@ -1,7 +1,6 @@
 -- initial schema
 
 -- player
--- todo: consider what "roles" should exist, and if this is the correct implementation
 create table player(
   id integer not null primary key autoincrement,
   role text not null default 'Player',
@@ -19,6 +18,7 @@ create table player(
 
   created_at datetime not null default current_timestamp,
 
+  check (role in ('Player', 'Consultant', 'Moderator', 'Admin')),
   check (preferred_class in ('Soldier', 'Demo')),
   check (preferred_launcher in ('Stock', 'Original', 'Mangler', 'None'))
 );
