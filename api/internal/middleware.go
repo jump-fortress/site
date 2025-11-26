@@ -116,7 +116,7 @@ func CreateRequireUserModeratorHandler(api huma.API) func(ctx huma.Context, next
 			return
 		}
 
-		if player.Role != "mod" && player.Role != "admin" {
+		if player.Role != "Mod" && player.Role != "Admin" {
 			_ = huma.WriteErr(api, ctx, http.StatusUnauthorized, "")
 			return
 		}
@@ -140,7 +140,7 @@ func CreateRequireUserAdminHandler(api huma.API) func(ctx huma.Context, next fun
 			return
 		}
 
-		if player.Role != "admin" {
+		if player.Role != "Admin" {
 			_ = huma.WriteErr(api, ctx, http.StatusUnauthorized, "")
 			return
 		}

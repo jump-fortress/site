@@ -5,9 +5,9 @@
   import InnerNav from '$lib/components/InnerNav.svelte';
   import PlayerPreview from '$lib/components/PlayerPreview.svelte';
   import Table from '$lib/components/table/Table.svelte';
-  import { getPlayerProfile } from '$lib/internalApi';
   import type { FullPlayer, PlayerProfile, Session } from '$lib/schema';
   import Header from '../../../lib/components/PlayerHeader.svelte';
+  import { getPlayerProfile } from '$lib/internalApi';
 
   let route = $derived(page.url.pathname.substring(1));
 
@@ -24,7 +24,7 @@
   let playerProfile: PlayerProfile | null = $derived(null);
 </script>
 
-{#if session.role === 'admin'}
+{#if session.role === 'Admin'}
   <DataSection title={'Manage Competitions'}>
     <InnerNav {route} parentRoute={'moderation'} pages={['monthly', 'motw', 'quest', 'bounty']} />
   </DataSection>
@@ -32,7 +32,7 @@
 
 {@render children?.()}
 
-{#if session.role === 'admin' || session.role === 'mod'}
+{#if session.role === 'Admin' || session.role === 'Mod'}
   <DataSection title={'Manage Players'}>
     <svelte:boundary {pending}>
       {#if selected && fullPlayers && playerProfile}

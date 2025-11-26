@@ -10,9 +10,9 @@ export const load: LayoutServerLoad = async ({ fetch, locals }) => {
     redirect(302, '/');
   }
 
-  if (locals.session.role === 'admin' || locals.session.role === 'mod') {
+  if (locals.session.role === 'Admin' || locals.session.role === 'Mod') {
     // todo: error handling
-    const { data } = await Client.GET('/internal/moderator/players', {
+    const { data } = await Client.GET('/internal/moderator/players/all', {
       fetch: fetch
     });
 

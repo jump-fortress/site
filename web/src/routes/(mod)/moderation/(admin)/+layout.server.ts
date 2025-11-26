@@ -5,7 +5,7 @@ export const load: LayoutServerLoad = ({ locals }) => {
   if (!locals.session) {
     redirect(302, '/');
   }
-  if (locals.session.role === 'admin') {
+  if (locals.session.role === 'Admin') {
     return;
   } else {
     redirect(302, '/');
