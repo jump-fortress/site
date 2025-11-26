@@ -132,6 +132,38 @@ func (q *Queries) SelectPlayerFromSteamID64(ctx context.Context, steamId64 strin
 	return i, err
 }
 
+const updatePlayerDemoDivision = `-- name: UpdatePlayerDemoDivision :exec
+update player
+  set demo_division = ?
+  where id = ?
+`
+
+type UpdatePlayerDemoDivisionParams struct {
+	DemoDivision sql.NullString `json:"demo_division"`
+	ID           int64          `json:"id"`
+}
+
+func (q *Queries) UpdatePlayerDemoDivision(ctx context.Context, arg UpdatePlayerDemoDivisionParams) error {
+	_, err := q.db.ExecContext(ctx, updatePlayerDemoDivision, arg.DemoDivision, arg.ID)
+	return err
+}
+
+const updatePlayerDisplayName = `-- name: UpdatePlayerDisplayName :exec
+update player
+  set display_name = ?
+  where id = ?
+`
+
+type UpdatePlayerDisplayNameParams struct {
+	DisplayName sql.NullString `json:"display_name"`
+	ID          int64          `json:"id"`
+}
+
+func (q *Queries) UpdatePlayerDisplayName(ctx context.Context, arg UpdatePlayerDisplayNameParams) error {
+	_, err := q.db.ExecContext(ctx, updatePlayerDisplayName, arg.DisplayName, arg.ID)
+	return err
+}
+
 const updatePlayerPreferredClassFromSteamID64 = `-- name: UpdatePlayerPreferredClassFromSteamID64 :exec
 update player
   set preferred_class = ?
@@ -145,6 +177,22 @@ type UpdatePlayerPreferredClassFromSteamID64Params struct {
 
 func (q *Queries) UpdatePlayerPreferredClassFromSteamID64(ctx context.Context, arg UpdatePlayerPreferredClassFromSteamID64Params) error {
 	_, err := q.db.ExecContext(ctx, updatePlayerPreferredClassFromSteamID64, arg.PreferredClass, arg.SteamId64)
+	return err
+}
+
+const updatePlayerPreferredLauncherFromSteamID64 = `-- name: UpdatePlayerPreferredLauncherFromSteamID64 :exec
+update player
+  set preferred_launcher = ?
+  where steam_id64 = ?
+`
+
+type UpdatePlayerPreferredLauncherFromSteamID64Params struct {
+	PreferredLauncher string `json:"preferred_launcher"`
+	SteamId64         string `json:"steam_id64"`
+}
+
+func (q *Queries) UpdatePlayerPreferredLauncherFromSteamID64(ctx context.Context, arg UpdatePlayerPreferredLauncherFromSteamID64Params) error {
+	_, err := q.db.ExecContext(ctx, updatePlayerPreferredLauncherFromSteamID64, arg.PreferredLauncher, arg.SteamId64)
 	return err
 }
 
@@ -181,4 +229,52 @@ func (q *Queries) UpdatePlayerSessionInfo(ctx context.Context, arg UpdatePlayerS
 		&i.CreatedAt,
 	)
 	return i, err
+}
+
+const updatePlayerSoldierDivision = `-- name: UpdatePlayerSoldierDivision :exec
+update player
+  set soldier_division = ?
+  where id = ?
+`
+
+type UpdatePlayerSoldierDivisionParams struct {
+	SoldierDivision sql.NullString `json:"soldier_division"`
+	ID              int64          `json:"id"`
+}
+
+func (q *Queries) UpdatePlayerSoldierDivision(ctx context.Context, arg UpdatePlayerSoldierDivisionParams) error {
+	_, err := q.db.ExecContext(ctx, updatePlayerSoldierDivision, arg.SoldierDivision, arg.ID)
+	return err
+}
+
+const updatePlayerSteamTradeTokenFromSteamID64 = `-- name: UpdatePlayerSteamTradeTokenFromSteamID64 :exec
+update player
+  set steam_trade_token = ?
+  where steam_id64 = ?
+`
+
+type UpdatePlayerSteamTradeTokenFromSteamID64Params struct {
+	SteamTradeToken sql.NullString `json:"steam_trade_token"`
+	SteamId64       string         `json:"steam_id64"`
+}
+
+func (q *Queries) UpdatePlayerSteamTradeTokenFromSteamID64(ctx context.Context, arg UpdatePlayerSteamTradeTokenFromSteamID64Params) error {
+	_, err := q.db.ExecContext(ctx, updatePlayerSteamTradeTokenFromSteamID64, arg.SteamTradeToken, arg.SteamId64)
+	return err
+}
+
+const updatePlayerTempusIDFromSteamID64 = `-- name: UpdatePlayerTempusIDFromSteamID64 :exec
+update player
+  set tempus_id = ?
+  where steam_id64 = ?
+`
+
+type UpdatePlayerTempusIDFromSteamID64Params struct {
+	TempusID  sql.NullInt64 `json:"tempus_id"`
+	SteamId64 string        `json:"steam_id64"`
+}
+
+func (q *Queries) UpdatePlayerTempusIDFromSteamID64(ctx context.Context, arg UpdatePlayerTempusIDFromSteamID64Params) error {
+	_, err := q.db.ExecContext(ctx, updatePlayerTempusIDFromSteamID64, arg.TempusID, arg.SteamId64)
+	return err
 }

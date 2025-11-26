@@ -27,3 +27,33 @@ update player
 update player
   set preferred_class = ?
   where steam_id64 = ?;
+
+-- name: UpdatePlayerPreferredLauncherFromSteamID64 :exec
+update player
+  set preferred_launcher = ?
+  where steam_id64 = ?;
+
+-- name: UpdatePlayerDisplayName :exec
+update player
+  set display_name = ?
+  where id = ?;
+
+-- name: UpdatePlayerSoldierDivision :exec
+update player
+  set soldier_division = ?
+  where id = ?;
+
+-- name: UpdatePlayerDemoDivision :exec
+update player
+  set demo_division = ?
+  where id = ?;
+
+-- name: UpdatePlayerTempusIDFromSteamID64 :exec
+update player
+  set tempus_id = ?
+  where steam_id64 = ?;
+
+-- name: UpdatePlayerSteamTradeTokenFromSteamID64 :exec
+update player
+  set steam_trade_token = ?
+  where steam_id64 = ?;

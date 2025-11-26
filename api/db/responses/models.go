@@ -13,30 +13,32 @@ type PlayerSteamID64Input struct {
 }
 
 type Player struct {
-	ID              int64     `json:"id"`
-	Role            string    `json:"role"`
-	SteamAvatarUrl  string    `json:"steam_avatar_url"`
-	TempusID        int64     `json:"tempus_id,omitempty"`
-	DisplayName     string    `json:"display_name"`
-	SoldierDivision string    `json:"soldier_division,omitempty"`
-	DemoDivision    string    `json:"demo_division,omitempty"`
-	PreferredClass  string    `json:"preferred_class"`
-	CreatedAt       time.Time `json:"created_at"`
+	ID                int64     `json:"id"`
+	Role              string    `json:"role"`
+	SteamAvatarUrl    string    `json:"steam_avatar_url"`
+	TempusID          int64     `json:"tempus_id,omitempty"`
+	DisplayName       string    `json:"display_name"`
+	SoldierDivision   string    `json:"soldier_division,omitempty"`
+	DemoDivision      string    `json:"demo_division,omitempty"`
+	PreferredClass    string    `json:"preferred_class"`
+	PreferredLauncher string    `json:"preferred_launcher"`
+	CreatedAt         time.Time `json:"created_at"`
 }
 
 type FullPlayer struct {
-	ID              int64     `json:"id"`
-	Role            string    `json:"role"`
-	SteamId64       string    `json:"steam_id64"`
-	SteamAvatarUrl  string    `json:"steam_avatar_url"`
-	SteamTradeToken string    `json:"steam_trade_token,omitempty"`
-	TempusID        int64     `json:"tempus_id,omitempty"`
-	DiscordID       string    `json:"discord_id,omitempty"`
-	DisplayName     string    `json:"display_name"`
-	SoldierDivision string    `json:"soldier_division,omitempty"`
-	DemoDivision    string    `json:"demo_division,omitempty"`
-	PreferredClass  string    `json:"preferred_class"`
-	CreatedAt       time.Time `json:"created_at"`
+	ID                int64     `json:"id"`
+	Role              string    `json:"role"`
+	SteamId64         string    `json:"steam_id64"`
+	SteamAvatarUrl    string    `json:"steam_avatar_url"`
+	SteamTradeToken   string    `json:"steam_trade_token,omitempty"`
+	TempusID          int64     `json:"tempus_id,omitempty"`
+	DiscordID         string    `json:"discord_id,omitempty"`
+	DisplayName       string    `json:"display_name"`
+	SoldierDivision   string    `json:"soldier_division,omitempty"`
+	DemoDivision      string    `json:"demo_division,omitempty"`
+	PreferredClass    string    `json:"preferred_class"`
+	PreferredLauncher string    `json:"preferred_launcher"`
+	CreatedAt         time.Time `json:"created_at"`
 }
 
 type PlayerOutput struct {
@@ -48,7 +50,7 @@ type ManyPlayersOutput struct {
 }
 
 type FullPlayerOutput struct {
-	Body []FullPlayer
+	Body FullPlayer
 }
 
 type ManyFullPlayersOutput struct {
@@ -84,4 +86,28 @@ type SessionOutput struct {
 
 type ClassNameInput struct {
 	Class string `path:"class" enum:"Soldier,Demo"`
+}
+
+type LauncherNameInput struct {
+	Launcher string `path:"launcher" enum:"Stock,Original,Mangler,None"`
+}
+
+// todo: regex for Name
+type DisplayNameInput struct {
+	ID   int64  `path:"id" minimum:"1" doc:"player ID"`
+	Name string `path:"name" doc:"new display name"`
+}
+
+type TempusIDInput struct {
+	TempusID int64 `path:"tempus_id" minimum:"1" doc:"Tempus ID"`
+}
+
+type TempusPlayerInfo struct {
+	TempusName string `json:"name"`
+	TempusID   int64  `json:"id"`
+	SteamID    string `json:"steamid"`
+}
+
+type SteamTradeURL struct {
+	Url string `path:"url"`
 }
