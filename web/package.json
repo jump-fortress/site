@@ -12,7 +12,7 @@
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "format": "prettier --write .",
     "lint": "prettier --check . && eslint .",
-    "openapi-typescript": "openapi-typescript http://localhost:8000/openapi.yaml -o src/lib/schema.d.ts --enum --root-types --root-types-no-schema-prefix --make-paths-enum"
+    "openapi-typescript": "openapi-typescript http://localhost:8000/openapi.yaml -o src/lib/schema.d.ts --no-enums --root-types --root-types-no-schema-prefix --make-paths-enum"
   },
   "devDependencies": {
     "@catppuccin/tailwindcss": "^1.0.0",

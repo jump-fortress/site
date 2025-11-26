@@ -3,18 +3,20 @@
 
   import rocket from '$lib/assets/static/classes/rocket.png';
   import sticky from '$lib/assets/static/classes/sticky.png';
-  import { classToEnum } from '$lib/enums';
   import { Client } from '$lib/internalApi';
-  import type { PathsInternalPlayersPreferredclassClassPutParametersPathClass as Class } from '$lib/schema.d.ts';
+  import type { operations } from '$lib/schema';
 
   const style =
     'filter: brightness(0) saturate(100%) invert(97%) sepia(49%) saturate(6023%) hue-rotate(179deg) brightness(100%) contrast(108%)';
 
-  async function handleUpdatePreferredClass(selectedClass: Class) {
+  async function handleUpdatePreferredClass(selectedClass: string) {
     const { response } = await Client.PUT('/internal/players/preferredclass/{class}', {
       fetch: fetch,
       params: {
-        path: { class: selectedClass }
+        path: {
+          class:
+            selectedClass as operations['set-player-preferredclass']['parameters']['path']['class']
+        }
       }
     });
 
@@ -31,7 +33,7 @@
   <button
     onclick={() => {
       selected_class = 'Soldier';
-      handleUpdatePreferredClass(classToEnum('Soldier'));
+      handleUpdatePreferredClass('Soldier');
     }}
     class="{selected_class === 'Soldier'
       ? 'bg-jfgray-900 opacity-100'
@@ -42,7 +44,7 @@
   <button
     onclick={() => {
       selected_class = 'Demo';
-      handleUpdatePreferredClass(classToEnum('Demo'));
+      handleUpdatePreferredClass('Demo');
     }}
     class="{selected_class === 'Demo'
       ? 'bg-jfgray-900 opacity-100'

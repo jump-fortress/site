@@ -13,6 +13,7 @@ declare global {
       session?: Session | null;
       player?: PlayerProfile;
       players?: PlayerProfile[];
+      fullPlayer?: FullPlayer;
       fullPlayers?: FullPlayer[];
     }
     // interface PageState {}

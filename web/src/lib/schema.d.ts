@@ -4,7 +4,7 @@
  */
 
 export interface paths {
-  '/internal/moderator/players': {
+  '/internal/moderator/players/all': {
     parameters: {
       query?: never;
       header?: never;
@@ -24,7 +24,47 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/internal/moderator/players/displayname/{id}/{name}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /**
+     * Set a Player's display name
+     * @description set a player's display name
+     */
+    put: operations['set-player-displayname'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/internal/players': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Get the current session's Player
+     * @description get the current session's player
+     */
+    get: operations['get-player'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/internal/players/all': {
     parameters: {
       query?: never;
       header?: never;
@@ -53,10 +93,30 @@ export interface paths {
     };
     get?: never;
     /**
-     * Set a Player's preferred class
-     * @description set a player's preferred class by class name
+     * Set Player's preferred class
+     * @description set the current session player's preferred class by class name
      */
-    put: operations['set-preferredclass'];
+    put: operations['set-player-preferredclass'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/internal/players/preferredlauncher/{launcher}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /**
+     * Set Player's preferred rocket launcher
+     * @description set the current session player's preferred rocket launcher by launcher name
+     */
+    put: operations['set-player-preferredlauncher'];
     post?: never;
     delete?: never;
     options?: never;
@@ -75,8 +135,48 @@ export interface paths {
      * Get a Player Profile
      * @description get info for a player's profile by ID
      */
-    get: operations['get-player-profile'];
+    get: operations['get-player-profile-by-id'];
     put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/internal/players/steamtradetoken/{url}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /**
+     * Set a Player's own Steam trade token
+     * @description set a player's own Steam trade token from their Steam Trade URL, found at https://steamcommunity.com/id/{steamid}/tradeoffers/privacy
+     */
+    put: operations['set-player-steam-trade-token'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/internal/players/tempusid/{tempus_id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /**
+     * Set a Player's own Tempus ID
+     * @description set a player's own Tempus ID, found at https://tempus2.xyz
+     */
+    put: operations['set-player-tempusid'];
     post?: never;
     delete?: never;
     options?: never;
@@ -95,7 +195,7 @@ export interface paths {
      * Get a Player
      * @description get a player by ID
      */
-    get: operations['get-player'];
+    get: operations['get-player-by-id'];
     put?: never;
     post?: never;
     delete?: never;
@@ -276,6 +376,12 @@ export interface components {
       type: string;
     };
     FullPlayer: {
+      /**
+       * Format: uri
+       * @description A URL to the JSON Schema for this object.
+       * @example https://example.com/schemas/FullPlayer.json
+       */
+      readonly $schema?: string;
       /** Format: date-time */
       created_at: string;
       demo_division?: string;
@@ -284,6 +390,7 @@ export interface components {
       /** Format: int64 */
       id: number;
       preferred_class: string;
+      preferred_launcher: string;
       role: string;
       soldier_division?: string;
       steam_avatar_url: string;
@@ -306,6 +413,7 @@ export interface components {
       /** Format: int64 */
       id: number;
       preferred_class: string;
+      preferred_launcher: string;
       role: string;
       soldier_division?: string;
       steam_avatar_url: string;
@@ -335,6 +443,7 @@ export interface components {
       /** Format: int64 */
       id: number;
       preferred_class: string;
+      preferred_launcher: string;
       role: string;
       soldier_division?: string;
       soldier_points: components['schemas']['PlayerPoints'];
@@ -415,6 +524,67 @@ export interface operations {
       };
     };
   };
+  'set-player-displayname': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description player ID */
+        id: number;
+        /** @description new display name */
+        name: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description No Content */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Error */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ErrorModel'];
+        };
+      };
+    };
+  };
+  'get-player': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['FullPlayer'];
+        };
+      };
+      /** @description Error */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ErrorModel'];
+        };
+      };
+    };
+  };
   'get-all-players': {
     parameters: {
       query?: never;
@@ -444,12 +614,12 @@ export interface operations {
       };
     };
   };
-  'set-preferredclass': {
+  'set-player-preferredclass': {
     parameters: {
       query?: never;
       header?: never;
       path: {
-        class: PathsInternalPlayersPreferredclassClassPutParametersPathClass;
+        class: 'Soldier' | 'Demo';
       };
       cookie?: never;
     };
@@ -473,7 +643,36 @@ export interface operations {
       };
     };
   };
-  'get-player-profile': {
+  'set-player-preferredlauncher': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        launcher: 'Stock' | 'Original' | 'Mangler' | 'None';
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description No Content */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Error */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ErrorModel'];
+        };
+      };
+    };
+  };
+  'get-player-profile-by-id': {
     parameters: {
       query?: never;
       header?: never;
@@ -505,7 +704,66 @@ export interface operations {
       };
     };
   };
-  'get-player': {
+  'set-player-steam-trade-token': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        url: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description No Content */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Error */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ErrorModel'];
+        };
+      };
+    };
+  };
+  'set-player-tempusid': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description Tempus ID */
+        tempus_id: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description No Content */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Error */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ErrorModel'];
+        };
+      };
+    };
+  };
+  'get-player-by-id': {
     parameters: {
       query?: never;
       header?: never;
@@ -736,16 +994,17 @@ export interface operations {
     };
   };
 }
-export enum PathsInternalPlayersPreferredclassClassPutParametersPathClass {
-  Soldier = 'Soldier',
-  Demo = 'Demo'
-}
 export enum ApiPaths {
-  get_all_full_players = '/internal/moderator/players',
-  get_all_players = '/internal/players',
-  set_preferredclass = '/internal/players/preferredclass/{class}',
-  get_player_profile = '/internal/players/profile/{id}',
-  get_player = '/internal/players/{id}',
+  get_all_full_players = '/internal/moderator/players/all',
+  set_player_displayname = '/internal/moderator/players/displayname/{id}/{name}',
+  get_player = '/internal/players',
+  get_all_players = '/internal/players/all',
+  set_player_preferredclass = '/internal/players/preferredclass/{class}',
+  set_player_preferredlauncher = '/internal/players/preferredlauncher/{launcher}',
+  get_player_profile_by_id = '/internal/players/profile/{id}',
+  set_player_steam_trade_token = '/internal/players/steamtradetoken/{url}',
+  set_player_tempusid = '/internal/players/tempusid/{tempus_id}',
+  get_player_by_id = '/internal/players/{id}',
   readyz = '/internal/readyz',
   session = '/internal/session',
   sign_out = '/internal/session/sign-out',
