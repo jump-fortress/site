@@ -161,6 +161,17 @@ func registerRoutes() {
 		Middlewares: requireUserSessionMiddlewares,
 	}, HandlePutPlayerSteamTradeToken)
 
+	huma.Register(internalApi, huma.Operation{
+		Method:      http.MethodPut,
+		Path:        "/players/steamavatarurl",
+		OperationID: "update-player-steam-avatar-url",
+		Summary:     "Update a Player's own Steam avatar url",
+		Description: "update a player's own Steam avatar from their Steam Profile",
+		Tags:        []string{"Player"},
+		Security:    sessionCookieSecurityMap,
+		Middlewares: requireUserSessionMiddlewares,
+	}, HandlePutPlayerSteamAvatarUrl)
+
 	huma.Register(moderatorApi, huma.Operation{
 		Method:      http.MethodGet,
 		Path:        "/players/all",

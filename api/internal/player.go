@@ -6,12 +6,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"net/http"
 	"net/url"
 	"regexp"
 	"strconv"
 
 	"github.com/danielgtaylor/huma/v2"
+	"github.com/hashicorp/go-retryablehttp"
 	"github.com/spiritov/jump/api/db/queries"
 	"github.com/spiritov/jump/api/db/responses"
 )
@@ -37,20 +37,12 @@ func getSteamIDFromSteamID64(steamID64 uint64) string {
 func getTempusPlayerInfo(tempusID int64) (*responses.TempusPlayerInfo, error) {
 	url := fmt.Sprintf("https://tempus2.xyz/api/v0/players/id/%d/info", tempusID)
 
-	req, err := http.NewRequest("GET", url, nil)
+	response, err := retryablehttp.Get(url)
 	if err != nil {
 		return nil, err
 	}
 
-	req.Header.Add("Accept", "application/json, application/problem+json")
-
-	res, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return nil, err
-	}
-
-	defer res.Body.Close()
-	body, err := io.ReadAll(res.Body)
+	body, err := io.ReadAll(response.Body)
 	if err != nil {
 		return nil, err
 	}
@@ -351,6 +343,30 @@ func HandlePutPlayerTempusID(ctx context.Context, input *responses.TempusIDInput
 			Valid: true,
 		},
 		SteamId64: steamID64_string,
+	}); err != nil {
+		return nil, err
+	}
+
+	return nil, nil
+}
+
+func HandlePutPlayerSteamAvatarUrl(ctx context.Context, _ *struct{}) (*struct{}, error) {
+	principal, ok := GetPrincipal(ctx)
+	if !ok {
+		return nil, huma.Error401Unauthorized("a session is required")
+	}
+
+	steamProfile, err := FetchProfileSummary(principal.SteamID)
+	if err != nil {
+		return nil, huma.Error503ServiceUnavailable("Couldn't get your profile from Steam. If Steam isn't down, please try again.")
+	}
+
+	if err = responses.Queries.UpdatePlayerSteamAvatarURLFromSteamID64(ctx, queries.UpdatePlayerSteamAvatarURLFromSteamID64Params{
+		SteamAvatarUrl: sql.NullString{
+			String: steamProfile.AvatarFullURL,
+			Valid:  true,
+		},
+		SteamId64: steamProfile.SteamID,
 	}); err != nil {
 		return nil, err
 	}
