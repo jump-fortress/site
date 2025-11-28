@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/danielgtaylor/huma/v2"
+	"github.com/escrow-tf/steam/steamid"
 	"github.com/gofrs/uuid"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/rotisserie/eris"
@@ -44,6 +45,7 @@ var (
 	discoveryCache *NoOpDiscoveryCache
 )
 
+// todo: use steamid.SteamID
 type Principal struct {
 	SteamID uint64
 	TokenID uuid.UUID
@@ -126,26 +128,31 @@ func handleSteamCallback(ctx context.Context, input *CallbackInput) (*CallbackOu
 
 	// the openid id is in the format `https?://steamcommunity.com/openid/id/[0-9]+`. We only care about the
 	// last part, which is the user's Steam ID 64.
-	var steamID string
+	var steamID64 string
 	if strings.HasPrefix(id, "https") {
-		_, err = fmt.Sscanf(id, "https://steamcommunity.com/openid/id/%s", &steamID)
+		_, err = fmt.Sscanf(id, "https://steamcommunity.com/openid/id/%s", &steamID64)
 	} else {
-		_, err = fmt.Sscanf(id, "http://steamcommunity.com/openid/id/%s", &steamID)
+		_, err = fmt.Sscanf(id, "http://steamcommunity.com/openid/id/%s", &steamID64)
 	}
-
 	if err != nil {
 		slog.Logger.Error("Verified openid callback but couldn't parse Steam ID 64 from ID.", "id", id, "error", err)
 		return nil, eris.Wrap(err, "Error parsing Steam ID 64 from ID")
 	}
 
+	steamID, err := steamid.ParseSteamID64(steamID64)
+	if err != nil {
+		slog.Logger.Error("Verified openid callback but couldn't parse SteamID64 to a full SteamID")
+		return nil, eris.Wrap(err, "Error parsing SteamID64 to full SteamID")
+	}
+
 	// we need the steam ID as a string, but we want to ensure that it is a valid uint64 first
-	if _, parseErr := strconv.ParseUint(steamID, 10, 64); parseErr != nil {
+	if _, parseErr := strconv.ParseUint(steamID64, 10, 64); parseErr != nil {
 		slog.Logger.Error("Verified openid callback but couldn't parse Steam ID 64 from ID.", "id", id, "error", parseErr)
 		return nil, eris.Wrap(parseErr, "Error parsing Steam ID 64")
 	}
 
 	// if the user doesn't already exist in the database, we need to ensure they exist
-	player, dbErr := db.Queries.InsertPlayer(ctx, steamID)
+	player, dbErr := db.Queries.InsertPlayer(ctx, steamID64)
 	if dbErr != nil {
 		return nil, eris.Wrap(dbErr, "Error creating new user")
 	}
@@ -169,7 +176,7 @@ func handleSteamCallback(ctx context.Context, input *CallbackInput) (*CallbackOu
 	// AddSession will create a new session UUIDv7 token entry and link it to the user.
 	session, dbErr := db.Queries.AddSession(ctx, queries.AddSessionParams{
 		TokenID:   uuid.Must(uuid.NewV7()).String(),
-		SteamId64: steamID,
+		SteamId64: steamID64,
 	})
 	if dbErr != nil {
 		return nil, eris.Wrap(dbErr, "Error creating new session")
@@ -177,10 +184,11 @@ func handleSteamCallback(ctx context.Context, input *CallbackInput) (*CallbackOu
 
 	// There are a handful of "claims" we need to specify in the JWT. The subject and ID are the most
 	// important, since they specify the user's authenticated steam ID and the token's UUID.
+	// todo: use steamid struct for claim subject
 	expiresAt := session.CreatedAt.Add(SessionDuration)
 	claims := jwt.RegisteredClaims{
 		Issuer:    SessionIssuer,
-		Subject:   steamID,
+		Subject:   steamID64,
 		Audience:  []string{SessionAudience},
 		ExpiresAt: jwt.NewNumericDate(expiresAt),
 		NotBefore: jwt.NewNumericDate(session.CreatedAt.Add(-SessionJitter)),

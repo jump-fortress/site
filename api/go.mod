@@ -12,7 +12,11 @@ require (
 	github.com/yohcop/openid-go v1.0.1
 )
 
-require github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
+require (
+	github.com/escrow-tf/steam v0.0.0-20251105072554-5d32165389d1 // indirect
+	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
+	google.golang.org/protobuf v1.36.10 // indirect
+)
 
 require (
 	github.com/gofrs/uuid v4.4.0+incompatible
