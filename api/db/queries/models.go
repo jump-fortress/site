@@ -104,6 +104,16 @@ type PlayerPoint struct {
 	Last3Monthly int64  `json:"last_3_monthly"`
 }
 
+type PlayerRequest struct {
+	ID        int64          `json:"id"`
+	PlayerID  int64          `json:"player_id"`
+	Type      string         `json:"type"`
+	Content   sql.NullString `json:"content"`
+	Pending   bool           `json:"pending"`
+	Accepted  bool           `json:"accepted"`
+	CreatedAt time.Time      `json:"created_at"`
+}
+
 type PlayerTime struct {
 	ID            int64     `json:"id"`
 	CompetitionID int64     `json:"competition_id"`

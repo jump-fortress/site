@@ -1,4 +1,5 @@
 -- initial schema
+-- todo: use a steam id as primary key, get rid of player id
 
 -- player
 create table player(
@@ -49,6 +50,22 @@ create table player_points(
 
   check (class in ('Soldier', 'Demo')),
   unique (class, player_id)
+);
+
+-- requests for a player pending approval
+-- relates to player (id)
+create table player_request(
+  id integer not null primary key autoincrement,
+  player_id integer not null,
+  type text not null,
+  content text,
+  pending boolean not null default true,
+  accepted boolean not null default false,
+
+  created_at datetime not null default current_timestamp,
+
+  foreign key (player_id) references player (id),
+  check (type in ('Display Name Change', 'Soldier Placement', 'Demo Placement'))
 );
 
 -- time for a competition's player

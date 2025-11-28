@@ -247,6 +247,22 @@ func (q *Queries) UpdatePlayerSoldierDivision(ctx context.Context, arg UpdatePla
 	return err
 }
 
+const updatePlayerSteamAvatarURLFromSteamID64 = `-- name: UpdatePlayerSteamAvatarURLFromSteamID64 :exec
+update player
+  set steam_avatar_url = ?
+  where steam_id64 = ?
+`
+
+type UpdatePlayerSteamAvatarURLFromSteamID64Params struct {
+	SteamAvatarUrl sql.NullString `json:"steam_avatar_url"`
+	SteamId64      string         `json:"steam_id64"`
+}
+
+func (q *Queries) UpdatePlayerSteamAvatarURLFromSteamID64(ctx context.Context, arg UpdatePlayerSteamAvatarURLFromSteamID64Params) error {
+	_, err := q.db.ExecContext(ctx, updatePlayerSteamAvatarURLFromSteamID64, arg.SteamAvatarUrl, arg.SteamId64)
+	return err
+}
+
 const updatePlayerSteamTradeTokenFromSteamID64 = `-- name: UpdatePlayerSteamTradeTokenFromSteamID64 :exec
 update player
   set steam_trade_token = ?
