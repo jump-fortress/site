@@ -141,14 +141,14 @@ func registerRoutes() {
 
 	huma.Register(internalApi, huma.Operation{
 		Method:      http.MethodPut,
-		Path:        "/players/tempusid/{tempus_id}",
-		OperationID: "set-player-tempusid",
+		Path:        "/players/tempusinfo/{tempus_id}",
+		OperationID: "set-player-tempusinfo",
 		Summary:     "Set a Player's own Tempus ID",
-		Description: "set a player's own Tempus ID, found at https://tempus2.xyz",
+		Description: "set a player's own Tempus ID, country, and country code, found at https://tempus2.xyz",
 		Tags:        []string{"Player"},
 		Security:    sessionCookieSecurityMap,
 		Middlewares: requireUserSessionMiddlewares,
-	}, HandlePutSelfTempusID)
+	}, HandlePutSelfTempusInfo)
 
 	huma.Register(internalApi, huma.Operation{
 		Method:      http.MethodPut,

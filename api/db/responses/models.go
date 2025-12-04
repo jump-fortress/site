@@ -98,9 +98,15 @@ type TempusIDInput struct {
 }
 
 type TempusPlayerInfo struct {
-	TempusName string `json:"name"`
-	TempusID   int64  `json:"id"`
-	SteamID    string `json:"steamid"`
+	TempusName  string `json:"name"`
+	TempusID    int64  `json:"id"`
+	SteamID     string `json:"steamid"`
+	Country     string `json:"country"`
+	CountryCode string `json:"country_code"`
+}
+
+type TempusResponsePlayerInfo struct {
+	PlayerInfo TempusPlayerInfo `json:"player_info"`
 }
 
 type SteamTradeURL struct {

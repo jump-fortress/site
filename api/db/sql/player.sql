@@ -27,9 +27,11 @@ update player
   set steam_trade_token = ?
   where id = ?;
 
--- name: UpdatePlayerTempusID :exec
+-- name: UpdatePlayerTempusInfo :exec
 update player
-  set tempus_id = ?
+  set tempus_id = ?,
+  tempus_country = ?,
+  tempus_country_code = ?
   where id = ?;
 
 -- name: UpdatePlayerDisplayName :exec

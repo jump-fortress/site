@@ -13,7 +13,7 @@ import (
 const insertPlayer = `-- name: InsertPlayer :one
 insert or ignore into player (id)
   values (?)
-  returning id, role, steam_avatar_url, steam_trade_token, tempus_id, discord_id, display_name, soldier_division, demo_division, preferred_class, preferred_launcher, created_at
+  returning id, role, steam_avatar_url, steam_trade_token, tempus_id, tempus_country, tempus_country_code, discord_id, display_name, soldier_division, demo_division, preferred_class, preferred_launcher, created_at
 `
 
 func (q *Queries) InsertPlayer(ctx context.Context, id string) (Player, error) {
@@ -25,6 +25,8 @@ func (q *Queries) InsertPlayer(ctx context.Context, id string) (Player, error) {
 		&i.SteamAvatarUrl,
 		&i.SteamTradeToken,
 		&i.TempusID,
+		&i.TempusCountry,
+		&i.TempusCountryCode,
 		&i.DiscordID,
 		&i.DisplayName,
 		&i.SoldierDivision,
@@ -37,7 +39,7 @@ func (q *Queries) InsertPlayer(ctx context.Context, id string) (Player, error) {
 }
 
 const selectAllPlayers = `-- name: SelectAllPlayers :many
-select id, role, steam_avatar_url, steam_trade_token, tempus_id, discord_id, display_name, soldier_division, demo_division, preferred_class, preferred_launcher, created_at from player
+select id, role, steam_avatar_url, steam_trade_token, tempus_id, tempus_country, tempus_country_code, discord_id, display_name, soldier_division, demo_division, preferred_class, preferred_launcher, created_at from player
 `
 
 func (q *Queries) SelectAllPlayers(ctx context.Context) ([]Player, error) {
@@ -55,6 +57,8 @@ func (q *Queries) SelectAllPlayers(ctx context.Context) ([]Player, error) {
 			&i.SteamAvatarUrl,
 			&i.SteamTradeToken,
 			&i.TempusID,
+			&i.TempusCountry,
+			&i.TempusCountryCode,
 			&i.DiscordID,
 			&i.DisplayName,
 			&i.SoldierDivision,
@@ -77,7 +81,7 @@ func (q *Queries) SelectAllPlayers(ctx context.Context) ([]Player, error) {
 }
 
 const selectPlayer = `-- name: SelectPlayer :one
-select id, role, steam_avatar_url, steam_trade_token, tempus_id, discord_id, display_name, soldier_division, demo_division, preferred_class, preferred_launcher, created_at from player
+select id, role, steam_avatar_url, steam_trade_token, tempus_id, tempus_country, tempus_country_code, discord_id, display_name, soldier_division, demo_division, preferred_class, preferred_launcher, created_at from player
   where id = ?
 `
 
@@ -90,6 +94,8 @@ func (q *Queries) SelectPlayer(ctx context.Context, id string) (Player, error) {
 		&i.SteamAvatarUrl,
 		&i.SteamTradeToken,
 		&i.TempusID,
+		&i.TempusCountry,
+		&i.TempusCountryCode,
 		&i.DiscordID,
 		&i.DisplayName,
 		&i.SoldierDivision,
@@ -170,7 +176,7 @@ update player
   set steam_avatar_url = ?,
   display_name = ?
   where id = ?
-  returning id, role, steam_avatar_url, steam_trade_token, tempus_id, discord_id, display_name, soldier_division, demo_division, preferred_class, preferred_launcher, created_at
+  returning id, role, steam_avatar_url, steam_trade_token, tempus_id, tempus_country, tempus_country_code, discord_id, display_name, soldier_division, demo_division, preferred_class, preferred_launcher, created_at
 `
 
 type UpdatePlayerSessionInfoParams struct {
@@ -188,6 +194,8 @@ func (q *Queries) UpdatePlayerSessionInfo(ctx context.Context, arg UpdatePlayerS
 		&i.SteamAvatarUrl,
 		&i.SteamTradeToken,
 		&i.TempusID,
+		&i.TempusCountry,
+		&i.TempusCountryCode,
 		&i.DiscordID,
 		&i.DisplayName,
 		&i.SoldierDivision,
@@ -247,18 +255,27 @@ func (q *Queries) UpdatePlayerSteamTradeToken(ctx context.Context, arg UpdatePla
 	return err
 }
 
-const updatePlayerTempusID = `-- name: UpdatePlayerTempusID :exec
+const updatePlayerTempusInfo = `-- name: UpdatePlayerTempusInfo :exec
 update player
-  set tempus_id = ?
+  set tempus_id = ?,
+  tempus_country = ?,
+  tempus_country_code = ?
   where id = ?
 `
 
-type UpdatePlayerTempusIDParams struct {
-	TempusID sql.NullInt64 `json:"tempus_id"`
-	ID       string        `json:"id"`
+type UpdatePlayerTempusInfoParams struct {
+	TempusID          sql.NullInt64  `json:"tempus_id"`
+	TempusCountry     sql.NullString `json:"tempus_country"`
+	TempusCountryCode sql.NullString `json:"tempus_country_code"`
+	ID                string         `json:"id"`
 }
 
-func (q *Queries) UpdatePlayerTempusID(ctx context.Context, arg UpdatePlayerTempusIDParams) error {
-	_, err := q.db.ExecContext(ctx, updatePlayerTempusID, arg.TempusID, arg.ID)
+func (q *Queries) UpdatePlayerTempusInfo(ctx context.Context, arg UpdatePlayerTempusInfoParams) error {
+	_, err := q.db.ExecContext(ctx, updatePlayerTempusInfo,
+		arg.TempusID,
+		arg.TempusCountry,
+		arg.TempusCountryCode,
+		arg.ID,
+	)
 	return err
 }

@@ -19,7 +19,7 @@ var (
 )
 
 func getTempusPlayerInfo(tempusID int64) (*responses.TempusPlayerInfo, error) {
-	url := fmt.Sprintf("https://tempus2.xyz/api/v0/players/id/%d/info", tempusID)
+	url := fmt.Sprintf("https://tempus2.xyz/api/v0/players/id/%d/stats", tempusID)
 
 	response, err := retryablehttp.Get(url)
 	if err != nil {
@@ -31,12 +31,12 @@ func getTempusPlayerInfo(tempusID int64) (*responses.TempusPlayerInfo, error) {
 		return nil, err
 	}
 
-	tempusPlayer := &responses.TempusPlayerInfo{}
-	if err := json.Unmarshal(body, &tempusPlayer); err != nil {
+	tempusResponsePlayerInfo := &responses.TempusResponsePlayerInfo{}
+	if err := json.Unmarshal(body, &tempusResponsePlayerInfo); err != nil {
 		return nil, err
 	}
 
-	return tempusPlayer, nil
+	return &tempusResponsePlayerInfo.PlayerInfo, nil
 }
 
 // todo: check some nullable before using them?
@@ -262,7 +262,7 @@ func HandlePutSelfSteamTradeToken(ctx context.Context, input *responses.SteamTra
 	return nil, nil
 }
 
-func HandlePutSelfTempusID(ctx context.Context, input *responses.TempusIDInput) (*struct{}, error) {
+func HandlePutSelfTempusInfo(ctx context.Context, input *responses.TempusIDInput) (*struct{}, error) {
 	principal, ok := GetPrincipal(ctx)
 	if !ok {
 		return nil, huma.Error401Unauthorized("a session is required")
@@ -293,10 +293,18 @@ func HandlePutSelfTempusID(ctx context.Context, input *responses.TempusIDInput) 
 		return nil, huma.Error400BadRequest(fmt.Sprintf("This player's (%s) Steam ID doesn't match the Tempus ID you provided.", tempusPlayer.TempusName))
 	}
 
-	if err := responses.Queries.UpdatePlayerTempusID(ctx, queries.UpdatePlayerTempusIDParams{
+	if err := responses.Queries.UpdatePlayerTempusInfo(ctx, queries.UpdatePlayerTempusInfoParams{
 		TempusID: sql.NullInt64{
 			Int64: input.TempusID,
 			Valid: true,
+		},
+		TempusCountry: sql.NullString{
+			String: tempusPlayer.Country,
+			Valid:  true,
+		},
+		TempusCountryCode: sql.NullString{
+			String: tempusPlayer.CountryCode,
+			Valid:  true,
 		},
 		ID: principal.SteamID.String(),
 	}); err != nil {
