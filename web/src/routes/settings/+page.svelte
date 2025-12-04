@@ -19,7 +19,6 @@
 
   let { data }: { data: PageData } = $props();
   let player: FullPlayer | null = $derived(data.fullPlayer);
-  $inspect(player);
   let favoriteClass = $derived(player?.preferred_class ?? '');
   let favoriteLauncher = $derived(player?.preferred_launcher ?? '');
 </script>
