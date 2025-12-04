@@ -10,7 +10,7 @@ export const load: PageLoad = async ({ fetch, params, parent }) => {
   const { data } = await Client.GET('/internal/players/profile/{id}', {
     fetch: fetch,
     params: {
-      path: { id: Number.parseInt(params.id) }
+      path: { id: params.id }
     }
   });
 

@@ -3,8 +3,6 @@ import type { LayoutServerLoad } from './$types';
 import { Client } from '$lib/internalApi';
 import type { FullPlayer } from '$lib/schema';
 
-// todo: is it okay to run this fetch on the server, since we need to verify
-//       a player's role first?
 export const load: LayoutServerLoad = async ({ fetch, locals }) => {
   if (!locals.session) {
     redirect(302, '/');

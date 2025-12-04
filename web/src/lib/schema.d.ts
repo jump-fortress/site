@@ -144,6 +144,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/internal/players/steamavatarurl": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Update a Player's own Steam avatar url
+         * @description update a player's own Steam avatar from their Steam Profile
+         */
+        put: operations["update-player-steam-avatar-url"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/internal/players/steamtradetoken/{url}": {
         parameters: {
             query?: never;
@@ -387,14 +407,12 @@ export interface components {
             demo_division?: string;
             discord_id?: string;
             display_name: string;
-            /** Format: int64 */
-            id: number;
+            id: string;
             preferred_class: string;
             preferred_launcher: string;
             role: string;
             soldier_division?: string;
             steam_avatar_url: string;
-            steam_id64: string;
             steam_trade_token?: string;
             /** Format: int64 */
             tempus_id?: number;
@@ -410,8 +428,7 @@ export interface components {
             created_at: string;
             demo_division?: string;
             display_name: string;
-            /** Format: int64 */
-            id: number;
+            id: string;
             preferred_class: string;
             preferred_launcher: string;
             role: string;
@@ -440,8 +457,7 @@ export interface components {
             demo_division?: string;
             demo_points: components["schemas"]["PlayerPoints"];
             display_name: string;
-            /** Format: int64 */
-            id: number;
+            id: string;
             preferred_class: string;
             preferred_launcher: string;
             role: string;
@@ -459,8 +475,7 @@ export interface components {
              */
             readonly $schema?: string;
             displayName: string;
-            /** Format: int64 */
-            id: number;
+            id: string;
             role: string;
             steamAvatarUrl: string;
         };
@@ -529,8 +544,8 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                /** @description player ID */
-                id: number;
+                /** @description player ID, SteamID64 */
+                id: string;
                 /** @description new display name */
                 name: string;
             };
@@ -677,8 +692,8 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                /** @description player ID */
-                id: number;
+                /** @description player ID, SteamID64 */
+                id: string;
             };
             cookie?: never;
         };
@@ -692,6 +707,33 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["PlayerProfile"];
                 };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "update-player-steam-avatar-url": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
             /** @description Error */
             default: {
@@ -768,8 +810,8 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                /** @description player ID */
-                id: number;
+                /** @description player ID, SteamID64 */
+                id: string;
             };
             cookie?: never;
         };
@@ -1002,6 +1044,7 @@ export enum ApiPaths {
     set_player_preferredclass = "/internal/players/preferredclass/{class}",
     set_player_preferredlauncher = "/internal/players/preferredlauncher/{launcher}",
     get_player_profile_by_id = "/internal/players/profile/{id}",
+    update_player_steam_avatar_url = "/internal/players/steamavatarurl",
     set_player_steam_trade_token = "/internal/players/steamtradetoken/{url}",
     set_player_tempusid = "/internal/players/tempusid/{tempus_id}",
     get_player_by_id = "/internal/players/{id}",

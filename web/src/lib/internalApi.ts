@@ -81,7 +81,7 @@ export async function updateSteamTradeToken(url: string): Promise<InputError> {
   };
 }
 
-export async function getPlayerProfile(id: number): Promise<PlayerProfile | null> {
+export async function getPlayerProfile(id: string): Promise<PlayerProfile | null> {
   const { data } = await Client.GET('/internal/players/profile/{id}', {
     fetch: fetch,
     params: {
