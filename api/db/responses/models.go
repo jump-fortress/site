@@ -5,15 +5,11 @@ import (
 )
 
 type PlayerIDInput struct {
-	ID int64 `path:"id" minimum:"1" doc:"player ID"`
-}
-
-type PlayerSteamID64Input struct {
-	SteamID64 uint64 `path:"steam_id64" minimum:"76561197960265728" doc:"player SteamID64"`
+	ID string `path:"id" minimum:"1" doc:"player ID, SteamID64"`
 }
 
 type Player struct {
-	ID                int64     `json:"id"`
+	ID                string    `json:"id"`
 	Role              string    `json:"role"`
 	SteamAvatarUrl    string    `json:"steam_avatar_url"`
 	TempusID          int64     `json:"tempus_id,omitempty"`
@@ -26,9 +22,8 @@ type Player struct {
 }
 
 type FullPlayer struct {
-	ID                int64     `json:"id"`
+	ID                string    `json:"id"`
 	Role              string    `json:"role"`
-	SteamId64         string    `json:"steam_id64"`
 	SteamAvatarUrl    string    `json:"steam_avatar_url"`
 	SteamTradeToken   string    `json:"steam_trade_token,omitempty"`
 	TempusID          int64     `json:"tempus_id,omitempty"`
@@ -74,7 +69,7 @@ type PlayerProfileOutput struct {
 }
 
 type Session struct {
-	ID             int64  `json:"id"`
+	ID             string `json:"id"`
 	Role           string `json:"role"`
 	DisplayName    string `json:"displayName"`
 	SteamAvatarURL string `json:"steamAvatarUrl"`
@@ -94,7 +89,7 @@ type LauncherNameInput struct {
 
 // todo: regex for Name
 type DisplayNameInput struct {
-	ID   int64  `path:"id" minimum:"1" doc:"player ID"`
+	ID   string `path:"id" minimum:"1" doc:"player ID, SteamID64"`
 	Name string `path:"name" doc:"new display name"`
 }
 

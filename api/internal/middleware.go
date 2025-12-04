@@ -2,9 +2,9 @@ package internal
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/danielgtaylor/huma/v2"
+	"github.com/escrow-tf/steam/steamid"
 	"github.com/gofrs/uuid"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/spiritov/jump/api/db/responses"
@@ -46,7 +46,7 @@ func UserAuthHandler(ctx huma.Context, next func(huma.Context)) {
 	}
 
 	// so it should always succeed parsing to uint64
-	steamId, intErr := strconv.ParseUint(subjectString, 10, 64)
+	steamID, intErr := steamid.ParseSteamID64(subjectString)
 	if intErr != nil {
 		next(ctx)
 		return
@@ -77,7 +77,7 @@ func UserAuthHandler(ctx huma.Context, next func(huma.Context)) {
 	// The Principal is the user that was authenticated during the request,
 	// it can contain any information we want.
 	ctx = huma.WithValue(ctx, PrincipalContextKey, &Principal{
-		SteamID: steamId,
+		SteamID: steamID,
 		TokenID: tokenId,
 		Claims:  token.Claims.(*jwt.RegisteredClaims),
 	})
@@ -108,9 +108,8 @@ func CreateRequireUserModeratorHandler(api huma.API) func(ctx huma.Context, next
 			_ = huma.WriteErr(api, ctx, http.StatusUnauthorized, "")
 			return
 		}
-		steamID64_string := strconv.FormatUint(principal.SteamID, 10)
 
-		player, err := responses.Queries.SelectPlayerFromSteamID64(ctx.Context(), steamID64_string)
+		player, err := responses.Queries.SelectPlayer(ctx.Context(), principal.SteamID.String())
 		if err != nil {
 			_ = huma.WriteErr(api, ctx, http.StatusInternalServerError, "")
 			return
@@ -132,9 +131,8 @@ func CreateRequireUserAdminHandler(api huma.API) func(ctx huma.Context, next fun
 			_ = huma.WriteErr(api, ctx, http.StatusUnauthorized, "")
 			return
 		}
-		steamID64_string := strconv.FormatUint(principal.SteamID, 10)
 
-		player, err := responses.Queries.SelectPlayerFromSteamID64(ctx.Context(), steamID64_string)
+		player, err := responses.Queries.SelectPlayer(ctx.Context(), principal.SteamID.String())
 		if err != nil {
 			_ = huma.WriteErr(api, ctx, http.StatusInternalServerError, "")
 			return

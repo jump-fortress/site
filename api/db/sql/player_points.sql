@@ -4,5 +4,4 @@ values (?, ?);
   
 -- name: SelectPlayerPoints :one
 select * from player_points
-where player_id = ?
-and class = ?;
+where player_id = ? and class = ?;

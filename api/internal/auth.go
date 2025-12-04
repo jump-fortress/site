@@ -6,7 +6,6 @@ import (
 	"log"
 	"net/http"
 	"net/url"
-	"strconv"
 	"strings"
 	"time"
 
@@ -47,7 +46,7 @@ var (
 
 // todo: use steamid.SteamID
 type Principal struct {
-	SteamID uint64
+	SteamID steamid.SteamID
 	TokenID uuid.UUID
 	Claims  *jwt.RegisteredClaims
 }
@@ -145,14 +144,8 @@ func handleSteamCallback(ctx context.Context, input *CallbackInput) (*CallbackOu
 		return nil, eris.Wrap(err, "Error parsing SteamID64 to full SteamID")
 	}
 
-	// we need the steam ID as a string, but we want to ensure that it is a valid uint64 first
-	if _, parseErr := strconv.ParseUint(steamID64, 10, 64); parseErr != nil {
-		slog.Logger.Error("Verified openid callback but couldn't parse Steam ID 64 from ID.", "id", id, "error", parseErr)
-		return nil, eris.Wrap(parseErr, "Error parsing Steam ID 64")
-	}
-
 	// if the user doesn't already exist in the database, we need to ensure they exist
-	player, dbErr := db.Queries.InsertPlayer(ctx, steamID64)
+	player, dbErr := db.Queries.InsertPlayer(ctx, steamID.String())
 	if dbErr != nil {
 		return nil, eris.Wrap(dbErr, "Error creating new user")
 	}
@@ -162,7 +155,7 @@ func handleSteamCallback(ctx context.Context, input *CallbackInput) (*CallbackOu
 		PlayerID: player.ID,
 	})
 	if err != nil {
-		return nil, eris.Wrapf(err, "Error creating soldier points for new user %d, ID %s", player.ID, player.DisplayName.String)
+		return nil, eris.Wrapf(err, "Error creating soldier points for new user %s, ID %s", player.DisplayName.String, player.ID)
 	}
 
 	err = db.Queries.InsertPlayerPoints(ctx, queries.InsertPlayerPointsParams{
@@ -170,13 +163,13 @@ func handleSteamCallback(ctx context.Context, input *CallbackInput) (*CallbackOu
 		PlayerID: player.ID,
 	})
 	if err != nil {
-		return nil, eris.Wrapf(err, "Error creating demo points for new user %d, ID %s", player.ID, player.DisplayName.String)
+		return nil, eris.Wrapf(err, "Error creating demo points for new user %s, ID %s", player.DisplayName.String, player.ID)
 	}
 
 	// AddSession will create a new session UUIDv7 token entry and link it to the user.
 	session, dbErr := db.Queries.AddSession(ctx, queries.AddSessionParams{
-		TokenID:   uuid.Must(uuid.NewV7()).String(),
-		SteamId64: steamID64,
+		TokenID:  uuid.Must(uuid.NewV7()).String(),
+		PlayerID: steamID.String(),
 	})
 	if dbErr != nil {
 		return nil, eris.Wrap(dbErr, "Error creating new session")
@@ -188,7 +181,7 @@ func handleSteamCallback(ctx context.Context, input *CallbackInput) (*CallbackOu
 	expiresAt := session.CreatedAt.Add(SessionDuration)
 	claims := jwt.RegisteredClaims{
 		Issuer:    SessionIssuer,
-		Subject:   steamID64,
+		Subject:   steamID.String(),
 		Audience:  []string{SessionAudience},
 		ExpiresAt: jwt.NewNumericDate(expiresAt),
 		NotBefore: jwt.NewNumericDate(session.CreatedAt.Add(-SessionJitter)),
@@ -251,7 +244,7 @@ func handleSteamSignOut(ctx context.Context, _ *struct{}) (*SignOutOutput, error
 	}, nil
 }
 
-func registerAuth(sessionApi *huma.Group, internalApi *huma.Group) {
+func registerAuth(sessionApi *huma.Group) {
 	OidRealm = env.GetString("JUMP_OID_REALM")
 	oidRealmURL, err := url.Parse(OidRealm)
 	if err != nil {

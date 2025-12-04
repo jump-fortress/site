@@ -77,7 +77,7 @@ func registerRoutes() {
 	adminApi.UseMiddleware(requireUserAdminMiddlewares...)
 
 	registerHealthCheck(internalApi)
-	registerAuth(sessionApi, internalApi)
+	registerAuth(sessionApi)
 
 	huma.Register(internalApi, huma.Operation{
 		Method:      http.MethodGet,
@@ -88,7 +88,7 @@ func registerRoutes() {
 		Tags:        []string{"Player"},
 		Security:    sessionCookieSecurityMap,
 		Middlewares: requireUserSessionMiddlewares,
-	}, HandleGetPlayer)
+	}, HandleGetSelfPlayer)
 
 	huma.Register(internalApi, huma.Operation{
 		Method:      http.MethodGet,
@@ -97,7 +97,7 @@ func registerRoutes() {
 		Summary:     "Get a Player",
 		Description: "get a player by ID",
 		Tags:        []string{"Player"},
-	}, HandleGetPlayerByID)
+	}, HandleGetPlayer)
 
 	huma.Register(internalApi, huma.Operation{
 		Method:      http.MethodGet,
@@ -115,7 +115,7 @@ func registerRoutes() {
 		Summary:     "Get a Player Profile",
 		Description: "get info for a player's profile by ID",
 		Tags:        []string{"Player"},
-	}, HandleGetPlayerProfileByID)
+	}, HandleGetPlayerProfile)
 
 	huma.Register(internalApi, huma.Operation{
 		Method:      http.MethodPut,
@@ -126,7 +126,7 @@ func registerRoutes() {
 		Tags:        []string{"Player"},
 		Security:    sessionCookieSecurityMap,
 		Middlewares: requireUserSessionMiddlewares,
-	}, HandlePutPlayerPreferredClass)
+	}, HandlePutSelfPreferredClass)
 
 	huma.Register(internalApi, huma.Operation{
 		Method:      http.MethodPut,
@@ -137,7 +137,7 @@ func registerRoutes() {
 		Tags:        []string{"Player"},
 		Security:    sessionCookieSecurityMap,
 		Middlewares: requireUserSessionMiddlewares,
-	}, HandlePutPlayerPreferredLauncher)
+	}, HandlePutSelfPreferredLauncher)
 
 	huma.Register(internalApi, huma.Operation{
 		Method:      http.MethodPut,
@@ -148,7 +148,7 @@ func registerRoutes() {
 		Tags:        []string{"Player"},
 		Security:    sessionCookieSecurityMap,
 		Middlewares: requireUserSessionMiddlewares,
-	}, HandlePutPlayerTempusID)
+	}, HandlePutSelfTempusID)
 
 	huma.Register(internalApi, huma.Operation{
 		Method:      http.MethodPut,
@@ -159,7 +159,7 @@ func registerRoutes() {
 		Tags:        []string{"Player"},
 		Security:    sessionCookieSecurityMap,
 		Middlewares: requireUserSessionMiddlewares,
-	}, HandlePutPlayerSteamTradeToken)
+	}, HandlePutSelfSteamTradeToken)
 
 	huma.Register(internalApi, huma.Operation{
 		Method:      http.MethodPut,
@@ -170,7 +170,7 @@ func registerRoutes() {
 		Tags:        []string{"Player"},
 		Security:    sessionCookieSecurityMap,
 		Middlewares: requireUserSessionMiddlewares,
-	}, HandlePutPlayerSteamAvatarUrl)
+	}, HandlePutSelfSteamAvatarUrl)
 
 	huma.Register(moderatorApi, huma.Operation{
 		Method:      http.MethodGet,
@@ -180,7 +180,7 @@ func registerRoutes() {
 		Description: "get full info on all players",
 		Tags:        []string{"Moderator"},
 		Security:    sessionCookieSecurityMap,
-	}, HandleGetAllPlayersFull)
+	}, HandleGetAllFullPlayers)
 
 	huma.Register(moderatorApi, huma.Operation{
 		Method:      http.MethodPut,
@@ -190,7 +190,7 @@ func registerRoutes() {
 		Description: "set a player's display name",
 		Tags:        []string{"Moderator"},
 		Security:    sessionCookieSecurityMap,
-	}, HandlePutPlayerDisplayName)
+	}, HandlePutSelfDisplayName)
 }
 
 // A readiness endpoint is important - it can be used to inform your infrastructure

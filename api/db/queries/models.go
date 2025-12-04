@@ -42,7 +42,7 @@ type CompetitionPrize struct {
 
 type CompetitionResult struct {
 	CompetitionID int64     `json:"competition_id"`
-	PlayerID      int64     `json:"player_id"`
+	PlayerID      string    `json:"player_id"`
 	Placement     int64     `json:"placement"`
 	Points        int64     `json:"points"`
 	CreatedAt     time.Time `json:"created_at"`
@@ -80,9 +80,8 @@ type OpenidNonce struct {
 }
 
 type Player struct {
-	ID                int64          `json:"id"`
+	ID                string         `json:"id"`
 	Role              string         `json:"role"`
-	SteamId64         string         `json:"steam_id64"`
 	SteamAvatarUrl    sql.NullString `json:"steam_avatar_url"`
 	SteamTradeToken   sql.NullString `json:"steam_trade_token"`
 	TempusID          sql.NullInt64  `json:"tempus_id"`
@@ -98,7 +97,7 @@ type Player struct {
 type PlayerPoint struct {
 	ID           int64  `json:"id"`
 	Class        string `json:"class"`
-	PlayerID     int64  `json:"player_id"`
+	PlayerID     string `json:"player_id"`
 	Total        int64  `json:"total"`
 	Last9Motw    int64  `json:"last_9_motw"`
 	Last3Monthly int64  `json:"last_3_monthly"`
@@ -106,7 +105,7 @@ type PlayerPoint struct {
 
 type PlayerRequest struct {
 	ID        int64          `json:"id"`
-	PlayerID  int64          `json:"player_id"`
+	PlayerID  string         `json:"player_id"`
 	Type      string         `json:"type"`
 	Content   sql.NullString `json:"content"`
 	Pending   bool           `json:"pending"`
@@ -117,7 +116,7 @@ type PlayerRequest struct {
 type PlayerTime struct {
 	ID            int64     `json:"id"`
 	CompetitionID int64     `json:"competition_id"`
-	PlayerID      int64     `json:"player_id"`
+	PlayerID      string    `json:"player_id"`
 	RunTime       float64   `json:"run_time"`
 	Verified      bool      `json:"verified"`
 	CreatedAt     time.Time `json:"created_at"`
@@ -133,7 +132,7 @@ type Quest struct {
 
 type Session struct {
 	ID        int64     `json:"id"`
-	PlayerID  int64     `json:"player_id"`
+	PlayerID  string    `json:"player_id"`
 	TokenID   string    `json:"token_id"`
 	CreatedAt time.Time `json:"created_at"`
 }

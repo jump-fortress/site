@@ -16,7 +16,7 @@ values (?, ?)
 
 type InsertPlayerPointsParams struct {
 	Class    string `json:"class"`
-	PlayerID int64  `json:"player_id"`
+	PlayerID string `json:"player_id"`
 }
 
 func (q *Queries) InsertPlayerPoints(ctx context.Context, arg InsertPlayerPointsParams) error {
@@ -26,12 +26,11 @@ func (q *Queries) InsertPlayerPoints(ctx context.Context, arg InsertPlayerPoints
 
 const selectPlayerPoints = `-- name: SelectPlayerPoints :one
 select id, class, player_id, total, last_9_motw, last_3_monthly from player_points
-where player_id = ?
-and class = ?
+where player_id = ? and class = ?
 `
 
 type SelectPlayerPointsParams struct {
-	PlayerID int64  `json:"player_id"`
+	PlayerID string `json:"player_id"`
 	Class    string `json:"class"`
 }
 

@@ -1,8 +1,6 @@
 -- name: InsertPlayer :one
-insert into player (steam_id64)
+insert or ignore into player (id)
   values (?)
-  on conflict do update
-  set steam_id64 = steam_id64
   returning *;
 
 -- name: SelectPlayer :one
@@ -12,31 +10,27 @@ select * from player
 -- name: SelectAllPlayers :many
 select * from player;
 
--- name: SelectPlayerFromSteamID64 :one
-select * from player
-  where steam_id64 = ?;
-
 -- name: UpdatePlayerSessionInfo :one
 update player
   set steam_avatar_url = ?,
   display_name = ?
-  where steam_id64 = ?
+  where id = ?
   returning *;
 
--- name: UpdatePlayerSteamAvatarURLFromSteamID64 :exec
+-- name: UpdatePlayerSteamAvatarURL :exec
 update player
   set steam_avatar_url = ?
-  where steam_id64 = ?;
+  where id = ?;
 
--- name: UpdatePlayerSteamTradeTokenFromSteamID64 :exec
+-- name: UpdatePlayerSteamTradeToken :exec
 update player
   set steam_trade_token = ?
-  where steam_id64 = ?;
+  where id = ?;
 
--- name: UpdatePlayerTempusIDFromSteamID64 :exec
+-- name: UpdatePlayerTempusID :exec
 update player
   set tempus_id = ?
-  where steam_id64 = ?;
+  where id = ?;
 
 -- name: UpdatePlayerDisplayName :exec
 update player
@@ -53,12 +47,12 @@ update player
   set demo_division = ?
   where id = ?;
 
--- name: UpdatePlayerPreferredClassFromSteamID64 :exec
+-- name: UpdatePlayerPreferredClass :exec
 update player
   set preferred_class = ?
-  where steam_id64 = ?;
+  where id = ?;
 
--- name: UpdatePlayerPreferredLauncherFromSteamID64 :exec
+-- name: UpdatePlayerPreferredLauncher :exec
 update player
   set preferred_launcher = ?
-  where steam_id64 = ?;
+  where id = ?;

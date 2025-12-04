@@ -1,11 +1,10 @@
 -- initial schema
--- todo: use a steam id as primary key, get rid of player id
 
 -- player
 create table player(
-  id integer not null primary key autoincrement,
+  -- steam_id64
+  id text not null primary key,
   role text not null default 'Player',
-  steam_id64 text unique not null,
   -- steam_avatar_url can be non-unique for default and points shop avatars
   steam_avatar_url text,
   steam_trade_token text unique,
@@ -41,7 +40,7 @@ create table competition(
 create table player_points(
   id integer not null primary key autoincrement,
   class text not null,
-  player_id integer not null,
+  player_id text not null,
   total integer not null default 0,
   last_9_motw integer not null default 0,
   last_3_monthly integer not null default 0,
@@ -56,7 +55,7 @@ create table player_points(
 -- relates to player (id)
 create table player_request(
   id integer not null primary key autoincrement,
-  player_id integer not null,
+  player_id text not null,
   type text not null,
   content text,
   pending boolean not null default true,
@@ -73,7 +72,7 @@ create table player_request(
 create table player_time(
   id integer not null primary key autoincrement,
   competition_id integer not null,
-  player_id integer not null,
+  player_id text not null,
   run_time float not null,
   verified boolean not null,
 
@@ -95,7 +94,7 @@ create table competition_division(
 -- relates to competition (id) and player (id)
 create table competition_result(
   competition_id integer not null,
-  player_id integer not null,
+  player_id text not null,
   placement integer not null,
   points integer not null,
 
@@ -188,7 +187,7 @@ create table openid_nonce(
 -- player openid session
 create table session(
   id integer not null primary key autoincrement,
-  player_id integer not null,
+  player_id text not null,
   token_id text not null unique,
   
   created_at datetime not null default current_timestamp,

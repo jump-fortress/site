@@ -12,11 +12,11 @@ import (
 
 const getAllPendingPlayerRequests = `-- name: GetAllPendingPlayerRequests :many
 select id, player_id, type, content, pending, accepted, created_at from player_request
-  where id = ? and pending = true
+where player_id = ? and pending = true
 `
 
-func (q *Queries) GetAllPendingPlayerRequests(ctx context.Context, id int64) ([]PlayerRequest, error) {
-	rows, err := q.db.QueryContext(ctx, getAllPendingPlayerRequests, id)
+func (q *Queries) GetAllPendingPlayerRequests(ctx context.Context, playerID string) ([]PlayerRequest, error) {
+	rows, err := q.db.QueryContext(ctx, getAllPendingPlayerRequests, playerID)
 	if err != nil {
 		return nil, err
 	}
@@ -83,17 +83,16 @@ func (q *Queries) GetAllPlayerRequests(ctx context.Context) ([]PlayerRequest, er
 
 const insertPlayerRequest = `-- name: InsertPlayerRequest :exec
 insert into player_request (player_id, type, content)
-  select player.id, ?, ? from player
-  where player.steam_id64 = ?
+values (?, ?, ?)
 `
 
 type InsertPlayerRequestParams struct {
-	Type      string         `json:"type"`
-	Content   sql.NullString `json:"content"`
-	SteamId64 string         `json:"steam_id64"`
+	PlayerID string         `json:"player_id"`
+	Type     string         `json:"type"`
+	Content  sql.NullString `json:"content"`
 }
 
 func (q *Queries) InsertPlayerRequest(ctx context.Context, arg InsertPlayerRequestParams) error {
-	_, err := q.db.ExecContext(ctx, insertPlayerRequest, arg.Type, arg.Content, arg.SteamId64)
+	_, err := q.db.ExecContext(ctx, insertPlayerRequest, arg.PlayerID, arg.Type, arg.Content)
 	return err
 }

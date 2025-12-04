@@ -102,7 +102,7 @@ func HandleGetSteamProfile(ctx context.Context, _ *struct{}) (*SteamProfileOutpu
 		return nil, huma.Error401Unauthorized("a session is required")
 	}
 
-	summary, err := FetchProfileSummary(principal.SteamID)
+	summary, err := FetchProfileSummary(principal.SteamID.ID())
 	if err != nil {
 		return nil, err
 	}

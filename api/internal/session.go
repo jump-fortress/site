@@ -3,7 +3,6 @@ package internal
 import (
 	"context"
 	"database/sql"
-	"strconv"
 
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/spiritov/jump/api/db/queries"
@@ -29,8 +28,7 @@ func HandleGetSession(ctx context.Context, _ *struct{}) (*responses.SessionOutpu
 	}
 
 	// use steamID64 to derive a session from a player in the database
-	steamID64_string := strconv.FormatUint(principal.SteamID, 10)
-	player, err := responses.Queries.SelectPlayerFromSteamID64(ctx, steamID64_string)
+	player, err := responses.Queries.SelectPlayer(ctx, principal.SteamID.String())
 	if err != nil {
 		return nil, err
 	}
@@ -39,7 +37,7 @@ func HandleGetSession(ctx context.Context, _ *struct{}) (*responses.SessionOutpu
 
 	// if this player is missing fields, set these required fields with their Steam info
 	if !player.DisplayName.Valid || !player.SteamAvatarUrl.Valid {
-		steamProfileSummary, err := FetchProfileSummary(principal.SteamID)
+		steamProfileSummary, err := FetchProfileSummary(principal.SteamID.ID())
 		if err != nil {
 			return nil, err
 		}
@@ -53,7 +51,7 @@ func HandleGetSession(ctx context.Context, _ *struct{}) (*responses.SessionOutpu
 				String: steamProfileSummary.PersonaName,
 				Valid:  true,
 			},
-			SteamId64: steamID64_string,
+			ID: principal.SteamID.String(),
 		})
 		if err != nil {
 			return nil, err

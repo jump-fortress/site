@@ -11,18 +11,17 @@ import (
 
 const addSession = `-- name: AddSession :one
 insert into session (player_id, token_id)
-  select player.id, ? from player
-  where player.steam_id64 = ?
+  values (?, ?)
   returning id, player_id, token_id, created_at
 `
 
 type AddSessionParams struct {
-	TokenID   string `json:"token_id"`
-	SteamId64 string `json:"steam_id64"`
+	PlayerID string `json:"player_id"`
+	TokenID  string `json:"token_id"`
 }
 
 func (q *Queries) AddSession(ctx context.Context, arg AddSessionParams) (Session, error) {
-	row := q.db.QueryRowContext(ctx, addSession, arg.TokenID, arg.SteamId64)
+	row := q.db.QueryRowContext(ctx, addSession, arg.PlayerID, arg.TokenID)
 	var i Session
 	err := row.Scan(
 		&i.ID,
