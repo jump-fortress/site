@@ -7,7 +7,7 @@
   import TableMap from '$lib/components/TableMap.svelte';
   import type { PlayerProfile, Session } from '$lib/schema';
   import type { PageData } from './$types';
-  import Header from '$lib/components/PlayerHeader.svelte';
+  import PlayerHeader from '$lib/components/PlayerHeader.svelte';
 
   let { data }: { data: PageData } = $props();
   let session: Session | null = $derived(data.session);
@@ -16,7 +16,7 @@
 
 <svelte:boundary {pending}>
   {#if player}
-    <Header {player} />
+    <PlayerHeader {player} />
   {:else}
     todo no player
   {/if}

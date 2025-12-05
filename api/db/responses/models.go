@@ -13,6 +13,8 @@ type Player struct {
 	Role              string    `json:"role"`
 	SteamAvatarUrl    string    `json:"steam_avatar_url"`
 	TempusID          int64     `json:"tempus_id,omitempty"`
+	Country           string    `json:"country"`
+	CountryCode       string    `json:"country_code"`
 	DisplayName       string    `json:"display_name"`
 	SoldierDivision   string    `json:"soldier_division,omitempty"`
 	DemoDivision      string    `json:"demo_division,omitempty"`
@@ -27,6 +29,8 @@ type FullPlayer struct {
 	SteamAvatarUrl    string    `json:"steam_avatar_url"`
 	SteamTradeToken   string    `json:"steam_trade_token,omitempty"`
 	TempusID          int64     `json:"tempus_id,omitempty"`
+	Country           string    `json:"country"`
+	CountryCode       string    `json:"country_code"`
 	DiscordID         string    `json:"discord_id,omitempty"`
 	DisplayName       string    `json:"display_name"`
 	SoldierDivision   string    `json:"soldier_division,omitempty"`

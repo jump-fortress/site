@@ -7,11 +7,11 @@
 </script>
 
 {#if launcher === 'Stock'}
-  <img src={stock} alt="" draggable="false" class="size-fit select-none object-none" />
+  <img src={stock} alt="" draggable="false" class="size-fit object-none select-none" />
 {:else if launcher === 'Original'}
-  <img src={original} alt="" draggable="false" class="size-fit select-none object-none" />
+  <img src={original} alt="" draggable="false" class="size-fit object-none select-none" />
 {:else if launcher === 'Mangler'}
-  <img src={mangler} alt="" draggable="false" class="size-fit select-none object-none" />
+  <img src={mangler} alt="" draggable="false" class="size-fit object-none select-none" />
 {/if}
 
 <style>

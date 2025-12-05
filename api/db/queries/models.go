@@ -85,8 +85,8 @@ type Player struct {
 	SteamAvatarUrl    sql.NullString `json:"steam_avatar_url"`
 	SteamTradeToken   sql.NullString `json:"steam_trade_token"`
 	TempusID          sql.NullInt64  `json:"tempus_id"`
-	TempusCountry     sql.NullString `json:"tempus_country"`
-	TempusCountryCode sql.NullString `json:"tempus_country_code"`
+	Country           sql.NullString `json:"country"`
+	CountryCode       sql.NullString `json:"country_code"`
 	DiscordID         sql.NullString `json:"discord_id"`
 	DisplayName       sql.NullString `json:"display_name"`
 	SoldierDivision   sql.NullString `json:"soldier_division"`

@@ -24,9 +24,9 @@
 <div class="flex h-12 items-center gap-2">
   <label
     for={label}
-    class="border-jfgray-700 focus-within:border-ctp-lavender-50/50 hover:border-ctp-lavender-50/50 relative mt-2 w-80 text-nowrap border-2 transition-colors"
+    class="relative mt-2 w-80 border-2 border-jfgray-700 text-nowrap transition-colors focus-within:border-ctp-lavender-50/50 hover:border-ctp-lavender-50/50"
   >
-    <span class="bg-jfgray-800 leading-1 absolute -top-0.5 left-2 px-1 text-base">{label} </span>
+    <span class="absolute -top-0.5 left-2 bg-jfgray-800 px-1 text-base leading-1">{label} </span>
     <div class="flex h-10">
       <input
         bind:value
@@ -37,7 +37,7 @@
             if (error) response = error;
           }
         }}
-        class="bg-jfgray-800 text-ctp-lavender focus:bg-jfgray-900 group peer size-full bg-clip-padding px-1 transition-colors"
+        class="group peer size-full bg-jfgray-800 bg-clip-padding px-1 text-ctp-lavender transition-colors focus:bg-jfgray-900"
         id={label}
         type="text"
       />
@@ -46,10 +46,10 @@
         onclick={async () => {
           response = submitInput(value);
         }}
-        class="bg-jfgray-800 peer-focus:bg-jfgray-800 flex h-full w-12 cursor-pointer items-center justify-center"
+        class="flex h-full w-12 cursor-pointer items-center justify-center bg-jfgray-800 peer-focus:bg-jfgray-800"
       >
         {#await response}
-          <span in:fade class="icon-[ri--loader-3-line] text-ctp-lavender animate-spin"></span>
+          <span in:fade class="icon-[ri--loader-3-line] animate-spin text-ctp-lavender"></span>
         {:then response}
           <span
             in:fade

@@ -8,6 +8,8 @@
   import type { FullPlayer, PlayerProfile, Session } from '$lib/schema';
   import Header from '../../../lib/components/PlayerHeader.svelte';
   import { getPlayerProfile } from '$lib/internalApi';
+  import Flag from '$lib/components/Flag.svelte';
+  import Input from '$lib/components/input/Input.svelte';
 
   let route = $derived(page.url.pathname.substring(1));
 
@@ -19,7 +21,7 @@
 
   // todo: show unset profile
   let selected = $state(false);
-  let selectedPlayer: number = $state(0);
+  let selectedPlayer: string = $state('');
 
   let playerProfile: PlayerProfile | null = $derived(null);
 </script>
@@ -42,15 +44,17 @@
             return player.id === selectedPlayer;
           })}
         />
-        <div class="flex flex-col">
+        <DataSection title="Actions">
+          <Input label={'update display name'} submitInput={() => {}} />
           <span>update display name</span>
           <span>update soldier division</span>
           <span>update demo division</span>
-        </div>
+        </DataSection>
       {/if}
       <Table data={fullPlayers}>
         {#snippet header()}
-          <th>id</th>
+          <th class="w-48">steam id</th>
+          <th class="w-10"></th>
           <th></th>
 
           <th class="w-24">soldier</th>
@@ -58,7 +62,8 @@
           <th class="w-46">join date</th>
         {/snippet}
         {#snippet row(p: FullPlayer)}
-          <td class="w-12">{p.id}</td>
+          <td>{p.id}</td>
+          <td><Flag code={p.country_code} /></td>
           <td
             onclick={async () => {
               selected = true;
@@ -77,6 +82,7 @@
     </svelte:boundary>
   </DataSection>
 {/if}
+todo: pending requests.. also separate these to 3 pages
 
 {#snippet pending()}
   todo loading

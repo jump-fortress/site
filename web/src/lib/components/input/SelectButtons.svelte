@@ -27,7 +27,7 @@
         src={option.src}
         alt=""
         draggable="false"
-        class="{option.value === 'None' ? 'object-none' : 'object-contain'} pt-3 pb-2"
+        class="{option.value === 'None' ? 'object-none' : 'object-contain'} px-2 pt-3 pb-2"
       />
     </button>
   {/each}

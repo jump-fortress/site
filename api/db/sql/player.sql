@@ -30,8 +30,8 @@ update player
 -- name: UpdatePlayerTempusInfo :exec
 update player
   set tempus_id = ?,
-  tempus_country = ?,
-  tempus_country_code = ?
+  country = ?,
+  country_code = ?
   where id = ?;
 
 -- name: UpdatePlayerDisplayName :exec

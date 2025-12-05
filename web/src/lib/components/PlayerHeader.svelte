@@ -10,6 +10,7 @@
   import Points from '../../routes/players/[id]/Points.svelte';
   import type { FullPlayer, PlayerProfile } from '$lib/schema';
   import RocketLauncher from '$lib/components/RocketLauncher.svelte';
+  import Flag from './Flag.svelte';
 
   type Props = {
     player: PlayerProfile;
@@ -20,7 +21,7 @@
   let selected_class = $derived(player.preferred_class);
 </script>
 
-<div class="h-46 relative flex gap-4">
+<div class="relative flex h-46 gap-4">
   <img class="size-46" src={player.steam_avatar_url} alt="" />
   <!--
 	<img
@@ -32,34 +33,15 @@
   -->
 
   <div class="flex h-full flex-col justify-between">
-    <!-- name and div -->
-    <div class="flex items-center">
-      <div class="flex flex-col">
+    <!-- name, div, country -->
+    <div class="flex flex-col">
+      <div class="flex items-end gap-2">
         {#if fullPlayer}
           <a href="/players/{fullPlayer.id}" class="w-fit"
             ><span class="text-3xl/8 hover:underline">{player.display_name}</span></a
           >
         {:else}
           <span class="text-3xl/8">{player.display_name}</span>
-        {/if}
-        {#if selected_class === 'Soldier'}
-          <!-- no division -->
-          {#if player.soldier_division}
-            <span class="text-division-{player.soldier_division.toLowerCase()}">
-              {player.soldier_division} Soldier
-            </span>
-          {:else}
-            <span>Unranked Soldier</span>
-          {/if}
-        {:else}
-          <!-- no division -->
-          {#if player.demo_division}
-            <span class="text-division-{player.demo_division.toLowerCase()}">
-              {player.demo_division} Demo
-            </span>
-          {:else}
-            <span>Unranked Demo</span>
-          {/if}
         {/if}
         {#if fullPlayer && fullPlayer.discord_id}
           <div class="flex items-center gap-1 opacity-75">
@@ -68,14 +50,36 @@
           </div>
         {/if}
       </div>
+      {#if selected_class === 'Soldier'}
+        <!-- no division -->
+        {#if player.soldier_division}
+          <span class="text-division-{player.soldier_division.toLowerCase()}">
+            {player.soldier_division} Soldier
+          </span>
+        {:else}
+          <span class="text-ctp-lavender-50/75">Divisionless Soldier</span>
+        {/if}
+      {:else}
+        <!-- no division -->
+        {#if player.demo_division}
+          <span class="text-division-{player.demo_division.toLowerCase()}">
+            {player.demo_division} Demo
+          </span>
+        {:else}
+          <span class="text-ctp-lavender-50/75">Divisionless Demo</span>
+        {/if}
+      {/if}
 
-      <div class="rotate-12">
-        <RocketLauncher launcher={player.preferred_launcher} />
-      </div>
+      {#if player.country}
+        <div class="flex gap-1">
+          <Flag code={player.country_code} />
+          <span class="text-base text-ctp-lavender-50/75">{player.country}</span>
+        </div>
+      {/if}
     </div>
 
     <!-- links and points -->
-    <div class="flex flex-col gap-2">
+    <div class="flex flex-col gap-1">
       {#if player.tempus_id}
         <div class="flex">
           {@render externalLink(
@@ -98,7 +102,12 @@
         </div>
       {/if}
 
-      <Points {selected_class} soldier={player.soldier_points} demo={player.demo_points} />
+      <Points
+        {selected_class}
+        soldier={player.soldier_points}
+        demo={player.demo_points}
+        launcher={player.preferred_launcher}
+      />
     </div>
   </div>
 
@@ -109,7 +118,7 @@
 {#snippet externalLink(src: string, href: string, name: string)}
   <a
     {href}
-    class="text-ctp-blue/50 hover:text-ctp-blue flex items-end gap-1 pl-2 decoration-1 transition-colors first:pl-0 hover:underline"
+    class="flex items-end gap-1 pl-2 text-base text-ctp-blue/50 decoration-1 transition-colors first:pl-0 hover:text-ctp-blue hover:underline"
   >
     <img {src} class="size-6" alt="" />
     <span class="flex">{name}</span>

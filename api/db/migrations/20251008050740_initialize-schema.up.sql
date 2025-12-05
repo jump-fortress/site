@@ -9,6 +9,8 @@ create table player(
   steam_avatar_url text,
   steam_trade_token text unique,
   tempus_id integer unique,
+  country text,
+  country_code text,
   discord_id text unique,
   display_name text,
   soldier_division text,

@@ -36,7 +36,7 @@ export async function updatePreferredLauncher(selectedLauncher: string): Promise
 }
 
 export async function updateTempusID(tempusId: number): Promise<InputError> {
-  const { error } = await Client.PUT('/internal/players/tempusid/{tempus_id}', {
+  const { error } = await Client.PUT('/internal/players/tempusinfo/{tempus_id}', {
     fetch: fetch,
     params: {
       path: {

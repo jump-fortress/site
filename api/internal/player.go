@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"regexp"
+	"strings"
 
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/hashicorp/go-retryablehttp"
@@ -46,6 +47,8 @@ func playerResponseFromPlayer(player queries.Player) responses.Player {
 		Role:              player.Role,
 		SteamAvatarUrl:    player.SteamAvatarUrl.String,
 		TempusID:          player.TempusID.Int64,
+		Country:           player.Country.String,
+		CountryCode:       player.CountryCode.String,
 		DisplayName:       player.DisplayName.String,
 		SoldierDivision:   player.SoldierDivision.String,
 		DemoDivision:      player.DemoDivision.String,
@@ -62,6 +65,8 @@ func fullPlayerResponseFromPlayer(player queries.Player) responses.FullPlayer {
 		SteamAvatarUrl:    player.SteamAvatarUrl.String,
 		SteamTradeToken:   player.SteamTradeToken.String,
 		TempusID:          player.TempusID.Int64,
+		Country:           player.Country.String,
+		CountryCode:       player.CountryCode.String,
 		DiscordID:         player.DiscordID.String,
 		DisplayName:       player.DisplayName.String,
 		SoldierDivision:   player.SoldierDivision.String,
@@ -298,12 +303,12 @@ func HandlePutSelfTempusInfo(ctx context.Context, input *responses.TempusIDInput
 			Int64: input.TempusID,
 			Valid: true,
 		},
-		TempusCountry: sql.NullString{
+		Country: sql.NullString{
 			String: tempusPlayer.Country,
 			Valid:  true,
 		},
-		TempusCountryCode: sql.NullString{
-			String: tempusPlayer.CountryCode,
+		CountryCode: sql.NullString{
+			String: strings.ToLower(tempusPlayer.CountryCode),
 			Valid:  true,
 		},
 		ID: principal.SteamID.String(),
