@@ -9,7 +9,6 @@
   import ClassSelect from './ClassSelect.svelte';
   import Points from '../../routes/players/[id]/Points.svelte';
   import type { FullPlayer, PlayerProfile } from '$lib/schema';
-  import RocketLauncher from '$lib/components/RocketLauncher.svelte';
   import Flag from './Flag.svelte';
 
   type Props = {
