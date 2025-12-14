@@ -11,6 +11,7 @@ import (
 
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/hashicorp/go-retryablehttp"
+	"github.com/rotisserie/eris"
 	"github.com/spiritov/jump/api/db/queries"
 	"github.com/spiritov/jump/api/db/responses"
 )
@@ -210,7 +211,7 @@ func HandleGetAllFullPlayers(ctx context.Context, _ *struct{}) (*responses.ManyF
 	return resp, nil
 }
 
-func HandlePutSelfDisplayName(ctx context.Context, input *responses.DisplayNameInput) (*struct{}, error) {
+func HandlePutPlayerDisplayName(ctx context.Context, input *responses.DisplayNameInput) (*struct{}, error) {
 	// todo: check for string validity
 	if len(input.Name) > 32 {
 		return nil, huma.Error400BadRequest("display name is too long (max 32 characters)")
