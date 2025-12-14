@@ -342,3 +342,16 @@ func HandlePutSelfSteamAvatarUrl(ctx context.Context, _ *struct{}) (*struct{}, e
 
 	return nil, nil
 }
+
+// todo: implement
+func HandlePutSelfPlayerRequest(ctx context.Context, input *responses.PlayerRequestInput) (*struct{}, error) {
+	// check for an existing request..
+
+	// if display name change
+	// do it
+
+	// if division placement
+	// check for linked tempus id, and make sure player doesn't have the division they're requesting
+	// do it
+	return nil, eris.New("todo")
+}

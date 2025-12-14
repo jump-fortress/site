@@ -116,3 +116,8 @@ type TempusResponsePlayerInfo struct {
 type SteamTradeURL struct {
 	Url string `path:"url"`
 }
+
+type PlayerRequestInput struct {
+	RequestType string `path:"request_type" enum:"Display Name Change,Soldier Placement,Demo Placement"`
+	Body        string `path:"body" required:"false"`
+}
