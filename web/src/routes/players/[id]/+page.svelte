@@ -11,7 +11,7 @@
 
   let { data }: { data: PageData } = $props();
   let session: Session | null = $derived(data.session);
-  let player: PlayerProfile | null = $derived(data.player);
+  let player: PlayerProfile | null = $derived(data.playerProfile);
 </script>
 
 <svelte:boundary {pending}>

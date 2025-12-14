@@ -7,11 +7,11 @@ declare global {
   namespace App {
     // interface Error {}
     interface Locals {
-      session: Session;
+      session: Session | null;
     }
     interface PageData {
       session?: Session | null;
-      player?: PlayerProfile;
+      playerProfile?: PlayerProfile;
       players?: PlayerProfile[];
       fullPlayer?: FullPlayer;
       fullPlayers?: FullPlayer[];
