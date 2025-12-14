@@ -6,10 +6,17 @@
   import PlayerPreview from '$lib/components/PlayerPreview.svelte';
   import Table from '$lib/components/table/Table.svelte';
   import type { FullPlayer, PlayerProfile, Session } from '$lib/schema';
-  import Header from '../../../lib/components/PlayerHeader.svelte';
-  import { getPlayerProfile } from '$lib/internalApi';
+  import Header from '$lib/components/PlayerHeader.svelte';
+  import {
+    getPlayerProfile,
+    updatePlayerDemoDivision,
+    updatePlayerDisplayName,
+    updatePlayerSoldierDivision
+  } from '$lib/internalApi';
   import Flag from '$lib/components/Flag.svelte';
   import Input from '$lib/components/input/Input.svelte';
+  import { divisions } from '$lib/divisions';
+  import InputSelect from '$lib/components/input/InputSelect.svelte';
 
   let route = $derived(page.url.pathname.substring(1));
 
@@ -23,7 +30,7 @@
   let selected = $state(false);
   let selectedPlayer: string = $state('');
 
-  let playerProfile: PlayerProfile | null = $derived(null);
+  let playerProfile: PlayerProfile | null = $state(null);
 </script>
 
 {#if session.role === 'Admin'}
@@ -45,10 +52,29 @@
           })}
         />
         <DataSection title="Actions">
-          <Input label={'update display name'} submitInput={() => {}} />
-          <span>update display name</span>
-          <span>update soldier division</span>
-          <span>update demo division</span>
+          <Input
+            label={'update display name'}
+            placeholder={playerProfile.display_name}
+            submitInput={(name: string) => {
+              return updatePlayerDisplayName(selectedPlayer, name);
+            }}
+          />
+          <InputSelect
+            label={'update soldier division'}
+            options={divisions}
+            placeholder={playerProfile.soldier_division}
+            submitOption={async (division: string) => {
+              return updatePlayerSoldierDivision(selectedPlayer, division);
+            }}
+          />
+          <InputSelect
+            label={'update demo division'}
+            options={divisions}
+            placeholder={playerProfile.demo_division}
+            submitOption={async (division: string) => {
+              return updatePlayerDemoDivision(selectedPlayer, division);
+            }}
+          />
         </DataSection>
       {/if}
       <Table data={fullPlayers}>
@@ -59,7 +85,7 @@
 
           <th class="w-24">soldier</th>
           <th class="w-24">demo</th>
-          <th class="w-46">join date</th>
+          <th class="w-48">join date</th>
         {/snippet}
         {#snippet row(p: FullPlayer)}
           <td>{p.id}</td>
@@ -82,7 +108,8 @@
     </svelte:boundary>
   </DataSection>
 {/if}
-todo: pending requests.. also separate these to 3 pages
+
+todo: pending player skeleton.. todo: pending requests.. also separate these to 3 pages
 
 {#snippet pending()}
   todo loading
