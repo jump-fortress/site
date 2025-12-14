@@ -19,6 +19,11 @@ declare global {
     // interface PageState {}
     // interface Platform {}
   }
+
+  interface InputError {
+    error: boolean;
+    message: string;
+  }
 }
 
 export {};
