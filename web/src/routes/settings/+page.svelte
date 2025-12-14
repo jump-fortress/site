@@ -11,11 +11,18 @@
     updatePreferredClass,
     updatePreferredLauncher,
     updateSteamTradeToken,
-    updateTempusID
+    updateSteamAvatar,
+    updateTempusID,
+    createPlayerRequest,
+    getPlayerRequests
   } from '$lib/internalApi';
   import Input from '$lib/components/input/Input.svelte';
-  import SelectButtons from '$lib/components/input/SelectButtons.svelte';
-  import type { FullPlayer } from '$lib/schema';
+  import InputButtons from '$lib/components/input/InputButtons.svelte';
+  import type { FullPlayer, SelfPlayerRequest } from '$lib/schema';
+  import InputSelect from '$lib/components/input/InputSelect.svelte';
+  import Button from '$lib/components/input/Button.svelte';
+  import Table from '$lib/components/table/Table.svelte';
+  import { Temporal } from 'temporal-polyfill';
 
   let { data }: { data: PageData } = $props();
   let player: FullPlayer | null = $derived(data.fullPlayer);
@@ -23,9 +30,29 @@
   let favoriteLauncher = $derived(player?.preferred_launcher ?? '');
 </script>
 
+<!-- todo: boundary for await -->
 {#if player}
+  {#await getPlayerRequests() then requests}
+    {#if requests.length}
+      <DataSection title={'Pending Requests'}>
+        <Table data={requests}>
+          {#snippet header()}
+            <th class="w-64">request</th>
+            <th></th>
+            <th class="w-48">submitted</th>
+          {/snippet}
+          {#snippet row(r: SelfPlayerRequest)}
+            <td>{r.request_type}</td>
+            <td class="flex h-10 items-center"><span>{r.request_string}</span></td>
+            <td>{Temporal.Instant.from(r.created_at).toLocaleString()}</td>
+          {/snippet}
+        </Table>
+      </DataSection>
+    {/if}
+  {/await}
+
   <DataSection title="Profile">
-    <SelectButtons
+    <InputButtons
       title="fav class"
       options={[
         { src: rocket, value: 'Soldier' },
@@ -33,13 +60,13 @@
       ]}
       selectedOption={favoriteClass}
       onSelect={async (value: string) => {
-        // todo: feedback or message for successful update
+        // todo: feedback or message for successful update?
         const updated = updatePreferredClass(value);
         favoriteClass = value;
       }}
     />
 
-    <SelectButtons
+    <InputButtons
       title="fav launcher"
       options={[
         { src: stock, value: 'Stock' },
@@ -54,36 +81,46 @@
       }}
     />
 
-    <div class="flex flex-col gap-2">
-      <Input
-        label={'request display name change'}
-        placeholder={player.display_name}
-        submitInput={async (val: string) => {
-          if (val === '') {
-            // todo: update with api request
-            return {
-              error: true,
-              message: 'empty input'
-            };
-          } else {
-            return {
-              error: false,
-              message: 'request sent! (is what this would say if it were implemented..)'
-            };
-          }
-        }}
-      />
+    <Input
+      label={'request display name change'}
+      placeholder={player.display_name}
+      submitInput={async (name: string) => {
+        if (name === '') {
+          // todo: update with api request
+          return {
+            error: true,
+            message: 'empty input'
+          };
+        } else {
+          return createPlayerRequest('Display Name Change', name);
+        }
+      }}
+    />
 
-      <button class="settings-button">update avatar from steam</button>
-    </div>
+    <Button
+      label={'update avatar from steam'}
+      onSelect={async () => {
+        return updateSteamAvatar();
+      }}
+    />
   </DataSection>
 
   <DataSection title={'Rank'}>
     {#if !player.soldier_division}
-      <button class="settings-button">request soldier placement</button>
+      <Button
+        label={'request soldier placement'}
+        onSelect={async () => {
+          return createPlayerRequest('Soldier Placement', 'null');
+        }}
+      />
     {/if}
     {#if !player.demo_division}
-      <button class="settings-button">request demo placement</button>
+      <Button
+        label={'request soldier placement'}
+        onSelect={async () => {
+          return createPlayerRequest('Demo Placement', 'null');
+        }}
+      />
     {/if}
   </DataSection>
 
@@ -98,7 +135,7 @@
             message: 'empty input'
           };
         } else {
-          return await updateTempusID(parseInt(val));
+          return updateTempusID(parseInt(val));
         }
       }}
     />
