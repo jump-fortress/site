@@ -10,13 +10,31 @@ import (
 	"database/sql"
 )
 
-const getAllPendingPlayerRequests = `-- name: GetAllPendingPlayerRequests :many
-select id, player_id, type, content, pending, accepted, created_at from player_request
-where player_id = ? and pending = true
+const checkPendingPlayerRequest = `-- name: CheckPendingPlayerRequest :one
+select exists (
+  select 1
+  from player_request
+  where player_id = ? and type = ? and pending = true)
 `
 
-func (q *Queries) GetAllPendingPlayerRequests(ctx context.Context, playerID string) ([]PlayerRequest, error) {
-	rows, err := q.db.QueryContext(ctx, getAllPendingPlayerRequests, playerID)
+type CheckPendingPlayerRequestParams struct {
+	PlayerID string `json:"player_id"`
+	Type     string `json:"type"`
+}
+
+func (q *Queries) CheckPendingPlayerRequest(ctx context.Context, arg CheckPendingPlayerRequestParams) (int64, error) {
+	row := q.db.QueryRowContext(ctx, checkPendingPlayerRequest, arg.PlayerID, arg.Type)
+	var column_1 int64
+	err := row.Scan(&column_1)
+	return column_1, err
+}
+
+const getAllPlayerRequests = `-- name: GetAllPlayerRequests :many
+select id, player_id, type, content, pending, accepted, created_at from player_request
+`
+
+func (q *Queries) GetAllPlayerRequests(ctx context.Context) ([]PlayerRequest, error) {
+	rows, err := q.db.QueryContext(ctx, getAllPlayerRequests)
 	if err != nil {
 		return nil, err
 	}
@@ -46,12 +64,14 @@ func (q *Queries) GetAllPendingPlayerRequests(ctx context.Context, playerID stri
 	return items, nil
 }
 
-const getAllPlayerRequests = `-- name: GetAllPlayerRequests :many
+const getPendingPlayerRequestsForPlayer = `-- name: GetPendingPlayerRequestsForPlayer :many
 select id, player_id, type, content, pending, accepted, created_at from player_request
+where player_id = ? and pending = true
 `
 
-func (q *Queries) GetAllPlayerRequests(ctx context.Context) ([]PlayerRequest, error) {
-	rows, err := q.db.QueryContext(ctx, getAllPlayerRequests)
+// may be unnecessary
+func (q *Queries) GetPendingPlayerRequestsForPlayer(ctx context.Context, playerID string) ([]PlayerRequest, error) {
+	rows, err := q.db.QueryContext(ctx, getPendingPlayerRequestsForPlayer, playerID)
 	if err != nil {
 		return nil, err
 	}

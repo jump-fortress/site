@@ -104,7 +104,7 @@ func registerSessionRoutes(internalApi *huma.Group) {
 
 	huma.Register(internalApi, huma.Operation{
 		Method:      http.MethodPut,
-		Path:        "/players/request/{request_type}/{body}",
+		Path:        "/players/requests/{request_type}/{request_string}",
 		OperationID: "insert-player-request",
 		Summary:     "Insert a player request ",
 		Description: "send a request for division placement or name change",
@@ -112,6 +112,17 @@ func registerSessionRoutes(internalApi *huma.Group) {
 		Security:    sessionCookieSecurityMap,
 		Middlewares: requireUserSessionMiddlewares,
 	}, HandlePutSelfPlayerRequest)
+
+	huma.Register(internalApi, huma.Operation{
+		Method:      http.MethodGet,
+		Path:        "/players/requests",
+		OperationID: "get-player-requests",
+		Summary:     "Get a player's own requests",
+		Description: "Get all of a player's own requests",
+		Tags:        []string{"Player"},
+		Security:    sessionCookieSecurityMap,
+		Middlewares: requireUserSessionMiddlewares,
+	}, HandleGetSelfPlayerRequests)
 }
 
 func registerModeratorRoutes(moderatorApi *huma.Group) {
@@ -128,10 +139,30 @@ func registerModeratorRoutes(moderatorApi *huma.Group) {
 	huma.Register(moderatorApi, huma.Operation{
 		Method:      http.MethodPut,
 		Path:        "/players/displayname/{id}/{name}",
-		OperationID: "set-player-displayname",
-		Summary:     "Set a Player's display name",
-		Description: "set a player's display name",
+		OperationID: "update-player-displayname",
+		Summary:     "Update a Player's display name",
+		Description: "update a player's display name",
 		Tags:        []string{"Moderator"},
 		Security:    sessionCookieSecurityMap,
-	}, HandleGetAllFullPlayers)
+	}, HandlePutPlayerDisplayName)
+
+	huma.Register(moderatorApi, huma.Operation{
+		Method:      http.MethodPut,
+		Path:        "/players/soldierdivision/{id}/{division}",
+		OperationID: "update-player-soldierdivision",
+		Summary:     "Update a Player's soldier division",
+		Description: "update a player's soldier division",
+		Tags:        []string{"Moderator"},
+		Security:    sessionCookieSecurityMap,
+	}, HandlePutPlayerSoldierDivision)
+
+	huma.Register(moderatorApi, huma.Operation{
+		Method:      http.MethodPut,
+		Path:        "/players/demodivision/{id}/{division}",
+		OperationID: "update-player-demodivision",
+		Summary:     "Update a Player's demo division",
+		Description: "update a player's demo division",
+		Tags:        []string{"Moderator"},
+		Security:    sessionCookieSecurityMap,
+	}, HandlePutPlayerDemoDivision)
 }

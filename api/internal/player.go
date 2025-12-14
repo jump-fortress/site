@@ -7,11 +7,11 @@ import (
 	"fmt"
 	"io"
 	"regexp"
+	"slices"
 	"strings"
 
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/hashicorp/go-retryablehttp"
-	"github.com/rotisserie/eris"
 	"github.com/spiritov/jump/api/db/queries"
 	"github.com/spiritov/jump/api/db/responses"
 )
@@ -75,6 +75,14 @@ func fullPlayerResponseFromPlayer(player queries.Player) responses.FullPlayer {
 		PreferredClass:    player.PreferredClass,
 		PreferredLauncher: player.PreferredLauncher,
 		CreatedAt:         player.CreatedAt,
+	}
+}
+
+func playerRequestResponseFromPlayerRequest(request queries.PlayerRequest) responses.SelfPlayerRequest {
+	return responses.SelfPlayerRequest{
+		RequestType:   request.Type,
+		RequestString: request.Content.String,
+		CreatedAt:     request.CreatedAt,
 	}
 }
 
@@ -193,46 +201,6 @@ func HandleGetAllPlayers(ctx context.Context, _ *struct{}) (*responses.ManyPlaye
 	return resp, nil
 }
 
-func HandleGetAllFullPlayers(ctx context.Context, _ *struct{}) (*responses.ManyFullPlayersOutput, error) {
-	players, err := responses.Queries.SelectAllPlayers(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	resp := &responses.ManyFullPlayersOutput{
-		Body: []responses.FullPlayer{},
-	}
-
-	for _, p := range players {
-		fullPlayerResponse := fullPlayerResponseFromPlayer(p)
-		resp.Body = append(resp.Body, fullPlayerResponse)
-	}
-
-	return resp, nil
-}
-
-func HandlePutPlayerDisplayName(ctx context.Context, input *responses.DisplayNameInput) (*struct{}, error) {
-	// todo: check for string validity
-	if len(input.Name) > 32 {
-		return nil, huma.Error400BadRequest("display name is too long (max 32 characters)")
-	}
-	if !displayNameRegex.MatchString(input.Name) {
-		return nil, huma.Error400BadRequest("display name is not in the expected format. please use alphanumeric, spaces, and punctuation only.")
-	}
-
-	if err := responses.Queries.UpdatePlayerDisplayName(ctx, queries.UpdatePlayerDisplayNameParams{
-		DisplayName: sql.NullString{
-			String: input.Name,
-			Valid:  true,
-		},
-		ID: input.ID,
-	}); err != nil {
-		return nil, err
-	}
-
-	return nil, nil
-}
-
 func HandlePutSelfSteamTradeToken(ctx context.Context, input *responses.SteamTradeURL) (*struct{}, error) {
 	principal, ok := GetPrincipal(ctx)
 	if !ok {
@@ -268,6 +236,7 @@ func HandlePutSelfSteamTradeToken(ctx context.Context, input *responses.SteamTra
 	return nil, nil
 }
 
+// todo: notify to set this player's divisions when they link their tempus
 func HandlePutSelfTempusInfo(ctx context.Context, input *responses.TempusIDInput) (*struct{}, error) {
 	principal, ok := GetPrincipal(ctx)
 	if !ok {
@@ -344,15 +313,203 @@ func HandlePutSelfSteamAvatarUrl(ctx context.Context, _ *struct{}) (*struct{}, e
 	return nil, nil
 }
 
-// todo: implement
+// player requests..
+// 1. make sure there are no pending requests for this request type
+// 2. create the request if it's for a display name change
+// 3. make sure Tempus ID is linked and the division requested is missing
 func HandlePutSelfPlayerRequest(ctx context.Context, input *responses.PlayerRequestInput) (*struct{}, error) {
+	principal, ok := GetPrincipal(ctx)
+	if !ok {
+		return nil, huma.Error401Unauthorized("a session is required")
+	}
+
 	// check for an existing request..
+	requestExists, err := responses.Queries.CheckPendingPlayerRequest(ctx, queries.CheckPendingPlayerRequestParams{
+		PlayerID: principal.SteamID.String(),
+		Type:     input.RequestType,
+	})
+	if err != nil {
+		return nil, err
+	}
 
-	// if display name change
-	// do it
+	if requestExists == 1 {
+		return nil, huma.Error409Conflict(fmt.Sprintf("a %s request already exists", input.RequestType))
+	} else {
 
-	// if division placement
-	// check for linked tempus id, and make sure player doesn't have the division they're requesting
-	// do it
-	return nil, eris.New("todo")
+		if input.RequestType == "Display Name Change" {
+			if err := responses.Queries.InsertPlayerRequest(ctx, queries.InsertPlayerRequestParams{
+				PlayerID: principal.SteamID.String(),
+				Type:     input.RequestType,
+				Content: sql.NullString{
+					String: input.RequestString,
+					Valid:  true,
+				},
+			}); err != nil {
+				return nil, huma.Error500InternalServerError("something went wrong creating this request")
+			}
+
+			// division placement request
+		} else {
+			player, err := responses.Queries.SelectPlayer(ctx, principal.SteamID.String())
+			if err != nil {
+				return nil, huma.Error500InternalServerError("something went wrong creating this request")
+			}
+
+			if !player.TempusID.Valid {
+				return nil, huma.Error400BadRequest("please link your Tempus ID first")
+			}
+
+			if input.RequestType == "Soldier Placement" {
+				if player.SoldierDivision.Valid {
+					return nil, huma.Error400BadRequest("you already have a soldier division")
+				}
+				// demo placement
+			} else {
+				if player.DemoDivision.Valid {
+					return nil, huma.Error400BadRequest("you already have a demo division")
+				}
+			}
+
+			if err := responses.Queries.InsertPlayerRequest(ctx, queries.InsertPlayerRequestParams{
+				PlayerID: principal.SteamID.String(),
+				Type:     input.RequestType,
+				Content: sql.NullString{
+					String: "",
+					Valid:  false,
+				},
+			}); err != nil {
+				return nil, huma.Error500InternalServerError("something went wrong creating this request")
+			}
+		}
+	}
+
+	return nil, nil
+}
+
+func HandleGetSelfPlayerRequests(ctx context.Context, _ *struct{}) (*responses.ManySelfPlayerRequestsOutput, error) {
+	principal, ok := GetPrincipal(ctx)
+	if !ok {
+		return nil, huma.Error401Unauthorized("a session is required")
+	}
+
+	requests, err := responses.Queries.GetPendingPlayerRequestsForPlayer(ctx, principal.SteamID.String())
+	if err != nil {
+		return nil, nil
+	}
+
+	resp := &responses.ManySelfPlayerRequestsOutput{
+		Body: []responses.SelfPlayerRequest{},
+	}
+
+	for _, r := range requests {
+		fullRequestResponse := playerRequestResponseFromPlayerRequest(r)
+		resp.Body = append(resp.Body, fullRequestResponse)
+	}
+
+	return resp, nil
+}
+
+// moderator
+
+// todo: allow for consultant as well?
+func HandleGetAllFullPlayers(ctx context.Context, _ *struct{}) (*responses.ManyFullPlayersOutput, error) {
+	players, err := responses.Queries.SelectAllPlayers(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	resp := &responses.ManyFullPlayersOutput{
+		Body: []responses.FullPlayer{},
+	}
+
+	for _, p := range players {
+		fullPlayerResponse := fullPlayerResponseFromPlayer(p)
+		resp.Body = append(resp.Body, fullPlayerResponse)
+	}
+
+	return resp, nil
+}
+
+func HandlePutPlayerDisplayName(ctx context.Context, input *responses.DisplayNameInput) (*struct{}, error) {
+	// todo: check for string validity
+	if len(input.Name) > 32 {
+		return nil, huma.Error400BadRequest("display name is too long (max 32 characters)")
+	}
+	if !displayNameRegex.MatchString(input.Name) {
+		return nil, huma.Error400BadRequest("display name is not in the expected format. please use alphanumeric, spaces, and punctuation only.")
+	}
+
+	if err := responses.Queries.UpdatePlayerDisplayName(ctx, queries.UpdatePlayerDisplayNameParams{
+		DisplayName: sql.NullString{
+			String: input.Name,
+			Valid:  true,
+		},
+		ID: input.ID,
+	}); err != nil {
+		return nil, err
+	}
+
+	return nil, nil
+}
+
+func HandlePutPlayerSoldierDivision(ctx context.Context, input *responses.UpdateDivisionInput) (*struct{}, error) {
+	if input.Division == "None" {
+		if err := responses.Queries.UpdatePlayerSoldierDivision(ctx, queries.UpdatePlayerSoldierDivisionParams{
+			SoldierDivision: sql.NullString{
+				String: "",
+				Valid:  false,
+			},
+			ID: input.ID,
+		}); err != nil {
+			return nil, err
+		}
+
+	} else {
+		if !slices.Contains(responses.Divisions, input.Division) {
+			return nil, huma.Error400BadRequest(fmt.Sprintf("%s isn't a valid division.", input.Division))
+		}
+
+		if err := responses.Queries.UpdatePlayerSoldierDivision(ctx, queries.UpdatePlayerSoldierDivisionParams{
+			SoldierDivision: sql.NullString{
+				String: input.Division,
+				Valid:  true,
+			},
+			ID: input.ID,
+		}); err != nil {
+			return nil, err
+		}
+	}
+
+	return nil, nil
+}
+
+func HandlePutPlayerDemoDivision(ctx context.Context, input *responses.UpdateDivisionInput) (*struct{}, error) {
+	if input.Division == "None" {
+		if err := responses.Queries.UpdatePlayerDemoDivision(ctx, queries.UpdatePlayerDemoDivisionParams{
+			DemoDivision: sql.NullString{
+				String: "",
+				Valid:  false,
+			},
+			ID: input.ID,
+		}); err != nil {
+			return nil, err
+		}
+
+	} else {
+		if !slices.Contains(responses.Divisions, input.Division) {
+			return nil, huma.Error400BadRequest(fmt.Sprintf("%s isn't a valid division.", input.Division))
+		}
+
+		if err := responses.Queries.UpdatePlayerDemoDivision(ctx, queries.UpdatePlayerDemoDivisionParams{
+			DemoDivision: sql.NullString{
+				String: input.Division,
+				Valid:  true,
+			},
+			ID: input.ID,
+		}); err != nil {
+			return nil, err
+		}
+	}
+
+	return nil, nil
 }
