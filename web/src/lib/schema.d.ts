@@ -24,6 +24,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/internal/moderator/players/demodivision/{id}/{division}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /**
+     * Update a Player's demo division
+     * @description update a player's demo division
+     */
+    put: operations['update-player-demodivision'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/internal/moderator/players/displayname/{id}/{name}': {
     parameters: {
       query?: never;
@@ -33,10 +53,30 @@ export interface paths {
     };
     get?: never;
     /**
-     * Set a Player's display name
-     * @description set a player's display name
+     * Update a Player's display name
+     * @description update a player's display name
      */
-    put: operations['set-player-displayname'];
+    put: operations['update-player-displayname'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/internal/moderator/players/soldierdivision/{id}/{division}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /**
+     * Update a Player's soldier division
+     * @description update a player's soldier division
+     */
+    put: operations['update-player-soldierdivision'];
     post?: never;
     delete?: never;
     options?: never;
@@ -144,7 +184,27 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/internal/players/request/{request_type}/{body}': {
+  '/internal/players/requests': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Get a player's own requests
+     * @description Get all of a player's own requests
+     */
+    get: operations['get-player-requests'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/internal/players/requests/{request_type}/{request_string}': {
     parameters: {
       query?: never;
       header?: never;
@@ -493,6 +553,12 @@ export interface components {
       /** Format: int64 */
       tempus_id?: number;
     };
+    SelfPlayerRequest: {
+      /** Format: date-time */
+      created_at: string;
+      request_string: string;
+      request_type: string;
+    };
     Session: {
       /**
        * Format: uri
@@ -532,6 +598,7 @@ export type FullPlayer = components['schemas']['FullPlayer'];
 export type Player = components['schemas']['Player'];
 export type PlayerPoints = components['schemas']['PlayerPoints'];
 export type PlayerProfile = components['schemas']['PlayerProfile'];
+export type SelfPlayerRequest = components['schemas']['SelfPlayerRequest'];
 export type Session = components['schemas']['Session'];
 export type SteamProfile = components['schemas']['SteamProfile'];
 export type $defs = Record<string, never>;
@@ -565,23 +632,88 @@ export interface operations {
       };
     };
   };
-  'set-player-displayname': {
+  'update-player-demodivision': {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        /** @description player ID, SteamID64 */
+        id: string;
+        division: string;
+      };
       cookie?: never;
     };
     requestBody?: never;
     responses: {
-      /** @description OK */
-      200: {
+      /** @description No Content */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Error */
+      default: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['FullPlayer'][] | null;
+          'application/problem+json': components['schemas']['ErrorModel'];
         };
+      };
+    };
+  };
+  'update-player-displayname': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description player ID, SteamID64 */
+        id: string;
+        /** @description new display name */
+        name: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description No Content */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Error */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ErrorModel'];
+        };
+      };
+    };
+  };
+  'update-player-soldierdivision': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description player ID, SteamID64 */
+        id: string;
+        division: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description No Content */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
       /** @description Error */
       default: {
@@ -742,20 +874,46 @@ export interface operations {
       };
     };
   };
+  'get-player-requests': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['SelfPlayerRequest'][] | null;
+        };
+      };
+      /** @description Error */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ErrorModel'];
+        };
+      };
+    };
+  };
   'insert-player-request': {
     parameters: {
       query?: never;
       header?: never;
       path: {
         request_type: 'Display Name Change' | 'Soldier Placement' | 'Demo Placement';
+        request_string: string;
       };
       cookie?: never;
     };
-    requestBody: {
-      content: {
-        'application/json': string;
-      };
-    };
+    requestBody?: never;
     responses: {
       /** @description No Content */
       204: {
@@ -1094,13 +1252,16 @@ export interface operations {
 }
 export enum ApiPaths {
   get_all_full_players = '/internal/moderator/players/all',
-  set_player_displayname = '/internal/moderator/players/displayname/{id}/{name}',
+  update_player_demodivision = '/internal/moderator/players/demodivision/{id}/{division}',
+  update_player_displayname = '/internal/moderator/players/displayname/{id}/{name}',
+  update_player_soldierdivision = '/internal/moderator/players/soldierdivision/{id}/{division}',
   get_player = '/internal/players',
   get_all_players = '/internal/players/all',
   set_player_preferredclass = '/internal/players/preferredclass/{class}',
   set_player_preferredlauncher = '/internal/players/preferredlauncher/{launcher}',
   get_player_profile_by_id = '/internal/players/profile/{id}',
-  insert_player_request = '/internal/players/request/{request_type}/{body}',
+  get_player_requests = '/internal/players/requests',
+  insert_player_request = '/internal/players/requests/{request_type}/{request_string}',
   update_player_steam_avatar_url = '/internal/players/steamavatarurl',
   set_player_steam_trade_token = '/internal/players/steamtradetoken/{url}',
   set_player_tempusinfo = '/internal/players/tempusinfo/{tempus_id}',
