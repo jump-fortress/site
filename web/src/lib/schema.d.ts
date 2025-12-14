@@ -144,6 +144,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/internal/players/request/{request_type}/{body}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /**
+     * Insert a player request
+     * @description send a request for division placement or name change
+     */
+    put: operations['insert-player-request'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/internal/players/steamavatarurl': {
     parameters: {
       query?: never;
@@ -549,22 +569,19 @@ export interface operations {
     parameters: {
       query?: never;
       header?: never;
-      path: {
-        /** @description player ID, SteamID64 */
-        id: string;
-        /** @description new display name */
-        name: string;
-      };
+      path?: never;
       cookie?: never;
     };
     requestBody?: never;
     responses: {
-      /** @description No Content */
-      204: {
+      /** @description OK */
+      200: {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          'application/json': components['schemas']['FullPlayer'][] | null;
+        };
       };
       /** @description Error */
       default: {
@@ -713,6 +730,39 @@ export interface operations {
         content: {
           'application/json': components['schemas']['PlayerProfile'];
         };
+      };
+      /** @description Error */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ErrorModel'];
+        };
+      };
+    };
+  };
+  'insert-player-request': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        request_type: 'Display Name Change' | 'Soldier Placement' | 'Demo Placement';
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': string;
+      };
+    };
+    responses: {
+      /** @description No Content */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
       /** @description Error */
       default: {
@@ -1050,6 +1100,7 @@ export enum ApiPaths {
   set_player_preferredclass = '/internal/players/preferredclass/{class}',
   set_player_preferredlauncher = '/internal/players/preferredlauncher/{launcher}',
   get_player_profile_by_id = '/internal/players/profile/{id}',
+  insert_player_request = '/internal/players/request/{request_type}/{body}',
   update_player_steam_avatar_url = '/internal/players/steamavatarurl',
   set_player_steam_trade_token = '/internal/players/steamtradetoken/{url}',
   set_player_tempusinfo = '/internal/players/tempusinfo/{tempus_id}',
