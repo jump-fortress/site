@@ -1,6 +1,8 @@
 -- name: InsertPlayer :one
-insert or ignore into player (id)
+insert into player (id)
   values (?)
+  on conflict do update
+    set id = id
   returning *;
 
 -- name: SelectPlayer :one
