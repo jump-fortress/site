@@ -20,7 +20,7 @@
 
 <div class="flex items-center gap-2">
   <button
-    class="settings-button"
+    class="size-fit cursor-pointer rounded-lg border-2 border-jfgray-700 border-b-ctp-lavender/50 bg-jfgray-800 px-2 py-1 text-base transition-colors hover:bg-ctp-lavender-950/50"
     onclick={async () => {
       response = onSelect();
     }}>{label}</button
