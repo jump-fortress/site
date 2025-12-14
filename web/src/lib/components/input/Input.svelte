@@ -1,21 +1,22 @@
 <script lang="ts">
   import { fade } from 'svelte/transition';
+  import Response from './Response.svelte';
 
   type Props = {
     label: string;
     placeholder?: string;
-    initialMessage?: string;
+    responseMessage?: string;
     submitInput: (val: string) => Promise<InputError>;
   };
 
-  let { label, placeholder = '', initialMessage = '', submitInput }: Props = $props();
+  let { label, placeholder = '', responseMessage = '', submitInput }: Props = $props();
   let value: string = $state('');
 
-  // response is a promise so we can use #await syntax to handle pending state
+  // response is a promise so #await can be used to handle pending state
   let response: Promise<InputError> = $derived(
     Promise.resolve({
       error: false,
-      message: initialMessage
+      message: responseMessage
     })
   );
 </script>
@@ -26,18 +27,17 @@
     for={label}
     class="relative mt-2 w-80 border-2 border-jfgray-700 text-nowrap transition-colors focus-within:border-ctp-lavender-50/50 hover:border-ctp-lavender-50/50"
   >
-    <span class="absolute -top-0.5 left-2 bg-jfgray-800 px-1 text-base leading-1">{label} </span>
+    <span class="absolute -top-1 left-2 bg-jfgray-800 px-1 text-base leading-1">{label}</span>
     <div class="flex h-10">
       <input
         bind:value
         {placeholder}
         onkeypress={async (event: KeyboardEvent) => {
           if (event.key === 'Enter') {
-            const error = submitInput(value);
-            if (error) response = error;
+            response = submitInput(value);
           }
         }}
-        class="group peer size-full bg-jfgray-800 bg-clip-padding px-1 text-ctp-lavender transition-colors focus:bg-jfgray-900"
+        class="peer size-full bg-jfgray-800 bg-clip-padding px-1 text-ctp-lavender transition-colors focus:bg-jfgray-900 focus:outline-0"
         id={label}
         type="text"
       />
@@ -62,11 +62,6 @@
     </div>
   </label>
   {#await response then response}
-    <span
-      in:fade
-      class="text-base {response.error === true
-        ? 'text-ctp-red'
-        : 'text-ctp-lavender'} transition-colors">{response.message}</span
-    >
+    <Response {response} />
   {/await}
 </div>
