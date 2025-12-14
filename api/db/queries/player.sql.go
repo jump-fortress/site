@@ -11,8 +11,10 @@ import (
 )
 
 const insertPlayer = `-- name: InsertPlayer :one
-insert or ignore into player (id)
+insert into player (id)
   values (?)
+  on conflict do update
+    set id = id
   returning id, role, steam_avatar_url, steam_trade_token, tempus_id, country, country_code, discord_id, display_name, soldier_division, demo_division, preferred_class, preferred_launcher, created_at
 `
 
