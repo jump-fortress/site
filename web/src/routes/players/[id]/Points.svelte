@@ -1,6 +1,7 @@
 <script lang="ts">
   import RocketLauncher from '$lib/components/RocketLauncher.svelte';
   import type { PlayerPoints } from '$lib/schema';
+  import { fade } from 'svelte/transition';
 
   type Props = {
     selected_class: string;
@@ -50,7 +51,7 @@
     </div>
   </div>
   {#if selected_class === 'Soldier'}
-    <div class="absolute -top-5 -right-10 rotate-12">
+    <div transition:fade class="absolute -top-2 -right-14 rotate-75 rotate-y-180">
       <RocketLauncher {launcher} />
     </div>
   {/if}
