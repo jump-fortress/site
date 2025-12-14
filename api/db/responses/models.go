@@ -4,6 +4,8 @@ import (
 	"time"
 )
 
+var Divisions = []string{"Diamond", "Platinum", "Gold", "Silver", "Bronze", "Steel", "Wood"}
+
 type PlayerIDInput struct {
 	ID string `path:"id" minimum:"1" doc:"player ID, SteamID64"`
 }
@@ -40,6 +42,12 @@ type FullPlayer struct {
 	CreatedAt         time.Time `json:"created_at"`
 }
 
+type SelfPlayerRequest struct {
+	RequestType   string    `json:"request_type"`
+	RequestString string    `json:"request_string"`
+	CreatedAt     time.Time `json:"created_at"`
+}
+
 type PlayerOutput struct {
 	Body Player
 }
@@ -54,6 +62,14 @@ type FullPlayerOutput struct {
 
 type ManyFullPlayersOutput struct {
 	Body []FullPlayer
+}
+
+type SelfPlayerRequestOutput struct {
+	Body SelfPlayerRequest
+}
+
+type ManySelfPlayerRequestsOutput struct {
+	Body []SelfPlayerRequest
 }
 
 type PlayerPoints struct {
@@ -118,6 +134,11 @@ type SteamTradeURL struct {
 }
 
 type PlayerRequestInput struct {
-	RequestType string `path:"request_type" enum:"Display Name Change,Soldier Placement,Demo Placement"`
-	Body        string `path:"body" required:"false"`
+	RequestType   string `path:"request_type" enum:"Display Name Change,Soldier Placement,Demo Placement"`
+	RequestString string `path:"request_string" required:"false"`
+}
+
+type UpdateDivisionInput struct {
+	ID       string `path:"id" minimum:"1" doc:"player ID, SteamID64"`
+	Division string `path:"division"`
 }
