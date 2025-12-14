@@ -1,6 +1,6 @@
 <script lang="ts">
   import { fade } from 'svelte/transition';
-  import Response from './Response.svelte';
+  import Response from '$lib/components/input/Response.svelte';
 
   type Props = {
     label: string;
@@ -43,7 +43,7 @@
       />
       <!-- svelte-ignore a11y_consider_explicit_label -->
       <button
-        onclick={async () => {
+        onmousedown={async () => {
           response = submitInput(value);
         }}
         class="flex h-full w-12 cursor-pointer items-center justify-center bg-jfgray-800 peer-focus:bg-jfgray-800"
