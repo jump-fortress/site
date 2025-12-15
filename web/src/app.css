@@ -43,6 +43,22 @@
   .span-ellipsis {
     @apply text-nowrap overflow-ellipsis;
   }
+
+  .w-date {
+    @apply w-48;
+  }
+
+  .w-id {
+    @apply w-48;
+  }
+
+  .w-flag {
+    @apply w-10;
+  }
+
+  .w-division {
+    @apply w-24;
+  }
 }
 
 /* extend tailwind theme */
