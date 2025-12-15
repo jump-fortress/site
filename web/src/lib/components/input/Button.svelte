@@ -21,7 +21,7 @@
 
 <div class="flex items-center gap-2">
   <button
-    class="border-jfgray-700 border-b-ctp-lavender/50 bg-jfgray-800 hover:bg-ctp-lavender-950/50 size-fit cursor-pointer rounded-lg border-2 px-2 py-1 text-base transition-colors"
+    class="size-fit cursor-pointer rounded-lg border-2 border-jfgray-700 border-b-ctp-lavender/50 bg-jfgray-800 px-2 py-1 text-base transition-colors hover:bg-ctp-lavender-950/50"
     onclick={async () => {
       response = onSelect();
     }}>{@render children()}</button
