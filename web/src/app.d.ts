@@ -1,6 +1,6 @@
 // See https://svelte.dev/docs/kit/types#app.d.ts
 
-import type { FullPlayer, PlayerProfile, Session } from '$lib/schema';
+import type { FullPlayer, PlayerProfile, PlayerRequest, Session } from '$lib/schema';
 
 // for information about these interfaces
 declare global {
@@ -15,6 +15,7 @@ declare global {
       players?: PlayerProfile[];
       fullPlayer?: FullPlayer;
       fullPlayers?: FullPlayer[];
+      requests?: PlayerRequest[];
     }
     // interface PageState {}
     // interface Platform {}

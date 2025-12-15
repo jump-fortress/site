@@ -1,5 +1,4 @@
 import { Client } from '$lib/internalApi';
-import type { PlayerRequest } from '$lib/schema';
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ fetch }) => {
@@ -9,6 +8,6 @@ export const load: PageLoad = async ({ fetch }) => {
   });
 
   return {
-    request: data as PlayerRequest[]
+    requests: data ?? null
   };
 };

@@ -22,7 +22,7 @@
   let { data }: { data: PageData } = $props();
 
   let session = $derived(data.session as Session);
-  let requests = $derived(data.request);
+  let requests: PlayerRequest[] | null = $derived(data.requests);
 
   let selected = $state(false);
   let selectedPlayerID: string = $state('');
@@ -102,7 +102,8 @@
               resolvePlayerRequest(request.id);
 
               // remove this issue from the list when clicked
-              requests = requests.filter(({ request: entry }) => {
+              // requests should never be null, since it was checked in the {#if} block
+              requests = (requests as PlayerRequest[]).filter(({ request: entry }) => {
                 entry.id !== request.id;
               });
 
