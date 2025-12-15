@@ -61,7 +61,6 @@ create table player_request(
   type text not null,
   content text,
   pending boolean not null default true,
-  accepted boolean not null default false,
 
   created_at datetime not null default current_timestamp,
 

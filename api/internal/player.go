@@ -86,6 +86,35 @@ func playerRequestResponseFromPlayerRequest(request queries.PlayerRequest) respo
 	}
 }
 
+func fullPlayerRequestResponseFromPlayerRequest(request queries.SelectAllPendingPlayerRequestsRow) responses.PlayerRequest {
+	return responses.PlayerRequest{
+		Request: responses.Request{
+			ID:            request.ID,
+			PlayerID:      request.PlayerID,
+			RequestType:   request.Type,
+			RequestString: request.Content.String,
+			Pending:       request.Pending,
+			CreatedAt:     request.CreatedAt,
+		},
+		Player: responses.FullPlayer{
+			ID:                request.ID_2,
+			Role:              request.Role,
+			SteamAvatarUrl:    request.SteamAvatarUrl.String,
+			SteamTradeToken:   request.SteamTradeToken.String,
+			TempusID:          request.TempusID.Int64,
+			Country:           request.Country.String,
+			CountryCode:       request.CountryCode.String,
+			DiscordID:         request.DiscordID.String,
+			DisplayName:       request.DisplayName.String,
+			SoldierDivision:   request.SoldierDivision.String,
+			DemoDivision:      request.DemoDivision.String,
+			PreferredClass:    request.PreferredClass,
+			PreferredLauncher: request.PreferredLauncher,
+			CreatedAt:         request.CreatedAt_2,
+		},
+	}
+}
+
 func HandleGetSelfPlayer(ctx context.Context, _ *struct{}) (*responses.FullPlayerOutput, error) {
 	principal, ok := GetPrincipal(ctx)
 	if !ok {
@@ -198,6 +227,10 @@ func HandleGetAllPlayers(ctx context.Context, _ *struct{}) (*responses.ManyPlaye
 		playerResponse := playerResponseFromPlayer(p)
 		resp.Body = append(resp.Body, playerResponse)
 	}
+
+	if len(resp.Body) == 0 {
+		return nil, nil
+	}
 	return resp, nil
 }
 
@@ -208,7 +241,7 @@ func HandlePutSelfSteamTradeToken(ctx context.Context, input *responses.SteamTra
 	}
 
 	if len(input.Url) > 100 {
-		return nil, huma.Error400BadRequest("URL is too long")
+		return nil, huma.Error400BadRequest("URL is too long. please paste the full Steam Trade URL")
 	}
 
 	// extract steam3ID and token from input
@@ -216,11 +249,11 @@ func HandlePutSelfSteamTradeToken(ctx context.Context, input *responses.SteamTra
 	var token string
 	_, err := fmt.Sscanf(input.Url, "https://steamcommunity.com/tradeoffer/new/?partner=%d&token=%s", &scannedSteam3ID, &token)
 	if err != nil {
-		return nil, huma.Error400BadRequest("URL couldn't be resolved. Please paste the full Steam Trade URL.")
+		return nil, huma.Error400BadRequest("URL couldn't be resolved. please paste the full Steam Trade URL.")
 	}
 
 	if principal.SteamID.AccountId() != scannedSteam3ID {
-		return nil, huma.Error400BadRequest("This URL didn't match your SteamID. Please check if you're logged in to the correct Steam account.")
+		return nil, huma.Error400BadRequest(fmt.Sprintf("URL didn't match your profile's SteamID (%d). please check if you're logged in to the correct Steam account.", scannedSteam3ID))
 	}
 
 	if err := responses.Queries.UpdatePlayerSteamTradeToken(ctx, queries.UpdatePlayerSteamTradeTokenParams{
@@ -245,27 +278,27 @@ func HandlePutSelfTempusInfo(ctx context.Context, input *responses.TempusIDInput
 
 	player, err := responses.Queries.SelectPlayer(ctx, principal.SteamID.String())
 	if err != nil {
-		return nil, huma.Error500InternalServerError("Something went wrong while checking if your Tempus ID was already set..")
+		return nil, huma.Error500InternalServerError("something went wrong when checking if your Tempus ID was set..")
 	}
 
 	if player.TempusID.Valid {
-		return nil, huma.Error400BadRequest("Tempus ID already set")
+		return nil, huma.Error400BadRequest("already set")
 	}
 
 	tempusPlayer, err := getTempusPlayerInfo(input.TempusID)
 	if err != nil {
-		return nil, huma.Error503ServiceUnavailable("Couldn't verify this Tempus ID with Tempus. If Tempus isn't down, please check your Tempus ID again.")
+		return nil, huma.Error503ServiceUnavailable("couldn't verify with Tempus. if Tempus isn't down, please check your Tempus ID again")
 	}
 
 	var tempusPlayerSteamID3 int
 	_, err = fmt.Sscanf(tempusPlayer.SteamID, "STEAM_0:1:%d", &tempusPlayerSteamID3)
 	if err != nil {
-		return nil, huma.Error503ServiceUnavailable("Couldn't verify this Tempus ID with Tempus due to Tempus's response. Is Tempus functioning correctly?")
+		return nil, huma.Error503ServiceUnavailable("couldn't verify with Tempus due to Tempus's response. is Tempus functioning correctly?")
 	}
 
 	tempusPlayerSteamID3 = tempusPlayerSteamID3*2 + 1
 	if int(principal.SteamID.AccountId()) != tempusPlayerSteamID3 {
-		return nil, huma.Error400BadRequest(fmt.Sprintf("This player's (%s) Steam ID doesn't match the Tempus ID you provided.", tempusPlayer.TempusName))
+		return nil, huma.Error400BadRequest(fmt.Sprintf("Tempus player (%s) SteamID doesn't match your SteamID", tempusPlayer.TempusName))
 	}
 
 	if err := responses.Queries.UpdatePlayerTempusInfo(ctx, queries.UpdatePlayerTempusInfoParams{
@@ -297,7 +330,7 @@ func HandlePutSelfSteamAvatarUrl(ctx context.Context, _ *struct{}) (*struct{}, e
 
 	steamProfile, err := FetchProfileSummary(principal.SteamID.ID())
 	if err != nil {
-		return nil, huma.Error503ServiceUnavailable("Couldn't get your profile from Steam. If Steam isn't down, please try again.")
+		return nil, huma.Error503ServiceUnavailable("couldn't get your profile from Steam. If Steam isn't down, please try again.")
 	}
 
 	if err = responses.Queries.UpdatePlayerSteamAvatarURL(ctx, queries.UpdatePlayerSteamAvatarURLParams{
@@ -392,7 +425,7 @@ func HandleGetSelfPlayerRequests(ctx context.Context, _ *struct{}) (*responses.M
 		return nil, huma.Error401Unauthorized("a session is required")
 	}
 
-	requests, err := responses.Queries.GetPendingPlayerRequestsForPlayer(ctx, principal.SteamID.String())
+	requests, err := responses.Queries.SelectPendingPlayerRequestsForPlayer(ctx, principal.SteamID.String())
 	if err != nil {
 		return nil, nil
 	}
@@ -406,12 +439,14 @@ func HandleGetSelfPlayerRequests(ctx context.Context, _ *struct{}) (*responses.M
 		resp.Body = append(resp.Body, fullRequestResponse)
 	}
 
+	if len(resp.Body) == 0 {
+		return nil, nil
+	}
 	return resp, nil
 }
 
-// moderator
+// consultant
 
-// todo: allow for consultant as well?
 func HandleGetAllFullPlayers(ctx context.Context, _ *struct{}) (*responses.ManyFullPlayersOutput, error) {
 	players, err := responses.Queries.SelectAllPlayers(ctx)
 	if err != nil {
@@ -427,16 +462,42 @@ func HandleGetAllFullPlayers(ctx context.Context, _ *struct{}) (*responses.ManyF
 		resp.Body = append(resp.Body, fullPlayerResponse)
 	}
 
+	if len(resp.Body) == 0 {
+		return nil, nil
+	}
 	return resp, nil
 }
+
+func HandleGetAllPendingPlayerRequests(ctx context.Context, _ *struct{}) (*responses.ManyPlayerRequestsOutput, error) {
+	requests, err := responses.Queries.SelectAllPendingPlayerRequests(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	resp := &responses.ManyPlayerRequestsOutput{
+		Body: []responses.PlayerRequest{},
+	}
+
+	for _, r := range requests {
+		requestResponse := fullPlayerRequestResponseFromPlayerRequest(r)
+		resp.Body = append(resp.Body, requestResponse)
+	}
+
+	if len(resp.Body) == 0 {
+		return nil, nil
+	}
+	return resp, nil
+}
+
+// moderator
 
 func HandlePutPlayerDisplayName(ctx context.Context, input *responses.DisplayNameInput) (*struct{}, error) {
 	// todo: check for string validity
 	if len(input.Name) > 32 {
-		return nil, huma.Error400BadRequest("display name is too long (max 32 characters)")
+		return nil, huma.Error400BadRequest("too long (max 32 characters)")
 	}
 	if !displayNameRegex.MatchString(input.Name) {
-		return nil, huma.Error400BadRequest("display name is not in the expected format. please use alphanumeric, spaces, and punctuation only.")
+		return nil, huma.Error400BadRequest("please use only alphanumeric, spaces, and punctuation characters.")
 	}
 
 	if err := responses.Queries.UpdatePlayerDisplayName(ctx, queries.UpdatePlayerDisplayNameParams{
@@ -509,6 +570,14 @@ func HandlePutPlayerDemoDivision(ctx context.Context, input *responses.UpdateDiv
 		}); err != nil {
 			return nil, err
 		}
+	}
+
+	return nil, nil
+}
+
+func HandlePutResolvePlayerRequest(ctx context.Context, input *responses.PlayerRequestIDInput) (*struct{}, error) {
+	if err := responses.Queries.ResolvePlayerRequest(ctx, input.ID); err != nil {
+		return nil, err
 	}
 
 	return nil, nil

@@ -101,6 +101,53 @@ func CreateRequireUserAuthHandler(api huma.API) func(ctx huma.Context, next func
 	}
 }
 
+// treasurer endpoints are also accessible by admins, but not moderators or consultants
+func CreateRequireUserTreasurerHandler(api huma.API) func(ctx huma.Context, next func(huma.Context)) {
+	return func(ctx huma.Context, next func(huma.Context)) {
+		principal, ok := GetPrincipal(ctx.Context())
+		if !ok {
+			_ = huma.WriteErr(api, ctx, http.StatusUnauthorized, "")
+			return
+		}
+
+		player, err := responses.Queries.SelectPlayer(ctx.Context(), principal.SteamID.String())
+		if err != nil {
+			_ = huma.WriteErr(api, ctx, http.StatusInternalServerError, "")
+			return
+		}
+
+		if player.Role != "Treasurer" && player.Role != "Admin" {
+			_ = huma.WriteErr(api, ctx, http.StatusUnauthorized, "")
+			return
+		}
+
+		next(ctx)
+	}
+}
+
+func CreateRequireUserConsultantHandler(api huma.API) func(ctx huma.Context, next func(huma.Context)) {
+	return func(ctx huma.Context, next func(huma.Context)) {
+		principal, ok := GetPrincipal(ctx.Context())
+		if !ok {
+			_ = huma.WriteErr(api, ctx, http.StatusUnauthorized, "")
+			return
+		}
+
+		player, err := responses.Queries.SelectPlayer(ctx.Context(), principal.SteamID.String())
+		if err != nil {
+			_ = huma.WriteErr(api, ctx, http.StatusInternalServerError, "")
+			return
+		}
+
+		if player.Role != "Mod" && player.Role != "Admin" && player.Role != "Consultant" {
+			_ = huma.WriteErr(api, ctx, http.StatusUnauthorized, "")
+			return
+		}
+
+		next(ctx)
+	}
+}
+
 func CreateRequireUserModeratorHandler(api huma.API) func(ctx huma.Context, next func(huma.Context)) {
 	return func(ctx huma.Context, next func(huma.Context)) {
 		principal, ok := GetPrincipal(ctx.Context())

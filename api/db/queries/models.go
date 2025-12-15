@@ -111,7 +111,6 @@ type PlayerRequest struct {
 	Type      string         `json:"type"`
 	Content   sql.NullString `json:"content"`
 	Pending   bool           `json:"pending"`
-	Accepted  bool           `json:"accepted"`
 	CreatedAt time.Time      `json:"created_at"`
 }
 

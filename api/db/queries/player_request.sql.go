@@ -8,6 +8,7 @@ package queries
 import (
 	"context"
 	"database/sql"
+	"time"
 )
 
 const checkPendingPlayerRequest = `-- name: CheckPendingPlayerRequest :one
@@ -29,78 +30,6 @@ func (q *Queries) CheckPendingPlayerRequest(ctx context.Context, arg CheckPendin
 	return column_1, err
 }
 
-const getAllPlayerRequests = `-- name: GetAllPlayerRequests :many
-select id, player_id, type, content, pending, accepted, created_at from player_request
-`
-
-func (q *Queries) GetAllPlayerRequests(ctx context.Context) ([]PlayerRequest, error) {
-	rows, err := q.db.QueryContext(ctx, getAllPlayerRequests)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []PlayerRequest
-	for rows.Next() {
-		var i PlayerRequest
-		if err := rows.Scan(
-			&i.ID,
-			&i.PlayerID,
-			&i.Type,
-			&i.Content,
-			&i.Pending,
-			&i.Accepted,
-			&i.CreatedAt,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const getPendingPlayerRequestsForPlayer = `-- name: GetPendingPlayerRequestsForPlayer :many
-select id, player_id, type, content, pending, accepted, created_at from player_request
-where player_id = ? and pending = true
-`
-
-// may be unnecessary
-func (q *Queries) GetPendingPlayerRequestsForPlayer(ctx context.Context, playerID string) ([]PlayerRequest, error) {
-	rows, err := q.db.QueryContext(ctx, getPendingPlayerRequestsForPlayer, playerID)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []PlayerRequest
-	for rows.Next() {
-		var i PlayerRequest
-		if err := rows.Scan(
-			&i.ID,
-			&i.PlayerID,
-			&i.Type,
-			&i.Content,
-			&i.Pending,
-			&i.Accepted,
-			&i.CreatedAt,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
 const insertPlayerRequest = `-- name: InsertPlayerRequest :exec
 insert into player_request (player_id, type, content)
 values (?, ?, ?)
@@ -115,4 +44,124 @@ type InsertPlayerRequestParams struct {
 func (q *Queries) InsertPlayerRequest(ctx context.Context, arg InsertPlayerRequestParams) error {
 	_, err := q.db.ExecContext(ctx, insertPlayerRequest, arg.PlayerID, arg.Type, arg.Content)
 	return err
+}
+
+const resolvePlayerRequest = `-- name: ResolvePlayerRequest :exec
+update player_request
+  set pending = false
+  where id = ?
+`
+
+func (q *Queries) ResolvePlayerRequest(ctx context.Context, id int64) error {
+	_, err := q.db.ExecContext(ctx, resolvePlayerRequest, id)
+	return err
+}
+
+const selectAllPendingPlayerRequests = `-- name: SelectAllPendingPlayerRequests :many
+select pr.id, player_id, type, content, pending, pr.created_at, p.id, role, steam_avatar_url, steam_trade_token, tempus_id, country, country_code, discord_id, display_name, soldier_division, demo_division, preferred_class, preferred_launcher, p.created_at from player_request pr
+  join player p on pr.player_id = p.id
+  where pr.pending = true
+`
+
+type SelectAllPendingPlayerRequestsRow struct {
+	ID                int64          `json:"id"`
+	PlayerID          string         `json:"player_id"`
+	Type              string         `json:"type"`
+	Content           sql.NullString `json:"content"`
+	Pending           bool           `json:"pending"`
+	CreatedAt         time.Time      `json:"created_at"`
+	ID_2              string         `json:"id_2"`
+	Role              string         `json:"role"`
+	SteamAvatarUrl    sql.NullString `json:"steam_avatar_url"`
+	SteamTradeToken   sql.NullString `json:"steam_trade_token"`
+	TempusID          sql.NullInt64  `json:"tempus_id"`
+	Country           sql.NullString `json:"country"`
+	CountryCode       sql.NullString `json:"country_code"`
+	DiscordID         sql.NullString `json:"discord_id"`
+	DisplayName       sql.NullString `json:"display_name"`
+	SoldierDivision   sql.NullString `json:"soldier_division"`
+	DemoDivision      sql.NullString `json:"demo_division"`
+	PreferredClass    string         `json:"preferred_class"`
+	PreferredLauncher string         `json:"preferred_launcher"`
+	CreatedAt_2       time.Time      `json:"created_at_2"`
+}
+
+func (q *Queries) SelectAllPendingPlayerRequests(ctx context.Context) ([]SelectAllPendingPlayerRequestsRow, error) {
+	rows, err := q.db.QueryContext(ctx, selectAllPendingPlayerRequests)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []SelectAllPendingPlayerRequestsRow
+	for rows.Next() {
+		var i SelectAllPendingPlayerRequestsRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.PlayerID,
+			&i.Type,
+			&i.Content,
+			&i.Pending,
+			&i.CreatedAt,
+			&i.ID_2,
+			&i.Role,
+			&i.SteamAvatarUrl,
+			&i.SteamTradeToken,
+			&i.TempusID,
+			&i.Country,
+			&i.CountryCode,
+			&i.DiscordID,
+			&i.DisplayName,
+			&i.SoldierDivision,
+			&i.DemoDivision,
+			&i.PreferredClass,
+			&i.PreferredLauncher,
+			&i.CreatedAt_2,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const selectPendingPlayerRequestsForPlayer = `-- name: SelectPendingPlayerRequestsForPlayer :many
+select id, player_id, type, content, pending, created_at from player_request
+where player_id = ? and pending = true
+`
+
+// may be unnecessary
+func (q *Queries) SelectPendingPlayerRequestsForPlayer(ctx context.Context, playerID string) ([]PlayerRequest, error) {
+	rows, err := q.db.QueryContext(ctx, selectPendingPlayerRequestsForPlayer, playerID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []PlayerRequest
+	for rows.Next() {
+		var i PlayerRequest
+		if err := rows.Scan(
+			&i.ID,
+			&i.PlayerID,
+			&i.Type,
+			&i.Content,
+			&i.Pending,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }

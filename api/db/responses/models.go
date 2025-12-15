@@ -48,6 +48,21 @@ type SelfPlayerRequest struct {
 	CreatedAt     time.Time `json:"created_at"`
 }
 
+type Request struct {
+	ID            int64     `json:"id"`
+	PlayerID      string    `json:"player_id"`
+	RequestType   string    `json:"request_type"`
+	RequestString string    `json:"request_string,omitempty"`
+	Pending       bool      `json:"pending"`
+	Accepted      bool      `json:"accepted"`
+	CreatedAt     time.Time `json:"created_at"`
+}
+
+type PlayerRequest struct {
+	Player  FullPlayer `json:"player"`
+	Request Request    `json:"request"`
+}
+
 type PlayerOutput struct {
 	Body Player
 }
@@ -70,6 +85,10 @@ type SelfPlayerRequestOutput struct {
 
 type ManySelfPlayerRequestsOutput struct {
 	Body []SelfPlayerRequest
+}
+
+type ManyPlayerRequestsOutput struct {
+	Body []PlayerRequest
 }
 
 type PlayerPoints struct {
@@ -136,6 +155,10 @@ type SteamTradeURL struct {
 type PlayerRequestInput struct {
 	RequestType   string `path:"request_type" enum:"Display Name Change,Soldier Placement,Demo Placement"`
 	RequestString string `path:"request_string" required:"false"`
+}
+
+type PlayerRequestIDInput struct {
+	ID int64 `path:"id" doc:"request ID"`
 }
 
 type UpdateDivisionInput struct {

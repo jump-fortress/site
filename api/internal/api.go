@@ -66,6 +66,7 @@ func ServeAPI(address string) {
 func registerRoutes() {
 	internalApi := huma.NewGroup(api, "/internal")
 	sessionApi := huma.NewGroup(internalApi, "/session")
+	consultantApi := huma.NewGroup(internalApi, "/consultant")
 	moderatorApi := huma.NewGroup(internalApi, "/moderator")
 	adminApi := huma.NewGroup(internalApi, "/admin")
 
@@ -83,7 +84,7 @@ func registerRoutes() {
 	// then register standard internal routes
 	registerOpenRoutes(internalApi)
 	registerSessionRoutes(internalApi)
-	// registerConsultantRoutes(consultantApi)
+	registerConsultantRoutes(consultantApi)
 	registerModeratorRoutes(moderatorApi)
 	// registerAdminRoutes()
 }

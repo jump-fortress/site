@@ -125,16 +125,29 @@ func registerSessionRoutes(internalApi *huma.Group) {
 	}, HandleGetSelfPlayerRequests)
 }
 
-func registerModeratorRoutes(moderatorApi *huma.Group) {
-	huma.Register(moderatorApi, huma.Operation{
+func registerConsultantRoutes(consultantApi *huma.Group) {
+	huma.Register(consultantApi, huma.Operation{
 		Method:      http.MethodGet,
 		Path:        "/players/all",
 		OperationID: "get-all-full-players",
 		Summary:     "Get full info on all Players",
 		Description: "get full info on all players",
-		Tags:        []string{"Moderator"},
+		Tags:        []string{"Consultant"},
 		Security:    sessionCookieSecurityMap,
 	}, HandleGetAllFullPlayers)
+
+	huma.Register(consultantApi, huma.Operation{
+		Method:      http.MethodGet,
+		Path:        "/players/requests/pending",
+		OperationID: "get-all-pending-player-requests",
+		Summary:     "Get all pending player requests",
+		Description: "get all pending player requests",
+		Tags:        []string{"Consultant"},
+		Security:    sessionCookieSecurityMap,
+	}, HandleGetAllPendingPlayerRequests)
+}
+
+func registerModeratorRoutes(moderatorApi *huma.Group) {
 
 	huma.Register(moderatorApi, huma.Operation{
 		Method:      http.MethodPut,
@@ -165,4 +178,14 @@ func registerModeratorRoutes(moderatorApi *huma.Group) {
 		Tags:        []string{"Moderator"},
 		Security:    sessionCookieSecurityMap,
 	}, HandlePutPlayerDemoDivision)
+
+	huma.Register(moderatorApi, huma.Operation{
+		Method:      http.MethodPut,
+		Path:        "/players/requests/resolve/{id}",
+		OperationID: "resolve-player-request",
+		Summary:     "Resolve a player's request",
+		Description: "resolve a player's request, marking it as not pending",
+		Tags:        []string{"Moderator"},
+		Security:    sessionCookieSecurityMap,
+	}, HandlePutResolvePlayerRequest)
 }
