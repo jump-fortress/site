@@ -6,10 +6,11 @@
   import tempus from '$lib/assets/static/players/tempus.png';
   import zigzagoon from '$lib/assets/static/players/zigzagoon.gif';
   import Link from '$lib/components/Link.svelte';
-  import ClassSelect from './ClassSelect.svelte';
-  import Points from '../../routes/players/[id]/Points.svelte';
+  import ClassSelect from '$lib/components/ClassSelect.svelte';
+  import Points from '$lib/components/Points.svelte';
   import type { FullPlayer, PlayerProfile } from '$lib/schema';
-  import Flag from './Flag.svelte';
+  import Flag from '$lib/components/Flag.svelte';
+  import ExternalLink from '$lib/components/ExternalLink.svelte';
 
   type Props = {
     player: PlayerProfile;
@@ -81,22 +82,22 @@
     <div class="flex flex-col gap-1">
       {#if player.tempus_id}
         <div class="flex">
-          {@render externalLink(
-            plaza,
-            `https://tempusplaza.xyz/players/${player.tempus_id}`,
-            'Plaza'
-          )}
-          {@render externalLink(
-            tempus,
-            `https://tempus2.xyz/players/${player.tempus_id}`,
-            'Tempus'
-          )}
+          <ExternalLink
+            src={plaza}
+            href={`https://tempusplaza.xyz/players/${player.tempus_id}`}
+            name="Plaza"
+          />
+          <ExternalLink
+            src={tempus}
+            href={`https://tempus2.xyz/players/${player.tempus_id}`}
+            name="Tempus"
+          />
           {#if fullPlayer}
-            {@render externalLink(
-              steam,
-              `https://steamcommunity.com/profiles/${fullPlayer.id}`,
-              'Steam'
-            )}
+            <ExternalLink
+              src={steam}
+              href={`https://steamcommunity.com/profiles/${fullPlayer.id}`}
+              name="Steam"
+            />
           {/if}
         </div>
       {/if}
@@ -113,13 +114,3 @@
   <!-- class select -->
   <ClassSelect bind:selected_class />
 </div>
-
-{#snippet externalLink(src: string, href: string, name: string)}
-  <a
-    {href}
-    class="flex items-end gap-1 pl-2 text-base text-ctp-blue/50 decoration-1 transition-colors first:pl-0 hover:text-ctp-blue hover:underline"
-  >
-    <img {src} class="size-6" alt="" />
-    <span class="flex">{name}</span>
-  </a>
-{/snippet}
