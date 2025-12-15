@@ -1,12 +1,13 @@
 // todo: review is this is acceptable:
 // use endpoint functions here only on non-page-load
 import createClient from 'openapi-fetch';
-import type { operations, paths, PlayerProfile, SelfPlayerRequest } from './schema';
+import type { operations, paths, PlayerProfile, PlayerRequest, SelfPlayerRequest } from './schema';
 
 export const Client = createClient<paths>({
   baseUrl: 'http://localhost:5173/'
 });
 
+// returns response.ok, since an error wouldn't be used
 export async function updatePreferredClass(selectedClass: string): Promise<boolean> {
   const { response } = await Client.PUT('/internal/players/preferredclass/{class}', {
     fetch: fetch,
@@ -21,6 +22,7 @@ export async function updatePreferredClass(selectedClass: string): Promise<boole
   return response.ok;
 }
 
+// returns response.ok, since an error wouldn't be used
 export async function updatePreferredLauncher(selectedLauncher: string): Promise<boolean> {
   const { response } = await Client.PUT('/internal/players/preferredlauncher/{launcher}', {
     fetch: fetch,
@@ -48,7 +50,7 @@ export async function updateTempusID(tempusId: number): Promise<InputError> {
   if (error) {
     return {
       error: true,
-      message: error.detail ?? 'Unknown error'
+      message: error.detail ?? 'unknown error'
     };
   }
 
@@ -71,7 +73,7 @@ export async function updateSteamTradeToken(url: string): Promise<InputError> {
   if (error) {
     return {
       error: true,
-      message: error.detail ?? 'Unknown error'
+      message: error.detail ?? 'unknown error'
     };
   }
 
@@ -89,7 +91,7 @@ export async function updateSteamAvatar(): Promise<InputError> {
   if (error) {
     return {
       error: true,
-      message: error.detail ?? 'Unknown error'
+      message: error.detail ?? 'unknown error'
     };
   }
 
@@ -113,7 +115,7 @@ export async function updatePlayerDisplayName(id: string, name: string): Promise
   if (error) {
     return {
       error: true,
-      message: error.detail ?? 'Unknown error'
+      message: error.detail ?? 'unknown error'
     };
   }
 
@@ -160,7 +162,7 @@ export async function updatePlayerSoldierDivision(
   if (error) {
     return {
       error: true,
-      message: error.detail ?? 'Unknown error'
+      message: error.detail ?? 'unknown error'
     };
   }
 
@@ -184,7 +186,7 @@ export async function updatePlayerDemoDivision(id: string, division: string): Pr
   if (error) {
     return {
       error: true,
-      message: error.detail ?? 'Unknown error'
+      message: error.detail ?? 'unknown error'
     };
   }
 
@@ -194,7 +196,7 @@ export async function updatePlayerDemoDivision(id: string, division: string): Pr
   };
 }
 
-export async function createPlayerRequest(type: string, request: string) {
+export async function createPlayerRequest(type: string, request: string): Promise<InputError> {
   const { error } = await Client.PUT('/internal/players/requests/{request_type}/{request_string}', {
     fetch: fetch,
     params: {
@@ -209,7 +211,7 @@ export async function createPlayerRequest(type: string, request: string) {
   if (error) {
     return {
       error: true,
-      message: error.detail ?? 'Unknown error'
+      message: error.detail ?? 'unknown error'
     };
   }
 
@@ -219,10 +221,33 @@ export async function createPlayerRequest(type: string, request: string) {
   };
 }
 
-export async function getPlayerRequests() {
+export async function getSelfPlayerRequests(): Promise<SelfPlayerRequest[] | null> {
   const { data } = await Client.GET('/internal/players/requests', {
     fetch: fetch
   });
 
-  return data as SelfPlayerRequest[];
+  return data ?? null;
+}
+
+export async function getAllPlayerRequests(): Promise<PlayerRequest[] | null> {
+  const { data } = await Client.GET('/internal/consultant/players/requests/pending', {
+    fetch: fetch
+  });
+
+  return data ?? null;
+}
+
+// returns blank message on no error
+export async function resolvePlayerRequest(id: number): Promise<InputError> {
+  const { error } = await Client.PUT('/internal/moderator/players/requests/resolve/{id}', {
+    fetch: fetch,
+    params: {
+      path: {
+        id: id
+      }
+    }
+  });
+  return error
+    ? { error: true, message: error.detail ?? 'unknown error' }
+    : { error: false, message: '' };
 }
