@@ -75,11 +75,11 @@
 
               <hr class="border-1 border-jfgray-700" />
 
-              {#if session.role === 'Admin' || session.role === 'Mod'}
+              {#if session.role === 'Admin' || session.role === 'Mod' || session.role === 'Consultant' || session.role === 'Treasurer'}
                 <a
-                  href="/moderation"
+                  href="/manage"
                   data-nav="true"
-                  class="span-ellipsis rounded-lg pl-2 hover:bg-jfgray-700">moderation</a
+                  class="span-ellipsis rounded-lg pl-2 hover:bg-jfgray-700">manage</a
                 >
 
                 <hr class="border-1 border-jfgray-700" />
