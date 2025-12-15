@@ -14,7 +14,7 @@
     updateSteamAvatar,
     updateTempusID,
     createPlayerRequest,
-    getPlayerRequests
+    getSelfPlayerRequests
   } from '$lib/internalApi';
   import Input from '$lib/components/input/Input.svelte';
   import InputButtons from '$lib/components/input/InputButtons.svelte';
@@ -32,24 +32,28 @@
 
 <!-- todo: boundary for await -->
 {#if player}
-  {#await getPlayerRequests() then requests}
-    {#if requests.length}
-      <DataSection title={'Pending Requests'}>
-        <Table data={requests}>
-          {#snippet header()}
-            <th class="w-64">request</th>
-            <th></th>
-            <th class="w-48">submitted</th>
-          {/snippet}
-          {#snippet row(r: SelfPlayerRequest)}
-            <td>{r.request_type}</td>
-            <td class="flex h-10 items-center"><span>{r.request_string}</span></td>
-            <td>{Temporal.Instant.from(r.created_at).toLocaleString()}</td>
-          {/snippet}
-        </Table>
-      </DataSection>
-    {/if}
-  {/await}
+  <svelte:boundary {pending}>
+    {#await getSelfPlayerRequests() then requests}
+      {#if requests}
+        <DataSection title={'Pending Requests'}>
+          <div class="w-fit">
+            <Table data={requests}>
+              {#snippet header()}
+                <th class="w-48">request</th>
+                <th class="w-32"></th>
+                <th class="w-date">date</th>
+              {/snippet}
+              {#snippet row(r: SelfPlayerRequest)}
+                <td>{r.request_type}</td>
+                <td>{r.request_string}</td>
+                <td>{Temporal.Instant.from(r.created_at).toLocaleString()}</td>
+              {/snippet}
+            </Table>
+          </div>
+        </DataSection>
+      {/if}
+    {/await}
+  </svelte:boundary>
 
   <DataSection title="Profile">
     <InputButtons
@@ -98,29 +102,26 @@
     />
 
     <Button
-      label={'update avatar from steam'}
       onSelect={async () => {
         return updateSteamAvatar();
-      }}
-    />
+      }}>update avatar from steam</Button
+    >
   </DataSection>
 
   <DataSection title={'Rank'}>
     {#if !player.soldier_division}
       <Button
-        label={'request soldier placement'}
         onSelect={async () => {
           return createPlayerRequest('Soldier Placement', 'null');
-        }}
-      />
+        }}>request soldier placement</Button
+      >
     {/if}
     {#if !player.demo_division}
       <Button
-        label={'request soldier placement'}
         onSelect={async () => {
           return createPlayerRequest('Demo Placement', 'null');
-        }}
-      />
+        }}>request demo placement</Button
+      >
     {/if}
   </DataSection>
 
@@ -161,3 +162,7 @@
   <!-- todo: error for missing player (redirect?) -->
   <span></span>
 {/if}
+
+{#snippet pending()}
+  todo loading
+{/snippet}
