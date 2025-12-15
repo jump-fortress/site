@@ -4,593 +4,648 @@
  */
 
 export interface paths {
-  '/internal/moderator/players/all': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/internal/consultant/players/all": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get full info on all Players
+         * @description get full info on all players
+         */
+        get: operations["get-all-full-players"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * Get full info on all Players
-     * @description get full info on all players
-     */
-    get: operations['get-all-full-players'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/internal/moderator/players/demodivision/{id}/{division}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/internal/consultant/players/requests/pending": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get all pending player requests
+         * @description get all pending player requests
+         */
+        get: operations["get-all-pending-player-requests"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    /**
-     * Update a Player's demo division
-     * @description update a player's demo division
-     */
-    put: operations['update-player-demodivision'];
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/internal/moderator/players/displayname/{id}/{name}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/internal/moderator/players/demodivision/{id}/{division}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Update a Player's demo division
+         * @description update a player's demo division
+         */
+        put: operations["update-player-demodivision"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    /**
-     * Update a Player's display name
-     * @description update a player's display name
-     */
-    put: operations['update-player-displayname'];
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/internal/moderator/players/soldierdivision/{id}/{division}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/internal/moderator/players/displayname/{id}/{name}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Update a Player's display name
+         * @description update a player's display name
+         */
+        put: operations["update-player-displayname"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    /**
-     * Update a Player's soldier division
-     * @description update a player's soldier division
-     */
-    put: operations['update-player-soldierdivision'];
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/internal/players': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/internal/moderator/players/requests/resolve/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Resolve a player's request
+         * @description resolve a player's request, marking it as not pending
+         */
+        put: operations["resolve-player-request"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * Get the current session's Player
-     * @description get the current session's player
-     */
-    get: operations['get-player'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/internal/players/all': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/internal/moderator/players/soldierdivision/{id}/{division}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Update a Player's soldier division
+         * @description update a player's soldier division
+         */
+        put: operations["update-player-soldierdivision"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * Get all Players
-     * @description get all players
-     */
-    get: operations['get-all-players'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/internal/players/preferredclass/{class}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/internal/players": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get the current session's Player
+         * @description get the current session's player
+         */
+        get: operations["get-player"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    /**
-     * Set Player's preferred class
-     * @description set the current session player's preferred class by class name
-     */
-    put: operations['set-player-preferredclass'];
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/internal/players/preferredlauncher/{launcher}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/internal/players/all": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get all Players
+         * @description get all players
+         */
+        get: operations["get-all-players"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    /**
-     * Set Player's preferred rocket launcher
-     * @description set the current session player's preferred rocket launcher by launcher name
-     */
-    put: operations['set-player-preferredlauncher'];
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/internal/players/profile/{id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/internal/players/preferredclass/{class}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Set Player's preferred class
+         * @description set the current session player's preferred class by class name
+         */
+        put: operations["set-player-preferredclass"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * Get a Player Profile
-     * @description get info for a player's profile by ID
-     */
-    get: operations['get-player-profile-by-id'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/internal/players/requests': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/internal/players/preferredlauncher/{launcher}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Set Player's preferred rocket launcher
+         * @description set the current session player's preferred rocket launcher by launcher name
+         */
+        put: operations["set-player-preferredlauncher"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * Get a player's own requests
-     * @description Get all of a player's own requests
-     */
-    get: operations['get-player-requests'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/internal/players/requests/{request_type}/{request_string}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/internal/players/profile/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get a Player Profile
+         * @description get info for a player's profile by ID
+         */
+        get: operations["get-player-profile-by-id"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    /**
-     * Insert a player request
-     * @description send a request for division placement or name change
-     */
-    put: operations['insert-player-request'];
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/internal/players/steamavatarurl': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/internal/players/requests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get a player's own requests
+         * @description Get all of a player's own requests
+         */
+        get: operations["get-player-requests"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    /**
-     * Update a Player's own Steam avatar url
-     * @description update a player's own Steam avatar from their Steam Profile
-     */
-    put: operations['update-player-steam-avatar-url'];
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/internal/players/steamtradetoken/{url}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/internal/players/requests/{request_type}/{request_string}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Insert a player request
+         * @description send a request for division placement or name change
+         */
+        put: operations["insert-player-request"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    /**
-     * Set a Player's own Steam trade token
-     * @description set a player's own Steam trade token from their Steam Trade URL, found at https://steamcommunity.com/id/{steamid}/tradeoffers/privacy
-     */
-    put: operations['set-player-steam-trade-token'];
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/internal/players/tempusinfo/{tempus_id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/internal/players/steamavatarurl": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Update a Player's own Steam avatar url
+         * @description update a player's own Steam avatar from their Steam Profile
+         */
+        put: operations["update-player-steam-avatar-url"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    /**
-     * Set a Player's own Tempus ID
-     * @description set a player's own Tempus ID, country, and country code, found at https://tempus2.xyz
-     */
-    put: operations['set-player-tempusinfo'];
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/internal/players/{id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/internal/players/steamtradetoken/{url}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Set a Player's own Steam trade token
+         * @description set a player's own Steam trade token from their Steam Trade URL, found at https://steamcommunity.com/id/{steamid}/tradeoffers/privacy
+         */
+        put: operations["set-player-steam-trade-token"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * Get a Player
-     * @description get a player by ID
-     */
-    get: operations['get-player-by-id'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/internal/readyz': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/internal/players/tempusinfo/{tempus_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Set a Player's own Tempus ID
+         * @description set a player's own Tempus ID, country, and country code, found at https://tempus2.xyz
+         */
+        put: operations["set-player-tempusinfo"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * Get Readiness
-     * @description Get whether or not the API is ready to process requests
-     */
-    get: operations['readyz'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/internal/session': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/internal/players/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get a Player
+         * @description get a player by ID
+         */
+        get: operations["get-player-by-id"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * session profile
-     * @description get the authenticated user's session profile
-     */
-    get: operations['session'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/internal/session/sign-out': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/internal/readyz": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Readiness
+         * @description Get whether or not the API is ready to process requests
+         */
+        get: operations["readyz"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /**
-     * Sign out
-     * @description sign out & clear session
-     */
-    post: operations['sign-out'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/internal/session/steam/callback': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/internal/session": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * session profile
+         * @description get the authenticated user's session profile
+         */
+        get: operations["session"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * Steam callback
-     * @description steam callback
-     */
-    get: operations['steam-callback'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/internal/session/steam/discover': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/internal/session/sign-out": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Sign out
+         * @description sign out & clear session
+         */
+        post: operations["sign-out"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * Steam discover
-     * @description steam discover
-     */
-    get: operations['steam-discover'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/internal/session/steam/profile': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/internal/session/steam/callback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Steam callback
+         * @description steam callback
+         */
+        get: operations["steam-callback"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * Steam profile
-     * @description get the authenticated user's steam profile info
-     */
-    get: operations['steam-profile'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
+    "/internal/session/steam/discover": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Steam discover
+         * @description steam discover
+         */
+        get: operations["steam-discover"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/internal/session/steam/profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Steam profile
+         * @description get the authenticated user's steam profile info
+         */
+        get: operations["steam-profile"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
-  schemas: {
-    ErrorDetail: {
-      /** @description Where the error occurred, e.g. 'body.items[3].tags' or 'path.thing-id' */
-      location?: string;
-      /** @description Error message text */
-      message?: string;
-      /** @description The value at the given location */
-      value?: unknown;
+    schemas: {
+        ErrorDetail: {
+            /** @description Where the error occurred, e.g. 'body.items[3].tags' or 'path.thing-id' */
+            location?: string;
+            /** @description Error message text */
+            message?: string;
+            /** @description The value at the given location */
+            value?: unknown;
+        };
+        ErrorModel: {
+            /**
+             * Format: uri
+             * @description A URL to the JSON Schema for this object.
+             * @example https://example.com/schemas/ErrorModel.json
+             */
+            readonly $schema?: string;
+            /**
+             * @description A human-readable explanation specific to this occurrence of the problem.
+             * @example Property foo is required but is missing.
+             */
+            detail?: string;
+            /** @description Optional list of individual error details */
+            errors?: components["schemas"]["ErrorDetail"][] | null;
+            /**
+             * Format: uri
+             * @description A URI reference that identifies the specific occurrence of the problem.
+             * @example https://example.com/error-log/abc123
+             */
+            instance?: string;
+            /**
+             * Format: int64
+             * @description HTTP status code
+             * @example 400
+             */
+            status?: number;
+            /**
+             * @description A short, human-readable summary of the problem type. This value should not change between occurrences of the error.
+             * @example Bad Request
+             */
+            title?: string;
+            /**
+             * Format: uri
+             * @description A URI reference to human-readable documentation for the error.
+             * @default about:blank
+             * @example https://example.com/errors/example
+             */
+            type: string;
+        };
+        FullPlayer: {
+            /**
+             * Format: uri
+             * @description A URL to the JSON Schema for this object.
+             * @example https://example.com/schemas/FullPlayer.json
+             */
+            readonly $schema?: string;
+            country: string;
+            country_code: string;
+            /** Format: date-time */
+            created_at: string;
+            demo_division?: string;
+            discord_id?: string;
+            display_name: string;
+            id: string;
+            preferred_class: string;
+            preferred_launcher: string;
+            role: string;
+            soldier_division?: string;
+            steam_avatar_url: string;
+            steam_trade_token?: string;
+            /** Format: int64 */
+            tempus_id?: number;
+        };
+        Player: {
+            /**
+             * Format: uri
+             * @description A URL to the JSON Schema for this object.
+             * @example https://example.com/schemas/Player.json
+             */
+            readonly $schema?: string;
+            country: string;
+            country_code: string;
+            /** Format: date-time */
+            created_at: string;
+            demo_division?: string;
+            display_name: string;
+            id: string;
+            preferred_class: string;
+            preferred_launcher: string;
+            role: string;
+            soldier_division?: string;
+            steam_avatar_url: string;
+            /** Format: int64 */
+            tempus_id?: number;
+        };
+        PlayerPoints: {
+            /** Format: int64 */
+            last_3_monthly: number;
+            /** Format: int64 */
+            last_9_motw: number;
+            /** Format: int64 */
+            total: number;
+        };
+        PlayerProfile: {
+            /**
+             * Format: uri
+             * @description A URL to the JSON Schema for this object.
+             * @example https://example.com/schemas/PlayerProfile.json
+             */
+            readonly $schema?: string;
+            country: string;
+            country_code: string;
+            /** Format: date-time */
+            created_at: string;
+            demo_division?: string;
+            demo_points: components["schemas"]["PlayerPoints"];
+            display_name: string;
+            id: string;
+            preferred_class: string;
+            preferred_launcher: string;
+            role: string;
+            soldier_division?: string;
+            soldier_points: components["schemas"]["PlayerPoints"];
+            steam_avatar_url: string;
+            /** Format: int64 */
+            tempus_id?: number;
+        };
+        PlayerRequest: {
+            player: components["schemas"]["FullPlayer"];
+            request: components["schemas"]["Request"];
+        };
+        Request: {
+            accepted: boolean;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: int64 */
+            id: number;
+            pending: boolean;
+            player_id: string;
+            request_string?: string;
+            request_type: string;
+        };
+        SelfPlayerRequest: {
+            /** Format: date-time */
+            created_at: string;
+            request_string: string;
+            request_type: string;
+        };
+        Session: {
+            /**
+             * Format: uri
+             * @description A URL to the JSON Schema for this object.
+             * @example https://example.com/schemas/Session.json
+             */
+            readonly $schema?: string;
+            displayName: string;
+            id: string;
+            role: string;
+            steamAvatarUrl: string;
+        };
+        SteamProfile: {
+            /**
+             * Format: uri
+             * @description A URL to the JSON Schema for this object.
+             * @example https://example.com/schemas/SteamProfile.json
+             */
+            readonly $schema?: string;
+            avatarFullUrl: string;
+            avatarMediumUrl: string;
+            avatarUrl: string;
+            personaName: string;
+            profileUrl: string;
+            steamId: string;
+        };
     };
-    ErrorModel: {
-      /**
-       * Format: uri
-       * @description A URL to the JSON Schema for this object.
-       * @example https://example.com/schemas/ErrorModel.json
-       */
-      readonly $schema?: string;
-      /**
-       * @description A human-readable explanation specific to this occurrence of the problem.
-       * @example Property foo is required but is missing.
-       */
-      detail?: string;
-      /** @description Optional list of individual error details */
-      errors?: components['schemas']['ErrorDetail'][] | null;
-      /**
-       * Format: uri
-       * @description A URI reference that identifies the specific occurrence of the problem.
-       * @example https://example.com/error-log/abc123
-       */
-      instance?: string;
-      /**
-       * Format: int64
-       * @description HTTP status code
-       * @example 400
-       */
-      status?: number;
-      /**
-       * @description A short, human-readable summary of the problem type. This value should not change between occurrences of the error.
-       * @example Bad Request
-       */
-      title?: string;
-      /**
-       * Format: uri
-       * @description A URI reference to human-readable documentation for the error.
-       * @default about:blank
-       * @example https://example.com/errors/example
-       */
-      type: string;
-    };
-    FullPlayer: {
-      /**
-       * Format: uri
-       * @description A URL to the JSON Schema for this object.
-       * @example https://example.com/schemas/FullPlayer.json
-       */
-      readonly $schema?: string;
-      country: string;
-      country_code: string;
-      /** Format: date-time */
-      created_at: string;
-      demo_division?: string;
-      discord_id?: string;
-      display_name: string;
-      id: string;
-      preferred_class: string;
-      preferred_launcher: string;
-      role: string;
-      soldier_division?: string;
-      steam_avatar_url: string;
-      steam_trade_token?: string;
-      /** Format: int64 */
-      tempus_id?: number;
-    };
-    Player: {
-      /**
-       * Format: uri
-       * @description A URL to the JSON Schema for this object.
-       * @example https://example.com/schemas/Player.json
-       */
-      readonly $schema?: string;
-      country: string;
-      country_code: string;
-      /** Format: date-time */
-      created_at: string;
-      demo_division?: string;
-      display_name: string;
-      id: string;
-      preferred_class: string;
-      preferred_launcher: string;
-      role: string;
-      soldier_division?: string;
-      steam_avatar_url: string;
-      /** Format: int64 */
-      tempus_id?: number;
-    };
-    PlayerPoints: {
-      /** Format: int64 */
-      last_3_monthly: number;
-      /** Format: int64 */
-      last_9_motw: number;
-      /** Format: int64 */
-      total: number;
-    };
-    PlayerProfile: {
-      /**
-       * Format: uri
-       * @description A URL to the JSON Schema for this object.
-       * @example https://example.com/schemas/PlayerProfile.json
-       */
-      readonly $schema?: string;
-      country: string;
-      country_code: string;
-      /** Format: date-time */
-      created_at: string;
-      demo_division?: string;
-      demo_points: components['schemas']['PlayerPoints'];
-      display_name: string;
-      id: string;
-      preferred_class: string;
-      preferred_launcher: string;
-      role: string;
-      soldier_division?: string;
-      soldier_points: components['schemas']['PlayerPoints'];
-      steam_avatar_url: string;
-      /** Format: int64 */
-      tempus_id?: number;
-    };
-    SelfPlayerRequest: {
-      /** Format: date-time */
-      created_at: string;
-      request_string: string;
-      request_type: string;
-    };
-    Session: {
-      /**
-       * Format: uri
-       * @description A URL to the JSON Schema for this object.
-       * @example https://example.com/schemas/Session.json
-       */
-      readonly $schema?: string;
-      displayName: string;
-      id: string;
-      role: string;
-      steamAvatarUrl: string;
-    };
-    SteamProfile: {
-      /**
-       * Format: uri
-       * @description A URL to the JSON Schema for this object.
-       * @example https://example.com/schemas/SteamProfile.json
-       */
-      readonly $schema?: string;
-      avatarFullUrl: string;
-      avatarMediumUrl: string;
-      avatarUrl: string;
-      personaName: string;
-      profileUrl: string;
-      steamId: string;
-    };
-  };
-  responses: never;
-  parameters: never;
-  requestBodies: never;
-  headers: never;
-  pathItems: never;
+    responses: never;
+    parameters: never;
+    requestBodies: never;
+    headers: never;
+    pathItems: never;
 }
 export type ErrorDetail = components['schemas']['ErrorDetail'];
 export type ErrorModel = components['schemas']['ErrorModel'];
@@ -598,678 +653,741 @@ export type FullPlayer = components['schemas']['FullPlayer'];
 export type Player = components['schemas']['Player'];
 export type PlayerPoints = components['schemas']['PlayerPoints'];
 export type PlayerProfile = components['schemas']['PlayerProfile'];
+export type PlayerRequest = components['schemas']['PlayerRequest'];
+export type Request = components['schemas']['Request'];
 export type SelfPlayerRequest = components['schemas']['SelfPlayerRequest'];
 export type Session = components['schemas']['Session'];
 export type SteamProfile = components['schemas']['SteamProfile'];
 export type $defs = Record<string, never>;
 export interface operations {
-  'get-all-full-players': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "get-all-full-players": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FullPlayer"][] | null;
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    "get-all-pending-player-requests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          'application/json': components['schemas']['FullPlayer'][] | null;
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlayerRequest"][] | null;
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
         };
-      };
-      /** @description Error */
-      default: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['ErrorModel'];
-        };
-      };
     };
-  };
-  'update-player-demodivision': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description player ID, SteamID64 */
-        id: string;
-        division: string;
-      };
-      cookie?: never;
+    "update-player-demodivision": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description player ID, SteamID64 */
+                id: string;
+                division: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      /** @description No Content */
-      204: {
-        headers: {
-          [name: string]: unknown;
+    "update-player-displayname": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description player ID, SteamID64 */
+                id: string;
+                /** @description new display name */
+                name: string;
+            };
+            cookie?: never;
         };
-        content?: never;
-      };
-      /** @description Error */
-      default: {
-        headers: {
-          [name: string]: unknown;
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
         };
-        content: {
-          'application/problem+json': components['schemas']['ErrorModel'];
-        };
-      };
     };
-  };
-  'update-player-displayname': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description player ID, SteamID64 */
-        id: string;
-        /** @description new display name */
-        name: string;
-      };
-      cookie?: never;
+    "resolve-player-request": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description request ID */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      /** @description No Content */
-      204: {
-        headers: {
-          [name: string]: unknown;
+    "update-player-soldierdivision": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description player ID, SteamID64 */
+                id: string;
+                division: string;
+            };
+            cookie?: never;
         };
-        content?: never;
-      };
-      /** @description Error */
-      default: {
-        headers: {
-          [name: string]: unknown;
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
         };
-        content: {
-          'application/problem+json': components['schemas']['ErrorModel'];
-        };
-      };
     };
-  };
-  'update-player-soldierdivision': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description player ID, SteamID64 */
-        id: string;
-        division: string;
-      };
-      cookie?: never;
+    "get-player": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FullPlayer"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      /** @description No Content */
-      204: {
-        headers: {
-          [name: string]: unknown;
+    "get-all-players": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content?: never;
-      };
-      /** @description Error */
-      default: {
-        headers: {
-          [name: string]: unknown;
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Player"][] | null;
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
         };
-        content: {
-          'application/problem+json': components['schemas']['ErrorModel'];
-        };
-      };
     };
-  };
-  'get-player': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "set-player-preferredclass": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                class: "Soldier" | "Demo";
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    "set-player-preferredlauncher": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                launcher: "Stock" | "Original" | "Mangler" | "None";
+            };
+            cookie?: never;
         };
-        content: {
-          'application/json': components['schemas']['FullPlayer'];
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
         };
-      };
-      /** @description Error */
-      default: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['ErrorModel'];
-        };
-      };
     };
-  };
-  'get-all-players': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "get-player-profile-by-id": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description player ID, SteamID64 */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlayerProfile"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    "get-player-requests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          'application/json': components['schemas']['Player'][] | null;
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SelfPlayerRequest"][] | null;
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
         };
-      };
-      /** @description Error */
-      default: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['ErrorModel'];
-        };
-      };
     };
-  };
-  'set-player-preferredclass': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        class: 'Soldier' | 'Demo';
-      };
-      cookie?: never;
+    "insert-player-request": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                request_type: "Display Name Change" | "Soldier Placement" | "Demo Placement";
+                request_string: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      /** @description No Content */
-      204: {
-        headers: {
-          [name: string]: unknown;
+    "update-player-steam-avatar-url": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content?: never;
-      };
-      /** @description Error */
-      default: {
-        headers: {
-          [name: string]: unknown;
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
         };
-        content: {
-          'application/problem+json': components['schemas']['ErrorModel'];
-        };
-      };
     };
-  };
-  'set-player-preferredlauncher': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        launcher: 'Stock' | 'Original' | 'Mangler' | 'None';
-      };
-      cookie?: never;
+    "set-player-steam-trade-token": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                url: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      /** @description No Content */
-      204: {
-        headers: {
-          [name: string]: unknown;
+    "set-player-tempusinfo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Tempus ID */
+                tempus_id: number;
+            };
+            cookie?: never;
         };
-        content?: never;
-      };
-      /** @description Error */
-      default: {
-        headers: {
-          [name: string]: unknown;
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
         };
-        content: {
-          'application/problem+json': components['schemas']['ErrorModel'];
-        };
-      };
     };
-  };
-  'get-player-profile-by-id': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description player ID, SteamID64 */
-        id: string;
-      };
-      cookie?: never;
+    "get-player-by-id": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description player ID, SteamID64 */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Player"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    readyz: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          'application/json': components['schemas']['PlayerProfile'];
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    OK?: boolean;
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
         };
-      };
-      /** @description Error */
-      default: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['ErrorModel'];
-        };
-      };
     };
-  };
-  'get-player-requests': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    session: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Session"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    "sign-out": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          'application/json': components['schemas']['SelfPlayerRequest'][] | null;
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    "Set-Cookie"?: string;
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
         };
-      };
-      /** @description Error */
-      default: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['ErrorModel'];
-        };
-      };
     };
-  };
-  'insert-player-request': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        request_type: 'Display Name Change' | 'Soldier Placement' | 'Demo Placement';
-        request_string: string;
-      };
-      cookie?: never;
+    "steam-callback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    Location?: string;
+                    "Set-Cookie"?: string;
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      /** @description No Content */
-      204: {
-        headers: {
-          [name: string]: unknown;
+    "steam-discover": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content?: never;
-      };
-      /** @description Error */
-      default: {
-        headers: {
-          [name: string]: unknown;
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    Location?: string;
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
         };
-        content: {
-          'application/problem+json': components['schemas']['ErrorModel'];
-        };
-      };
     };
-  };
-  'update-player-steam-avatar-url': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "steam-profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SteamProfile"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+            /** @description Internal Server Error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      /** @description No Content */
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Error */
-      default: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['ErrorModel'];
-        };
-      };
-    };
-  };
-  'set-player-steam-trade-token': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        url: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description No Content */
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Error */
-      default: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['ErrorModel'];
-        };
-      };
-    };
-  };
-  'set-player-tempusinfo': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description Tempus ID */
-        tempus_id: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description No Content */
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Error */
-      default: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['ErrorModel'];
-        };
-      };
-    };
-  };
-  'get-player-by-id': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description player ID, SteamID64 */
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Player'];
-        };
-      };
-      /** @description Error */
-      default: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['ErrorModel'];
-        };
-      };
-    };
-  };
-  readyz: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description No Content */
-      204: {
-        headers: {
-          OK?: boolean;
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Error */
-      default: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['ErrorModel'];
-        };
-      };
-    };
-  };
-  session: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Session'];
-        };
-      };
-      /** @description Unauthorized */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['ErrorModel'];
-        };
-      };
-      /** @description Internal Server Error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['ErrorModel'];
-        };
-      };
-    };
-  };
-  'sign-out': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description No Content */
-      204: {
-        headers: {
-          'Set-Cookie'?: string;
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Unauthorized */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['ErrorModel'];
-        };
-      };
-      /** @description Internal Server Error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['ErrorModel'];
-        };
-      };
-    };
-  };
-  'steam-callback': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description No Content */
-      204: {
-        headers: {
-          Location?: string;
-          'Set-Cookie'?: string;
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Error */
-      default: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['ErrorModel'];
-        };
-      };
-    };
-  };
-  'steam-discover': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description No Content */
-      204: {
-        headers: {
-          Location?: string;
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Error */
-      default: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['ErrorModel'];
-        };
-      };
-    };
-  };
-  'steam-profile': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['SteamProfile'];
-        };
-      };
-      /** @description Unauthorized */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['ErrorModel'];
-        };
-      };
-      /** @description Internal Server Error */
-      500: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/problem+json': components['schemas']['ErrorModel'];
-        };
-      };
-    };
-  };
 }
 export enum ApiPaths {
-  get_all_full_players = '/internal/moderator/players/all',
-  update_player_demodivision = '/internal/moderator/players/demodivision/{id}/{division}',
-  update_player_displayname = '/internal/moderator/players/displayname/{id}/{name}',
-  update_player_soldierdivision = '/internal/moderator/players/soldierdivision/{id}/{division}',
-  get_player = '/internal/players',
-  get_all_players = '/internal/players/all',
-  set_player_preferredclass = '/internal/players/preferredclass/{class}',
-  set_player_preferredlauncher = '/internal/players/preferredlauncher/{launcher}',
-  get_player_profile_by_id = '/internal/players/profile/{id}',
-  get_player_requests = '/internal/players/requests',
-  insert_player_request = '/internal/players/requests/{request_type}/{request_string}',
-  update_player_steam_avatar_url = '/internal/players/steamavatarurl',
-  set_player_steam_trade_token = '/internal/players/steamtradetoken/{url}',
-  set_player_tempusinfo = '/internal/players/tempusinfo/{tempus_id}',
-  get_player_by_id = '/internal/players/{id}',
-  readyz = '/internal/readyz',
-  session = '/internal/session',
-  sign_out = '/internal/session/sign-out',
-  steam_callback = '/internal/session/steam/callback',
-  steam_discover = '/internal/session/steam/discover',
-  steam_profile = '/internal/session/steam/profile'
+    get_all_full_players = "/internal/consultant/players/all",
+    get_all_pending_player_requests = "/internal/consultant/players/requests/pending",
+    update_player_demodivision = "/internal/moderator/players/demodivision/{id}/{division}",
+    update_player_displayname = "/internal/moderator/players/displayname/{id}/{name}",
+    resolve_player_request = "/internal/moderator/players/requests/resolve/{id}",
+    update_player_soldierdivision = "/internal/moderator/players/soldierdivision/{id}/{division}",
+    get_player = "/internal/players",
+    get_all_players = "/internal/players/all",
+    set_player_preferredclass = "/internal/players/preferredclass/{class}",
+    set_player_preferredlauncher = "/internal/players/preferredlauncher/{launcher}",
+    get_player_profile_by_id = "/internal/players/profile/{id}",
+    get_player_requests = "/internal/players/requests",
+    insert_player_request = "/internal/players/requests/{request_type}/{request_string}",
+    update_player_steam_avatar_url = "/internal/players/steamavatarurl",
+    set_player_steam_trade_token = "/internal/players/steamtradetoken/{url}",
+    set_player_tempusinfo = "/internal/players/tempusinfo/{tempus_id}",
+    get_player_by_id = "/internal/players/{id}",
+    readyz = "/internal/readyz",
+    session = "/internal/session",
+    sign_out = "/internal/session/sign-out",
+    steam_callback = "/internal/session/steam/callback",
+    steam_discover = "/internal/session/steam/discover",
+    steam_profile = "/internal/session/steam/profile"
 }
