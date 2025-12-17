@@ -5,22 +5,23 @@
   import DivisionTag from '$lib/components/DivisionTag.svelte';
   import Table from '$lib/components/table/Table.svelte';
   import TableMap from '$lib/components/TableMap.svelte';
-  import type { PlayerProfile, Session } from '$lib/schema';
+  import type { Session } from '$lib/schema';
   import type { PageData } from './$types';
   import PlayerHeader from '$lib/components/PlayerHeader.svelte';
 
   let { data }: { data: PageData } = $props();
   let session: Session | null = $derived(data.session);
-  let player: PlayerProfile | null = $derived(data.playerProfile);
 </script>
 
-<svelte:boundary {pending}>
-  {#if player}
-    <PlayerHeader {player} />
+{#await data.playerProfile}
+  <span>waiting...</span>
+{:then playerProfile}
+  {#if playerProfile}
+    <PlayerHeader player={playerProfile.player} points={playerProfile.points} />
   {:else}
-    todo no player
+    <span>no player</span>
   {/if}
-</svelte:boundary>
+{/await}
 
 <DataSection title="Bounties Claimed">
   <div class="grid w-full grid-cols-3 gap-2 text-base leading-5">
