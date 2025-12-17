@@ -515,11 +515,11 @@ export interface components {
        */
       type: string;
     };
-    FullPlayer: {
+    Player: {
       /**
        * Format: uri
        * @description A URL to the JSON Schema for this object.
-       * @example https://example.com/schemas/FullPlayer.json
+       * @example https://example.com/schemas/Player.json
        */
       readonly $schema?: string;
       country: string;
@@ -539,11 +539,23 @@ export interface components {
       /** Format: int64 */
       tempus_id?: number;
     };
-    Player: {
+    PlayerClassPoints: {
+      /** Format: int64 */
+      last_3_monthly: number;
+      /** Format: int64 */
+      last_9_motw: number;
+      /** Format: int64 */
+      total: number;
+    };
+    PlayerPoints: {
+      demo: components['schemas']['PlayerClassPoints'];
+      soldier: components['schemas']['PlayerClassPoints'];
+    };
+    PlayerPreview: {
       /**
        * Format: uri
        * @description A URL to the JSON Schema for this object.
-       * @example https://example.com/schemas/Player.json
+       * @example https://example.com/schemas/PlayerPreview.json
        */
       readonly $schema?: string;
       country: string;
@@ -560,14 +572,6 @@ export interface components {
       steam_avatar_url: string;
       /** Format: int64 */
       tempus_id?: number;
-    };
-    PlayerPoints: {
-      /** Format: int64 */
-      last_3_monthly: number;
-      /** Format: int64 */
-      last_9_motw: number;
-      /** Format: int64 */
-      total: number;
     };
     PlayerProfile: {
       /**
@@ -576,28 +580,10 @@ export interface components {
        * @example https://example.com/schemas/PlayerProfile.json
        */
       readonly $schema?: string;
-      country: string;
-      country_code: string;
-      /** Format: date-time */
-      created_at: string;
-      demo_division?: string;
-      demo_points: components['schemas']['PlayerPoints'];
-      display_name: string;
-      id: string;
-      preferred_class: string;
-      preferred_launcher: string;
-      role: string;
-      soldier_division?: string;
-      soldier_points: components['schemas']['PlayerPoints'];
-      steam_avatar_url: string;
-      /** Format: int64 */
-      tempus_id?: number;
+      player: components['schemas']['PlayerPreview'];
+      points: components['schemas']['PlayerPoints'];
     };
     PlayerRequest: {
-      player: components['schemas']['FullPlayer'];
-      request: components['schemas']['Request'];
-    };
-    Request: {
       accepted: boolean;
       /** Format: date-time */
       created_at: string;
@@ -608,11 +594,15 @@ export interface components {
       request_string?: string;
       request_type: string;
     };
-    SelfPlayerRequest: {
+    PlayerRequestPreview: {
       /** Format: date-time */
       created_at: string;
       request_string: string;
       request_type: string;
+    };
+    PlayerWithRequest: {
+      player: components['schemas']['Player'];
+      request: components['schemas']['PlayerRequest'];
     };
     Session: {
       /**
@@ -649,13 +639,14 @@ export interface components {
 }
 export type ErrorDetail = components['schemas']['ErrorDetail'];
 export type ErrorModel = components['schemas']['ErrorModel'];
-export type FullPlayer = components['schemas']['FullPlayer'];
 export type Player = components['schemas']['Player'];
+export type PlayerClassPoints = components['schemas']['PlayerClassPoints'];
 export type PlayerPoints = components['schemas']['PlayerPoints'];
+export type PlayerPreview = components['schemas']['PlayerPreview'];
 export type PlayerProfile = components['schemas']['PlayerProfile'];
 export type PlayerRequest = components['schemas']['PlayerRequest'];
-export type Request = components['schemas']['Request'];
-export type SelfPlayerRequest = components['schemas']['SelfPlayerRequest'];
+export type PlayerRequestPreview = components['schemas']['PlayerRequestPreview'];
+export type PlayerWithRequest = components['schemas']['PlayerWithRequest'];
 export type Session = components['schemas']['Session'];
 export type SteamProfile = components['schemas']['SteamProfile'];
 export type $defs = Record<string, never>;
@@ -675,7 +666,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['FullPlayer'][] | null;
+          'application/json': components['schemas']['Player'][] | null;
         };
       };
       /** @description Error */
@@ -704,7 +695,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['PlayerRequest'][] | null;
+          'application/json': components['schemas']['PlayerWithRequest'][] | null;
         };
       };
       /** @description Error */
@@ -857,7 +848,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['FullPlayer'];
+          'application/json': components['schemas']['Player'];
         };
       };
       /** @description Error */
@@ -886,7 +877,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['Player'][] | null;
+          'application/json': components['schemas']['PlayerPreview'][] | null;
         };
       };
       /** @description Error */
@@ -1005,7 +996,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['SelfPlayerRequest'][] | null;
+          'application/json': components['schemas']['PlayerRequestPreview'][] | null;
         };
       };
       /** @description Error */
@@ -1153,7 +1144,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['Player'];
+          'application/json': components['schemas']['PlayerPreview'];
         };
       };
       /** @description Error */

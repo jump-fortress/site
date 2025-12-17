@@ -1,7 +1,13 @@
 // todo: review is this is acceptable:
 // use endpoint functions here only on non-page-load
 import createClient from 'openapi-fetch';
-import type { operations, paths, PlayerProfile, PlayerRequest, SelfPlayerRequest } from './schema';
+import type {
+  operations,
+  paths,
+  PlayerProfile,
+  PlayerRequestPreview,
+  PlayerWithRequest
+} from './schema';
 
 export const Client = createClient<paths>({
   baseUrl: 'http://localhost:5173/'
@@ -221,7 +227,7 @@ export async function createPlayerRequest(type: string, request: string): Promis
   };
 }
 
-export async function getSelfPlayerRequests(): Promise<SelfPlayerRequest[] | null> {
+export async function getSelfPlayerRequests(): Promise<PlayerRequestPreview[] | null> {
   const { data } = await Client.GET('/internal/players/requests', {
     fetch: fetch
   });
@@ -229,7 +235,7 @@ export async function getSelfPlayerRequests(): Promise<SelfPlayerRequest[] | nul
   return data ?? null;
 }
 
-export async function getAllPlayerRequests(): Promise<PlayerRequest[] | null> {
+export async function getAllPlayerRequests(): Promise<PlayerWithRequest[] | null> {
   const { data } = await Client.GET('/internal/consultant/players/requests/pending', {
     fetch: fetch
   });

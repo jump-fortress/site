@@ -1,8 +1,7 @@
 <script lang="ts">
   import { page } from '$app/state';
-  import DataSection from '$lib/components/DataSection.svelte';
   import InnerNav from '$lib/components/InnerNav.svelte';
-  import type { FullPlayer, Session } from '$lib/schema';
+  import type { Session } from '$lib/schema';
   import type { LayoutProps } from './$types';
 
   let { data, children }: LayoutProps = $props();
