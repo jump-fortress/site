@@ -1,16 +1,15 @@
 <script lang="ts">
   import RocketLauncher from '$lib/components/RocketLauncher.svelte';
-  import type { PlayerPoints } from '$lib/schema';
+  import type { PlayerClassPoints, PlayerPoints } from '$lib/schema';
   import { fade } from 'svelte/transition';
 
   type Props = {
     selected_class: string;
-    soldier: PlayerPoints;
-    demo: PlayerPoints;
+    points: PlayerPoints;
     launcher: string;
   };
 
-  let { selected_class, soldier, demo, launcher }: Props = $props();
+  let { selected_class, points, launcher }: Props = $props();
 </script>
 
 <div class="relative flex gap-2 leading-6">
@@ -18,10 +17,10 @@
     <span class="text-sm opacity-75">last 3 monthlies</span>
     <div class="flex items-center gap-2 text-base">
       {#if selected_class === 'Soldier'}
-        <span>{soldier.last_3_monthly}</span>
+        <span>{points.soldier.last_3_monthly}</span>
         <span class="ml-auto">(#1)</span>
       {:else}
-        <span>{demo.last_3_monthly}</span>
+        <span>{points.demo.last_3_monthly}</span>
         <span class="ml-auto">(#1)</span>
       {/if}
     </div>
@@ -30,10 +29,10 @@
     <span class="text-sm opacity-75">last 9 MOTWs</span>
     <div class="flex items-center gap-2 text-base">
       {#if selected_class === 'Soldier'}
-        <span>{soldier.last_9_motw}</span>
+        <span>{points.soldier.last_9_motw}</span>
         <span class="ml-auto">(#1)</span>
       {:else}
-        <span>{demo.last_9_motw}</span>
+        <span>{points.demo.last_9_motw}</span>
         <span class="ml-auto">(#1)</span>
       {/if}
     </div>
@@ -42,10 +41,10 @@
     <span class="text-sm opacity-75">total points</span>
     <div class="flex items-center gap-2 text-base">
       {#if selected_class === 'Soldier'}
-        <span>{soldier.total}</span>
+        <span>{points.soldier.total}</span>
         <span class="ml-auto">(#1)</span>
       {:else}
-        <span>{demo.total}</span>
+        <span>{points.demo.total}</span>
         <span class="ml-auto">(#1)</span>
       {/if}
     </div>
