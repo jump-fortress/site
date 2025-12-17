@@ -13,7 +13,7 @@
   let value: string = $state('');
 
   // response is a promise so #await can be used to handle pending state
-  let response: Promise<InputError> = $derived(
+  let response: Promise<InputError> = $state(
     Promise.resolve({
       error: false,
       message: responseMessage
