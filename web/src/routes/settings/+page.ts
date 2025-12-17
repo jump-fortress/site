@@ -1,18 +1,17 @@
 import { Client } from '$lib/internalApi';
-import type { FullPlayer } from '$lib/schema';
-import type { PageLoad } from './$types';
 
-export const load: PageLoad = async ({ fetch }) => {
-  // todo: error handling
-  const { data } = await Client.GET('/internal/players', {
+export const load = async ({ fetch }) => {
+  const playerData = Client.GET('/internal/players', {
     fetch: fetch
+  }).then((response) => {
+    return response.data;
   });
 
-  if (!data) {
-    return { fullPlayer: null };
-  }
+  const playerRequestsData = Client.GET('/internal/players/requests', {
+    fetch: fetch
+  }).then((response) => {
+    return response.data;
+  });
 
-  return {
-    fullPlayer: data as FullPlayer
-  };
+  return { player: playerData, requests: playerRequestsData };
 };
