@@ -4,13 +4,18 @@ import (
 	"time"
 )
 
+// types matching their database name (ex. "Player") are mapped database types
+// "Preview" suffixed types are database types missing sensitive or unneccessary properties
+// "Input" suffixed types are used for url parameters
+// "Output" suffixed typed are used for api responses
+
 var Divisions = []string{"Diamond", "Platinum", "Gold", "Silver", "Bronze", "Steel", "Wood"}
 
 type PlayerIDInput struct {
 	ID string `path:"id" minimum:"1" doc:"player ID, SteamID64"`
 }
 
-type Player struct {
+type PlayerPreview struct {
 	ID                string    `json:"id"`
 	Role              string    `json:"role"`
 	SteamAvatarUrl    string    `json:"steam_avatar_url"`
@@ -25,7 +30,13 @@ type Player struct {
 	CreatedAt         time.Time `json:"created_at"`
 }
 
-type FullPlayer struct {
+type PlayerRequestPreview struct {
+	RequestType   string    `json:"request_type"`
+	RequestString string    `json:"request_string"`
+	CreatedAt     time.Time `json:"created_at"`
+}
+
+type Player struct {
 	ID                string    `json:"id"`
 	Role              string    `json:"role"`
 	SteamAvatarUrl    string    `json:"steam_avatar_url"`
@@ -42,13 +53,7 @@ type FullPlayer struct {
 	CreatedAt         time.Time `json:"created_at"`
 }
 
-type SelfPlayerRequest struct {
-	RequestType   string    `json:"request_type"`
-	RequestString string    `json:"request_string"`
-	CreatedAt     time.Time `json:"created_at"`
-}
-
-type Request struct {
+type PlayerRequest struct {
 	ID            int64     `json:"id"`
 	PlayerID      string    `json:"player_id"`
 	RequestType   string    `json:"request_type"`
@@ -58,49 +63,58 @@ type Request struct {
 	CreatedAt     time.Time `json:"created_at"`
 }
 
-type PlayerRequest struct {
-	Player  FullPlayer `json:"player"`
-	Request Request    `json:"request"`
+type PlayerWithRequest struct {
+	Player  Player        `json:"player"`
+	Request PlayerRequest `json:"request"`
+}
+
+type PlayerPreviewOutput struct {
+	Body PlayerPreview
+}
+
+type PlayerPreviewsOutput struct {
+	Body []PlayerPreview
 }
 
 type PlayerOutput struct {
 	Body Player
 }
 
-type ManyPlayersOutput struct {
+type PlayersOutput struct {
 	Body []Player
 }
 
-type FullPlayerOutput struct {
-	Body FullPlayer
+type PlayerRequestPreviewOutput struct {
+	Body PlayerRequestPreview
 }
 
-type ManyFullPlayersOutput struct {
-	Body []FullPlayer
+type PlayerRequestPreviewsOutput struct {
+	Body []PlayerRequestPreview
 }
 
-type SelfPlayerRequestOutput struct {
-	Body SelfPlayerRequest
-}
-
-type ManySelfPlayerRequestsOutput struct {
-	Body []SelfPlayerRequest
-}
-
-type ManyPlayerRequestsOutput struct {
+type PlayerRequestsOutput struct {
 	Body []PlayerRequest
 }
 
+type PlayersWithRequestOutput struct {
+	Body []PlayerWithRequest
+}
+
 type PlayerPoints struct {
+	SoldierPoints PlayerClassPoints `json:"soldier"`
+	DemoPoints    PlayerClassPoints `json:"demo"`
+}
+
+type PlayerClassPoints struct {
 	Total        int64 `json:"total"`
 	Last3Monthly int64 `json:"last_3_monthly"`
 	Last9Motw    int64 `json:"last_9_motw"`
 }
 
+// todo: a separate type to return competition placements
 type PlayerProfile struct {
-	Player
-	SoldierPoints PlayerPoints `json:"soldier_points"`
-	DemoPoints    PlayerPoints `json:"demo_points"`
+	PlayerPreview PlayerPreview `json:"player"`
+	PlayerPoints  PlayerPoints  `json:"points"`
 }
 
 type PlayerProfileOutput struct {
@@ -126,7 +140,6 @@ type LauncherNameInput struct {
 	Launcher string `path:"launcher" enum:"Stock,Original,Mangler,None"`
 }
 
-// todo: regex for Name
 type DisplayNameInput struct {
 	ID   string `path:"id" minimum:"1" doc:"player ID, SteamID64"`
 	Name string `path:"name" doc:"new display name"`
@@ -144,7 +157,8 @@ type TempusPlayerInfo struct {
 	CountryCode string `json:"country_code"`
 }
 
-type TempusResponsePlayerInfo struct {
+// used to read in player_info property from the Tempus API
+type TempusPlayerInfoResponse struct {
 	PlayerInfo TempusPlayerInfo `json:"player_info"`
 }
 

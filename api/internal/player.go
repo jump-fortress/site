@@ -33,7 +33,7 @@ func getTempusPlayerInfo(tempusID int64) (*responses.TempusPlayerInfo, error) {
 		return nil, err
 	}
 
-	tempusResponsePlayerInfo := &responses.TempusResponsePlayerInfo{}
+	tempusResponsePlayerInfo := &responses.TempusPlayerInfoResponse{}
 	if err := json.Unmarshal(body, &tempusResponsePlayerInfo); err != nil {
 		return nil, err
 	}
@@ -42,8 +42,8 @@ func getTempusPlayerInfo(tempusID int64) (*responses.TempusPlayerInfo, error) {
 }
 
 // todo: check some nullable before using them?
-func playerResponseFromPlayer(player queries.Player) responses.Player {
-	return responses.Player{
+func playerResponseFromPlayer(player queries.Player) responses.PlayerPreview {
+	return responses.PlayerPreview{
 		ID:                player.ID,
 		Role:              player.Role,
 		SteamAvatarUrl:    player.SteamAvatarUrl.String,
@@ -59,8 +59,8 @@ func playerResponseFromPlayer(player queries.Player) responses.Player {
 	}
 }
 
-func fullPlayerResponseFromPlayer(player queries.Player) responses.FullPlayer {
-	return responses.FullPlayer{
+func fullPlayerResponseFromPlayer(player queries.Player) responses.Player {
+	return responses.Player{
 		ID:                player.ID,
 		Role:              player.Role,
 		SteamAvatarUrl:    player.SteamAvatarUrl.String,
@@ -78,17 +78,17 @@ func fullPlayerResponseFromPlayer(player queries.Player) responses.FullPlayer {
 	}
 }
 
-func playerRequestResponseFromPlayerRequest(request queries.PlayerRequest) responses.SelfPlayerRequest {
-	return responses.SelfPlayerRequest{
+func playerRequestResponseFromPlayerRequest(request queries.PlayerRequest) responses.PlayerRequestPreview {
+	return responses.PlayerRequestPreview{
 		RequestType:   request.Type,
 		RequestString: request.Content.String,
 		CreatedAt:     request.CreatedAt,
 	}
 }
 
-func fullPlayerRequestResponseFromPlayerRequest(request queries.SelectAllPendingPlayerRequestsRow) responses.PlayerRequest {
-	return responses.PlayerRequest{
-		Request: responses.Request{
+func fullPlayerRequestResponseFromPlayerRequest(request queries.SelectAllPendingPlayerRequestsRow) responses.PlayerWithRequest {
+	return responses.PlayerWithRequest{
+		Request: responses.PlayerRequest{
 			ID:            request.ID,
 			PlayerID:      request.PlayerID,
 			RequestType:   request.Type,
@@ -96,7 +96,7 @@ func fullPlayerRequestResponseFromPlayerRequest(request queries.SelectAllPending
 			Pending:       request.Pending,
 			CreatedAt:     request.CreatedAt,
 		},
-		Player: responses.FullPlayer{
+		Player: responses.Player{
 			ID:                request.ID_2,
 			Role:              request.Role,
 			SteamAvatarUrl:    request.SteamAvatarUrl.String,
@@ -115,7 +115,7 @@ func fullPlayerRequestResponseFromPlayerRequest(request queries.SelectAllPending
 	}
 }
 
-func HandleGetSelfPlayer(ctx context.Context, _ *struct{}) (*responses.FullPlayerOutput, error) {
+func HandleGetSelfPlayer(ctx context.Context, _ *struct{}) (*responses.PlayerOutput, error) {
 	principal, ok := GetPrincipal(ctx)
 	if !ok {
 		return nil, huma.Error401Unauthorized("a session is required")
@@ -126,17 +126,17 @@ func HandleGetSelfPlayer(ctx context.Context, _ *struct{}) (*responses.FullPlaye
 		return nil, err
 	}
 
-	resp := &responses.FullPlayerOutput{Body: fullPlayerResponseFromPlayer(player)}
+	resp := &responses.PlayerOutput{Body: fullPlayerResponseFromPlayer(player)}
 	return resp, nil
 }
 
-func HandleGetPlayer(ctx context.Context, input *responses.PlayerIDInput) (*responses.PlayerOutput, error) {
+func HandleGetPlayer(ctx context.Context, input *responses.PlayerIDInput) (*responses.PlayerPreviewOutput, error) {
 	player, err := responses.Queries.SelectPlayer(ctx, input.ID)
 	if err != nil {
 		return nil, err
 	}
 
-	resp := &responses.PlayerOutput{Body: playerResponseFromPlayer(player)}
+	resp := &responses.PlayerPreviewOutput{Body: playerResponseFromPlayer(player)}
 	return resp, nil
 }
 
@@ -165,16 +165,18 @@ func HandleGetPlayerProfile(ctx context.Context, input *responses.PlayerIDInput)
 
 	resp := &responses.PlayerProfileOutput{
 		Body: responses.PlayerProfile{
-			Player: playerResponseFromPlayer(player),
-			SoldierPoints: responses.PlayerPoints{
-				Total:        soldierPoints.Total,
-				Last3Monthly: soldierPoints.Last3Monthly,
-				Last9Motw:    soldierPoints.Last9Motw,
-			},
-			DemoPoints: responses.PlayerPoints{
-				Total:        demoPoints.Total,
-				Last3Monthly: demoPoints.Last3Monthly,
-				Last9Motw:    demoPoints.Last9Motw,
+			PlayerPreview: playerResponseFromPlayer(player),
+			PlayerPoints: responses.PlayerPoints{
+				SoldierPoints: responses.PlayerClassPoints{
+					Total:        soldierPoints.Total,
+					Last3Monthly: soldierPoints.Last3Monthly,
+					Last9Motw:    soldierPoints.Last9Motw,
+				},
+				DemoPoints: responses.PlayerClassPoints{
+					Total:        demoPoints.Total,
+					Last3Monthly: demoPoints.Last3Monthly,
+					Last9Motw:    demoPoints.Last9Motw,
+				},
 			},
 		},
 	}
@@ -213,14 +215,14 @@ func HandlePutSelfPreferredLauncher(ctx context.Context, input *responses.Launch
 	return nil, nil
 }
 
-func HandleGetAllPlayers(ctx context.Context, _ *struct{}) (*responses.ManyPlayersOutput, error) {
+func HandleGetAllPlayers(ctx context.Context, _ *struct{}) (*responses.PlayerPreviewsOutput, error) {
 	players, err := responses.Queries.SelectAllPlayers(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	resp := &responses.ManyPlayersOutput{
-		Body: []responses.Player{},
+	resp := &responses.PlayerPreviewsOutput{
+		Body: []responses.PlayerPreview{},
 	}
 
 	for _, p := range players {
@@ -229,7 +231,7 @@ func HandleGetAllPlayers(ctx context.Context, _ *struct{}) (*responses.ManyPlaye
 	}
 
 	if len(resp.Body) == 0 {
-		return nil, nil
+		return nil, huma.Error404NotFound("no players found")
 	}
 	return resp, nil
 }
@@ -419,7 +421,7 @@ func HandlePutSelfPlayerRequest(ctx context.Context, input *responses.PlayerRequ
 	return nil, nil
 }
 
-func HandleGetSelfPlayerRequests(ctx context.Context, _ *struct{}) (*responses.ManySelfPlayerRequestsOutput, error) {
+func HandleGetSelfPlayerRequests(ctx context.Context, _ *struct{}) (*responses.PlayerRequestPreviewsOutput, error) {
 	principal, ok := GetPrincipal(ctx)
 	if !ok {
 		return nil, huma.Error401Unauthorized("a session is required")
@@ -430,8 +432,8 @@ func HandleGetSelfPlayerRequests(ctx context.Context, _ *struct{}) (*responses.M
 		return nil, nil
 	}
 
-	resp := &responses.ManySelfPlayerRequestsOutput{
-		Body: []responses.SelfPlayerRequest{},
+	resp := &responses.PlayerRequestPreviewsOutput{
+		Body: []responses.PlayerRequestPreview{},
 	}
 
 	for _, r := range requests {
@@ -440,21 +442,21 @@ func HandleGetSelfPlayerRequests(ctx context.Context, _ *struct{}) (*responses.M
 	}
 
 	if len(resp.Body) == 0 {
-		return nil, nil
+		return nil, huma.Error404NotFound("no players found")
 	}
 	return resp, nil
 }
 
 // consultant
 
-func HandleGetAllFullPlayers(ctx context.Context, _ *struct{}) (*responses.ManyFullPlayersOutput, error) {
+func HandleGetAllFullPlayers(ctx context.Context, _ *struct{}) (*responses.PlayersOutput, error) {
 	players, err := responses.Queries.SelectAllPlayers(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	resp := &responses.ManyFullPlayersOutput{
-		Body: []responses.FullPlayer{},
+	resp := &responses.PlayersOutput{
+		Body: []responses.Player{},
 	}
 
 	for _, p := range players {
@@ -463,19 +465,19 @@ func HandleGetAllFullPlayers(ctx context.Context, _ *struct{}) (*responses.ManyF
 	}
 
 	if len(resp.Body) == 0 {
-		return nil, nil
+		return nil, huma.Error404NotFound("no players found")
 	}
 	return resp, nil
 }
 
-func HandleGetAllPendingPlayerRequests(ctx context.Context, _ *struct{}) (*responses.ManyPlayerRequestsOutput, error) {
+func HandleGetAllPendingPlayerRequests(ctx context.Context, _ *struct{}) (*responses.PlayersWithRequestOutput, error) {
 	requests, err := responses.Queries.SelectAllPendingPlayerRequests(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	resp := &responses.ManyPlayerRequestsOutput{
-		Body: []responses.PlayerRequest{},
+	resp := &responses.PlayersWithRequestOutput{
+		Body: []responses.PlayerWithRequest{},
 	}
 
 	for _, r := range requests {
@@ -484,7 +486,7 @@ func HandleGetAllPendingPlayerRequests(ctx context.Context, _ *struct{}) (*respo
 	}
 
 	if len(resp.Body) == 0 {
-		return nil, nil
+		return nil, huma.Error404NotFound("no players found")
 	}
 	return resp, nil
 }
