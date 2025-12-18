@@ -4,6 +4,30 @@
  */
 
 export interface paths {
+  '/internal/admin/maps': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Get all maps
+     * @description get all maps
+     */
+    get: operations['get-all-maps'];
+    /**
+     * Update map list
+     * @description update the database's map list from Tempus data
+     */
+    put: operations['update-maps'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/internal/consultant/players/all': {
     parameters: {
       query?: never;
@@ -515,6 +539,23 @@ export interface components {
        */
       type: string;
     };
+    Map: {
+      /** Format: int64 */
+      bonuses?: number;
+      /** Format: int64 */
+      courses?: number;
+      /** Format: int64 */
+      demo_rating: number;
+      /** Format: int64 */
+      demo_tier: number;
+      /** Format: int64 */
+      id: number;
+      name: string;
+      /** Format: int64 */
+      soldier_rating: number;
+      /** Format: int64 */
+      soldier_tier: number;
+    };
     Player: {
       /**
        * Format: uri
@@ -639,6 +680,7 @@ export interface components {
 }
 export type ErrorDetail = components['schemas']['ErrorDetail'];
 export type ErrorModel = components['schemas']['ErrorModel'];
+export type Map = components['schemas']['Map'];
 export type Player = components['schemas']['Player'];
 export type PlayerClassPoints = components['schemas']['PlayerClassPoints'];
 export type PlayerPoints = components['schemas']['PlayerPoints'];
@@ -651,6 +693,62 @@ export type Session = components['schemas']['Session'];
 export type SteamProfile = components['schemas']['SteamProfile'];
 export type $defs = Record<string, never>;
 export interface operations {
+  'get-all-maps': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Map'][] | null;
+        };
+      };
+      /** @description Error */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ErrorModel'];
+        };
+      };
+    };
+  };
+  'update-maps': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description No Content */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Error */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ErrorModel'];
+        };
+      };
+    };
+  };
   'get-all-full-players': {
     parameters: {
       query?: never;
@@ -1358,6 +1456,8 @@ export interface operations {
   };
 }
 export enum ApiPaths {
+  get_all_maps = '/internal/admin/maps',
+  update_maps = '/internal/admin/maps',
   get_all_full_players = '/internal/consultant/players/all',
   get_all_pending_player_requests = '/internal/consultant/players/requests/pending',
   update_player_demodivision = '/internal/moderator/players/demodivision/{id}/{division}',

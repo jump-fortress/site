@@ -27,6 +27,7 @@ declare global {
       requestPreviews?: Promise<PlayerRequestPreview[]>;
       requests?: Promise<PlayerRequest[]>;
       playersWithRequests?: Promise<PlayerWithRequest[]>;
+      maps: Promise<Map[]>;
     }
     // interface PageState {}
     // interface Platform {}
