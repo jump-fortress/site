@@ -42,7 +42,7 @@ func getTempusPlayerInfo(tempusID int64) (*responses.TempusPlayerInfo, error) {
 }
 
 // todo: check some nullable before using them?
-func playerResponseFromPlayer(player queries.Player) responses.PlayerPreview {
+func getPlayerPreviewResponse(player queries.Player) responses.PlayerPreview {
 	return responses.PlayerPreview{
 		ID:                player.ID,
 		Role:              player.Role,
@@ -59,7 +59,7 @@ func playerResponseFromPlayer(player queries.Player) responses.PlayerPreview {
 	}
 }
 
-func fullPlayerResponseFromPlayer(player queries.Player) responses.Player {
+func getPlayerResponse(player queries.Player) responses.Player {
 	return responses.Player{
 		ID:                player.ID,
 		Role:              player.Role,
@@ -78,7 +78,7 @@ func fullPlayerResponseFromPlayer(player queries.Player) responses.Player {
 	}
 }
 
-func playerRequestResponseFromPlayerRequest(request queries.PlayerRequest) responses.PlayerRequestPreview {
+func getPlayerRequestPreviewResponse(request queries.PlayerRequest) responses.PlayerRequestPreview {
 	return responses.PlayerRequestPreview{
 		RequestType:   request.Type,
 		RequestString: request.Content.String,
@@ -86,7 +86,7 @@ func playerRequestResponseFromPlayerRequest(request queries.PlayerRequest) respo
 	}
 }
 
-func fullPlayerRequestResponseFromPlayerRequest(request queries.SelectAllPendingPlayerRequestsRow) responses.PlayerWithRequest {
+func getPlayerWithRequestResponse(request queries.SelectAllPendingPlayerRequestsRow) responses.PlayerWithRequest {
 	return responses.PlayerWithRequest{
 		Request: responses.PlayerRequest{
 			ID:            request.ID,
@@ -126,7 +126,7 @@ func HandleGetSelfPlayer(ctx context.Context, _ *struct{}) (*responses.PlayerOut
 		return nil, err
 	}
 
-	resp := &responses.PlayerOutput{Body: fullPlayerResponseFromPlayer(player)}
+	resp := &responses.PlayerOutput{Body: getPlayerResponse(player)}
 	return resp, nil
 }
 
@@ -136,7 +136,7 @@ func HandleGetPlayer(ctx context.Context, input *responses.PlayerIDInput) (*resp
 		return nil, err
 	}
 
-	resp := &responses.PlayerPreviewOutput{Body: playerResponseFromPlayer(player)}
+	resp := &responses.PlayerPreviewOutput{Body: getPlayerPreviewResponse(player)}
 	return resp, nil
 }
 
@@ -165,7 +165,7 @@ func HandleGetPlayerProfile(ctx context.Context, input *responses.PlayerIDInput)
 
 	resp := &responses.PlayerProfileOutput{
 		Body: responses.PlayerProfile{
-			PlayerPreview: playerResponseFromPlayer(player),
+			PlayerPreview: getPlayerPreviewResponse(player),
 			PlayerPoints: responses.PlayerPoints{
 				SoldierPoints: responses.PlayerClassPoints{
 					Total:        soldierPoints.Total,
@@ -226,7 +226,7 @@ func HandleGetAllPlayers(ctx context.Context, _ *struct{}) (*responses.PlayerPre
 	}
 
 	for _, p := range players {
-		playerResponse := playerResponseFromPlayer(p)
+		playerResponse := getPlayerPreviewResponse(p)
 		resp.Body = append(resp.Body, playerResponse)
 	}
 
@@ -437,7 +437,7 @@ func HandleGetSelfPlayerRequests(ctx context.Context, _ *struct{}) (*responses.P
 	}
 
 	for _, r := range requests {
-		fullRequestResponse := playerRequestResponseFromPlayerRequest(r)
+		fullRequestResponse := getPlayerRequestPreviewResponse(r)
 		resp.Body = append(resp.Body, fullRequestResponse)
 	}
 
@@ -460,7 +460,7 @@ func HandleGetAllFullPlayers(ctx context.Context, _ *struct{}) (*responses.Playe
 	}
 
 	for _, p := range players {
-		fullPlayerResponse := fullPlayerResponseFromPlayer(p)
+		fullPlayerResponse := getPlayerResponse(p)
 		resp.Body = append(resp.Body, fullPlayerResponse)
 	}
 
@@ -481,7 +481,7 @@ func HandleGetAllPendingPlayerRequests(ctx context.Context, _ *struct{}) (*respo
 	}
 
 	for _, r := range requests {
-		requestResponse := fullPlayerRequestResponseFromPlayerRequest(r)
+		requestResponse := getPlayerWithRequestResponse(r)
 		resp.Body = append(resp.Body, requestResponse)
 	}
 
