@@ -19,13 +19,6 @@
         }
       }
     });
-
-    // if (response.ok) {
-    // 	pageStore.preferredClass.set = true;
-    // 	setTimeout(() => {
-    // 		pageStore.preferredClass.set = false;
-    // 	}, 2000);
-    // }
   }
 </script>
 
@@ -36,8 +29,8 @@
       handleUpdatePreferredClass('Soldier');
     }}
     class="{selected_class === 'Soldier'
-      ? 'bg-jfgray-900 opacity-100'
-      : 'opacity-50'} flex basis-1/2 cursor-pointer items-center p-3 pt-4 transition-all hover:opacity-100"
+      ? 'opacity-100'
+      : 'opacity-25 hover:opacity-75'} flex basis-1/2 cursor-pointer items-center p-3 pt-4 transition-all"
   >
     <img class="size-16 select-none" {style} src={rocket} alt="" draggable="false" />
   </button>
@@ -47,8 +40,8 @@
       handleUpdatePreferredClass('Demo');
     }}
     class="{selected_class === 'Demo'
-      ? 'bg-jfgray-900 opacity-100'
-      : 'opacity-50'} flex basis-1/2 cursor-pointer items-center p-3 pb-4 transition-all hover:opacity-100"
+      ? 'opacity-100'
+      : 'opacity-25 hover:opacity-75'} flex basis-1/2 cursor-pointer items-center p-3 pb-4 transition-all"
   >
     <img class="size-16 select-none" {style} src={sticky} alt="" draggable="false" />
   </button>
