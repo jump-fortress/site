@@ -155,7 +155,7 @@
               message: 'empty input'
             };
           } else {
-            return await updateSteamTradeToken(val);
+            return updateSteamTradeToken(val);
           }
         }}
       />

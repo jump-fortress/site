@@ -27,7 +27,7 @@
     <Input
       label={'update display name'}
       placeholder={player.display_name}
-      submitInput={(name: string) => {
+      submitInput={async (name: string) => {
         return updatePlayerDisplayName(player.id, name);
       }}
     />
