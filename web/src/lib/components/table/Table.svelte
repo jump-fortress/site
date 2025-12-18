@@ -1,10 +1,11 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
+  import { fade, slide } from 'svelte/transition';
 
   interface Props {
     data: object[];
     header: Snippet;
-    row: Snippet<object[]>;
+    row: any; // Snippet<object>
   }
 
   let { data, header, row }: Props = $props();
@@ -19,7 +20,7 @@
 
   <tbody>
     {#each data as d}
-      <tr class="h-10 text-center text-base odd:bg-jfgray-900 even:bg-jfgray-800/25">
+      <tr out:fade class="h-10 text-center text-base odd:bg-jfgray-900 even:bg-jfgray-800/25">
         {@render row(d)}
       </tr>
     {/each}
