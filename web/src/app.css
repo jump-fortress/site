@@ -59,6 +59,10 @@
   .w-division {
     @apply w-24;
   }
+
+  .td-hover-preview {
+    @apply transition-colors hover:cursor-pointer hover:bg-jfgray-800 hover:underline;
+  }
 }
 
 /* extend tailwind theme */
