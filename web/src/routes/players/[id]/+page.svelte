@@ -8,15 +8,19 @@
   import type { Session } from '$lib/schema';
   import type { PageData } from './$types';
   import PlayerHeader from '$lib/components/PlayerHeader.svelte';
+  import escape from '$lib/assets/static/maps/jump_escape_rc4.jpg';
 
   let { data }: { data: PageData } = $props();
-  let session: Session | null = $derived(data.session);
 </script>
 
 {#await data.playerProfile}
   <span>waiting...</span>
 {:then playerProfile}
   {#if playerProfile}
+    <div
+      class="absolute top-0 left-0 h-54 w-full mask-b-from-75% bg-cover bg-center opacity-50"
+      style:background-image={`url(${escape})`}
+    ></div>
     <PlayerHeader player={playerProfile.player} points={playerProfile.points} />
   {:else}
     <span>no player</span>
@@ -132,8 +136,4 @@
       class="size-full bg-[url(https://tempusplaza.xyz/map-backgrounds/jump_escape_rc4.jpg)] mask-l-from-50% mask-l-to-75% bg-cover bg-right bg-no-repeat opacity-50"
     ></div>
   </div>
-{/snippet}
-
-{#snippet pending()}
-  todo loading
 {/snippet}
