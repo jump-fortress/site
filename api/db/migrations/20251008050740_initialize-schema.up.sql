@@ -37,6 +37,21 @@ create table competition(
   check (class in ('Soldier', 'Demo'))
 );
 
+-- map, pulled from Tempus data
+-- courses may be null (a map with no courses is essentially one course)
+-- bonuses may be null (a map with no bonuses.. has no bonuses)
+create table map(
+  id integer not null primary key,
+  name text not null,
+  courses integer,
+  bonuses integer,
+  soldier_tier integer not null,
+  demo_tier integer not null,
+  soldier_rating integer not null,
+  demo_rating integer not null
+);
+
+
 -- "stardust points" for a player
 -- relates to player (id)
 create table player_points(

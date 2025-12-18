@@ -61,6 +61,17 @@ type DisallowToken struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
+type Map struct {
+	ID            int64         `json:"id"`
+	Name          string        `json:"name"`
+	Courses       sql.NullInt64 `json:"courses"`
+	Bonuses       sql.NullInt64 `json:"bonuses"`
+	SoldierTier   int64         `json:"soldier_tier"`
+	DemoTier      int64         `json:"demo_tier"`
+	SoldierRating int64         `json:"soldier_rating"`
+	DemoRating    int64         `json:"demo_rating"`
+}
+
 type Monthly struct {
 	ID            int64 `json:"id"`
 	CompetitionID int64 `json:"competition_id"`
