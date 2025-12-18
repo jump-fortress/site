@@ -86,7 +86,7 @@ func registerRoutes() {
 	registerSessionRoutes(internalApi)
 	registerConsultantRoutes(consultantApi)
 	registerModeratorRoutes(moderatorApi)
-	// registerAdminRoutes()
+	registerAdminRoutes(adminApi)
 }
 
 // A readiness endpoint is important - it can be used to inform your infrastructure

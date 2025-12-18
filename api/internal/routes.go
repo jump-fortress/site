@@ -189,3 +189,25 @@ func registerModeratorRoutes(moderatorApi *huma.Group) {
 		Security:    sessionCookieSecurityMap,
 	}, HandlePutResolvePlayerRequest)
 }
+
+func registerAdminRoutes(adminApi *huma.Group) {
+	huma.Register(adminApi, huma.Operation{
+		Method:      http.MethodPut,
+		Path:        "/maps",
+		OperationID: "update-maps",
+		Summary:     "Update map list",
+		Description: "update the database's map list from Tempus data",
+		Tags:        []string{"Admin"},
+		Security:    sessionCookieSecurityMap,
+	}, HandlePutUpdateMaps)
+
+	huma.Register(adminApi, huma.Operation{
+		Method:      http.MethodGet,
+		Path:        "/maps",
+		OperationID: "get-all-maps",
+		Summary:     "Get all maps",
+		Description: "get all maps",
+		Tags:        []string{"Admin"},
+		Security:    sessionCookieSecurityMap,
+	}, HandleGetAllMaps)
+}

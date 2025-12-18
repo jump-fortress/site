@@ -162,6 +162,50 @@ type TempusPlayerInfoResponse struct {
 	PlayerInfo TempusPlayerInfo `json:"player_info"`
 }
 
+type TempusResponseMaps struct {
+	Maps []TempusMapInfo
+}
+
+// note: TempusTier and TempusRating have the same properties
+// they still mean different things so it may be good to have them separate
+type TempusMapInfo struct {
+	ID     int64        `json:"id"`
+	Name   string       `json:"name"`
+	Zones  TempusZones  `json:"zone_counts"`
+	Tier   TempusTier   `json:"tier_info"`
+	Rating TempusRating `json:"rating_info"`
+}
+
+type TempusZones struct {
+	Bonus  int64 `json:"bonus"`
+	Course int64 `json:"course"`
+}
+
+type TempusTier struct {
+	Soldier int64 `json:"3"`
+	Demo    int64 `json:"4"`
+}
+
+type TempusRating struct {
+	Soldier int64 `json:"3"`
+	Demo    int64 `json:"4"`
+}
+
+type Map struct {
+	ID            int64  `json:"id"`
+	Name          string `json:"name"`
+	Courses       int64  `json:"courses,omitempty"`
+	Bonuses       int64  `json:"bonuses,omitempty"`
+	SoldierTier   int64  `json:"soldier_tier"`
+	DemoTier      int64  `json:"demo_tier"`
+	SoldierRating int64  `json:"soldier_rating"`
+	DemoRating    int64  `json:"demo_rating"`
+}
+
+type MapsOutput struct {
+	Body []Map
+}
+
 type SteamTradeURL struct {
 	Url string `path:"url"`
 }
