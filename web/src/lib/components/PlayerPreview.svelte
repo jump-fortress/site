@@ -1,13 +1,10 @@
 <script lang="ts">
-  type Props = {
-    src: string;
-    name: string;
-  };
+  import type { Player, PlayerPreview } from '$lib/schema';
 
-  let { src, name } = $props();
+  let { player }: { player: Player | PlayerPreview } = $props();
 </script>
 
 <div class="flex items-center gap-2">
-  <img {src} alt="" class="size-8 rounded-lg" />
-  <span class="span-ellipsis">{name}</span>
+  <img src={player.steam_avatar_url} alt="" class="size-8 rounded-lg" />
+  <span class="span-ellipsis">{player.display_name}</span>
 </div>
