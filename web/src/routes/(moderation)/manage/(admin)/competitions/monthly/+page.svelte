@@ -3,10 +3,35 @@
   import InputSelect from '$lib/components/input/InputSelect.svelte';
   import { Temporal } from 'temporal-polyfill';
   import { divisions } from '$lib/divisions';
+  import InputAutofill from '$lib/components/input/InputAutofill.svelte';
+  import { onMount } from 'svelte';
+  import DivisionTag from '$lib/components/DivisionTag.svelte';
 
   let validTime = $state(true);
 
-  $inspect(validTime);
+  let { data } = $props();
+
+  let mapNames: string[] = $state([]);
+
+  let competitionMaps: string[] = $state([]);
+
+  function addCompetitionMap(map: string) {
+    if (!mapNames.includes(map)) {
+      return { error: true, message: 'invalid map name' };
+    }
+    if (competitionMaps.includes(map)) {
+      return { error: true, message: 'map already added' };
+    }
+    competitionMaps.push(map);
+    return { error: false, message: '' };
+  }
+
+  onMount(async () => {
+    const maps = await data.maps;
+    if (maps) {
+      mapNames = maps.map((m) => m.name);
+    }
+  });
 </script>
 
 <DataSection title={'Create'}>
@@ -61,11 +86,25 @@
       return { error: false, message: '' };
     }}
   />
-  <InputSelect
-    label={'add map'}
-    options={['']}
-    submitOption={async (val: string) => {
-      return { error: false, message: '' };
-    }}
-  />
+  {#await data.maps then maps}
+    {#if maps}
+      <InputAutofill
+        label={'add map'}
+        options={maps.map((m) => m.name)}
+        submitOption={async (val: string) => {
+          return addCompetitionMap(val);
+        }}
+      />
+    {/if}
+  {/await}
+
+  <!-- select divisions for maps -->
+  {#each competitionMaps as cm}
+    <div class="flex items-center gap-2">
+      <span>{cm}</span>
+      {#each divisions.slice(0, -1) as div}
+        <DivisionTag {div} />
+      {/each}
+    </div>
+  {/each}
 </DataSection>
