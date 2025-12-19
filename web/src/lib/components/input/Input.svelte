@@ -33,7 +33,7 @@
         bind:value
         {placeholder}
         onkeypress={async (event: KeyboardEvent) => {
-          if (event.key === 'Enter') {
+          if (event.key === 'Enter' && value) {
             response = submitInput(value);
           }
         }}

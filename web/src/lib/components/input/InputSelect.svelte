@@ -34,11 +34,11 @@
   <div class="relative flex h-12 w-80 items-center">
     <label
       for={label}
-      class="border-jfgray-700 focus-within:border-ctp-lavender-50/50 hover:border-ctp-lavender-50/50 relative mt-2 w-full text-nowrap border-2 transition-colors {selectedOption
+      class="relative mt-2 w-full border-2 border-jfgray-700 text-nowrap transition-colors focus-within:border-ctp-lavender-50/50 hover:border-ctp-lavender-50/50 {selectedOption
         ? 'bg-jfgray-900'
         : 'bg-jfgray-800'}"
     >
-      <span class="bg-jfgray-800 leading-1 absolute -top-1 left-2 px-1 text-base">{label}</span>
+      <span class="absolute -top-1 left-2 bg-jfgray-800 px-1 text-base leading-1">{label}</span>
       <div class="relative flex h-10">
         <input
           type="button"
@@ -68,19 +68,23 @@
               return;
             }
           }}
-          class="text-ctp-lavender relative z-10 size-full bg-clip-padding px-2 text-left"
+          class="relative z-10 size-full bg-clip-padding px-2 text-left text-ctp-lavender"
           value={selectedOption}
         />
-        <span class="icon-[ri--arrow-down-s-line] absolute right-12 size-5 h-full"></span>
+        <span class="absolute right-12 icon-[ri--arrow-down-s-line] size-5 h-full"></span>
         <!-- svelte-ignore a11y_consider_explicit_label -->
         <button
           onmousedown={async () => {
-            response = submitOption(selectedOption);
+            if (selectedOption !== '') {
+              response = submitOption(selectedOption);
+            } else {
+              response = Promise.resolve({ error: true, message: 'no option selected' });
+            }
           }}
-          class="bg-jfgray-800 peer-focus:bg-jfgray-800 flex h-full w-12 cursor-pointer items-center justify-center"
+          class="flex h-full w-12 cursor-pointer items-center justify-center bg-jfgray-800 peer-focus:bg-jfgray-800"
         >
           {#await response}
-            <span in:fade class="icon-[ri--loader-3-line] text-ctp-lavender animate-spin"></span>
+            <span in:fade class="icon-[ri--loader-3-line] animate-spin text-ctp-lavender"></span>
           {:then response}
             <span
               in:fade
@@ -95,7 +99,7 @@
     {#if showOptions}
       <div
         transition:slide
-        class="border-ctp-lavender-50/50 bg-jfgray-900 absolute top-full z-40 flex w-full flex-col border-2 p-2"
+        class="absolute top-full z-40 flex w-full flex-col border-2 border-ctp-lavender-50/50 bg-jfgray-900 p-2"
       >
         {#each options as option, i}
           <InputOption
