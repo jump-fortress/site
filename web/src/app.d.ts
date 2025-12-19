@@ -27,7 +27,7 @@ declare global {
       requestPreviews?: Promise<PlayerRequestPreview[]>;
       requests?: Promise<PlayerRequest[]>;
       playersWithRequests?: Promise<PlayerWithRequest[]>;
-      maps: Promise<Map[]>;
+      maps?: Promise<Map[]>;
     }
     // interface PageState {}
     // interface Platform {}
@@ -37,6 +37,11 @@ declare global {
     error: boolean;
     message: string;
   }
+
+  type MapWithDivisions = {
+    name: string;
+    divisions: string[];
+  };
 }
 
 export {};
