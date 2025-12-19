@@ -1,5 +1,4 @@
 <script lang="ts">
-  import escape from '$lib/assets/static/maps/jump_escape_rc4.jpg';
   import type { Map } from '$lib/schema';
   import DivisionTag from './DivisionTag.svelte';
 
@@ -29,7 +28,7 @@ preview for competitions
 -->
 {#if mapsLength === 1}
   <div
-    class="flex h-64 w-full items-end justify-center rounded-2xl bg-cover bg-center text-shadow-sm/50"
+    class="flex h-64 w-full items-end justify-center rounded-2xl bg-cover bg-center py-2 text-shadow-sm/50"
     style:background-image={`url(https://tempusplaza.xyz/map-backgrounds/${maps[0]!.name}.jpg)`}
   >
     <!-- inside stuff -->
@@ -44,18 +43,14 @@ preview for competitions
   </div>
 {:else}
   <div
-    class="relative grid grid-rows-1 bg-jfgray-700 text-shadow-sm/50 {twCols.get(
-      maps.length
-    )} relative h-64 w-full items-center overflow-hidden rounded-2xl"
+    class="relative grid h-64 w-full grid-rows-1 items-center overflow-hidden rounded-2xl bg-jfgray-700 text-shadow-sm/50
+     {twCols.get(maps.length)}"
   >
     {#each maps as map, i}
       <div class="relative flex size-full h-10/9 items-center justify-start">
         <div
-          class="h-6/4 rotate-10 {i === 0
-            ? '-left-6 w-5/4'
-            : i === mapsLength - 1
-              ? 'w-5/4'
-              : 'z-10 w-full'} absolute flex items-center justify-center overflow-hidden border-2"
+          class="absolute flex h-6/4 rotate-10 items-center justify-center overflow-hidden border-2
+          {i === 0 ? ' -left-6 w-5/4' : i === mapsLength - 1 ? ' w-5/4' : ' z-10 w-full'}"
         >
           <!-- slight clipping without extra height -->
           <div
