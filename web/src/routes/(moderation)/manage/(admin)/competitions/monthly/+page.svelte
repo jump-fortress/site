@@ -2,7 +2,7 @@
   import DataSection from '$lib/components/DataSection.svelte';
   import InputSelect from '$lib/components/input/InputSelect.svelte';
   import { Temporal } from 'temporal-polyfill';
-  import { divisions } from '$lib/divisions';
+  import { divisions, compareDivisions } from '$lib/divisions';
   import InputAutofill from '$lib/components/input/InputAutofill.svelte';
   import { onMount } from 'svelte';
   import DivisionTag from '$lib/components/DivisionTag.svelte';
@@ -18,8 +18,8 @@
   let mapNames: string[] = $derived(maps.map((m) => m.name));
 
   let competitionMaps: MapWithDivisions[] = $state([]);
-  $inspect(competitionMaps);
   let competitionMapNames: string[] = $derived(competitionMaps.map((m) => m.name));
+  let competitionDivisions: string[] = $state([]);
 
   function addCompetitionMap(map: Map | undefined) {
     if (!map || !mapNames.includes(map.name)) {
@@ -113,10 +113,23 @@
             label={'select divisions'}
             options={divisions.concat('None')}
             submitOption={async (val: string) => {
+              // if none, remove all divs
               if (val === 'None') {
+                competitionDivisions.filter((div) => map.divisions.includes(div));
                 map.divisions = [];
               } else {
+                if (competitionDivisions.includes(val)) {
+                  // remove this division from the competitionMap.divisions that has it
+                  // todo: shouldn't i just use a hashmap.... it works though
+                  const cmi = competitionMaps.findIndex(({ divisions }) => divisions.includes(val));
+                  const cmdi = competitionMaps.at(cmi)?.divisions.findIndex((div) => div === val);
+                  if (cmdi !== undefined) {
+                    competitionMaps.at(cmi)?.divisions.splice(cmdi, 1);
+                  }
+                }
                 map.divisions.push(val);
+                competitionDivisions.push(val);
+                map.divisions.sort(compareDivisions);
               }
               return { error: false, message: '' };
             }}
