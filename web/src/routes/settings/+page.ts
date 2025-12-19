@@ -13,5 +13,5 @@ export const load = async ({ fetch }) => {
     return response.data;
   });
 
-  return { player: playerData, requests: playerRequestsData };
+  return { player: playerData, requestPreviews: playerRequestsData };
 };

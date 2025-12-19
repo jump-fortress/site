@@ -21,11 +21,14 @@
   import Button from '$lib/components/input/Button.svelte';
   import Table from '$lib/components/table/Table.svelte';
   import { Temporal } from 'temporal-polyfill';
-  import type { Player, PlayerRequestPreview } from '$lib/schema';
+  import type { Player, PlayerRequest, PlayerRequestPreview } from '$lib/schema';
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
 
   let { data }: { data: PageData } = $props();
+
+  let requests: PlayerRequestPreview[] = $state([]);
+
   let selectedClass = $state('');
   let selectedLauncher = $state('');
 
@@ -33,29 +36,32 @@
     const p = await data.player;
     selectedClass = p?.preferred_class ?? '';
     selectedLauncher = p?.preferred_launcher ?? '';
+
+    const r = await data.requestPreviews;
+    if (r) {
+      requests = r;
+    }
   });
 </script>
 
-{#await data.requests then requests}
-  {#if requests}
-    <DataSection title={'Pending Requests'}>
-      <div class="w-fit">
-        <Table data={requests}>
-          {#snippet header()}
-            <th class="w-48">request</th>
-            <th class="w-32"></th>
-            <th class="w-date">date</th>
-          {/snippet}
-          {#snippet row(r: PlayerRequestPreview)}
-            <td>{r.request_type}</td>
-            <td>{r.request_string}</td>
-            <td>{Temporal.Instant.from(r.created_at).toLocaleString()}</td>
-          {/snippet}
-        </Table>
-      </div>
-    </DataSection>
-  {/if}
-{/await}
+{#if requests.length}
+  <DataSection title={'Pending Requests'}>
+    <div class="w-fit">
+      <Table data={requests}>
+        {#snippet header()}
+          <th class="w-48">request</th>
+          <th class="w-32"></th>
+          <th class="w-date">date</th>
+        {/snippet}
+        {#snippet row(r: PlayerRequestPreview)}
+          <td>{r.request_type}</td>
+          <td>{r.request_string}</td>
+          <td>{Temporal.Instant.from(r.created_at).toLocaleString()}</td>
+        {/snippet}
+      </Table>
+    </div>
+  </DataSection>
+{/if}
 
 {#await data.player then player}
   {#if player}
@@ -93,15 +99,15 @@
         label={'request display name change'}
         placeholder={player.display_name}
         submitInput={async (name: string) => {
-          if (name === '') {
-            // todo: update with api request
-            return {
-              error: true,
-              message: 'empty input'
-            };
-          } else {
-            return createPlayerRequest('Display Name Change', name);
+          const response = await createPlayerRequest('Display Name Change', name);
+          if (!response.error) {
+            requests.push({
+              created_at: Temporal.Now.instant().toString(),
+              request_string: name,
+              request_type: 'Display Name Change'
+            });
           }
+          return response;
         }}
       />
 
@@ -116,14 +122,31 @@
       {#if !player.soldier_division}
         <Button
           onSelect={async () => {
-            return createPlayerRequest('Soldier Placement', 'null');
+            // alternatively, api could return the submitted request.. but this is initially easier to write
+            const response = await createPlayerRequest('Soldier Placement', 'null');
+            if (!response.error) {
+              requests.push({
+                created_at: Temporal.Now.instant().toString(),
+                request_string: '',
+                request_type: 'Soldier Placement'
+              });
+            }
+            return response;
           }}>request soldier placement</Button
         >
       {/if}
       {#if !player.demo_division}
         <Button
           onSelect={async () => {
-            return createPlayerRequest('Demo Placement', 'null');
+            const response = await createPlayerRequest('Demo Placement', 'null');
+            if (!response.error) {
+              requests.push({
+                created_at: Temporal.Now.instant().toString(),
+                request_string: '',
+                request_type: 'Demo Placement'
+              });
+            }
+            return response;
           }}>request demo placement</Button
         >
       {/if}
