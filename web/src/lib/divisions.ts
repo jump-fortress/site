@@ -5,6 +5,5 @@ export const divisions: string[] = [
   'Silver',
   'Bronze',
   'Steel',
-  'Wood',
-  'None'
+  'Wood'
 ];
