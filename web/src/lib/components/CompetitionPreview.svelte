@@ -8,6 +8,8 @@
 
 <!--
 @component
+todo: deprecated
+
 Preview for monthly / motw competitions
 - should support 3 or 4 maps
 -->
