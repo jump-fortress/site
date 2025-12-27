@@ -14,5 +14,5 @@
   ],
   "tailwindStylesheet": "./src/app.css",
   "bracketSameLine": true,
-  "endOfLine": "crlf"
+  "endOfLine": "lf"
 }
