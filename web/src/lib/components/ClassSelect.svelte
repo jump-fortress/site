@@ -30,8 +30,7 @@
     }}
     class="{selected_class === 'Soldier'
       ? 'opacity-100'
-      : 'opacity-25 hover:opacity-75'} flex basis-1/2 cursor-pointer items-center p-3 pt-4 transition-all"
-  >
+      : 'opacity-25 hover:opacity-75'} flex basis-1/2 cursor-pointer items-center p-3 pt-4 transition-all">
     <img class="size-16 select-none" {style} src={rocket} alt="" draggable="false" />
   </button>
   <button
@@ -41,8 +40,7 @@
     }}
     class="{selected_class === 'Demo'
       ? 'opacity-100'
-      : 'opacity-25 hover:opacity-75'} flex basis-1/2 cursor-pointer items-center p-3 pb-4 transition-all"
-  >
+      : 'opacity-25 hover:opacity-75'} flex basis-1/2 cursor-pointer items-center p-3 pb-4 transition-all">
     <img class="size-16 select-none" {style} src={sticky} alt="" draggable="false" />
   </button>
 </div>

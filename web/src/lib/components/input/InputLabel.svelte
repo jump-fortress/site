@@ -1,22 +1,20 @@
 <script lang="ts">
   import { fade } from 'svelte/transition';
   import Response from '$lib/components/input/Response.svelte';
+  import type { Snippet } from 'svelte';
 
   type Props = {
     label: string;
-    placeholder?: string;
-    responseMessage?: string;
-    submitInput: (val: string) => Promise<InputError>;
+    children: Snippet;
   };
 
-  let { label, placeholder = '', responseMessage = '', submitInput }: Props = $props();
-  let value: string = $state('');
+  let { label, children }: Props = $props();
 
   // response is a promise so #await can be used to handle pending state
   let response: Promise<InputError> = $state(
     Promise.resolve({
       error: false,
-      message: responseMessage
+      message: ''
     })
   );
 </script>
@@ -30,22 +28,10 @@
     <span class="absolute -top-1 left-2 bg-jfgray-800 px-1 text-sm leading-1">{label}</span>
     <!-- input container -->
     <div class="flex h-10">
-      <input
-        bind:value
-        {placeholder}
-        onkeypress={async (event: KeyboardEvent) => {
-          if (event.key === 'Enter' && value) {
-            response = submitInput(value);
-          }
-        }}
-        class=" peer size-full px-2 text-ctp-lavender transition-colors focus:outline-0"
-        id={label}
-        type="text" />
+      <div class=""></div>
       <!-- svelte-ignore a11y_consider_explicit_label -->
       <button
-        onmousedown={async () => {
-          response = submitInput(value);
-        }}
+        onmousedown={async () => {}}
         class="flex h-full w-10 cursor-pointer items-center justify-center">
         {#await response}
           <span in:fade class="icon-[ri--loader-3-line] animate-spin text-ctp-lavender"></span>

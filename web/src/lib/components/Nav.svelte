@@ -27,12 +27,10 @@
     if (!e.target.dataset['nav']) {
       showNavMenu = false;
     }
-  }}
-/>
+  }} />
 
 <nav
-  class="fixed z-50 flex h-16 w-full justify-center bg-jfgray-900/75 backdrop-blur-sm select-none"
->
+  class="fixed z-50 flex h-16 w-full justify-center bg-jfgray-900/75 backdrop-blur-sm select-none">
   <div class="flex w-5xl items-center justify-between">
     <!-- left nav -->
     <div class="flex h-full grow hover:text-ctp-lavender-50/75">
@@ -53,25 +51,21 @@
           onmousedown={() => {
             showNavMenu = true;
           }}
-          data-nav="true"
-        >
+          data-nav="true">
           <img
             class="size-14 rounded-full border-2 border-jfgray-800 group-hover:border-ctp-lavender/50"
             src={session.steamAvatarUrl}
             alt=""
-            data-nav="true"
-          />
+            data-nav="true" />
           {#if showNavMenu}
             <ul
               in:slide
               class="absolute -top-2 right-0 -z-10 flex size-fit w-44 cursor-default flex-col gap-1 rounded-b-lg border-2 border-ctp-lavender/50 bg-jfgray-900/90 p-2 pt-16 text-start delay-150 starting:border-b-ctp-lavender/0"
-              data-nav="true"
-            >
+              data-nav="true">
               <a
                 href="/players/{session.id}"
                 data-nav="true"
-                class="span-ellipsis rounded-lg pl-2 hover:bg-jfgray-700">{session.displayName}</a
-              >
+                class="span-ellipsis rounded-lg pl-2 hover:bg-jfgray-700">{session.displayName}</a>
 
               <hr class="border-1 border-jfgray-700" />
 
@@ -79,21 +73,18 @@
                 <a
                   href="/manage"
                   data-nav="true"
-                  class="span-ellipsis rounded-lg pl-2 hover:bg-jfgray-700">manage</a
-                >
+                  class="span-ellipsis rounded-lg pl-2 hover:bg-jfgray-700">manage</a>
 
                 <hr class="border-1 border-jfgray-700" />
               {/if}
 
               <a href="/settings" data-nav="true" class="rounded-lg pl-2 hover:bg-jfgray-700"
-                >settings</a
-              >
+                >settings</a>
               <a
                 href="/logout"
                 data-sveltekit-preload-data="tap"
                 data-nav="true"
-                class="rounded-lg pl-2 hover:bg-jfgray-700"
-              >
+                class="rounded-lg pl-2 hover:bg-jfgray-700">
                 logout
               </a>
             </ul>
@@ -102,15 +93,13 @@
         <a
           class="flex items-center px-2 text-ctp-lavender-50 opacity-75 transition-opacity hover:opacity-100"
           href="/support"
-          title="support"
-        >
+          title="support">
           <span class="icon-[ri--heart-line] size-6"></span>
         </a>
         <a
           class="flex items-center px-2 text-ctp-lavender-50 opacity-75 transition-opacity hover:opacity-100"
           href="https://discord.gg/tusBc64wnv"
-          title="discord"
-        >
+          title="discord">
           <span class="icon-[ri--discord-fill] size-6"></span>
         </a>
       {/if}
@@ -128,9 +117,7 @@
       <span>{name === '' ? 'home' : name}</span>
       {#if (route.includes(name) && name !== '') || (route === '' && name === '')}
         <hr
-          class="absolute right-0 left-0 m-auto flex w-11/12 rounded-full border-1 text-ctp-lavender"
-        />
+          class="absolute right-0 left-0 m-auto flex w-11/12 rounded-full border-1 text-ctp-lavender" />
       {/if}
-    </div></a
-  >
+    </div></a>
 {/snippet}

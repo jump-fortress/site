@@ -29,23 +29,20 @@
       placeholder={player.display_name}
       submitInput={async (name: string) => {
         return updatePlayerDisplayName(player.id, name);
-      }}
-    />
+      }} />
     <InputSelect
       label={'update soldier division'}
       options={divisions.concat('None')}
       placeholder={player.soldier_division}
       submitOption={async (division: string) => {
         return updatePlayerSoldierDivision(player.id, division);
-      }}
-    />
+      }} />
     <InputSelect
       label={'update demo division'}
       options={divisions.concat('None')}
       placeholder={player.demo_division}
       submitOption={async (division: string) => {
         return updatePlayerDemoDivision(player.id, division);
-      }}
-    />
+      }} />
   </DataSection>
 {/if}

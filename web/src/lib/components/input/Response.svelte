@@ -15,8 +15,7 @@
 {#if response.message}
   <span
     in:fade
-    class="text-base transition-opacity
+    class="text-sm transition-opacity
   {response.error === true ? 'text-ctp-red' : 'text-ctp-lavender'} 
-    {fadeMessage ? 'opacity-0' : ''}">{response.message}</span
-  >
+    {fadeMessage ? 'opacity-0' : ''}">{response.message}</span>
 {/if}

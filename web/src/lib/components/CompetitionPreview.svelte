@@ -14,8 +14,7 @@ Preview for monthly / motw competitions
 - should support 3 or 4 maps
 -->
 <div
-  class="relative flex h-64 w-full justify-between overflow-hidden rounded-2xl text-shadow-sm/50"
->
+  class="relative flex h-64 w-full justify-between overflow-hidden rounded-2xl text-shadow-sm/50">
   <!-- top left -->
 
   <li class="absolute z-10 m-2 flex h-12 items-center gap-2">
@@ -43,8 +42,7 @@ Preview for monthly / motw competitions
       src="https://tempusplaza.xyz/map-backgrounds/jump_mirage.jpg"
       alt=""
       draggable="false"
-      class="absolute size-full object-cover select-none"
-    />
+      class="absolute size-full object-cover select-none" />
     <div class="absolute bottom-0 z-10 m-2">
       <div class="flex flex-col gap-1">
         <span class="span-ellipsis">jump_mirage</span>
@@ -61,8 +59,7 @@ Preview for monthly / motw competitions
       src="https://tempusplaza.xyz/map-backgrounds/jump_pokus_rc4.jpg"
       alt=""
       draggable="false"
-      class="absolute size-full object-cover select-none"
-    />
+      class="absolute size-full object-cover select-none" />
     <div class="absolute right-0 bottom-0 z-10 m-2">
       <div class="flex flex-col gap-1">
         <span class="span-ellipsis">jump_pokus_rc4</span>
@@ -81,8 +78,7 @@ Preview for monthly / motw competitions
         src="https://tempusplaza.xyz/map-backgrounds/jump_jurf2_a1.jpg"
         alt=""
         draggable="false"
-        class="absolute size-full object-cover select-none"
-      />
+        class="absolute size-full object-cover select-none" />
       <div class="absolute right-1/16 bottom-0 z-10 m-2 flex w-full justify-center">
         <div class="flex flex-col items-center gap-1">
           <span class="span-ellipsis">jump_jurf2_a1</span>

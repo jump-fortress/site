@@ -11,6 +11,5 @@
     width="32"
     height="24"
     alt=""
-    class="object-none"
-  />
+    class="object-none" />
 {/if}

@@ -12,5 +12,4 @@
 
 <span
   class="rounded-full px-2 pb-0.5 border-division-{caseInsensitiveDiv} border-x-3 text-division-{caseInsensitiveDiv} bg-jfgray-900/75 {styles} w-fit text-base"
-  >{div}</span
->
+  >{div}</span>

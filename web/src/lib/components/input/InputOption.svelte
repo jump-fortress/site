@@ -23,9 +23,8 @@
   onmousedown={() => {
     onSelect(value);
   }}
-  class="group flex w-full text-left"
+  class="group flex w-full text-left text-base"
   ><span
-    class="w-full rounded-lg px-2 group-hover:bg-jfgray-800
+    class="w-full px-2 group-hover:bg-jfgray-800
     {index === selectedIndex ? 'bg-jfgray-800' : ''}">{value}</span
-  ></button
->
+  ></button>

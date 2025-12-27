@@ -84,12 +84,11 @@
   <span class="span-ellipsis relative z-10">{map}</span>
   <div
     style={`background-image: url("https://tempusplaza.xyz/map-backgrounds/${map}.jpg")`}
-    class="absolute top-0 size-full mask-x-from-80% bg-cover bg-right bg-no-repeat opacity-50"
-  ></div>
+    class="absolute top-0 size-full mask-x-from-80% bg-cover bg-right bg-no-repeat opacity-50">
+  </div>
 {/snippet}
 
 {#snippet TestLink()}
   <a href="/ababa" title="link" class="opacity-50 transition-opacity hover:opacity-100">
-    <span class="icon-[ri--link-m] size-6"></span></a
-  >
+    <span class="icon-[ri--link-m] size-6"></span></a>
 {/snippet}

@@ -1,14 +1,11 @@
 <script lang="ts">
   import rocket from '$lib/assets/static/classes/rocket.png';
-  import sticky from '$lib/assets/static/classes/sticky.png';
   import DataSection from '$lib/components/DataSection.svelte';
   import DivisionTag from '$lib/components/DivisionTag.svelte';
   import Table from '$lib/components/table/Table.svelte';
   import TableMap from '$lib/components/TableMap.svelte';
-  import type { Session } from '$lib/schema';
   import type { PageData } from './$types';
   import PlayerHeader from '$lib/components/PlayerHeader.svelte';
-  import escape from '$lib/assets/static/maps/jump_escape_rc4.jpg';
 
   let { data }: { data: PageData } = $props();
 </script>
@@ -18,9 +15,9 @@
 {:then playerProfile}
   {#if playerProfile}
     <div
-      class="absolute top-0 left-0 h-54 w-full mask-b-from-75% bg-cover bg-center opacity-50"
-      style:background-image={`url(${escape})`}
-    ></div>
+      class="absolute top-0 left-0 h-58 w-full mask-b-from-80% bg-cover bg-center opacity-50"
+      style:background-image={`url(https://tempusplaza.xyz/map-backgrounds/jump_tempus_b5.jpg)`}>
+    </div>
     <PlayerHeader player={playerProfile.player} points={playerProfile.points} />
   {:else}
     <span>no player</span>
@@ -94,8 +91,8 @@
     </div>
     <div
       style={`background-image: url("https://tempusplaza.xyz/map-backgrounds/jump_escape_rc4.jpg")`}
-      class="size-full mask-l-from-50% mask-l-to-75% bg-cover bg-right bg-no-repeat opacity-50"
-    ></div>
+      class="size-full mask-l-from-50% mask-l-to-75% bg-cover bg-right bg-no-repeat opacity-50">
+    </div>
   </div>
 {/snippet}
 
@@ -116,8 +113,8 @@
     </div>
     <div
       style={`background-image: url("https://tempusplaza.xyz/map-backgrounds/jump_escape_rc4.jpg")`}
-      class="size-full mask-l-from-50% mask-l-to-75% bg-cover bg-right bg-no-repeat opacity-50"
-    ></div>
+      class="size-full mask-l-from-50% mask-l-to-75% bg-cover bg-right bg-no-repeat opacity-50">
+    </div>
   </div>
 {/snippet}
 
@@ -133,7 +130,7 @@
       </div>
     </div>
     <div
-      class="size-full bg-[url(https://tempusplaza.xyz/map-backgrounds/jump_escape_rc4.jpg)] mask-l-from-50% mask-l-to-75% bg-cover bg-right bg-no-repeat opacity-50"
-    ></div>
+      class="size-full bg-[url(https://tempusplaza.xyz/map-backgrounds/jump_escape_rc4.jpg)] mask-l-from-50% mask-l-to-75% bg-cover bg-right bg-no-repeat opacity-50">
+    </div>
   </div>
 {/snippet}

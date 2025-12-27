@@ -2,7 +2,6 @@
   import plaza from '$lib/assets/static/players/plaza.png';
   import steam from '$lib/assets/static/players/steam.png';
   import tempus from '$lib/assets/static/players/tempus.png';
-  import zigzagoon from '$lib/assets/static/players/zigzagoon.gif';
   import ClassSelect from '$lib/components/ClassSelect.svelte';
   import Points from '$lib/components/Points.svelte';
   import type { PlayerPreview, Player, PlayerPoints } from '$lib/schema';
@@ -22,7 +21,7 @@
   let p: Player = $derived(player);
 </script>
 
-<div class="relative flex h-46 gap-4">
+<div class="relative flex h-46 gap-4 text-shadow-sm/50">
   <img class="size-46" src={player.steam_avatar_url} alt="" />
   <!--
 	<img
@@ -39,8 +38,7 @@
       <div class="flex items-end gap-2">
         {#if modView}
           <a href="/players/{player.id}" class="w-fit"
-            ><span class="text-3xl/8 hover:underline">{player.display_name}</span></a
-          >
+            ><span class="text-3xl/8 hover:underline">{player.display_name}</span></a>
         {:else}
           <span class="text-3xl/8">{player.display_name}</span>
         {/if}
@@ -86,19 +84,16 @@
           <ExternalLink
             src={plaza}
             href={`https://tempusplaza.xyz/players/${player.tempus_id}`}
-            name="Plaza"
-          />
+            name="Plaza" />
           <ExternalLink
             src={tempus}
             href={`https://tempus2.xyz/players/${player.tempus_id}`}
-            name="Tempus"
-          />
+            name="Tempus" />
           {#if modView}
             <ExternalLink
               src={steam}
               href={`https://steamcommunity.com/profiles/${p.id}`}
-              name="Steam"
-            />
+              name="Steam" />
           {/if}
         </div>
       {/if}

@@ -12,23 +12,21 @@
   let { title, options, selectedOption = $bindable(), onSelect }: Props = $props();
 </script>
 
-<div class="relative mt-2 flex h-18 w-fit border-2 border-jfgray-700 text-nowrap">
-  <span class="absolute -top-1 left-2 z-10 bg-jfgray-800 px-1 text-base leading-1">{title}</span>
+<div class="relative mt-2 flex h-18 w-fit rounded-md border-2 border-jfgray-700 text-nowrap">
+  <span class="absolute -top-1 left-2 z-10 bg-jfgray-800 px-1 text-sm leading-1">{title}</span>
   {#each options as option}
     <button
       onclick={() => {
         onSelect(option.value);
       }}
       class="{selectedOption === option.value
-        ? 'bg-jfgray-900 opacity-100'
-        : 'opacity-50'} flex w-20 cursor-pointer justify-center transition-opacity hover:opacity-100"
-    >
+        ? 'rounded-md bg-jfgray-900 opacity-100'
+        : 'opacity-50'} flex w-20 cursor-pointer justify-center transition-opacity hover:opacity-100">
       <img
         src={option.src}
         alt=""
         draggable="false"
-        class="{option.value === 'None' ? 'object-none' : 'object-contain'} px-2 pt-3 pb-2"
-      />
+        class="{option.value === 'None' ? 'object-none' : 'object-contain'} px-2 pt-3 pb-2" />
     </button>
   {/each}
 </div>

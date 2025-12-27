@@ -20,11 +20,10 @@
 
 <div class="flex items-center gap-2">
   <button
-    class="size-fit cursor-pointer border-2 border-jfgray-700 border-b-ctp-lavender/50 bg-jfgray-800 px-2 py-1 text-base transition-colors hover:bg-ctp-lavender-950/50"
+    class=" size-10 cursor-pointer border-b-2 border-b-ctp-lavender/50 bg-jfgray-900 text-base transition-colors hover:bg-jfgray-700"
     onclick={async () => {
       response = onSelect();
-    }}
-  >
+    }}>
     {#await response}
       <span in:fade class="icon-[ri--loader-3-line] animate-spin text-ctp-lavender"></span>
     {:then response}
@@ -32,8 +31,7 @@
         in:fade
         class={response.error === true
           ? 'icon-[ri--close-line] text-ctp-red'
-          : 'icon-[ri--check-line] text-ctp-lavender'}
-      ></span>
+          : 'icon-[ri--check-line] text-ctp-lavender'}></span>
     {/await}
   </button>
 </div>

@@ -13,6 +13,6 @@
     }
   ],
   "tailwindStylesheet": "./src/app.css",
-  "bracketSameLine": false,
+  "bracketSameLine": true,
   "endOfLine": "crlf"
 }

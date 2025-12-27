@@ -13,8 +13,7 @@
   <InnerNav
     {route}
     parentRoute={'manage/competitions'}
-    pages={['monthly', 'motw', 'quest', 'bounty']}
-  />
+    pages={['monthly', 'motw', 'quest', 'bounty']} />
 </DataSection>
 
 {@render children()}

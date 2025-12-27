@@ -21,11 +21,10 @@
 
 <div class="flex items-center gap-2">
   <button
-    class="size-fit cursor-pointer rounded-lg border-2 border-jfgray-700 border-b-ctp-lavender/50 bg-jfgray-800 px-2 py-1 text-base transition-colors hover:bg-ctp-lavender-950/50"
+    class="size-fit cursor-pointer rounded-md border-2 border-jfgray-700 border-b-ctp-lavender/50 bg-jfgray-900 px-2 py-1 text-base transition-colors hover:border-ctp-lavender/50 hover:bg-jfgray-700"
     onclick={async () => {
       response = onSelect();
-    }}>{@render children()}</button
-  >
+    }}>{@render children()}</button>
 
   {#await response}
     <Response response={{ error: false, message: '...' }} />

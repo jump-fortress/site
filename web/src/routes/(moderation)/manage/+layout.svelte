@@ -11,7 +11,6 @@
 <InnerNav
   {route}
   parentRoute={'manage'}
-  pages={['competitions', 'players', 'requests', 'payouts']}
-/>
+  pages={['competitions', 'players', 'requests', 'payouts']} />
 
 {@render children()}

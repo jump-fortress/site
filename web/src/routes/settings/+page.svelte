@@ -21,49 +21,39 @@
   import Button from '$lib/components/input/Button.svelte';
   import Table from '$lib/components/table/Table.svelte';
   import { Temporal } from 'temporal-polyfill';
-  import type { Player, PlayerRequest, PlayerRequestPreview } from '$lib/schema';
-  import { onMount } from 'svelte';
-  import { browser } from '$app/environment';
+  import type { Player, PlayerRequestPreview } from '$lib/schema';
 
   let { data }: { data: PageData } = $props();
 
   let requests: PlayerRequestPreview[] = $state([]);
+  let player: Player | null = $state(null);
 
-  let selectedClass = $state('');
-  let selectedLauncher = $state('');
-
-  onMount(async () => {
-    const p = await data.player;
-    selectedClass = p?.preferred_class ?? '';
-    selectedLauncher = p?.preferred_launcher ?? '';
-
-    const r = await data.requestPreviews;
-    if (r) {
-      requests = r;
-    }
-  });
+  player = (await data.player) ?? null;
+  requests = (await data.requestPreviews) ?? [];
 </script>
 
-{#if requests.length}
-  <DataSection title={'Pending Requests'}>
-    <div class="w-fit">
-      <Table data={requests}>
-        {#snippet header()}
-          <th class="w-48">request</th>
-          <th class="w-32"></th>
-          <th class="w-date">date</th>
-        {/snippet}
-        {#snippet row(r: PlayerRequestPreview)}
-          <td>{r.request_type}</td>
-          <td>{r.request_string}</td>
-          <td>{Temporal.Instant.from(r.created_at).toLocaleString()}</td>
-        {/snippet}
-      </Table>
-    </div>
-  </DataSection>
-{/if}
+{#await data.requestPreviews then _}
+  {#if requests.length}
+    <DataSection title={'Pending Requests'}>
+      <div class="w-fit">
+        <Table data={requests}>
+          {#snippet header()}
+            <th class="w-48">request</th>
+            <th class="w-32"></th>
+            <th class="w-date">date</th>
+          {/snippet}
+          {#snippet row(r: PlayerRequestPreview)}
+            <td>{r.request_type}</td>
+            <td>{r.request_string}</td>
+            <td>{Temporal.Instant.from(r.created_at).toLocaleString()}</td>
+          {/snippet}
+        </Table>
+      </div>
+    </DataSection>
+  {/if}
+{/await}
 
-{#await data.player then player}
+{#await data.player then _}
   {#if player}
     <DataSection title="Profile">
       <InputButtons
@@ -72,13 +62,12 @@
           { src: rocket, value: 'Soldier' },
           { src: sticky, value: 'Demo' }
         ]}
-        selectedOption={selectedClass}
+        selectedOption={player.preferred_class}
         onSelect={async (value: string) => {
           // todo: feedback or message for successful update?
-          const updated = updatePreferredClass(value);
-          selectedClass = value;
-        }}
-      />
+          const ok = updatePreferredClass(value);
+          player.preferred_class = value;
+        }} />
 
       <InputButtons
         title="fav launcher"
@@ -88,12 +77,11 @@
           { src: mangler, value: 'Mangler' },
           { src: no_option, value: 'None' }
         ]}
-        selectedOption={selectedLauncher}
+        selectedOption={player.preferred_launcher}
         onSelect={async (value: string) => {
-          const updated = updatePreferredLauncher(value);
-          selectedLauncher = value;
-        }}
-      />
+          const ok = updatePreferredLauncher(value);
+          player.preferred_launcher = value;
+        }} />
 
       <Input
         label={'request display name change'}
@@ -108,14 +96,12 @@
             });
           }
           return response;
-        }}
-      />
+        }} />
 
       <Button
         onSelect={async () => {
           return updateSteamAvatar();
-        }}>update avatar from steam</Button
-      >
+        }}>update avatar from steam</Button>
     </DataSection>
 
     <DataSection title={'Rank'}>
@@ -132,8 +118,7 @@
               });
             }
             return response;
-          }}>request soldier placement</Button
-        >
+          }}>request soldier placement</Button>
       {/if}
       {#if !player.demo_division}
         <Button
@@ -147,8 +132,7 @@
               });
             }
             return response;
-          }}>request demo placement</Button
-        >
+          }}>request demo placement</Button>
       {/if}
     </DataSection>
 
@@ -165,8 +149,7 @@
           } else {
             return updateTempusID(parseInt(val));
           }
-        }}
-      />
+        }} />
 
       <Input
         label="Steam Trade URL"
@@ -180,8 +163,7 @@
           } else {
             return updateSteamTradeToken(val);
           }
-        }}
-      />
+        }} />
 
       <span>connect discord (not implemented)</span>
     </DataSection>

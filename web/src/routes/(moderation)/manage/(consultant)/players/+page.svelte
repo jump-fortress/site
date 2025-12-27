@@ -45,15 +45,13 @@
             onclick={() => {
               selectedPlayer = player;
             }}
-            class="td-hover-preview"
-          >
+            class="td-hover-preview">
             <PlayerPreview {player} />
           </td>
           <td class="text-division-{player.soldier_division?.toLowerCase()}"
-            >{player.soldier_division}</td
-          >
-          <td class="text-division-{player.demo_division?.toLowerCase()}">{player.demo_division}</td
-          >
+            >{player.soldier_division}</td>
+          <td class="text-division-{player.demo_division?.toLowerCase()}"
+            >{player.demo_division}</td>
           <th>{Temporal.Instant.from(player.created_at).toLocaleString()}</th>
         {/snippet}
       </Table>

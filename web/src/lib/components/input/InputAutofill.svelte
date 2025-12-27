@@ -39,11 +39,10 @@
   <div class="relative flex h-12 w-80 items-center">
     <label
       for={label}
-      class="relative mt-2 w-full border-2 border-jfgray-700 text-nowrap transition-colors focus-within:border-ctp-lavender-50/50 hover:border-ctp-lavender-50/50 {inputValue
-        ? 'bg-jfgray-900'
-        : 'bg-jfgray-800'}"
-    >
-      <span class="absolute -top-1 left-2 bg-jfgray-800 px-1 text-base leading-1">{label}</span>
+      class="relative mt-1 w-full border-2 border-jfgray-700 text-nowrap transition-colors focus-within:border-ctp-lavender-50/50 focus-within:bg-jfgray-900 hover:border-ctp-lavender-50/50
+      {showOptions ? 'rounded-t-md' : 'rounded-md'} 
+      {inputValue ? 'bg-jfgray-900' : 'bg-jfgray-800'}">
+      <span class="absolute -top-1 left-2 bg-jfgray-800 px-1 text-sm leading-1">{label}</span>
       <div class="relative flex h-10">
         <input
           type="text"
@@ -78,8 +77,7 @@
             showOptions = true;
           }}
           bind:value={inputValue}
-          class="relative z-10 size-full bg-clip-padding px-2 text-left text-ctp-lavender"
-        />
+          class="relative z-10 size-full px-2 text-left text-ctp-lavender" />
         <span class="absolute right-12 icon-[ri--arrow-down-s-line] size-5 h-full cursor-text"
         ></span>
         <!-- svelte-ignore a11y_consider_explicit_label -->
@@ -87,8 +85,7 @@
           onmousedown={async () => {
             response = submitOption(inputValue);
           }}
-          class="flex h-full w-12 cursor-pointer items-center justify-center bg-jfgray-800 peer-focus:bg-jfgray-800"
-        >
+          class="flex h-full w-10 cursor-pointer items-center justify-center">
           {#await response}
             <span in:fade class="icon-[ri--loader-3-line] animate-spin text-ctp-lavender"></span>
           {:then response}
@@ -96,17 +93,14 @@
               in:fade
               class="icon-[ri--send-plane-line] {response.error === true
                 ? 'text-ctp-red'
-                : 'text-ctp-lavender'}"
-            ></span>
+                : 'text-ctp-lavender'}"></span>
           {/await}
         </button>
       </div>
     </label>
     {#if showOptions}
       <div
-        transition:slide
-        class="absolute top-full z-40 flex max-h-60 w-full flex-col overflow-x-hidden overflow-y-scroll border-2 border-ctp-lavender-50/50 bg-jfgray-900 p-2"
-      >
+        class="absolute top-full z-40 flex max-h-60 w-7/8 flex-col overflow-x-hidden overflow-y-auto rounded-b-md border-2 border-t-0 border-ctp-lavender-50/50 bg-jfgray-900">
         {#if autofillOptions.length > 0}
           {#each autofillOptions as option, i}
             <InputOption
@@ -116,8 +110,7 @@
                 showOptions = false;
               }}
               index={i}
-              selectedIndex={autofillIndex}
-            />
+              selectedIndex={autofillIndex} />
           {/each}
         {/if}
       </div>
