@@ -7,6 +7,8 @@ this repo includes a..
 
 development tracking currently takes place within a private Linear workspace
 
+- UI development takes place within (this repo)[https://github.com/spiritov/svelte-experiments]
+
 ## starting the api
 
 the database uses [migrate cli](https://github.com/golang-migrate/migrate) to manage migrations, and [sqlc](https://github.com/sqlc-dev/sqlc) to generate code from SQL
