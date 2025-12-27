@@ -123,13 +123,16 @@ create table competition_result(
 
 -- prize for a competition (keys)
 -- relates to competition (id)
+-- relates to competition_division (id)
 create table competition_prize(
   id integer not null primary key autoincrement,
   competition_id integer not null,
+  competition_division_id integer not null,
   placement integer not null,
   amount integer not null,
 
   foreign key (competition_id) references competition (id)
+  foreign key (competition_division) references competition (division)
 );
 
 -- monthly, a type of competition
