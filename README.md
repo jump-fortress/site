@@ -7,7 +7,7 @@ this repo includes a..
 
 development tracking currently takes place within a private Linear workspace
 
-- UI development takes place within [this repo](https://github.com/spiritov/svelte-experiments)
+- UI development takes place within [this repo](https://github.com/spiritov/ui)
 
 ## starting the api
 
