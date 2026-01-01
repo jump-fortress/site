@@ -4,7 +4,7 @@
   import overlay from '$lib/assets/logo/overlay.png';
 </script>
 
-<div class="size-128 animate-[spin_120s_linear_infinite] select-none">
+<div class="size-128 animate-[spin_120s_linear_infinite] select-none invisible xl:visible">
   <img class="absolute z-10 select-none" src={overlay} alt="" draggable="false" />
   <div
     class="mask-alpha mask-center mask-no-repeat select-none"
