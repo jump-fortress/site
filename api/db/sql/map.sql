@@ -4,3 +4,6 @@ insert or ignore into map (id, name, courses, bonuses, soldier_tier, demo_tier, 
 
 -- name: GetMaps :many
 select * from map;
+
+-- name: GetMapNames :many
+select name from map;

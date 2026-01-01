@@ -27,6 +27,7 @@ type PlayerPreview struct {
 	DemoDivision      string    `json:"demo_division,omitempty"`
 	PreferredClass    string    `json:"preferred_class"`
 	PreferredLauncher string    `json:"preferred_launcher"`
+	PreferredMap      string    `json:"preferred_map"`
 	CreatedAt         time.Time `json:"created_at"`
 }
 
@@ -50,6 +51,7 @@ type Player struct {
 	DemoDivision      string    `json:"demo_division,omitempty"`
 	PreferredClass    string    `json:"preferred_class"`
 	PreferredLauncher string    `json:"preferred_launcher"`
+	PreferredMap      string    `json:"preferred_map"`
 	CreatedAt         time.Time `json:"created_at"`
 }
 
@@ -59,7 +61,6 @@ type PlayerRequest struct {
 	RequestType   string    `json:"request_type"`
 	RequestString string    `json:"request_string,omitempty"`
 	Pending       bool      `json:"pending"`
-	Accepted      bool      `json:"accepted"`
 	CreatedAt     time.Time `json:"created_at"`
 }
 
@@ -140,6 +141,10 @@ type LauncherNameInput struct {
 	Launcher string `path:"launcher" enum:"Stock,Original,Mangler,None"`
 }
 
+type MapNameInput struct {
+	Map string `path:"map"`
+}
+
 type DisplayNameInput struct {
 	ID   string `path:"id" minimum:"1" doc:"player ID, SteamID64"`
 	Name string `path:"name" doc:"new display name"`
@@ -204,6 +209,10 @@ type Map struct {
 
 type MapsOutput struct {
 	Body []Map
+}
+
+type MapNamesOutput struct {
+	Body []string
 }
 
 type SteamTradeURL struct {
