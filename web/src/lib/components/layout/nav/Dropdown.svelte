@@ -1,6 +1,8 @@
 <script lang="ts">
   import { slide } from 'svelte/transition';
 
+  import type { Session } from '$lib/schema';
+
   type Props = {
     session: Session;
   };
@@ -9,8 +11,8 @@
 </script>
 
 <div
-  in:slide
-  class="absolute top-0 right-0 -z-10 flex w-full cursor-default flex-col gap-px rounded-b-box border border-t-0 border-content/50 bg-base-900 px-1 py-1 pt-18 backdrop-blur-md starting:border-b-0"
+  in:slide={{ duration: 300 }}
+  class="absolute top-0 right-0 -z-10 flex w-full cursor-default flex-col gap-px rounded-b-box border border-t-0 border-content/50 bg-base-900 px-1 py-1 pt-18 backdrop-blur-md"
   data-nav="true">
   {@render page(session.displayName, `/players/${session.id}`)}
   <hr class="relative left-1/24 my-px w-11/12 text-base-700" />
