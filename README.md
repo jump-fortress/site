@@ -5,9 +5,9 @@ this repo includes a..
 - Go API and sqlite3 database in [/api](api)
 - Svelte + TypeScript frontend in [/web](web)
 
-development tracking currently takes place within a private Linear workspace
+development tracking currently takes place within a private Linear workspace, but help is welcome! contact me at [spiritov_v@pm.me](mailto:spiritov_v@pm.me) or through your favorite messaging platform
 
-- UI development takes place within [this repo](https://github.com/spiritov/ui)
+- frontend UI is derived from [this repo](https://github.com/spiritov/ui), though updates to it within this repo may take time to reach it..
 
 ## starting the api
 
