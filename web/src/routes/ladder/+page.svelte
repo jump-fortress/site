@@ -2,6 +2,7 @@
   import DivisionTag from '$lib/components/display/DivisionTag.svelte';
   import RocketLauncher from '$lib/components/display/RocketLauncher.svelte';
   import Table from '$lib/components/display/table/Table.svelte';
+  import TableMap from '$lib/components/display/table/TableMap.svelte';
   import TablePlayer from '$lib/components/display/table/TablePlayer.svelte';
   import Section from '$lib/components/layout/Section.svelte';
 
@@ -24,6 +25,7 @@
         <th class="w-24"></th>
         <th></th>
         <th class="w-22"></th>
+        <th class="w-64">a map</th>
         <th class="w-16"># monthly</th>
         <th class="w-16"># motw</th>
       {/snippet}
@@ -39,6 +41,7 @@
             </div>
           {/if}
         </td>
+        <td><TableMap map={'jump_flood'} /></td>
         <td>3</td>
         <td>9</td>
       {/snippet}
