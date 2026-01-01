@@ -31,6 +31,7 @@
       <Page label={'home'} {route} />
       <Page label={'ladder'} {route} />
       <Page label={'formats'} subpages={['monthly', 'motw', 'bounties', 'quests']} {route} />
+      <Page label={'archive'} subpages={['world cup', 'playoffs', 'other']} {route} />
       <Page label={'help'} subpages={['resources', 'faq', 'rules']} {route} />
       <!-- dropdown -->
       <div
