@@ -17,6 +17,7 @@ create table player(
   demo_division text,
   preferred_class text not null default 'Soldier',
   preferred_launcher text not null default 'None',
+  preferred_map text,
 
   created_at datetime not null default current_timestamp,
 
@@ -132,7 +133,7 @@ create table competition_prize(
   amount integer not null,
 
   foreign key (competition_id) references competition (id)
-  foreign key (competition_division) references competition (division)
+  foreign key (competition_division_id) references competition (division)
 );
 
 -- monthly, a type of competition
