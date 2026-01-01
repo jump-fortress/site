@@ -60,3 +60,8 @@ update player
 update player
   set preferred_launcher = ?
   where id = ?;
+
+-- name: UpdatePlayerPreferredMap :exec
+update player
+  set preferred_map = ?
+  where id = ?;

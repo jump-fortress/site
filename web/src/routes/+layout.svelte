@@ -1,31 +1,28 @@
 <script lang="ts">
-  import '../app.css';
-  import favicon from '$lib/assets/favicon.svg';
-  import AnimatedLogo from '$lib/components/assets/AnimatedLogo.svelte';
-  import Nav from '$lib/components/Nav.svelte';
   import { page } from '$app/state';
-  import type { LayoutProps } from './$types';
+  import favicon from '$lib/assets/favicon.svg';
+  import Logo from '$lib/components/layout/Logo.svelte';
+  import Nav from '$lib/components/layout/nav/Nav.svelte';
+
+  import './layout.css';
+
   import type { Session } from '$lib/schema';
 
-  let { data, children }: LayoutProps = $props();
+  let { data, children } = $props();
+  let route = $derived(page.url.pathname);
   let session: Session | null = $derived(data.session);
-  let route = $derived(page.url.pathname.substring(1));
 </script>
 
-<svelte:head>
-  <link rel="icon" href={favicon} />
-</svelte:head>
+<svelte:head><link rel="icon" href={favicon} /></svelte:head>
 
 <div class="fixed -bottom-36 -left-36 -z-10">
-  <AnimatedLogo />
+  <Logo />
 </div>
 
-<div>
-  <Nav {route} {session} />
-</div>
+<Nav {session} {route} />
 
-<div class="mt-6 flex w-full flex-col items-center">
-  <div class="relative flex w-5xl flex-col gap-4 bg-jfgray-800 px-8 py-4">
-    {@render children?.()}
+<div class="flex w-full flex-col items-center">
+  <div class="relative flex w-full max-w-5xl flex-col rounded-layout bg-base-800 p-6 gap-2">
+    {@render children()}
   </div>
 </div>

@@ -58,7 +58,7 @@ func (q *Queries) ResolvePlayerRequest(ctx context.Context, id int64) error {
 }
 
 const selectAllPendingPlayerRequests = `-- name: SelectAllPendingPlayerRequests :many
-select pr.id, player_id, type, content, pending, pr.created_at, p.id, role, steam_avatar_url, steam_trade_token, tempus_id, country, country_code, discord_id, display_name, soldier_division, demo_division, preferred_class, preferred_launcher, p.created_at from player_request pr
+select pr.id, player_id, type, content, pending, pr.created_at, p.id, role, steam_avatar_url, steam_trade_token, tempus_id, country, country_code, discord_id, display_name, soldier_division, demo_division, preferred_class, preferred_launcher, preferred_map, p.created_at from player_request pr
   join player p on pr.player_id = p.id
   where pr.pending = true
 `
@@ -83,6 +83,7 @@ type SelectAllPendingPlayerRequestsRow struct {
 	DemoDivision      sql.NullString `json:"demo_division"`
 	PreferredClass    string         `json:"preferred_class"`
 	PreferredLauncher string         `json:"preferred_launcher"`
+	PreferredMap      sql.NullString `json:"preferred_map"`
 	CreatedAt_2       time.Time      `json:"created_at_2"`
 }
 
@@ -115,6 +116,7 @@ func (q *Queries) SelectAllPendingPlayerRequests(ctx context.Context) ([]SelectA
 			&i.DemoDivision,
 			&i.PreferredClass,
 			&i.PreferredLauncher,
+			&i.PreferredMap,
 			&i.CreatedAt_2,
 		); err != nil {
 			return nil, err

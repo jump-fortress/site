@@ -1,15 +1,4 @@
 // See https://svelte.dev/docs/kit/types#app.d.ts
-
-import type {
-  Player,
-  PlayerPreview,
-  PlayerProfile,
-  PlayerRequest,
-  PlayerRequestPreview,
-  PlayerWithRequest,
-  Session
-} from '$lib/schema';
-
 // for information about these interfaces
 declare global {
   namespace App {
@@ -33,15 +22,11 @@ declare global {
     // interface Platform {}
   }
 
-  interface InputError {
+  // used for input components
+  type InputResponse = {
     error: boolean;
     message: string;
-  }
-
-  type MapWithDivisions = {
-    name: string;
-    divisions: string[];
-  };
+  } | null;
 }
 
 export {};

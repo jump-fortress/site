@@ -34,10 +34,12 @@ type CompetitionDivision struct {
 }
 
 type CompetitionPrize struct {
-	ID            int64 `json:"id"`
-	CompetitionID int64 `json:"competition_id"`
-	Placement     int64 `json:"placement"`
-	Amount        int64 `json:"amount"`
+	ID                    int64       `json:"id"`
+	CompetitionID         int64       `json:"competition_id"`
+	CompetitionDivisionID int64       `json:"competition_division_id"`
+	Placement             int64       `json:"placement"`
+	Amount                int64       `json:"amount"`
+	Foreign               interface{} `json:"foreign"`
 }
 
 type CompetitionResult struct {
@@ -104,6 +106,7 @@ type Player struct {
 	DemoDivision      sql.NullString `json:"demo_division"`
 	PreferredClass    string         `json:"preferred_class"`
 	PreferredLauncher string         `json:"preferred_launcher"`
+	PreferredMap      sql.NullString `json:"preferred_map"`
 	CreatedAt         time.Time      `json:"created_at"`
 }
 

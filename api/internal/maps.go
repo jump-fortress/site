@@ -98,5 +98,21 @@ func HandleGetAllMaps(ctx context.Context, _ *struct{}) (*responses.MapsOutput, 
 	}
 
 	return resp, nil
+}
 
+func HandleGetAllMapNames(ctx context.Context, _ *struct{}) (*responses.MapNamesOutput, error) {
+	maps, err := responses.Queries.GetMapNames(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	resp := &responses.MapNamesOutput{
+		Body: maps,
+	}
+
+	if len(resp.Body) == 0 {
+		return nil, huma.Error404NotFound("no maps found")
+	}
+
+	return resp, nil
 }

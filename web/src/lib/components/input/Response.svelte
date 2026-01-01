@@ -1,21 +1,17 @@
 <script lang="ts">
-  import { fade } from 'svelte/transition';
+  type Props = {
+    response: Promise<InputResponse>;
+  };
 
-  let { response = $bindable() }: { response: InputError } = $props();
-  let fadeMessage = $state(false);
-
-  // fade out success messages
-  if (!response.error) {
-    setTimeout(() => {
-      fadeMessage = true;
-    }, 5_000);
-  }
+  let { response }: Props = $props();
 </script>
 
-{#if response.message}
-  <span
-    in:fade
-    class="text-sm transition-opacity
-  {response.error === true ? 'text-ctp-red' : 'text-ctp-lavender'} 
-    {fadeMessage ? 'opacity-0' : ''}">{response.message}</span>
-{/if}
+{#await response then response}
+  {#if response?.message}
+    <span
+      class="pointer-events-none absolute left-full ml-2 flex h-full items-center text-nowrap
+          {response.error ? 'text-error' : 'text-primary'}">
+      {response.message}
+    </span>
+  {/if}
+{/await}

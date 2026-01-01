@@ -55,6 +55,7 @@ func getPlayerPreviewResponse(player queries.Player) responses.PlayerPreview {
 		DemoDivision:      player.DemoDivision.String,
 		PreferredClass:    player.PreferredClass,
 		PreferredLauncher: player.PreferredLauncher,
+		PreferredMap:      player.PreferredMap.String,
 		CreatedAt:         player.CreatedAt,
 	}
 }
@@ -74,6 +75,7 @@ func getPlayerResponse(player queries.Player) responses.Player {
 		DemoDivision:      player.DemoDivision.String,
 		PreferredClass:    player.PreferredClass,
 		PreferredLauncher: player.PreferredLauncher,
+		PreferredMap:      player.PreferredMap.String,
 		CreatedAt:         player.CreatedAt,
 	}
 }
@@ -208,6 +210,36 @@ func HandlePutSelfPreferredLauncher(ctx context.Context, input *responses.Launch
 	if err := responses.Queries.UpdatePlayerPreferredLauncher(ctx, queries.UpdatePlayerPreferredLauncherParams{
 		PreferredLauncher: input.Launcher,
 		ID:                principal.SteamID.String(),
+	}); err != nil {
+		return nil, err
+	}
+
+	return nil, nil
+}
+
+func HandlePutSelfPreferredMap(ctx context.Context, input *responses.MapNameInput) (*struct{}, error) {
+	principal, ok := GetPrincipal(ctx)
+	if !ok {
+		return nil, huma.Error401Unauthorized("a session is required")
+	}
+
+	noMap := input.Map == "none"
+
+	maps, err := responses.Queries.GetMapNames(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	if !slices.Contains(maps, input.Map) && !noMap {
+		return nil, huma.Error400BadRequest("invalid map name")
+	}
+
+	if err := responses.Queries.UpdatePlayerPreferredMap(ctx, queries.UpdatePlayerPreferredMapParams{
+		PreferredMap: sql.NullString{
+			String: input.Map,
+			Valid:  !noMap,
+		},
+		ID: principal.SteamID.String(),
 	}); err != nil {
 		return nil, err
 	}

@@ -1,34 +1,26 @@
 <script lang="ts">
   import Response from '$lib/components/input/Response.svelte';
+
   import type { Snippet } from 'svelte';
 
   type Props = {
+    message?: string;
     children: Snippet;
-    responseMessage?: string;
-    onSelect: () => Promise<InputError>;
+    onsubmit: () => Promise<InputResponse>;
   };
 
-  let { children, responseMessage = '', onSelect }: Props = $props();
+  let { children, message = '', onsubmit }: Props = $props();
 
-  // response is a promise so #await can be used to handle pending state
-  let response: Promise<InputError> = $derived(
-    Promise.resolve({
-      error: false,
-      message: responseMessage
-    })
+  let response: Promise<InputResponse> = $derived(
+    Promise.resolve({ error: false, message: message })
   );
 </script>
 
-<div class="flex items-center gap-2">
-  <button
-    class="size-fit cursor-pointer rounded-md border-2 border-jfgray-700 border-b-ctp-lavender/50 bg-jfgray-900 px-2 py-1 text-base transition-colors hover:border-ctp-lavender/50 hover:bg-jfgray-700"
-    onclick={async () => {
-      response = onSelect();
-    }}>{@render children()}</button>
-
-  {#await response}
-    <Response response={{ error: false, message: '...' }} />
-  {:then response}
-    <Response {response} />
-  {/await}
-</div>
+<button
+  class="relative flex h-10 w-fit cursor-pointer items-center rounded-box border border-base-700 border-b-content/50 bg-base-800 px-2 transition-colors hover:border-content/50 hover:bg-base-900"
+  onclick={() => {
+    response = onsubmit();
+  }}>
+  {@render children()}
+  <Response {response} />
+</button>
