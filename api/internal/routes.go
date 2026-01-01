@@ -71,6 +71,17 @@ func registerSessionRoutes(internalApi *huma.Group) {
 
 	huma.Register(internalApi, huma.Operation{
 		Method:      http.MethodPut,
+		Path:        "/players/preferredmap/{map}",
+		OperationID: "set-player-preferredmap",
+		Summary:     "Set Player's preferred map",
+		Description: "set the current session player's preferred map by map name",
+		Tags:        []string{"Player"},
+		Security:    sessionCookieSecurityMap,
+		Middlewares: requireUserSessionMiddlewares,
+	}, HandlePutSelfPreferredMap)
+
+	huma.Register(internalApi, huma.Operation{
+		Method:      http.MethodPut,
 		Path:        "/players/tempusinfo/{tempus_id}",
 		OperationID: "set-player-tempusinfo",
 		Summary:     "Set a Player's own Tempus ID",
@@ -123,6 +134,28 @@ func registerSessionRoutes(internalApi *huma.Group) {
 		Security:    sessionCookieSecurityMap,
 		Middlewares: requireUserSessionMiddlewares,
 	}, HandleGetSelfPlayerRequests)
+
+	huma.Register(internalApi, huma.Operation{
+		Method:      http.MethodGet,
+		Path:        "/maps",
+		OperationID: "get-all-maps",
+		Summary:     "Get all maps",
+		Description: "get all maps",
+		Tags:        []string{"Player"},
+		Security:    sessionCookieSecurityMap,
+		Middlewares: requireUserSessionMiddlewares,
+	}, HandleGetAllMaps)
+
+	huma.Register(internalApi, huma.Operation{
+		Method:      http.MethodGet,
+		Path:        "/maps/names",
+		OperationID: "get-all-map-names",
+		Summary:     "Get all map names",
+		Description: "get all map names",
+		Tags:        []string{"Player"},
+		Security:    sessionCookieSecurityMap,
+		Middlewares: requireUserSessionMiddlewares,
+	}, HandleGetAllMapNames)
 }
 
 func registerConsultantRoutes(consultantApi *huma.Group) {
@@ -200,14 +233,4 @@ func registerAdminRoutes(adminApi *huma.Group) {
 		Tags:        []string{"Admin"},
 		Security:    sessionCookieSecurityMap,
 	}, HandlePutUpdateMaps)
-
-	huma.Register(adminApi, huma.Operation{
-		Method:      http.MethodGet,
-		Path:        "/maps",
-		OperationID: "get-all-maps",
-		Summary:     "Get all maps",
-		Description: "get all maps",
-		Tags:        []string{"Admin"},
-		Security:    sessionCookieSecurityMap,
-	}, HandleGetAllMaps)
 }
