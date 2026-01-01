@@ -1,5 +1,6 @@
 import config from '$lib/config';
-import { Client } from '$lib/internalApi';
+import { Client } from '$lib/src/api';
+
 import type { Handle } from '@sveltejs/kit';
 
 export const handle: Handle = async ({ event, resolve }) => {

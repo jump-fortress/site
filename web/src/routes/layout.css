@@ -1,0 +1,94 @@
+@plugin '@iconify/tailwind4';
+
+@import 'tailwindcss';
+@import '@catppuccin/tailwindcss/mocha.css';
+
+@font-face {
+  font-family: 'fredoka';
+  src: url('$lib/assets/fonts/fredoka/static/Fredoka-Regular.ttf') format('truetype');
+}
+
+@theme {
+  --color-*: initial;
+  /* tailwind colors */
+  --color-base-900: oklch(21% 0.006 285.885);
+  --color-base-800: oklch(27.4% 0.006 286.033);
+  --color-base-700: oklch(37% 0.013 285.805);
+  /* catppuccin colors */
+  --color-primary: #b4befe;
+  --color-content: #d6dbfe;
+  --color-success: #a6e3a1;
+  --color-error: #f38ba8;
+
+  --font-theme: 'fredoka', 'ui-sans-serif', 'sans-serif', 'system-ui';
+
+  /* 0.75rem for rounded-xl */
+  --radius-layout: 0.75rem;
+  /* 0.375rem for rounded-md */
+  --radius-box: 0.375rem;
+}
+
+/* division colors */
+@theme {
+  --color-division-wood: #f2cdcd;
+  --color-division-bronze: #fab387;
+  --color-division-silver: #f5e0dc;
+  --color-division-gold: #f9e2af;
+  --color-division-platinum: #74c7ec;
+  --color-division-diamond: #94e2d5;
+}
+
+/* reverse spin for spinning logo */
+@theme {
+  --animate-reverse-spin: reverse-spin 1s infinite;
+  @keyframes reverse-spin {
+    from {
+      transform: rotate(360deg);
+    }
+  }
+}
+
+@layer base {
+  :root {
+    @apply bg-base-900 font-theme text-base text-content selection:bg-primary/50 selection:text-content;
+  }
+
+  input,
+  button {
+    @apply outline-0 focus:outline-0;
+  }
+
+  th,
+  td {
+    @apply px-2 text-center text-nowrap first:rounded-l-box last:rounded-r-box;
+  }
+
+  th {
+    @apply py-1;
+  }
+
+  td {
+    @apply h-10 bg-base-900;
+  }
+
+  tr:hover td {
+    @apply bg-base-900/50;
+  }
+
+  img {
+    @apply select-none;
+  }
+
+  .filter-lavender {
+    filter: brightness(0) saturate(100%) invert(97%) sepia(49%) saturate(6023%) hue-rotate(179deg)
+      brightness(100%) contrast(108%);
+  }
+
+  .filter-purelavender {
+    filter: brightness(0) saturate(100%) invert(68%) sepia(55%) saturate(547%) hue-rotate(197deg)
+      brightness(105%) contrast(99%);
+  }
+}
+
+@source inline('text-division-{wood,steel,bronze,silver,gold,platinum,diamond}');
+@source inline('bg-division-{wood,steel,bronze,silver,gold,platinum,diamond}');

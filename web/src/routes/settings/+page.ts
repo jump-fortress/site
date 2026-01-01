@@ -1,4 +1,4 @@
-import { Client } from '$lib/internalApi';
+import { Client } from '$lib/src/api';
 
 export const load = async ({ fetch }) => {
   const playerData = Client.GET('/internal/players', {
@@ -13,5 +13,5 @@ export const load = async ({ fetch }) => {
     return response.data;
   });
 
-  return { player: playerData, requestPreviews: playerRequestsData };
+  return { player: playerData, requests: playerRequestsData };
 };

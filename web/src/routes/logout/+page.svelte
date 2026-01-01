@@ -1,6 +1,6 @@
 <script lang="ts">
   import { goto, invalidateAll } from '$app/navigation';
-  import { Client } from '$lib/internalApi';
+  import { Client } from '$lib/src/api';
 
   async function handleSignOut() {
     const { error } = await Client.POST('/internal/session/sign-out', {
