@@ -18,15 +18,15 @@
     <span>{label}</span>
     {#if currentRoute}
       <!-- underline -->
-      <hr class="absolute bottom-0 left-1/6 w-2/3 rounded-box border border-primary -z-10" />
+      <hr class="absolute bottom-0 left-1/6 -z-10 w-2/3 rounded-box border border-primary" />
     {/if}
   </a>
 
-  <div class="absolute pl-2 flex flex-col z-10 hover:visible invisible group-hover:visible pt-2">
+  <div class="invisible absolute z-10 flex flex-col pt-2 pl-2 group-hover:visible hover:visible">
     {#each subpages as subpage}
       {@const href: string = `/${subpage}`}
       <a
-        class="relative hover:text-content text-content/75 rounded-box pl-2 hover:bg-base-800/50 w-32"
+        class="relative w-32 rounded-box pl-2 text-content/75 hover:bg-base-800/50 hover:text-content"
         {href}>
         <span>{subpage}</span>
       </a>

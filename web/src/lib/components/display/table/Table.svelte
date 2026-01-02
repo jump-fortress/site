@@ -12,7 +12,7 @@
   let { data, header, row }: Props = $props();
 </script>
 
-<table class="border-separate border-spacing-y-0.5 rounded-layout text-sm w-full">
+<table class="w-full border-separate border-spacing-y-0.5 rounded-layout text-sm">
   <!-- header -->
   <thead class="text-nowrap text-primary/75">
     <tr>

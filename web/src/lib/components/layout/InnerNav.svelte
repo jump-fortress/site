@@ -9,7 +9,7 @@
 </script>
 
 <nav
-  class="flex h-16 w-full text-lg transition-colors select-none hover:text-content/75 bg-base-900/50 rounded-t-layout absolute px-6 left-0 top-0">
+  class="absolute top-0 left-0 flex h-16 w-full rounded-t-layout bg-base-900/50 px-6 text-lg transition-colors select-none hover:text-content/75">
   <div class="relative flex items-center">
     {#each pages as label}
       {@render page(label)}

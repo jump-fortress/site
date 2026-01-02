@@ -9,9 +9,9 @@ export default {
   trailingComma: 'none',
   printWidth: 100,
   plugins: [
+    '@trivago/prettier-plugin-sort-imports',
     'prettier-plugin-svelte',
-    'prettier-plugin-tailwindcss',
-    '@trivago/prettier-plugin-sort-imports'
+    'prettier-plugin-tailwindcss'
   ],
   overrides: [
     {

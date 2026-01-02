@@ -60,7 +60,7 @@
   {:else}
     <div class="h-2/3 w-full mask-b-from-95%">
       <div
-        class="filter-purelavender bg-contain bg-repeat size-full scale-300 rotate-6 opacity-50 relative left-48 top-4"
+        class="filter-purelavender relative top-4 left-48 size-full scale-300 rotate-6 bg-contain bg-repeat opacity-50"
         style:background-image={`url(${no_map})`}>
       </div>
     </div>

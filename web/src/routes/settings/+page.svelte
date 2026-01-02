@@ -88,7 +88,7 @@
     <Section label="requests">
       {#await data.requests then requests}
         {#if requests && requests.length}
-          <div class="max-w-160 w-full">
+          <div class="w-full max-w-160">
             <Table data={requests}>
               {#snippet header()}
                 <th class="w-32">request type</th>
@@ -139,7 +139,7 @@
           }} />
       </Label>
 
-      <div class="flex flex-col max-w-80 w-full">
+      <div class="flex w-full max-w-80 flex-col">
         <Label label="Steam Trade URL">
           <Input
             type="text"
@@ -148,7 +148,7 @@
               return updateSteamTradeToken(value);
             }} />
         </Label>
-        <span class="text-content/50 text-sm">
+        <span class="text-sm text-content/50">
           your Steam trade token is used to send trade offers for competition winnings.
         </span>
       </div>

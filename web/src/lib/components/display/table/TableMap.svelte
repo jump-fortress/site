@@ -7,8 +7,8 @@
 </script>
 
 <div
-  class="grid size-full place-content-center mask-x-from-90% object-cover object-center relative">
-  <span class="truncate text-shadow-base-900 text-shadow-sm relative z-10">{map}</span>
+  class="relative grid size-full place-content-center mask-x-from-90% object-cover object-center">
+  <span class="relative z-10 truncate text-shadow-base-900 text-shadow-sm">{map}</span>
   <img
     class="absolute size-full"
     src="https://tempusplaza.xyz/map-backgrounds/{map}.jpg"

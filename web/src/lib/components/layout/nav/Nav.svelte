@@ -27,7 +27,7 @@
   class="sticky z-50 flex h-18 w-full justify-center bg-base-900/50 backdrop-blur-md select-none">
   <div class="flex w-full max-w-5xl items-center justify-between text-lg">
     <!-- left nav -->
-    <div class="flex h-full items-center grow transition-colors hover:text-content/75">
+    <div class="flex h-full grow items-center transition-colors hover:text-content/75">
       <Page label={'home'} {route} />
       <Page label={'ladder'} {route} />
       <Page label={'formats'} subpages={['monthly', 'motw', 'bounties', 'quests']} {route} />
@@ -35,7 +35,7 @@
       <Page label={'help'} subpages={['resources', 'faq', 'rules']} {route} />
       <!-- dropdown -->
       <div
-        class="peer-hover:visible invisible absolute top-0 left-0 -z-20 flex h-44 w-full cursor-default flex-col gap-px border-b border-primary/50 bg-base-900/95 px-1 py-1 backdrop-blur-none transition-all shadow-sm shadow-primary/50">
+        class="invisible absolute top-0 left-0 -z-20 flex h-44 w-full cursor-default flex-col gap-px border-b border-primary/50 bg-base-900/95 px-1 py-1 shadow-sm shadow-primary/50 backdrop-blur-none transition-all peer-hover:visible">
       </div>
     </div>
     <!-- right nav -->

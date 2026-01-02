@@ -36,7 +36,7 @@
         <td><TablePlayer {player} /></td>
         <td>
           {#if player.preferred_launcher !== 'None'}
-            <div class="h-6 flex justify-center">
+            <div class="flex h-6 justify-center">
               <RocketLauncher launcher={player.preferred_launcher} />
             </div>
           {/if}
