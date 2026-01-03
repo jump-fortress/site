@@ -20,14 +20,14 @@ type PlayerPreview struct {
 	Role              string    `json:"role"`
 	SteamAvatarUrl    string    `json:"steam_avatar_url"`
 	TempusID          int64     `json:"tempus_id,omitempty"`
-	Country           string    `json:"country"`
-	CountryCode       string    `json:"country_code"`
+	Country           string    `json:"country,omitempty"`
+	CountryCode       string    `json:"country_code,omitempty"`
 	DisplayName       string    `json:"display_name"`
 	SoldierDivision   string    `json:"soldier_division,omitempty"`
 	DemoDivision      string    `json:"demo_division,omitempty"`
 	PreferredClass    string    `json:"preferred_class"`
 	PreferredLauncher string    `json:"preferred_launcher"`
-	PreferredMap      string    `json:"preferred_map"`
+	PreferredMap      string    `json:"preferred_map,omitempty"`
 	CreatedAt         time.Time `json:"created_at"`
 }
 
@@ -43,15 +43,15 @@ type Player struct {
 	SteamAvatarUrl    string    `json:"steam_avatar_url"`
 	SteamTradeToken   string    `json:"steam_trade_token,omitempty"`
 	TempusID          int64     `json:"tempus_id,omitempty"`
-	Country           string    `json:"country"`
-	CountryCode       string    `json:"country_code"`
+	Country           string    `json:"country,omitempty"`
+	CountryCode       string    `json:"country_code,omitempty"`
 	DiscordID         string    `json:"discord_id,omitempty"`
 	DisplayName       string    `json:"display_name"`
 	SoldierDivision   string    `json:"soldier_division,omitempty"`
 	DemoDivision      string    `json:"demo_division,omitempty"`
 	PreferredClass    string    `json:"preferred_class"`
 	PreferredLauncher string    `json:"preferred_launcher"`
-	PreferredMap      string    `json:"preferred_map"`
+	PreferredMap      string    `json:"preferred_map,omitempty"`
 	CreatedAt         time.Time `json:"created_at"`
 }
 
@@ -231,4 +231,45 @@ type PlayerRequestIDInput struct {
 type UpdateDivisionInput struct {
 	ID       string `path:"id" minimum:"1" doc:"player ID, SteamID64"`
 	Division string `path:"division"`
+}
+
+type CompetitionInput struct {
+	Class    string    `json:"class"`
+	StartsAt time.Time `json:"starts_at"`
+}
+
+type CompetitionDivisionInput struct {
+	Division string `json:"division"`
+	Map      string `json:"map"`
+}
+
+type Competition struct {
+	ID        int64     `json:"id"`
+	Class     string    `json:"class"`
+	StartsAt  time.Time `json:"starts_at"`
+	EndsAt    time.Time `json:"ends_at"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
+type CompetitionDivision struct {
+	ID            int64  `json:"id"`
+	CompetitionID int64  `json:"competition_id"`
+	Division      string `json:"division"`
+	Map           string `json:"map"`
+}
+
+type MonthlyInput struct {
+	Body struct {
+		Competition CompetitionInput           `json:"competition"`
+		Divisions   []CompetitionDivisionInput `json:"divisions"`
+	}
+}
+
+type Monthly struct {
+	Competition Competition           `json:"competition"`
+	Divisions   []CompetitionDivision `json:"divisions"`
+}
+
+type MonthliesOutput struct {
+	Body []Monthly
 }
