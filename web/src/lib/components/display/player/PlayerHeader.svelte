@@ -14,15 +14,22 @@
   type Props = {
     player: Player | PlayerPreview;
     points?: PlayerPoints | null;
-    selected: string;
+    selected_class: string;
+    header?: boolean;
   };
 
-  let { player, points = null, selected = $bindable(player.preferred_class) }: Props = $props();
+  let {
+    player,
+    points = null,
+    selected_class = $bindable(player.preferred_class),
+    header = false
+  }: Props = $props();
 </script>
 
 <!-- container -->
 <div
-  class="absolute top-0 left-0 flex h-64 w-full flex-col overflow-hidden rounded-t-layout bg-base-900">
+  class="flex h-64 w-full flex-col overflow-hidden bg-base-900 drop-shadow-md/50
+  {header ? 'absolute top-0 left-0 rounded-t-layout' : 'relative rounded-layout'}">
   <!-- absolute avatar -->
   <img
     class="absolute top-1/3 left-6 z-10 size-32 rounded-layout drop-shadow-md/50"
@@ -39,11 +46,11 @@
       <SelectClass
         selected={player.preferred_class}
         onsubmit={(value) => {
-          selected = value;
+          selected_class = value;
         }} />
     </div>
     {#if points}
-      {@const selected_points = selected === 'Soldier' ? points.soldier : points.demo}
+      {@const selected_points = selected_class === 'Soldier' ? points.soldier : points.demo}
       <Points points={selected_points} />
       <div class="relative bottom-5 left-7 -rotate-60">
         <RocketLauncher launcher={'Stock'} />
@@ -72,7 +79,7 @@
         <Flag code={player.country_code} country={player.country} />
         <span class="icon-[mdi--circle-medium] size-3.5"></span>
       {/if}
-      {#if selected === 'Soldier'}
+      {#if selected_class === 'Soldier'}
         <span class="text-division-{player.soldier_division?.toLowerCase() ?? ''}">
           {player.soldier_division ?? 'Divisionless'} Soldier
         </span>
@@ -101,4 +108,6 @@
   </div>
 </div>
 
-<hr class="invisible mt-4 h-64 w-full" />
+{#if header}
+  <hr class="invisible h-60 w-full" />
+{/if}
