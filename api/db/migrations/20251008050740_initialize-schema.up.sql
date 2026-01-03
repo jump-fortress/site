@@ -52,7 +52,6 @@ create table map(
   demo_rating integer not null
 );
 
-
 -- "stardust points" for a player
 -- relates to player (id)
 create table player_points(
