@@ -60,7 +60,7 @@
 
   th,
   td {
-    @apply px-2 text-center text-nowrap first:rounded-l-box last:rounded-r-box;
+    @apply text-center text-nowrap first:rounded-l-box last:rounded-r-box;
   }
 
   th {
