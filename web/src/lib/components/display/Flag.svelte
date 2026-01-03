@@ -1,10 +1,10 @@
 <script lang="ts">
   type Props = {
-    code: string;
-    country?: string | null;
+    code: string | undefined;
+    country?: string | undefined;
   };
 
-  let { code, country = null }: Props = $props();
+  let { code, country = undefined }: Props = $props();
 </script>
 
 <!-- show nothing if there's no flag code -->

@@ -27,7 +27,7 @@
     href="/{parentRoute}/{label}">
     <span>{label}</span>
     {#if currentRoute}
-      <hr class="absolute bottom-0 left-1/12 z-10 w-5/6 rounded-box border border-primary" />
+      <hr class="absolute -bottom-0.5 left-1/12 z-10 w-5/6 rounded-box border border-primary" />
     {/if}
   </a>
 {/snippet}
