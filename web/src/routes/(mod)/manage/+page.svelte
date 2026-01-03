@@ -8,6 +8,9 @@
     <span>admins - can manage competitions, players, and payouts.</span>
     <span>moderators - can manage players.</span>
     <span>consultants - can view detailed info for players.</span>
-    <span>treasurers - can view pending payouts for players and send automated trade links.</span>
+    <span>
+      treasurers - can view detailed info for players, view pending payouts for players, and send
+      automated trade links.
+    </span>
   </div>
 </Section>
