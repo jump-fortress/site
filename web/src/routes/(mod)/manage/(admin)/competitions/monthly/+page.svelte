@@ -1,35 +1,46 @@
 <script lang="ts">
   import demo from '$lib/assets/tf/demo.png';
   import soldier from '$lib/assets/tf/soldier.png';
-  import Competition from '$lib/components/display/Competition.svelte';
   import DivisionTag from '$lib/components/display/DivisionTag.svelte';
-  import Monthly from '$lib/components/display/Monthly.svelte';
-  import Table from '$lib/components/display/table/Table.svelte';
+  import MonthlyHeader from '$lib/components/display/Monthly.svelte';
+  import Button from '$lib/components/input/Button.svelte';
   import Input from '$lib/components/input/Input.svelte';
   import Label from '$lib/components/input/Label.svelte';
   import Select from '$lib/components/input/select/Select.svelte';
   import SelectButton from '$lib/components/input/select/SelectButton.svelte';
   import Section from '$lib/components/layout/Section.svelte';
+  import { createMonthly } from '$lib/src/api.js';
   import { divisions } from '$lib/src/divisions.js';
   import { SvelteMap } from 'svelte/reactivity';
   import { Temporal } from 'temporal-polyfill';
 
-  import type { MonthlyInputBody } from '$lib/schema.js';
+  import type { Monthly } from '$lib/schema.js';
 
   let { data } = $props();
 
+  const timeZoneId = Temporal.Now.timeZoneId();
   // todo: prizes
   let competitionDivisions: SvelteMap<string, string> = new SvelteMap();
   let competitionClass = $state('Soldier');
-  let competitionDate = $state('');
-  let competitionTime = $state('');
+  let competitionDate = $state(Temporal.Now.plainDateISO().add({ weeks: 1 }).toString());
+  let competitionTime = $state('00:00');
 
-  let monthly: MonthlyInputBody = $derived({
+  // with some placeholder values
+  let monthly: Monthly = $derived({
+    id: 0,
     competition: {
+      id: 0,
       class: competitionClass,
-      starts_at: `${competitionDate} ${competitionTime}`
+      starts_at: `${competitionDate}T${competitionTime}:00Z`,
+      ends_at: '',
+      created_at: ''
     },
-    divisions: Array.from(competitionDivisions, ([division, map]) => ({ division, map }))
+    divisions: Array.from(competitionDivisions, ([division, map]) => ({
+      division,
+      map,
+      id: 0,
+      competition_id: 0
+    }))
   });
 </script>
 
@@ -56,7 +67,7 @@
   {/if}
 {/await}
 
-<Monthly {monthly} />
+<MonthlyHeader {monthly} />
 
 <Section label="create">
   <div class="flex items-center gap-2">
@@ -91,7 +102,7 @@
     </div>
     <div class="ml-auto">
       <span class="text-primary">timezone: </span>
-      <span>{Temporal.Now.timeZoneId()}</span>
+      <span>UTC</span>
     </div>
   </div>
 
@@ -104,4 +115,12 @@
         return null;
       }} />
   </Label>
+
+  <Button
+    onsubmit={() => {
+      const monthlyValue = monthly;
+      monthlyValue.competition.ends_at = monthlyValue.competition.starts_at;
+      monthlyValue.competition.created_at = monthlyValue.competition.starts_at;
+      return createMonthly(monthlyValue);
+    }}>submit monthly</Button>
 </Section>

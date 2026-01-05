@@ -5,7 +5,8 @@ import type {
   paths,
   PlayerProfile,
   PlayerRequestPreview,
-  PlayerWithRequest
+  PlayerWithRequest,
+  Monthly
 } from '../schema';
 
 export const Client = createClient<paths>({
@@ -286,6 +287,17 @@ export async function resolvePlayerRequest(id: number): Promise<InputResponse> {
       }
     }
   });
+  return error
+    ? { error: true, message: error.detail ?? 'unknown error' }
+    : { error: false, message: '' };
+}
+
+export async function createMonthly(monthly: Monthly): Promise<InputResponse> {
+  const { error } = await Client.POST('/internal/admin/competitions/monthly', {
+    fetch: fetch,
+    body: monthly
+  });
+
   return error
     ? { error: true, message: error.detail ?? 'unknown error' }
     : { error: false, message: '' };
