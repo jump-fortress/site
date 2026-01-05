@@ -5,6 +5,7 @@
   import rl_stock from '$lib/assets/tf/rl_stock.png';
   import soldier from '$lib/assets/tf/soldier.png';
   import Table from '$lib/components/display/table/Table.svelte';
+  import TableDate from '$lib/components/display/table/TableDate.svelte';
   import Button from '$lib/components/input/Button.svelte';
   import Input from '$lib/components/input/Input.svelte';
   import Label from '$lib/components/input/Label.svelte';
@@ -21,6 +22,7 @@
     updateSteamTradeToken,
     updateTempusID
   } from '$lib/src/api.js';
+  import { formatDate, formatRelative, formatTime } from '$lib/src/temporal.js';
   import { Temporal } from 'temporal-polyfill';
 
   import type { Player, PlayerRequest } from '$lib/schema';
@@ -91,15 +93,17 @@
           <div class="w-full max-w-160">
             <Table data={requests}>
               {#snippet header()}
-                <th class="w-32">request type</th>
+                <th class="w-40">request type</th>
                 <th class="text-left"></th>
                 <th class="w-48">date</th>
               {/snippet}
               {#snippet row(request: PlayerRequest)}
-                {@const now = Temporal.Instant.from(request.created_at).toLocaleString()}
+                {$inspect(request.created_at)}
                 <td>{request.request_type}</td>
                 <td class="truncate">{request.request_string}</td>
-                <td>{now}</td>
+                <td
+                  ><TableDate
+                    ms={Temporal.Instant.from(request.created_at).epochMilliseconds} /></td>
               {/snippet}
             </Table>
           </div>

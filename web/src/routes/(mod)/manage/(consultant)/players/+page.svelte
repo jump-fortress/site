@@ -3,6 +3,7 @@
   import DivisionTag from '$lib/components/display/DivisionTag.svelte';
   import PlayerHeader from '$lib/components/display/player/PlayerHeader.svelte';
   import Table from '$lib/components/display/table/Table.svelte';
+  import TableDate from '$lib/components/display/table/TableDate.svelte';
   import TablePlayer from '$lib/components/display/table/TablePlayer.svelte';
   import Input from '$lib/components/input/Input.svelte';
   import Label from '$lib/components/input/Label.svelte';
@@ -96,7 +97,7 @@
         </td>
         <td><DivisionTag div={player.soldier_division} /></td>
         <td><DivisionTag div={player.demo_division} /></td>
-        <td>{Temporal.Instant.from(player.created_at).toLocaleString()}</td>
+        <td><TableDate ms={Temporal.Instant.from(player.created_at).epochMilliseconds} /></td>
       {/snippet}
     </Table>
   {/if}

@@ -3,6 +3,7 @@
   import DivisionTag from '$lib/components/display/DivisionTag.svelte';
   import PlayerHeader from '$lib/components/display/player/PlayerHeader.svelte';
   import Table from '$lib/components/display/table/Table.svelte';
+  import TableDate from '$lib/components/display/table/TableDate.svelte';
   import TablePlayer from '$lib/components/display/table/TablePlayer.svelte';
   import Button from '$lib/components/input/Button.svelte';
   import Input from '$lib/components/input/Input.svelte';
@@ -82,7 +83,7 @@
   {#if requests.length}
     <Table data={requests}>
       {#snippet header()}
-        <th class="w-36">request type</th>
+        <th class="w-40">request type</th>
         <th class="text-left"></th>
         <th></th>
         <th class="w-24">soldier</th>
@@ -101,7 +102,7 @@
         </td>
         <td><DivisionTag div={player.soldier_division} /></td>
         <td><DivisionTag div={player.demo_division} /></td>
-        <td>{Temporal.Instant.from(request.created_at).toLocaleString()}</td>
+        <td><TableDate ms={Temporal.Instant.from(player.created_at).epochMilliseconds} /></td>
         <td
           ><Button
             table={true}
