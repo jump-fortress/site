@@ -27,6 +27,7 @@
 
 <!-- container -->
 <!-- todo: link to competition page for maps -->
+<!-- todo: deprecate or generalize for all types -->
 <div
   class="grid h-48 w-full cursor-pointer items-end justify-center overflow-hidden bg-base-900 drop-shadow-md/50
   {header ? 'absolute top-70 left-0 rounded-t-layout' : 'relative rounded-layout'}
