@@ -14,5 +14,5 @@
     }
   }
 
-  await handleSignOut();
+  handleSignOut();
 </script>
