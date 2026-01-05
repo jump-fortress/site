@@ -8,8 +8,11 @@ import (
 	"github.com/spiritov/jump/api/db/responses"
 )
 
+// todo: monthly id
+
 func getMonthlyResponse(monthly queries.SelectAllMonthlyRow) responses.Monthly {
 	return responses.Monthly{
+		ID: monthly.CompetitionID,
 		Competition: responses.Competition{
 			ID:        monthly.ID,
 			Class:     monthly.Class,
@@ -25,7 +28,7 @@ func HandlePostMonthly(ctx context.Context, input *responses.MonthlyInput) (*str
 	competition, err := responses.Queries.InsertCompetition(ctx, queries.InsertCompetitionParams{
 		Class:    input.Body.Competition.Class,
 		StartsAt: input.Body.Competition.StartsAt,
-		EndsAt:   input.Body.Competition.StartsAt.AddDate(0, 0, 2),
+		EndsAt:   input.Body.Competition.StartsAt.AddDate(0, 0, 2), // 2 days
 	})
 	if err != nil {
 		return nil, err
