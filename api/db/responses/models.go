@@ -260,12 +260,14 @@ type CompetitionDivision struct {
 
 type MonthlyInput struct {
 	Body struct {
-		Competition CompetitionInput           `json:"competition"`
-		Divisions   []CompetitionDivisionInput `json:"divisions"`
+		ID          int64                 `json:"id"`
+		Competition Competition           `json:"competition"`
+		Divisions   []CompetitionDivision `json:"divisions"`
 	}
 }
 
 type Monthly struct {
+	ID          int64                 `json:"id"`
 	Competition Competition           `json:"competition"`
 	Divisions   []CompetitionDivision `json:"divisions"`
 }
