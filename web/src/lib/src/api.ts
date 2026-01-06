@@ -15,7 +15,7 @@ export const Client = createClient<paths>({
 
 // returns response.ok, since an error wouldn't be used
 export async function updatePreferredClass(selectedClass: string): Promise<boolean> {
-  const { response } = await Client.PUT('/internal/players/preferredclass/{class}', {
+  const { response } = await Client.POST('/internal/players/preferredclass/{class}', {
     fetch: fetch,
     params: {
       path: {
@@ -30,7 +30,7 @@ export async function updatePreferredClass(selectedClass: string): Promise<boole
 
 // returns response.ok, since an error wouldn't be used
 export async function updatePreferredLauncher(selectedLauncher: string): Promise<boolean> {
-  const { response } = await Client.PUT('/internal/players/preferredlauncher/{launcher}', {
+  const { response } = await Client.POST('/internal/players/preferredlauncher/{launcher}', {
     fetch: fetch,
     params: {
       path: {
@@ -44,7 +44,7 @@ export async function updatePreferredLauncher(selectedLauncher: string): Promise
 }
 
 export async function updatePreferredMap(selectedMap: string): Promise<InputResponse> {
-  const { error } = await Client.PUT('/internal/players/preferredmap/{map}', {
+  const { error } = await Client.POST('/internal/players/preferredmap/{map}', {
     fetch: fetch,
     params: {
       path: {
@@ -67,7 +67,7 @@ export async function updatePreferredMap(selectedMap: string): Promise<InputResp
 }
 
 export async function updateTempusID(tempusId: number): Promise<InputResponse> {
-  const { error } = await Client.PUT('/internal/players/tempusinfo/{tempus_id}', {
+  const { error } = await Client.POST('/internal/players/tempusinfo/{tempus_id}', {
     fetch: fetch,
     params: {
       path: {
@@ -90,7 +90,7 @@ export async function updateTempusID(tempusId: number): Promise<InputResponse> {
 }
 
 export async function updateSteamTradeToken(url: string): Promise<InputResponse> {
-  const { error } = await Client.PUT('/internal/players/steamtradetoken/{url}', {
+  const { error } = await Client.POST('/internal/players/steamtradetoken/{url}', {
     fetch: fetch,
     params: {
       path: {
@@ -113,7 +113,7 @@ export async function updateSteamTradeToken(url: string): Promise<InputResponse>
 }
 
 export async function updateSteamAvatar(): Promise<InputResponse> {
-  const { error } = await Client.PUT('/internal/players/steamavatarurl', {
+  const { error } = await Client.POST('/internal/players/steamavatarurl', {
     fetch: fetch
   });
 
@@ -131,7 +131,7 @@ export async function updateSteamAvatar(): Promise<InputResponse> {
 }
 
 export async function updatePlayerDisplayName(id: string, name: string): Promise<InputResponse> {
-  const { error } = await Client.PUT('/internal/moderator/players/displayname/{id}/{name}', {
+  const { error } = await Client.POST('/internal/moderator/players/displayname/{id}/{name}', {
     fetch: fetch,
     params: {
       path: {
@@ -175,7 +175,7 @@ export async function updatePlayerSoldierDivision(
   id: string,
   division: string
 ): Promise<InputResponse> {
-  const { error } = await Client.PUT(
+  const { error } = await Client.POST(
     '/internal/moderator/players/soldierdivision/{id}/{division}',
     {
       fetch: fetch,
@@ -205,7 +205,7 @@ export async function updatePlayerDemoDivision(
   id: string,
   division: string
 ): Promise<InputResponse> {
-  const { error } = await Client.PUT('/internal/moderator/players/demodivision/{id}/{division}', {
+  const { error } = await Client.POST('/internal/moderator/players/demodivision/{id}/{division}', {
     fetch: fetch,
     params: {
       path: {
@@ -229,16 +229,19 @@ export async function updatePlayerDemoDivision(
 }
 
 export async function createPlayerRequest(type: string, request: string): Promise<InputResponse> {
-  const { error } = await Client.PUT('/internal/players/requests/{request_type}/{request_string}', {
-    fetch: fetch,
-    params: {
-      path: {
-        request_type:
-          type as operations['insert-player-request']['parameters']['path']['request_type'],
-        request_string: request
+  const { error } = await Client.POST(
+    '/internal/players/requests/{request_type}/{request_string}',
+    {
+      fetch: fetch,
+      params: {
+        path: {
+          request_type:
+            type as operations['insert-player-request']['parameters']['path']['request_type'],
+          request_string: request
+        }
       }
     }
-  });
+  );
 
   if (error) {
     return {
@@ -279,7 +282,7 @@ export async function getAllMapNames(): Promise<string[] | null> {
 
 // returns blank message on no error
 export async function resolvePlayerRequest(id: number): Promise<InputResponse> {
-  const { error } = await Client.PUT('/internal/moderator/players/requests/resolve/{id}', {
+  const { error } = await Client.POST('/internal/moderator/players/requests/resolve/{id}', {
     fetch: fetch,
     params: {
       path: {
@@ -293,7 +296,7 @@ export async function resolvePlayerRequest(id: number): Promise<InputResponse> {
 }
 
 export async function createMonthly(monthly: Monthly): Promise<InputResponse> {
-  const { error } = await Client.POST('/internal/admin/competitions/monthly', {
+  const { error } = await Client.POST('/internal/admin/competitions/create/monthly', {
     fetch: fetch,
     body: monthly
   });
@@ -301,4 +304,34 @@ export async function createMonthly(monthly: Monthly): Promise<InputResponse> {
   return error
     ? { error: true, message: error.detail ?? 'unknown error' }
     : { error: false, message: '' };
+}
+
+export async function cancelCompetition(id: number): Promise<InputResponse> {
+  const { error } = await Client.POST('/internal/admin/competitions/cancel/{id}', {
+    fetch: fetch,
+    params: {
+      path: {
+        id: id
+      }
+    }
+  });
+  return error
+    ? { error: true, message: error.detail ?? 'unknown error' }
+    : { error: false, message: '' };
+}
+
+export async function getAllMonthlies(): Promise<Monthly[] | null> {
+  const { data } = await Client.GET('/internal/competitions/all/monthly', {
+    fetch: fetch
+  });
+
+  return data ?? null;
+}
+
+export async function getAllFullMonthlies(): Promise<Monthly[] | null> {
+  const { data } = await Client.GET('/internal/admin/competitions/all/monthly', {
+    fetch: fetch
+  });
+
+  return data ?? null;
 }
