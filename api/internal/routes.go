@@ -24,6 +24,15 @@ func registerOpenRoutes(internalApi *huma.Group) {
 		Description: "get all players",
 		Tags:        []string{"Player"},
 	}, HandleGetAllPlayers)
+
+	huma.Register(internalApi, huma.Operation{
+		Method:      http.MethodGet,
+		Path:        "/competitions/all/monthly",
+		OperationID: "get-all-monthly",
+		Summary:     "Get all monthlies",
+		Description: "get all monthlies that are visible",
+		Tags:        []string{"Player"},
+	}, HandleGetAllMonthlies)
 }
 
 func registerSessionRoutes(internalApi *huma.Group) {
@@ -252,4 +261,13 @@ func registerAdminRoutes(adminApi *huma.Group) {
 		Tags:        []string{"Admin"},
 		Security:    sessionCookieSecurityMap,
 	}, HandleGetAllFullMonthlies)
+
+	huma.Register(adminApi, huma.Operation{
+		Method:      http.MethodPost,
+		Path:        "/competitions/cancel/{id}",
+		OperationID: "cancel-competition",
+		Summary:     "cancel competition",
+		Tags:        []string{"Admin"},
+		Security:    sessionCookieSecurityMap,
+	}, HandlePostCancelCompetition)
 }
