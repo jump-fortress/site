@@ -185,7 +185,7 @@ func HandleGetPlayerProfile(ctx context.Context, input *responses.PlayerIDInput)
 	return resp, nil
 }
 
-func HandlePutSelfPreferredClass(ctx context.Context, input *responses.ClassNameInput) (*struct{}, error) {
+func HandlePostSelfPreferredClass(ctx context.Context, input *responses.ClassNameInput) (*struct{}, error) {
 	principal, ok := GetPrincipal(ctx)
 	if !ok {
 		return nil, huma.Error401Unauthorized("a session is required")
@@ -201,7 +201,7 @@ func HandlePutSelfPreferredClass(ctx context.Context, input *responses.ClassName
 	return nil, nil
 }
 
-func HandlePutSelfPreferredLauncher(ctx context.Context, input *responses.LauncherNameInput) (*struct{}, error) {
+func HandlePostSelfPreferredLauncher(ctx context.Context, input *responses.LauncherNameInput) (*struct{}, error) {
 	principal, ok := GetPrincipal(ctx)
 	if !ok {
 		return nil, huma.Error401Unauthorized("a session is required")
@@ -217,7 +217,7 @@ func HandlePutSelfPreferredLauncher(ctx context.Context, input *responses.Launch
 	return nil, nil
 }
 
-func HandlePutSelfPreferredMap(ctx context.Context, input *responses.MapNameInput) (*struct{}, error) {
+func HandlePostSelfPreferredMap(ctx context.Context, input *responses.MapNameInput) (*struct{}, error) {
 	principal, ok := GetPrincipal(ctx)
 	if !ok {
 		return nil, huma.Error401Unauthorized("a session is required")
@@ -268,7 +268,7 @@ func HandleGetAllPlayers(ctx context.Context, _ *struct{}) (*responses.PlayerPre
 	return resp, nil
 }
 
-func HandlePutSelfSteamTradeToken(ctx context.Context, input *responses.SteamTradeURL) (*struct{}, error) {
+func HandlePostSelfSteamTradeToken(ctx context.Context, input *responses.SteamTradeURL) (*struct{}, error) {
 	principal, ok := GetPrincipal(ctx)
 	if !ok {
 		return nil, huma.Error401Unauthorized("a session is required")
@@ -304,7 +304,7 @@ func HandlePutSelfSteamTradeToken(ctx context.Context, input *responses.SteamTra
 }
 
 // todo: notify to set this player's divisions when they link their tempus
-func HandlePutSelfTempusInfo(ctx context.Context, input *responses.TempusIDInput) (*struct{}, error) {
+func HandlePostSelfTempusInfo(ctx context.Context, input *responses.TempusIDInput) (*struct{}, error) {
 	principal, ok := GetPrincipal(ctx)
 	if !ok {
 		return nil, huma.Error401Unauthorized("a session is required")
@@ -356,7 +356,7 @@ func HandlePutSelfTempusInfo(ctx context.Context, input *responses.TempusIDInput
 	return nil, nil
 }
 
-func HandlePutSelfSteamAvatarUrl(ctx context.Context, _ *struct{}) (*struct{}, error) {
+func HandlePostSelfSteamAvatarUrl(ctx context.Context, _ *struct{}) (*struct{}, error) {
 	principal, ok := GetPrincipal(ctx)
 	if !ok {
 		return nil, huma.Error401Unauthorized("a session is required")
@@ -384,7 +384,7 @@ func HandlePutSelfSteamAvatarUrl(ctx context.Context, _ *struct{}) (*struct{}, e
 // 1. make sure there are no pending requests for this request type
 // 2. create the request if it's for a display name change
 // 3. make sure Tempus ID is linked and the division requested is missing
-func HandlePutSelfPlayerRequest(ctx context.Context, input *responses.PlayerRequestInput) (*struct{}, error) {
+func HandlePostSelfPlayerRequest(ctx context.Context, input *responses.PlayerRequestInput) (*struct{}, error) {
 	principal, ok := GetPrincipal(ctx)
 	if !ok {
 		return nil, huma.Error401Unauthorized("a session is required")
@@ -525,7 +525,7 @@ func HandleGetAllPendingPlayerRequests(ctx context.Context, _ *struct{}) (*respo
 
 // moderator
 
-func HandlePutPlayerDisplayName(ctx context.Context, input *responses.DisplayNameInput) (*struct{}, error) {
+func HandlePostPlayerDisplayName(ctx context.Context, input *responses.DisplayNameInput) (*struct{}, error) {
 	// todo: check for string validity
 	if len(input.Name) > 32 {
 		return nil, huma.Error400BadRequest("too long (max 32 characters)")
@@ -547,7 +547,7 @@ func HandlePutPlayerDisplayName(ctx context.Context, input *responses.DisplayNam
 	return nil, nil
 }
 
-func HandlePutPlayerSoldierDivision(ctx context.Context, input *responses.UpdateDivisionInput) (*struct{}, error) {
+func HandlePostPlayerSoldierDivision(ctx context.Context, input *responses.UpdateDivisionInput) (*struct{}, error) {
 	if input.Division == "None" {
 		if err := responses.Queries.UpdatePlayerSoldierDivision(ctx, queries.UpdatePlayerSoldierDivisionParams{
 			SoldierDivision: sql.NullString{
@@ -578,7 +578,7 @@ func HandlePutPlayerSoldierDivision(ctx context.Context, input *responses.Update
 	return nil, nil
 }
 
-func HandlePutPlayerDemoDivision(ctx context.Context, input *responses.UpdateDivisionInput) (*struct{}, error) {
+func HandlePostPlayerDemoDivision(ctx context.Context, input *responses.UpdateDivisionInput) (*struct{}, error) {
 	if input.Division == "None" {
 		if err := responses.Queries.UpdatePlayerDemoDivision(ctx, queries.UpdatePlayerDemoDivisionParams{
 			DemoDivision: sql.NullString{
@@ -609,7 +609,7 @@ func HandlePutPlayerDemoDivision(ctx context.Context, input *responses.UpdateDiv
 	return nil, nil
 }
 
-func HandlePutResolvePlayerRequest(ctx context.Context, input *responses.PlayerRequestIDInput) (*struct{}, error) {
+func HandlePostResolvePlayerRequest(ctx context.Context, input *responses.PlayerRequestIDInput) (*struct{}, error) {
 	if err := responses.Queries.ResolvePlayerRequest(ctx, input.ID); err != nil {
 		return nil, err
 	}

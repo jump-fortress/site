@@ -46,7 +46,7 @@ func getTempusMaps() (*[]responses.TempusMapInfo, error) {
 	return tempusResponseMaps, nil
 }
 
-func HandlePutUpdateMaps(ctx context.Context, _ *struct{}) (*struct{}, error) {
+func HandlePostUpdateMaps(ctx context.Context, _ *struct{}) (*struct{}, error) {
 	tempusMaps, err := getTempusMaps()
 	if err != nil {
 		return nil, huma.Error503ServiceUnavailable("couldn't verify with Tempus. if Tempus isn't down, please check your Tempus ID again")
