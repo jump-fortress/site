@@ -1,11 +1,14 @@
 <script lang="ts">
   import { formatDate, formatRelative, formatTime } from '$lib/src/temporal';
+  import { Temporal } from 'temporal-polyfill';
 
   type Props = {
-    ms: number;
+    /** Format: date-time */
+    date: string;
   };
 
-  let { ms } = $props();
+  let { date }: Props = $props();
+  let ms = $derived(Temporal.Instant.from(date).epochMilliseconds);
 </script>
 
 <div class="relative">
