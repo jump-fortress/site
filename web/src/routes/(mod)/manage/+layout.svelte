@@ -2,25 +2,24 @@
   import { page } from '$app/state';
   import InnerNav from '$lib/components/layout/InnerNav.svelte';
 
-  import type { Session } from '$lib/schema';
-
   let { data, children } = $props();
 
-  let session: Session | null = $derived(data.session);
   let route = $derived(page.url.pathname);
 </script>
 
-{#if session}
-  {#if session.role === 'Admin'}
-    <InnerNav
-      {route}
-      parentRoute="manage"
-      pages={['competitions', 'players', 'requests', 'payouts']} />
-  {:else if session.role === 'Mod' || session.role === 'Consultant'}
-    <InnerNav {route} parentRoute="manage" pages={['players', 'requests']} />
-  {:else if session.role === 'Treasurer'}
-    <InnerNav {route} parentRoute="manage" pages={['payouts']} />
+{#await data.session then session}
+  {#if session}
+    {#if session.role === 'Admin'}
+      <InnerNav
+        {route}
+        parentRoute="manage"
+        pages={['competitions', 'players', 'requests', 'payouts']} />
+    {:else if session.role === 'Mod' || session.role === 'Consultant'}
+      <InnerNav {route} parentRoute="manage" pages={['players', 'requests']} />
+    {:else if session.role === 'Treasurer'}
+      <InnerNav {route} parentRoute="manage" pages={['payouts']} />
+    {/if}
   {/if}
-{/if}
+{/await}
 
 {@render children()}
