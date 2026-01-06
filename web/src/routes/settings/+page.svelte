@@ -22,8 +22,6 @@
     updateSteamTradeToken,
     updateTempusID
   } from '$lib/src/api.js';
-  import { formatDate, formatRelative, formatTime } from '$lib/src/temporal.js';
-  import { Temporal } from 'temporal-polyfill';
 
   import type { Player, PlayerRequest } from '$lib/schema';
 
@@ -98,12 +96,9 @@
                 <th class="w-48">date</th>
               {/snippet}
               {#snippet row(request: PlayerRequest)}
-                {$inspect(request.created_at)}
                 <td>{request.request_type}</td>
                 <td class="truncate">{request.request_string}</td>
-                <td
-                  ><TableDate
-                    ms={Temporal.Instant.from(request.created_at).epochMilliseconds} /></td>
+                <td><TableDate date={request.created_at} /></td>
               {/snippet}
             </Table>
           </div>

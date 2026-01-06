@@ -97,7 +97,7 @@
         </td>
         <td><DivisionTag div={player.soldier_division} /></td>
         <td><DivisionTag div={player.demo_division} /></td>
-        <td><TableDate ms={Temporal.Instant.from(player.created_at).epochMilliseconds} /></td>
+        <td><TableDate date={player.created_at} /></td>
       {/snippet}
     </Table>
   {/if}
