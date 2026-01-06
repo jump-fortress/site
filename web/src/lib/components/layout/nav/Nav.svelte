@@ -10,7 +10,7 @@
 
   type Props = {
     route: string;
-    session: Session | null;
+    session: Session | undefined;
   };
 
   let { route, session }: Props = $props();

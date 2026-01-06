@@ -6,7 +6,8 @@ import type { Handle } from '@sveltejs/kit';
 export const handle: Handle = async ({ event, resolve }) => {
   //check for session before making a request
   if (!event.locals.session) {
-    const data = await Client.GET('/internal/session', {
+    const data = Client.GET('/internal/session', {
+      fetch: fetch,
       baseUrl: config.apiBaseUrl,
       headers: event.request.headers,
       credentials: 'include'

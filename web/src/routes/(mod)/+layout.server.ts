@@ -2,15 +2,16 @@ import { redirect } from '@sveltejs/kit';
 
 import type { LayoutServerLoad } from './$types';
 
-export const load: LayoutServerLoad = async ({ locals }) => {
-  if (!locals.session) {
+export const load: LayoutServerLoad = async ({ parent }) => {
+  const session = await (await parent()).session;
+  if (!session) {
     redirect(302, '/');
   }
   if (
-    locals.session.role === 'Admin' ||
-    locals.session.role === 'Mod' ||
-    locals.session.role === 'Consultant' ||
-    locals.session.role === 'Treasurer'
+    session.role === 'Admin' ||
+    session.role === 'Mod' ||
+    session.role === 'Consultant' ||
+    session.role === 'Treasurer'
   ) {
     return;
   } else {

@@ -6,11 +6,8 @@
 
   import './layout.css';
 
-  import type { Session } from '$lib/schema';
-
   let { data, children } = $props();
   let route = $derived(page.url.pathname);
-  let session: Session | null = $derived(data.session);
 </script>
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
@@ -19,10 +16,13 @@
   <Logo />
 </div>
 
-<Nav {session} {route} />
+{#await data.session then session}
+  <Nav {session} {route} />
+{/await}
 
 <div class="flex w-full flex-col items-center">
-  <div class="relative flex w-full max-w-5xl flex-col gap-4 rounded-layout bg-base-800 p-6">
+  <div
+    class="relative flex w-full max-w-5xl flex-col gap-4 overflow-hidden rounded-layout bg-base-800 p-6">
     {@render children()}
   </div>
 </div>
