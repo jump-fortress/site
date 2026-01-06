@@ -29,7 +29,7 @@
 <!-- container -->
 <div
   class="flex h-64 w-full flex-col overflow-hidden bg-base-900 drop-shadow-md/50
-  {header ? 'absolute top-0 left-0 rounded-t-layout' : 'relative rounded-layout'}">
+  {header ? 'absolute top-0 left-0' : 'relative rounded-layout'}">
   <!-- absolute avatar -->
   <img
     class="absolute top-1/3 left-6 z-10 size-32 rounded-layout drop-shadow-md/50"

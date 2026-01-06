@@ -4,6 +4,7 @@
   import { compareDivisions } from '$lib/src/divisions';
   import { Temporal } from 'temporal-polyfill';
 
+  import ClassImage from './ClassImage.svelte';
   import DivisionTag from './DivisionTag.svelte';
   import TableDate from './table/TableDate.svelte';
 
@@ -50,7 +51,7 @@
 <!-- todo: link to competition page for maps -->
 <div
   class="grid h-48 w-full cursor-pointer items-end justify-center bg-base-900 drop-shadow-md/50
-  {header ? 'absolute top-70 left-0 rounded-t-layout' : 'relative rounded-layout'}
+  {header ? 'absolute top-0 left-0' : 'relative rounded-layout'}
   {twCols.get(maps.size)}">
   {#each maps as [map, divisions]}
     <!-- map wrapper -->
@@ -74,19 +75,15 @@
   <!-- absolute details container -->
   <div class="absolute top-0 z-10 flex w-full justify-between p-2">
     <!-- competition name -->
-    <div class="flex items-center gap-1">
-      {#if monthly.competition.class === 'Soldier'}
-        <img class="filter-lavender w-10" src={soldier} alt="" draggable="false" />
-      {:else}
-        <img class="filter-lavender w-10" src={demo} alt="" draggable="false" />
-      {/if}
+    <div class="flex h-12 items-center gap-1">
+      <ClassImage selected={monthly.competition.class} />
       <span class="text-lg text-shadow-sm/100">monthly #{monthly.id}</span>
     </div>
     <!-- date / prizepool -->
     <div class="flex flex-col items-end text-shadow-sm/100">
       <div class="flex items-center gap-1">
         <span>
-          <TableDate ms={Temporal.Instant.from(monthly.competition.starts_at).epochMilliseconds} />
+          <TableDate date={monthly.competition.starts_at} />
         </span>
         <span class="icon-[mdi--calendar]"></span>
       </div>
