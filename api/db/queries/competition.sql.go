@@ -10,26 +10,55 @@ import (
 	"time"
 )
 
-const insertCompetition = `-- name: InsertCompetition :one
-insert into competition (class, starts_at, ends_at)
-  values (?, ?, ?)
-  returning id, class, starts_at, ends_at, created_at
+const cancelCompetition = `-- name: CancelCompetition :one
+delete from competition
+  where id = ? and starts_at > current_timestamp
+  returning id, class, starts_at, ends_at, visible_at, complete, created_at
 `
 
-type InsertCompetitionParams struct {
-	Class    string    `json:"class"`
-	StartsAt time.Time `json:"starts_at"`
-	EndsAt   time.Time `json:"ends_at"`
-}
-
-func (q *Queries) InsertCompetition(ctx context.Context, arg InsertCompetitionParams) (Competition, error) {
-	row := q.db.QueryRowContext(ctx, insertCompetition, arg.Class, arg.StartsAt, arg.EndsAt)
+func (q *Queries) CancelCompetition(ctx context.Context, id int64) (Competition, error) {
+	row := q.db.QueryRowContext(ctx, cancelCompetition, id)
 	var i Competition
 	err := row.Scan(
 		&i.ID,
 		&i.Class,
 		&i.StartsAt,
 		&i.EndsAt,
+		&i.VisibleAt,
+		&i.Complete,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const insertCompetition = `-- name: InsertCompetition :one
+insert into competition (class, starts_at, ends_at, visible_at)
+  values (?, ?, ?, ?)
+  returning id, class, starts_at, ends_at, visible_at, complete, created_at
+`
+
+type InsertCompetitionParams struct {
+	Class     string    `json:"class"`
+	StartsAt  time.Time `json:"starts_at"`
+	EndsAt    time.Time `json:"ends_at"`
+	VisibleAt time.Time `json:"visible_at"`
+}
+
+func (q *Queries) InsertCompetition(ctx context.Context, arg InsertCompetitionParams) (Competition, error) {
+	row := q.db.QueryRowContext(ctx, insertCompetition,
+		arg.Class,
+		arg.StartsAt,
+		arg.EndsAt,
+		arg.VisibleAt,
+	)
+	var i Competition
+	err := row.Scan(
+		&i.ID,
+		&i.Class,
+		&i.StartsAt,
+		&i.EndsAt,
+		&i.VisibleAt,
+		&i.Complete,
 		&i.CreatedAt,
 	)
 	return i, err

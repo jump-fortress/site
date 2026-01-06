@@ -48,7 +48,7 @@ func registerSessionRoutes(internalApi *huma.Group) {
 	}, HandleGetPlayerProfile)
 
 	huma.Register(internalApi, huma.Operation{
-		Method:      http.MethodPut,
+		Method:      http.MethodPost,
 		Path:        "/players/preferredclass/{class}",
 		OperationID: "set-player-preferredclass",
 		Summary:     "Set Player's preferred class",
@@ -56,10 +56,10 @@ func registerSessionRoutes(internalApi *huma.Group) {
 		Tags:        []string{"Player"},
 		Security:    sessionCookieSecurityMap,
 		Middlewares: requireUserSessionMiddlewares,
-	}, HandlePutSelfPreferredClass)
+	}, HandlePostSelfPreferredClass)
 
 	huma.Register(internalApi, huma.Operation{
-		Method:      http.MethodPut,
+		Method:      http.MethodPost,
 		Path:        "/players/preferredlauncher/{launcher}",
 		OperationID: "set-player-preferredlauncher",
 		Summary:     "Set Player's preferred rocket launcher",
@@ -67,10 +67,10 @@ func registerSessionRoutes(internalApi *huma.Group) {
 		Tags:        []string{"Player"},
 		Security:    sessionCookieSecurityMap,
 		Middlewares: requireUserSessionMiddlewares,
-	}, HandlePutSelfPreferredLauncher)
+	}, HandlePostSelfPreferredLauncher)
 
 	huma.Register(internalApi, huma.Operation{
-		Method:      http.MethodPut,
+		Method:      http.MethodPost,
 		Path:        "/players/preferredmap/{map}",
 		OperationID: "set-player-preferredmap",
 		Summary:     "Set Player's preferred map",
@@ -78,10 +78,10 @@ func registerSessionRoutes(internalApi *huma.Group) {
 		Tags:        []string{"Player"},
 		Security:    sessionCookieSecurityMap,
 		Middlewares: requireUserSessionMiddlewares,
-	}, HandlePutSelfPreferredMap)
+	}, HandlePostSelfPreferredMap)
 
 	huma.Register(internalApi, huma.Operation{
-		Method:      http.MethodPut,
+		Method:      http.MethodPost,
 		Path:        "/players/tempusinfo/{tempus_id}",
 		OperationID: "set-player-tempusinfo",
 		Summary:     "Set a Player's own Tempus ID",
@@ -89,10 +89,10 @@ func registerSessionRoutes(internalApi *huma.Group) {
 		Tags:        []string{"Player"},
 		Security:    sessionCookieSecurityMap,
 		Middlewares: requireUserSessionMiddlewares,
-	}, HandlePutSelfTempusInfo)
+	}, HandlePostSelfTempusInfo)
 
 	huma.Register(internalApi, huma.Operation{
-		Method:      http.MethodPut,
+		Method:      http.MethodPost,
 		Path:        "/players/steamtradetoken/{url}",
 		OperationID: "set-player-steam-trade-token",
 		Summary:     "Set a Player's own Steam trade token",
@@ -100,10 +100,10 @@ func registerSessionRoutes(internalApi *huma.Group) {
 		Tags:        []string{"Player"},
 		Security:    sessionCookieSecurityMap,
 		Middlewares: requireUserSessionMiddlewares,
-	}, HandlePutSelfSteamTradeToken)
+	}, HandlePostSelfSteamTradeToken)
 
 	huma.Register(internalApi, huma.Operation{
-		Method:      http.MethodPut,
+		Method:      http.MethodPost,
 		Path:        "/players/steamavatarurl",
 		OperationID: "update-player-steam-avatar-url",
 		Summary:     "Update a Player's own Steam avatar url",
@@ -111,10 +111,10 @@ func registerSessionRoutes(internalApi *huma.Group) {
 		Tags:        []string{"Player"},
 		Security:    sessionCookieSecurityMap,
 		Middlewares: requireUserSessionMiddlewares,
-	}, HandlePutSelfSteamAvatarUrl)
+	}, HandlePostSelfSteamAvatarUrl)
 
 	huma.Register(internalApi, huma.Operation{
-		Method:      http.MethodPut,
+		Method:      http.MethodPost,
 		Path:        "/players/requests/{request_type}/{request_string}",
 		OperationID: "insert-player-request",
 		Summary:     "Insert a player request ",
@@ -122,7 +122,7 @@ func registerSessionRoutes(internalApi *huma.Group) {
 		Tags:        []string{"Player"},
 		Security:    sessionCookieSecurityMap,
 		Middlewares: requireUserSessionMiddlewares,
-	}, HandlePutSelfPlayerRequest)
+	}, HandlePostSelfPlayerRequest)
 
 	huma.Register(internalApi, huma.Operation{
 		Method:      http.MethodGet,
@@ -183,74 +183,73 @@ func registerConsultantRoutes(consultantApi *huma.Group) {
 func registerModeratorRoutes(moderatorApi *huma.Group) {
 
 	huma.Register(moderatorApi, huma.Operation{
-		Method:      http.MethodPut,
+		Method:      http.MethodPost,
 		Path:        "/players/displayname/{id}/{name}",
 		OperationID: "update-player-displayname",
 		Summary:     "Update a Player's display name",
 		Description: "update a player's display name",
 		Tags:        []string{"Moderator"},
 		Security:    sessionCookieSecurityMap,
-	}, HandlePutPlayerDisplayName)
+	}, HandlePostPlayerDisplayName)
 
 	huma.Register(moderatorApi, huma.Operation{
-		Method:      http.MethodPut,
+		Method:      http.MethodPost,
 		Path:        "/players/soldierdivision/{id}/{division}",
 		OperationID: "update-player-soldierdivision",
 		Summary:     "Update a Player's soldier division",
 		Description: "update a player's soldier division",
 		Tags:        []string{"Moderator"},
 		Security:    sessionCookieSecurityMap,
-	}, HandlePutPlayerSoldierDivision)
+	}, HandlePostPlayerSoldierDivision)
 
 	huma.Register(moderatorApi, huma.Operation{
-		Method:      http.MethodPut,
+		Method:      http.MethodPost,
 		Path:        "/players/demodivision/{id}/{division}",
 		OperationID: "update-player-demodivision",
 		Summary:     "Update a Player's demo division",
 		Description: "update a player's demo division",
 		Tags:        []string{"Moderator"},
 		Security:    sessionCookieSecurityMap,
-	}, HandlePutPlayerDemoDivision)
+	}, HandlePostPlayerDemoDivision)
 
 	huma.Register(moderatorApi, huma.Operation{
-		Method:      http.MethodPut,
+		Method:      http.MethodPost,
 		Path:        "/players/requests/resolve/{id}",
 		OperationID: "resolve-player-request",
 		Summary:     "Resolve a player's request",
 		Description: "resolve a player's request, marking it as not pending",
 		Tags:        []string{"Moderator"},
 		Security:    sessionCookieSecurityMap,
-	}, HandlePutResolvePlayerRequest)
+	}, HandlePostResolvePlayerRequest)
 }
 
 func registerAdminRoutes(adminApi *huma.Group) {
 	huma.Register(adminApi, huma.Operation{
-		Method:      http.MethodPut,
+		Method:      http.MethodPost,
 		Path:        "/maps",
 		OperationID: "update-maps",
 		Summary:     "Update map list",
 		Description: "update the database's map list from Tempus data",
 		Tags:        []string{"Admin"},
 		Security:    sessionCookieSecurityMap,
-	}, HandlePutUpdateMaps)
+	}, HandlePostUpdateMaps)
 
 	huma.Register(adminApi, huma.Operation{
 		Method:      http.MethodPost,
-		Path:        "/competitions/monthly",
+		Path:        "/competitions/create/monthly",
 		OperationID: "create-monthly",
 		Summary:     "Create monthly",
 		Description: "Create a monthly competition",
 		Tags:        []string{"Admin"},
 		Security:    sessionCookieSecurityMap,
-	}, HandlePostMonthly)
+	}, HandlePostCreateMonthly)
 
 	huma.Register(adminApi, huma.Operation{
 		Method:      http.MethodGet,
-		Path:        "/competitions/monthly/all",
-		OperationID: "get-all-monthly",
+		Path:        "/competitions/all/monthly",
+		OperationID: "get-all-full-monthly",
 		Summary:     "Get all monthlies",
-		Description: "Get all monthly competitions",
 		Tags:        []string{"Admin"},
 		Security:    sessionCookieSecurityMap,
-	}, HandleGetMonthly)
+	}, HandleGetAllFullMonthlies)
 }

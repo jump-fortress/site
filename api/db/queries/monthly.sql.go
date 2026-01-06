@@ -21,7 +21,7 @@ func (q *Queries) InsertMonthly(ctx context.Context, competitionID int64) error 
 }
 
 const selectAllMonthly = `-- name: SelectAllMonthly :many
-select m.id, competition_id, c.id, class, starts_at, ends_at, created_at from monthly m
+select m.id, competition_id, c.id, class, starts_at, ends_at, visible_at, complete, created_at from monthly m
   join competition c on m.competition_id = c.id
 `
 
@@ -32,6 +32,8 @@ type SelectAllMonthlyRow struct {
 	Class         string    `json:"class"`
 	StartsAt      time.Time `json:"starts_at"`
 	EndsAt        time.Time `json:"ends_at"`
+	VisibleAt     time.Time `json:"visible_at"`
+	Complete      bool      `json:"complete"`
 	CreatedAt     time.Time `json:"created_at"`
 }
 
@@ -51,6 +53,8 @@ func (q *Queries) SelectAllMonthly(ctx context.Context) ([]SelectAllMonthlyRow, 
 			&i.Class,
 			&i.StartsAt,
 			&i.EndsAt,
+			&i.VisibleAt,
+			&i.Complete,
 			&i.CreatedAt,
 		); err != nil {
 			return nil, err
@@ -67,7 +71,7 @@ func (q *Queries) SelectAllMonthly(ctx context.Context) ([]SelectAllMonthlyRow, 
 }
 
 const selectMonthly = `-- name: SelectMonthly :one
-select m.id, competition_id, c.id, class, starts_at, ends_at, created_at from monthly m
+select m.id, competition_id, c.id, class, starts_at, ends_at, visible_at, complete, created_at from monthly m
   join competition c on m.competition_id = c.id
   where m.competition_id = ?
 `
@@ -79,6 +83,8 @@ type SelectMonthlyRow struct {
 	Class         string    `json:"class"`
 	StartsAt      time.Time `json:"starts_at"`
 	EndsAt        time.Time `json:"ends_at"`
+	VisibleAt     time.Time `json:"visible_at"`
+	Complete      bool      `json:"complete"`
 	CreatedAt     time.Time `json:"created_at"`
 }
 
@@ -92,6 +98,8 @@ func (q *Queries) SelectMonthly(ctx context.Context, competitionID int64) (Selec
 		&i.Class,
 		&i.StartsAt,
 		&i.EndsAt,
+		&i.VisibleAt,
+		&i.Complete,
 		&i.CreatedAt,
 	)
 	return i, err

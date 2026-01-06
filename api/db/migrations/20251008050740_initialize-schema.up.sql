@@ -27,11 +27,17 @@ create table player(
 );
 
 -- competition
+-- competition types (monthly, motw, bounty, quest, ..., are not autoincremented)
+-- this is so they may follow a # order even when canceled
 create table competition(
   id integer not null primary key autoincrement,
   class text not null,
   starts_at datetime not null,
   ends_at datetime not null,
+  -- visible to players
+  visible_at datetime not null,
+  -- manually marked as completed
+  complete boolean not null default false,
 
   created_at datetime not null default current_timestamp,
 
@@ -103,7 +109,7 @@ create table competition_division(
   division text not null,
   map text not null,
 
-  foreign key (competition_id) references competition (id)
+  foreign key (competition_id) references competition (id) on delete cascade
 );
 
 -- end result for a competition (placement and points)
@@ -131,51 +137,51 @@ create table competition_prize(
   placement integer not null,
   amount integer not null,
 
-  foreign key (competition_id) references competition (id)
-  foreign key (competition_division_id) references competition (division)
+  foreign key (competition_id) references competition (id) on delete cascade
+  foreign key (competition_division_id) references competition (division) on delete cascade
 );
 
 -- monthly, a type of competition
 -- relates to competition (id)
 create table monthly(
-  id integer not null primary key autoincrement,
+  id integer not null primary key,
   competition_id integer not null,
 
-  foreign key (competition_id) references competition (id)
+  foreign key (competition_id) references competition (id) on delete cascade
 );
 
 -- map of the week, a type of competition
 -- relates to competition (id)
 create table motw(
-  id integer not null primary key autoincrement,
+  id integer not null primary key,
   competition_id integer not null,
 
-  foreign key (competition_id) references competition (id)
+  foreign key (competition_id) references competition (id) on delete cascade
 );
 
 -- bounty, a type of competition with no division relation
 -- relates to competition (id)
 create table bounty(
-  id integer not null primary key autoincrement,
+  id integer not null primary key,
   competition_id integer not null,
   map text not null,
   type text not null,
   time float,
   
-  foreign key (competition_id) references competition (id),
+  foreign key (competition_id) references competition (id) on delete cascade,
   check (type in ('Target Time', 'Record'))
 );
 
 -- quest, a type of competition
 -- relates to competition (id)
 create table quest(
-  id integer not null primary key autoincrement,
+  id integer not null primary key,
   competition_id integer not null,
   type text not null,
   time float,
   completion_limit text not null,
 
-  foreign key (competition_id) references competition (id),
+  foreign key (competition_id) references competition (id) on delete cascade,
   check (type in ('Target Time', 'Completion'))
 );
 

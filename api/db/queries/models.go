@@ -23,6 +23,8 @@ type Competition struct {
 	Class     string    `json:"class"`
 	StartsAt  time.Time `json:"starts_at"`
 	EndsAt    time.Time `json:"ends_at"`
+	VisibleAt time.Time `json:"visible_at"`
+	Complete  bool      `json:"complete"`
 	CreatedAt time.Time `json:"created_at"`
 }
 

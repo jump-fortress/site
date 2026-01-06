@@ -9,4 +9,4 @@ select * from monthly m
 
 -- name: SelectAllMonthly :many
 select * from monthly m
-  join competition c on m.competition_id = c.id
+  join competition c on m.competition_id = c.id;

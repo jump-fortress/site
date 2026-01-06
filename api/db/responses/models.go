@@ -248,7 +248,13 @@ type Competition struct {
 	Class     string    `json:"class"`
 	StartsAt  time.Time `json:"starts_at"`
 	EndsAt    time.Time `json:"ends_at"`
+	VisibleAt time.Time `json:"visible_at"`
+	Complete  bool      `json:"complete"`
 	CreatedAt time.Time `json:"created_at"`
+}
+
+type CompetitionIDInput struct {
+	ID int64 `path:"id" doc:"competition id"`
 }
 
 type CompetitionDivision struct {
@@ -260,9 +266,7 @@ type CompetitionDivision struct {
 
 type MonthlyInput struct {
 	Body struct {
-		ID          int64                 `json:"id"`
-		Competition Competition           `json:"competition"`
-		Divisions   []CompetitionDivision `json:"divisions"`
+		Monthly
 	}
 }
 
