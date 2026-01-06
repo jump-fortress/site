@@ -1,13 +1,15 @@
 // See https://svelte.dev/docs/kit/types#app.d.ts
+import type { Session } from '$lib/schema';
+
 // for information about these interfaces
 declare global {
   namespace App {
     // interface Error {}
     interface Locals {
-      session: Session | null;
+      session?: Promise<Session | undefined>;
     }
     interface PageData {
-      session?: Session | null;
+      session?: Promise<Session | undefined>;
       player?: Promise<Player>;
       players?: Promise<Players[]>;
       playerPreview?: Promise<PlayerPreview>;
