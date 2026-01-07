@@ -12,25 +12,24 @@
   import Label from '$lib/components/input/Label.svelte';
   import Select from '$lib/components/input/select/Select.svelte';
   import SelectButton from '$lib/components/input/select/SelectButton.svelte';
+  import SelectDivisions from '$lib/components/input/select/SelectDivisions.svelte';
   import Section from '$lib/components/layout/Section.svelte';
   import { createMonthly } from '$lib/src/api.js';
   import { divisions } from '$lib/src/divisions.js';
-  import { SvelteMap } from 'svelte/reactivity';
+  import { SvelteMap, SvelteSet } from 'svelte/reactivity';
   import { slide } from 'svelte/transition';
   import { Temporal } from 'temporal-polyfill';
 
   import type { Monthly } from '$lib/schema.js';
 
   let { data } = $props();
+  // todo: prizes
 
   // [division: map]
-  let competitionDivisions: SvelteMap<string, string> = new SvelteMap();
+  let competitionDivisions: SvelteMap<string, string> = $state(new SvelteMap());
 
-  // todo: prizes
   const nowDate = Temporal.Now.plainDateISO();
-
-  // placeholder values for creation
-  const defaultMonthly = {
+  const placeholderMonthly = {
     id: 0,
     competition: {
       id: 0,
@@ -38,63 +37,45 @@
       starts_at: `${nowDate.add({ days: 7 }).toString()}T00:00:00Z`,
       ends_at: '',
       created_at: '',
-      visible_at: `${nowDate.add({ days: 1 }).toString()}T00:00:00Z`,
+      visible_at: `${nowDate.add({ days: 2 }).toString()}T00:00:00Z`,
       complete: false
     },
-    divisions: Array.from(competitionDivisions, ([division, map]) => ({
+    divisions: []
+  };
+
+  function cdToArray(cd: SvelteMap<string, string>): Monthly['divisions'] {
+    return Array.from(cd, ([division, map]) => ({
       division,
       map,
       id: 0,
       competition_id: 0
-    }))
-  };
+    }));
+  }
+
+  // state for a newly created competition
+  let monthly: Monthly = $state(placeholderMonthly);
 
   let competitionDate = $state('');
-  let competitionTime = $state('00:00');
+  let competitionTime = $state('');
   let competitionDatetime = $derived(`${competitionDate}T${competitionTime}:00Z`);
 
   let visibleDate = $state('');
-  let visibleTime = $state('00:00');
+  let visibleTime = $state('');
   let visibleDatetime = $derived(`${visibleDate}T${visibleTime}:00Z`);
 
-  let monthly: Monthly = $state(defaultMonthly);
+  let selectedDivisions: SvelteSet<string> = $state(new SvelteSet());
 
   let create = $state(false);
   let edit = $state(false);
 </script>
 
-{#await data.maps then maps}
-  {#if maps}
-    <div class="flex flex-col gap-1">
-      {#each competitionDivisions as [div, _]}
-        <div class="flex items-center gap-2">
-          <div class="flex w-24 justify-center">
-            <DivisionTag {div} />
-          </div>
-          <Label label="">
-            <Select
-              type="text"
-              options={maps}
-              onsubmit={async (value) => {
-                competitionDivisions.set(div, value);
-                return null;
-              }} />
-          </Label>
-        </div>
-      {/each}
-    </div>
-  {:else}
-    <span>couldn't load any maps</span>
-  {/if}
-{/await}
-
-<div class="relative -top-8">
+<div class="relative -top-4">
   <MonthlyHeader header={true} {monthly} />
 </div>
 
-{#if create}
-  <div in:slide>
-    <Section label="create">
+{#if create || edit}
+  <div transition:slide>
+    <Section label={create ? 'create' : 'edit'}>
       <div class="flex items-center gap-2">
         <SelectButton
           label=""
@@ -102,7 +83,7 @@
             { src: soldier, value: 'Soldier' },
             { src: demo, value: 'Demo' }
           ]}
-          selected={'Soldier'}
+          selected={monthly.competition.class}
           onsubmit={async (value) => {
             monthly.competition.class = value;
             return null;
@@ -166,15 +147,46 @@
         </div>
       </div>
 
-      <Label label="add division">
-        <Select
-          type="text"
-          options={divisions}
-          onsubmit={async (value) => {
-            competitionDivisions.set(value, '');
-            return null;
-          }} />
-      </Label>
+      <SelectDivisions
+        label="set divisions"
+        selected={selectedDivisions}
+        onsubmit={(values) => {
+          selectedDivisions = values;
+          for (const division of divisions) {
+            if (!values.has(division)) {
+              competitionDivisions.delete(division);
+            } else if (!competitionDivisions.has(division)) {
+              competitionDivisions.set(division, '');
+            }
+          }
+          monthly.divisions = cdToArray(competitionDivisions);
+        }} />
+
+      {#await data.maps then maps}
+        {#if maps && maps.length !== 0}
+          <div class="flex flex-col">
+            {#each competitionDivisions as [div, map]}
+              <div class="flex items-center gap-2">
+                <div class="flex w-24 justify-center">
+                  <DivisionTag {div} />
+                </div>
+                <Label label="">
+                  <Select
+                    type="text"
+                    placeholder={map}
+                    options={maps}
+                    onsubmit={async (value) => {
+                      monthly.divisions = cdToArray(competitionDivisions.set(div, value));
+                      return null;
+                    }} />
+                </Label>
+              </div>
+            {/each}
+          </div>
+        {:else}
+          <span>no maps found</span>
+        {/if}
+      {/await}
 
       <Button
         onsubmit={() => {
@@ -182,14 +194,8 @@
           monthlyValue.competition.ends_at = monthlyValue.competition.starts_at;
           monthlyValue.competition.created_at = monthlyValue.competition.starts_at;
           return createMonthly(monthlyValue);
-        }}>submit monthly</Button>
+        }}>{create ? 'create' : 'update'} monthly</Button>
     </Section>
-  </div>
-{/if}
-
-{#if edit}
-  <div in:slide>
-    <span>edit mode!</span>
   </div>
 {/if}
 
@@ -197,8 +203,11 @@
   onsubmit={async () => {
     create = true;
     edit = false;
+    monthly = placeholderMonthly;
+    selectedDivisions.clear();
+    competitionDivisions.clear();
     return null;
-  }}>create monthly</Button>
+  }}>new</Button>
 
 {#await data.monthlies then monthlies}
   {#if monthlies}
@@ -206,8 +215,9 @@
       {#snippet header()}
         <th class="w-16">id</th>
         <th></th>
-        <th class="w-24">start date</th>
         <th class="w-32">visible date</th>
+        <th class="w-32">start date</th>
+        <th class="w-32">end date</th>
         <th class="w-24">complete</th>
       {/snippet}
       {#snippet row(m: Monthly)}
@@ -217,9 +227,13 @@
             create = false;
             edit = true;
             monthly = m;
+            competitionDivisions = new SvelteMap(m.divisions?.map((d) => [d.division, d.map]));
+            selectedDivisions = new SvelteSet(m.divisions?.map((cd) => cd.division));
+            monthly.divisions = cdToArray(competitionDivisions);
           }}><TableCompetition competition={m.competition} format="monthly" formatId={m.id} /></td>
-        <td><TableDate date={m.competition.starts_at} /></td>
         <td><TableDate date={m.competition.visible_at} /></td>
+        <td><TableDate date={m.competition.starts_at} /></td>
+        <td><TableDate date={m.competition.ends_at} /></td>
         <td>{m.competition.complete}</td>
       {/snippet}
     </Table>
