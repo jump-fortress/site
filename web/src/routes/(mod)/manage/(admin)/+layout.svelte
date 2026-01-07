@@ -11,6 +11,6 @@
   <InnerNav
     {route}
     parentRoute={'manage/competitions'}
-    pages={['monthly', 'motw', 'bounties', 'quests']} />
+    pages={['monthly', 'motw', 'bounty', 'quest']} />
 </div>
 {@render children()}
