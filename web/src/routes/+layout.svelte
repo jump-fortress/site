@@ -21,8 +21,7 @@
 {/await}
 
 <div class="flex w-full flex-col items-center">
-  <div
-    class="relative flex w-full max-w-5xl flex-col gap-4 overflow-hidden rounded-layout bg-base-800 p-6">
+  <div class="relative flex w-full max-w-5xl flex-col gap-4 rounded-layout bg-base-800 p-6">
     {@render children()}
   </div>
 </div>
