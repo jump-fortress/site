@@ -1,5 +1,14 @@
 // See https://svelte.dev/docs/kit/types#app.d.ts
-import type { Session } from '$lib/schema';
+import type {
+  Session,
+  Player,
+  PlayerPreview,
+  PlayerRequestPreview,
+  PlayerProfile,
+  PlayerRequest,
+  PlayerWithRequest,
+  Map
+} from '$lib/schema';
 
 // for information about these interfaces
 declare global {
@@ -11,7 +20,7 @@ declare global {
     interface PageData {
       session?: Promise<Session | undefined>;
       player?: Promise<Player>;
-      players?: Promise<Players[]>;
+      players?: Promise<Player[]>;
       playerPreview?: Promise<PlayerPreview>;
       playerPreviews?: Promise<PlayerPreview[]>;
       playerProfile?: Promise<PlayerProfile>;
