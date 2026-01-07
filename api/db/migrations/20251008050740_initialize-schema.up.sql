@@ -28,7 +28,7 @@ create table player(
 
 -- competition
 -- competition types (monthly, motw, bounty, quest, ..., are not autoincremented)
--- this is so they may follow a # order even when canceled
+-- this is so they may follow a # order even when deleted (canceled)
 create table competition(
   id integer not null primary key autoincrement,
   class text not null,
@@ -58,12 +58,38 @@ create table map(
   demo_rating integer not null
 );
 
+-- badge, special achievements featured on player profiles
+create table badge(
+  id integer not null primary key,
+  label text not null,
+  href text,
+  src text not null,
+
+  created_at datetime not null default current_timestamp
+)
+
+-- player badges
+-- relates to player (id)
+-- relates to badge (id)
+create table player_badge(
+  id integer not null primary key,
+  player_id text not null,
+  badge_id integer not null,
+
+  achieved_at datetime not null,
+
+  created_at datetime not null default current_timestamp,
+
+  foreign key (player_id) references player (id),
+  foreign key (badge_id) references badge (id)
+)
+
 -- "stardust points" for a player
 -- relates to player (id)
 create table player_points(
   id integer not null primary key autoincrement,
-  class text not null,
   player_id text not null,
+  class text not null,
   total integer not null default 0,
   last_9_motw integer not null default 0,
   last_3_monthly integer not null default 0,
