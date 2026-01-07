@@ -93,10 +93,6 @@ func HandleGetAllMaps(ctx context.Context, _ *struct{}) (*responses.MapsOutput, 
 		resp.Body = append(resp.Body, mapResponse)
 	}
 
-	if len(resp.Body) == 0 {
-		return nil, huma.Error404NotFound("no maps found")
-	}
-
 	return resp, nil
 }
 
@@ -108,10 +104,6 @@ func HandleGetAllMapNames(ctx context.Context, _ *struct{}) (*responses.MapNames
 
 	resp := &responses.MapNamesOutput{
 		Body: maps,
-	}
-
-	if len(resp.Body) == 0 {
-		return nil, huma.Error404NotFound("no maps found")
 	}
 
 	return resp, nil

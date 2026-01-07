@@ -64,9 +64,6 @@ func HandleGetAllMonthlies(ctx context.Context, _ *struct{}) (*responses.Monthli
 		resp.Body = append(resp.Body, monthlyResponse)
 	}
 
-	if len(resp.Body) == 0 {
-		return nil, huma.Error404NotFound("no monthlies found")
-	}
 	return resp, nil
 }
 
@@ -147,8 +144,5 @@ func HandleGetAllFullMonthlies(ctx context.Context, _ *struct{}) (*responses.Mon
 		resp.Body = append(resp.Body, monthlyResponse)
 	}
 
-	if len(resp.Body) == 0 {
-		return nil, huma.Error404NotFound("no monthlies found")
-	}
 	return resp, nil
 }

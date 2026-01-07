@@ -262,9 +262,6 @@ func HandleGetAllPlayers(ctx context.Context, _ *struct{}) (*responses.PlayerPre
 		resp.Body = append(resp.Body, playerResponse)
 	}
 
-	if len(resp.Body) == 0 {
-		return nil, huma.Error404NotFound("no players found")
-	}
 	return resp, nil
 }
 
@@ -472,10 +469,6 @@ func HandleGetSelfPlayerRequests(ctx context.Context, _ *struct{}) (*responses.P
 		fullRequestResponse := getPlayerRequestPreviewResponse(r)
 		resp.Body = append(resp.Body, fullRequestResponse)
 	}
-
-	if len(resp.Body) == 0 {
-		return nil, huma.Error404NotFound("no players found")
-	}
 	return resp, nil
 }
 
@@ -496,9 +489,6 @@ func HandleGetAllFullPlayers(ctx context.Context, _ *struct{}) (*responses.Playe
 		resp.Body = append(resp.Body, fullPlayerResponse)
 	}
 
-	if len(resp.Body) == 0 {
-		return nil, huma.Error404NotFound("no players found")
-	}
 	return resp, nil
 }
 
@@ -517,9 +507,6 @@ func HandleGetAllPendingPlayerRequests(ctx context.Context, _ *struct{}) (*respo
 		resp.Body = append(resp.Body, requestResponse)
 	}
 
-	if len(resp.Body) == 0 {
-		return nil, huma.Error404NotFound("no players found")
-	}
 	return resp, nil
 }
 
