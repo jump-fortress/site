@@ -1,12 +1,12 @@
 <script lang="ts">
   type Props = {
     label: string;
-    subpages?: string[] | null;
+    href: string;
+    subpages?: { label: string; href: string }[] | null;
     route: string;
   };
-  let { label, route, subpages = null }: Props = $props();
+  let { label, href, route, subpages = null }: Props = $props();
 
-  let href = $derived(label === 'home' ? '/' : `/${label}`);
   let currentRoute = $derived(
     (route === '/' && label === 'home') || (href !== '/' && route.includes(href))
   );
@@ -24,11 +24,10 @@
 
   <div class="invisible absolute z-10 flex flex-col pt-2 pl-2 group-hover:visible hover:visible">
     {#each subpages as subpage}
-      {@const href: string = `/${subpage}`}
       <a
         class="relative w-32 rounded-box pl-2 text-content/75 hover:bg-base-800/50 hover:text-content"
-        {href}>
-        <span>{subpage}</span>
+        href={subpage.href}>
+        <span>{subpage.label}</span>
       </a>
     {/each}
   </div>

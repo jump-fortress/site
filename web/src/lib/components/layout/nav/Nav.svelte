@@ -28,11 +28,36 @@
   <div class="flex w-full max-w-5xl items-center justify-between text-lg">
     <!-- left nav -->
     <div class="flex h-full grow items-center transition-colors hover:text-content/75">
-      <Page label={'home'} {route} />
-      <Page label={'ladder'} {route} />
-      <Page label={'formats'} subpages={['monthly', 'motw', 'bounties', 'quests']} {route} />
-      <Page label={'archive'} subpages={['world cup', 'playoffs', 'other']} {route} />
-      <Page label={'help'} subpages={['resources', 'faq', 'rules']} {route} />
+      <Page label={'home'} href={'/'} {route} />
+      <Page label={'ladder'} href={'/ladder'} {route} />
+      <Page
+        label={'formats'}
+        href={'/formats/monthly'}
+        subpages={[
+          { label: 'monthly', href: '/formats/monthly' },
+          { label: 'motw', href: '/formats/motw' },
+          { label: 'bounty', href: '/formats/bounty' },
+          { label: 'quest', href: '/formats/quest' }
+        ]}
+        {route} />
+      <Page
+        label={'archive'}
+        href={'/archive'}
+        subpages={[
+          { label: 'world cup', href: '/jwc' },
+          { label: 'playoffs', href: '/playoffs' },
+          { label: 'other', href: '/archive' }
+        ]}
+        {route} />
+      <Page
+        label={'help'}
+        href={'/help/faq'}
+        subpages={[
+          { label: 'faq', href: 'help/faq' },
+          { label: 'rules', href: 'help/rules' },
+          { label: 'resources', href: '/help/resources' }
+        ]}
+        {route} />
       <!-- dropdown -->
       <div
         class="invisible absolute top-0 left-0 -z-20 flex h-44 w-full cursor-default flex-col gap-px border-b border-primary/50 bg-base-900/95 px-1 py-1 shadow-sm shadow-primary/50 backdrop-blur-none transition-all peer-hover:visible">
