@@ -2,6 +2,7 @@ package internal
 
 import (
 	"context"
+	"fmt"
 	"slices"
 	"time"
 
@@ -9,8 +10,6 @@ import (
 	"github.com/spiritov/jump/api/db/queries"
 	"github.com/spiritov/jump/api/db/responses"
 )
-
-// todo: monthly id
 
 func getMonthlyResponse(monthly queries.SelectAllMonthlyRow) responses.Monthly {
 	return responses.Monthly{
@@ -113,6 +112,94 @@ func HandlePostCreateMonthly(ctx context.Context, input *responses.MonthlyInput)
 			Map:           d.Map,
 		}); err != nil {
 			return nil, err
+		}
+	}
+
+	return nil, nil
+}
+
+func HandlePostUpdateMonthly(ctx context.Context, input *responses.MonthlyInput) (*struct{}, error) {
+	// insert / update divisions
+	// delete divisions not included in the updated competition
+	fmt.Println(input)
+
+	maps, err := responses.Queries.GetMapNames(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, cd := range input.Body.Divisions {
+		if !slices.Contains(maps, cd.Map) {
+			return nil, huma.Error400BadRequest("invalid map name")
+		}
+	}
+
+	if input.Body.Competition.StartsAt.Before(input.Body.Competition.VisibleAt) {
+		return nil, huma.Error400BadRequest("competition must be visible before it starts")
+	}
+
+	now := time.Now()
+	if input.Body.Competition.StartsAt.Before(now) || input.Body.Competition.VisibleAt.Before(now) {
+		return nil, huma.Error400BadRequest("competition must start and be visible in the future")
+	}
+
+	if err := responses.Queries.UpdateCompetition(ctx, queries.UpdateCompetitionParams{
+		Class:     input.Body.Competition.Class,
+		StartsAt:  input.Body.Competition.StartsAt,
+		EndsAt:    input.Body.Competition.StartsAt.AddDate(0, 0, 2), // 2 days
+		VisibleAt: input.Body.Competition.VisibleAt,
+		ID:        input.Body.Competition.ID,
+	}); err != nil {
+		return nil, err
+	}
+
+	competitionDivisions, err := responses.Queries.SelectCompetitionDivisions(ctx, input.Body.Competition.ID)
+	if err != nil {
+		return nil, err
+	}
+	// remove any competition divisions not in the input, update ones that are
+	for _, cd := range competitionDivisions {
+		contains := false
+		for _, icd := range input.Body.Divisions {
+			if cd.Division == icd.Division {
+				if err := responses.Queries.UpdateCompetitionDivision(ctx, queries.UpdateCompetitionDivisionParams{
+					Map:           icd.Map,
+					CompetitionID: cd.CompetitionID,
+					Division:      cd.Division,
+				}); err != nil {
+					return nil, err
+				}
+				contains = true
+				break
+			}
+		}
+		if !contains {
+			if err := responses.Queries.DeleteCompetitionDivision(ctx, queries.DeleteCompetitionDivisionParams{
+				CompetitionID: cd.CompetitionID,
+				Division:      cd.Division,
+			}); err != nil {
+				return nil, err
+			}
+		}
+	}
+
+	// add divisions that are missing
+	for _, icd := range input.Body.Divisions {
+		contains := false
+		for _, cd := range competitionDivisions {
+			if icd.Division == cd.Division {
+				contains = true
+				break
+			}
+		}
+		if !contains {
+			if err := responses.Queries.InsertCompetitionDivision(ctx, queries.InsertCompetitionDivisionParams{
+				CompetitionID: icd.CompetitionID,
+				Division:      icd.Division,
+				Map:           icd.Map,
+			}); err != nil {
+				return nil, err
+			}
 		}
 	}
 

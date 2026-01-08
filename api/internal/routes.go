@@ -254,6 +254,16 @@ func registerAdminRoutes(adminApi *huma.Group) {
 	}, HandlePostCreateMonthly)
 
 	huma.Register(adminApi, huma.Operation{
+		Method:      http.MethodPost,
+		Path:        "/competitions/update/monthly",
+		OperationID: "update-monthly",
+		Summary:     "Update monthly",
+		Description: "Update a monthly competition",
+		Tags:        []string{"Admin"},
+		Security:    sessionCookieSecurityMap,
+	}, HandlePostUpdateMonthly)
+
+	huma.Register(adminApi, huma.Operation{
 		Method:      http.MethodGet,
 		Path:        "/competitions/all/monthly",
 		OperationID: "get-all-full-monthly",

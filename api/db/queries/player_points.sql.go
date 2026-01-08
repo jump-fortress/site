@@ -25,7 +25,7 @@ func (q *Queries) InsertPlayerPoints(ctx context.Context, arg InsertPlayerPoints
 }
 
 const selectPlayerPoints = `-- name: SelectPlayerPoints :one
-select id, class, player_id, total, last_9_motw, last_3_monthly from player_points
+select id, player_id, class, total, last_9_motw, last_3_monthly from player_points
 where player_id = ? and class = ?
 `
 
@@ -39,8 +39,8 @@ func (q *Queries) SelectPlayerPoints(ctx context.Context, arg SelectPlayerPoints
 	var i PlayerPoint
 	err := row.Scan(
 		&i.ID,
-		&i.Class,
 		&i.PlayerID,
+		&i.Class,
 		&i.Total,
 		&i.Last9Motw,
 		&i.Last3Monthly,

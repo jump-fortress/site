@@ -10,6 +10,14 @@ import (
 	"time"
 )
 
+type Badge struct {
+	ID        int64          `json:"id"`
+	Label     string         `json:"label"`
+	Href      sql.NullString `json:"href"`
+	Src       string         `json:"src"`
+	CreatedAt time.Time      `json:"created_at"`
+}
+
 type Bounty struct {
 	ID            int64           `json:"id"`
 	CompetitionID int64           `json:"competition_id"`
@@ -112,10 +120,18 @@ type Player struct {
 	CreatedAt         time.Time      `json:"created_at"`
 }
 
+type PlayerBadge struct {
+	ID         int64     `json:"id"`
+	PlayerID   string    `json:"player_id"`
+	BadgeID    int64     `json:"badge_id"`
+	AchievedAt time.Time `json:"achieved_at"`
+	CreatedAt  time.Time `json:"created_at"`
+}
+
 type PlayerPoint struct {
 	ID           int64  `json:"id"`
-	Class        string `json:"class"`
 	PlayerID     string `json:"player_id"`
+	Class        string `json:"class"`
 	Total        int64  `json:"total"`
 	Last9Motw    int64  `json:"last_9_motw"`
 	Last3Monthly int64  `json:"last_3_monthly"`

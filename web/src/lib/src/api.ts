@@ -306,6 +306,17 @@ export async function createMonthly(monthly: Monthly): Promise<InputResponse> {
     : { error: false, message: '' };
 }
 
+export async function updateMonthly(monthly: Monthly): Promise<InputResponse> {
+  const { error } = await Client.POST('/internal/admin/competitions/update/monthly', {
+    fetch: fetch,
+    body: monthly
+  });
+
+  return error
+    ? { error: true, message: error.detail ?? 'unknown error' }
+    : { error: false, message: '' };
+}
+
 export async function cancelCompetition(id: number): Promise<InputResponse> {
   const { error } = await Client.POST('/internal/admin/competitions/cancel/{id}', {
     fetch: fetch,

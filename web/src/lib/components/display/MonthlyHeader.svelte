@@ -50,20 +50,24 @@
 <!-- container -->
 <!-- todo: link to competition page for maps -->
 <div
-  class="grid h-48 w-full cursor-pointer items-end justify-center bg-base-900 drop-shadow-md/50
+  class="grid h-48 w-full items-end justify-center bg-base-900 drop-shadow-md/50
   {header ? 'absolute top-0 left-0' : 'relative rounded-layout'}
   {twCols.get(maps.size)}">
   {#each maps as [map, divisions]}
     <!-- map wrapper -->
-    <div class="relative flex size-full items-end justify-center overflow-hidden">
+    <div class="relative flex size-full items-end justify-center">
       <!-- absolute map bg image -->
-      <img
-        class="over absolute z-10 h-48 w-full scale-105 object-cover brightness-90 not-first:mask-x-from-98% not-last:mask-x-from-98%"
-        src="https://tempusplaza.xyz/map-backgrounds/{map}.jpg"
-        alt=""
-        draggable="false" />
-      <div class="relative z-10 flex flex-col items-center gap-1 p-2">
-        <span class="truncate text-lg text-shadow-sm/100">{map}</span>
+      <a
+        class="relative flex size-full cursor-pointer overflow-hidden"
+        href="/formats/monthly/{monthly.id}">
+        <img
+          class="over absolute z-10 h-48 w-full scale-105 object-cover brightness-90 not-first:mask-x-from-98% not-last:mask-x-from-98%"
+          src="https://tempusplaza.xyz/map-backgrounds/{map}.jpg"
+          alt=""
+          draggable="false" />
+      </a>
+      <div class="absolute z-10 flex flex-col items-center gap-1 p-2">
+        <span class="z-10 truncate text-lg text-shadow-sm/100">{map}</span>
         <div class="flex gap-2">
           {#each divisions as division}
             <DivisionTag div={division} />
@@ -73,16 +77,16 @@
     </div>
   {/each}
   <!-- absolute details container -->
-  <div class="absolute top-0 z-10 flex w-full justify-between p-2">
+  <div class="absolute top-0 flex w-full justify-between p-2">
     <!-- competition name -->
-    <div class="flex h-12 items-center gap-1">
+    <div class="z-10 flex h-12 items-center gap-1">
       <ClassImage selected={monthly.competition.class} />
       <span class="text-lg text-shadow-sm/100">monthly #{monthly.id}</span>
     </div>
     <!-- date / prizepool -->
-    <div class="flex flex-col items-end text-shadow-sm/100">
+    <div class="z-10 flex flex-col items-end text-shadow-sm/100">
       <div class="flex items-center gap-1">
-        <span>
+        <span class="relative z-10">
           <TableDate date={monthly.competition.starts_at} />
         </span>
         <span class="icon-[mdi--calendar]"></span>

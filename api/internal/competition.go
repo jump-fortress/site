@@ -11,7 +11,7 @@ import (
 
 func HandlePostCancelCompetition(ctx context.Context, input *responses.CompetitionIDInput) (*struct{}, error) {
 	// this query also checks that the competition hasn't started yet
-	competition, err := responses.Queries.CancelCompetition(ctx, input.ID)
+	competition, err := responses.Queries.DeleteCompetition(ctx, input.ID)
 	if err != nil {
 		return nil, err
 	}

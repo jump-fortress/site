@@ -9,9 +9,24 @@ import (
 	"context"
 )
 
+const deleteCompetitionDivision = `-- name: DeleteCompetitionDivision :exec
+delete from competition_division
+  where competition_id = ? and division = ?
+`
+
+type DeleteCompetitionDivisionParams struct {
+	CompetitionID int64  `json:"competition_id"`
+	Division      string `json:"division"`
+}
+
+func (q *Queries) DeleteCompetitionDivision(ctx context.Context, arg DeleteCompetitionDivisionParams) error {
+	_, err := q.db.ExecContext(ctx, deleteCompetitionDivision, arg.CompetitionID, arg.Division)
+	return err
+}
+
 const insertCompetitionDivision = `-- name: InsertCompetitionDivision :exec
 insert into competition_division (competition_id, division, map)
-values (?, ?, ?)
+  values (?, ?, ?)
 `
 
 type InsertCompetitionDivisionParams struct {
@@ -56,4 +71,21 @@ func (q *Queries) SelectCompetitionDivisions(ctx context.Context, competitionID 
 		return nil, err
 	}
 	return items, nil
+}
+
+const updateCompetitionDivision = `-- name: UpdateCompetitionDivision :exec
+update competition_division
+  set map = ?
+  where competition_id = ? and division = ?
+`
+
+type UpdateCompetitionDivisionParams struct {
+	Map           string `json:"map"`
+	CompetitionID int64  `json:"competition_id"`
+	Division      string `json:"division"`
+}
+
+func (q *Queries) UpdateCompetitionDivision(ctx context.Context, arg UpdateCompetitionDivisionParams) error {
+	_, err := q.db.ExecContext(ctx, updateCompetitionDivision, arg.Map, arg.CompetitionID, arg.Division)
+	return err
 }

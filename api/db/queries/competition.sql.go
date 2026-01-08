@@ -10,14 +10,14 @@ import (
 	"time"
 )
 
-const cancelCompetition = `-- name: CancelCompetition :one
+const deleteCompetition = `-- name: DeleteCompetition :one
 delete from competition
   where id = ? and starts_at > current_timestamp
   returning id, class, starts_at, ends_at, visible_at, complete, created_at
 `
 
-func (q *Queries) CancelCompetition(ctx context.Context, id int64) (Competition, error) {
-	row := q.db.QueryRowContext(ctx, cancelCompetition, id)
+func (q *Queries) DeleteCompetition(ctx context.Context, id int64) (Competition, error) {
+	row := q.db.QueryRowContext(ctx, deleteCompetition, id)
 	var i Competition
 	err := row.Scan(
 		&i.ID,
@@ -62,4 +62,32 @@ func (q *Queries) InsertCompetition(ctx context.Context, arg InsertCompetitionPa
 		&i.CreatedAt,
 	)
 	return i, err
+}
+
+const updateCompetition = `-- name: UpdateCompetition :exec
+update competition
+  set class = ?,
+  starts_at = ?,
+  ends_at = ?,
+  visible_at = ?
+  where id = ?
+`
+
+type UpdateCompetitionParams struct {
+	Class     string    `json:"class"`
+	StartsAt  time.Time `json:"starts_at"`
+	EndsAt    time.Time `json:"ends_at"`
+	VisibleAt time.Time `json:"visible_at"`
+	ID        int64     `json:"id"`
+}
+
+func (q *Queries) UpdateCompetition(ctx context.Context, arg UpdateCompetitionParams) error {
+	_, err := q.db.ExecContext(ctx, updateCompetition,
+		arg.Class,
+		arg.StartsAt,
+		arg.EndsAt,
+		arg.VisibleAt,
+		arg.ID,
+	)
+	return err
 }

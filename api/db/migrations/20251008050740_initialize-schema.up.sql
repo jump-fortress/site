@@ -66,7 +66,7 @@ create table badge(
   src text not null,
 
   created_at datetime not null default current_timestamp
-)
+);
 
 -- player badges
 -- relates to player (id)
@@ -82,7 +82,7 @@ create table player_badge(
 
   foreign key (player_id) references player (id),
   foreign key (badge_id) references badge (id)
-)
+);
 
 -- "stardust points" for a player
 -- relates to player (id)
@@ -135,6 +135,7 @@ create table competition_division(
   division text not null,
   map text not null,
 
+  unique (competition_id, division),
   foreign key (competition_id) references competition (id) on delete cascade
 );
 
