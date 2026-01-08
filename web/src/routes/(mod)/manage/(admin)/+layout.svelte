@@ -8,9 +8,6 @@
 </script>
 
 <div class="relative h-16">
-  <InnerNav
-    {route}
-    parentRoute={'manage/competitions'}
-    pages={['monthly', 'motw', 'bounty', 'quest']} />
+  <InnerNav {route} parentRoute={'manage/formats'} pages={['monthly', 'motw', 'bounty', 'quest']} />
 </div>
 {@render children()}
