@@ -41,20 +41,20 @@
         ]}
         {route} />
       <Page
-        label={'archive'}
-        href={'/archive'}
+        label={'invitationals'}
+        href={'/invitationals'}
         subpages={[
-          { label: 'world cup', href: '/jwc' },
-          { label: 'playoffs', href: '/playoffs' },
-          { label: 'other', href: '/archive' }
+          { label: 'world cup', href: '/invitationals/jwc' },
+          { label: 'playoffs', href: '/invitationals/playoffs' }
         ]}
         {route} />
+      <Page label="archive" href="/archive" {route} />
       <Page
         label={'help'}
         href={'/help/faq'}
         subpages={[
-          { label: 'faq', href: 'help/faq' },
-          { label: 'rules', href: 'help/rules' },
+          { label: 'faq', href: '/help/faq' },
+          { label: 'rules', href: '/help/rules' },
           { label: 'resources', href: '/help/resources' }
         ]}
         {route} />

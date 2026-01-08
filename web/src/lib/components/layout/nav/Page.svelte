@@ -8,7 +8,7 @@
   let { label, href, route, subpages = null }: Props = $props();
 
   let currentRoute = $derived(
-    (route === '/' && label === 'home') || (href !== '/' && route.includes(href))
+    (route === '/' && label === 'home') || (href !== '/' && route.startsWith(href))
   );
 </script>
 
