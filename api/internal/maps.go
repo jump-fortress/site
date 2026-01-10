@@ -79,7 +79,7 @@ func HandlePostUpdateMaps(ctx context.Context, _ *struct{}) (*struct{}, error) {
 }
 
 func HandleGetAllMaps(ctx context.Context, _ *struct{}) (*responses.MapsOutput, error) {
-	maps, err := responses.Queries.GetMaps(ctx)
+	maps, err := responses.Queries.SelectMaps(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -97,7 +97,7 @@ func HandleGetAllMaps(ctx context.Context, _ *struct{}) (*responses.MapsOutput, 
 }
 
 func HandleGetAllMapNames(ctx context.Context, _ *struct{}) (*responses.MapNamesOutput, error) {
-	maps, err := responses.Queries.GetMapNames(ctx)
+	maps, err := responses.Queries.SelectMapNames(ctx)
 	if err != nil {
 		return nil, err
 	}

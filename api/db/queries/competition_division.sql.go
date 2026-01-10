@@ -9,9 +9,10 @@ import (
 	"context"
 )
 
-const deleteCompetitionDivision = `-- name: DeleteCompetitionDivision :exec
+const deleteCompetitionDivision = `-- name: DeleteCompetitionDivision :one
 delete from competition_division
   where competition_id = ? and division = ?
+  returning id, competition_id, division, map
 `
 
 type DeleteCompetitionDivisionParams struct {
@@ -19,9 +20,16 @@ type DeleteCompetitionDivisionParams struct {
 	Division      string `json:"division"`
 }
 
-func (q *Queries) DeleteCompetitionDivision(ctx context.Context, arg DeleteCompetitionDivisionParams) error {
-	_, err := q.db.ExecContext(ctx, deleteCompetitionDivision, arg.CompetitionID, arg.Division)
-	return err
+func (q *Queries) DeleteCompetitionDivision(ctx context.Context, arg DeleteCompetitionDivisionParams) (CompetitionDivision, error) {
+	row := q.db.QueryRowContext(ctx, deleteCompetitionDivision, arg.CompetitionID, arg.Division)
+	var i CompetitionDivision
+	err := row.Scan(
+		&i.ID,
+		&i.CompetitionID,
+		&i.Division,
+		&i.Map,
+	)
+	return i, err
 }
 
 const insertCompetitionDivision = `-- name: InsertCompetitionDivision :exec

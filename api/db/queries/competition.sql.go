@@ -7,13 +7,14 @@ package queries
 
 import (
 	"context"
+	"database/sql"
 	"time"
 )
 
 const deleteCompetition = `-- name: DeleteCompetition :one
 delete from competition
   where id = ? and starts_at > current_timestamp
-  returning id, class, starts_at, ends_at, visible_at, complete, created_at
+  returning id, class, starts_at, ends_at, visible_at, complete, prizepool, created_at
 `
 
 func (q *Queries) DeleteCompetition(ctx context.Context, id int64) (Competition, error) {
@@ -26,6 +27,7 @@ func (q *Queries) DeleteCompetition(ctx context.Context, id int64) (Competition,
 		&i.EndsAt,
 		&i.VisibleAt,
 		&i.Complete,
+		&i.Prizepool,
 		&i.CreatedAt,
 	)
 	return i, err
@@ -34,7 +36,7 @@ func (q *Queries) DeleteCompetition(ctx context.Context, id int64) (Competition,
 const insertCompetition = `-- name: InsertCompetition :one
 insert into competition (class, starts_at, ends_at, visible_at)
   values (?, ?, ?, ?)
-  returning id, class, starts_at, ends_at, visible_at, complete, created_at
+  returning id, class, starts_at, ends_at, visible_at, complete, prizepool, created_at
 `
 
 type InsertCompetitionParams struct {
@@ -59,6 +61,7 @@ func (q *Queries) InsertCompetition(ctx context.Context, arg InsertCompetitionPa
 		&i.EndsAt,
 		&i.VisibleAt,
 		&i.Complete,
+		&i.Prizepool,
 		&i.CreatedAt,
 	)
 	return i, err
@@ -70,7 +73,7 @@ update competition
   starts_at = ?,
   ends_at = ?,
   visible_at = ?
-  where id = ?
+  where id = ? and starts_at < current_timestamp
 `
 
 type UpdateCompetitionParams struct {
@@ -89,5 +92,32 @@ func (q *Queries) UpdateCompetition(ctx context.Context, arg UpdateCompetitionPa
 		arg.VisibleAt,
 		arg.ID,
 	)
+	return err
+}
+
+const updateCompetitionComplete = `-- name: UpdateCompetitionComplete :exec
+update competition
+  set complete = true
+  where id = ?
+`
+
+func (q *Queries) UpdateCompetitionComplete(ctx context.Context, id int64) error {
+	_, err := q.db.ExecContext(ctx, updateCompetitionComplete, id)
+	return err
+}
+
+const updateCompetitionPrizepool = `-- name: UpdateCompetitionPrizepool :exec
+update competition
+  set prizepool = ?
+  where id = ?
+`
+
+type UpdateCompetitionPrizepoolParams struct {
+	Prizepool sql.NullInt64 `json:"prizepool"`
+	ID        int64         `json:"id"`
+}
+
+func (q *Queries) UpdateCompetitionPrizepool(ctx context.Context, arg UpdateCompetitionPrizepoolParams) error {
+	_, err := q.db.ExecContext(ctx, updateCompetitionPrizepool, arg.Prizepool, arg.ID)
 	return err
 }

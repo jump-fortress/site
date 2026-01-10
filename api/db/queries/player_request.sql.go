@@ -58,7 +58,7 @@ func (q *Queries) ResolvePlayerRequest(ctx context.Context, id int64) error {
 }
 
 const selectAllPendingPlayerRequests = `-- name: SelectAllPendingPlayerRequests :many
-select pr.id, player_id, type, content, pending, pr.created_at, p.id, role, steam_avatar_url, steam_trade_token, tempus_id, country, country_code, discord_id, display_name, soldier_division, demo_division, preferred_class, preferred_launcher, preferred_map, p.created_at from player_request pr
+select pr.id, player_id, type, content, pending, pr.created_at, p.id, role, steam_avatar_url, steam_trade_token, tempus_id, country, country_code, discord_id, display_name, soldier_division, demo_division, motw_timeslot, preferred_class, preferred_launcher, preferred_map, p.created_at from player_request pr
   join player p on pr.player_id = p.id
   where pr.pending = true
 `
@@ -81,6 +81,7 @@ type SelectAllPendingPlayerRequestsRow struct {
 	DisplayName       sql.NullString `json:"display_name"`
 	SoldierDivision   sql.NullString `json:"soldier_division"`
 	DemoDivision      sql.NullString `json:"demo_division"`
+	MotwTimeslot      sql.NullInt64  `json:"motw_timeslot"`
 	PreferredClass    string         `json:"preferred_class"`
 	PreferredLauncher string         `json:"preferred_launcher"`
 	PreferredMap      sql.NullString `json:"preferred_map"`
@@ -114,6 +115,7 @@ func (q *Queries) SelectAllPendingPlayerRequests(ctx context.Context) ([]SelectA
 			&i.DisplayName,
 			&i.SoldierDivision,
 			&i.DemoDivision,
+			&i.MotwTimeslot,
 			&i.PreferredClass,
 			&i.PreferredLauncher,
 			&i.PreferredMap,
@@ -132,14 +134,14 @@ func (q *Queries) SelectAllPendingPlayerRequests(ctx context.Context) ([]SelectA
 	return items, nil
 }
 
-const selectPendingPlayerRequestsForPlayer = `-- name: SelectPendingPlayerRequestsForPlayer :many
+const selectPendingPlayerRequests = `-- name: SelectPendingPlayerRequests :many
 select id, player_id, type, content, pending, created_at from player_request
 where player_id = ? and pending = true
 `
 
-// may be unnecessary
-func (q *Queries) SelectPendingPlayerRequestsForPlayer(ctx context.Context, playerID string) ([]PlayerRequest, error) {
-	rows, err := q.db.QueryContext(ctx, selectPendingPlayerRequestsForPlayer, playerID)
+// todo: unused?
+func (q *Queries) SelectPendingPlayerRequests(ctx context.Context, playerID string) ([]PlayerRequest, error) {
+	rows, err := q.db.QueryContext(ctx, selectPendingPlayerRequests, playerID)
 	if err != nil {
 		return nil, err
 	}

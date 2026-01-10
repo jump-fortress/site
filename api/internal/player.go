@@ -53,6 +53,7 @@ func getPlayerPreviewResponse(player queries.Player) responses.PlayerPreview {
 		DisplayName:       player.DisplayName.String,
 		SoldierDivision:   player.SoldierDivision.String,
 		DemoDivision:      player.DemoDivision.String,
+		MotwTimeslot:      player.MotwTimeslot.Int64,
 		PreferredClass:    player.PreferredClass,
 		PreferredLauncher: player.PreferredLauncher,
 		PreferredMap:      player.PreferredMap.String,
@@ -73,6 +74,7 @@ func getPlayerResponse(player queries.Player) responses.Player {
 		DisplayName:       player.DisplayName.String,
 		SoldierDivision:   player.SoldierDivision.String,
 		DemoDivision:      player.DemoDivision.String,
+		MotwTimeslot:      player.MotwTimeslot.Int64,
 		PreferredClass:    player.PreferredClass,
 		PreferredLauncher: player.PreferredLauncher,
 		PreferredMap:      player.PreferredMap.String,
@@ -225,7 +227,7 @@ func HandlePostSelfPreferredMap(ctx context.Context, input *responses.MapNameInp
 
 	noMap := input.Map == "none"
 
-	maps, err := responses.Queries.GetMapNames(ctx)
+	maps, err := responses.Queries.SelectMapNames(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -456,7 +458,7 @@ func HandleGetSelfPlayerRequests(ctx context.Context, _ *struct{}) (*responses.P
 		return nil, huma.Error401Unauthorized("a session is required")
 	}
 
-	requests, err := responses.Queries.SelectPendingPlayerRequestsForPlayer(ctx, principal.SteamID.String())
+	requests, err := responses.Queries.SelectPendingPlayerRequests(ctx, principal.SteamID.String())
 	if err != nil {
 		return nil, nil
 	}

@@ -2,7 +2,6 @@ package internal
 
 import (
 	"context"
-	"fmt"
 	"slices"
 	"time"
 
@@ -69,7 +68,7 @@ func HandleGetAllMonthlies(ctx context.Context, _ *struct{}) (*responses.Monthli
 // admin
 
 func HandlePostCreateMonthly(ctx context.Context, input *responses.MonthlyInput) (*struct{}, error) {
-	maps, err := responses.Queries.GetMapNames(ctx)
+	maps, err := responses.Queries.SelectMapNames(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -121,9 +120,19 @@ func HandlePostCreateMonthly(ctx context.Context, input *responses.MonthlyInput)
 func HandlePostUpdateMonthly(ctx context.Context, input *responses.MonthlyInput) (*struct{}, error) {
 	// insert / update divisions
 	// delete divisions not included in the updated competition
-	fmt.Println(input)
 
-	maps, err := responses.Queries.GetMapNames(ctx)
+	monthly, err := responses.Queries.SelectMonthly(ctx, input.Body.Competition.ID)
+	if err != nil {
+		return nil, huma.Error400BadRequest("no competition found with this id")
+	}
+
+	now := time.Now()
+
+	if monthly.StartsAt.Before(now) {
+		return nil, huma.Error400BadRequest("monthly has already started")
+	}
+
+	maps, err := responses.Queries.SelectMapNames(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -137,8 +146,6 @@ func HandlePostUpdateMonthly(ctx context.Context, input *responses.MonthlyInput)
 	if input.Body.Competition.StartsAt.Before(input.Body.Competition.VisibleAt) {
 		return nil, huma.Error400BadRequest("competition must be visible before it starts")
 	}
-
-	now := time.Now()
 	if input.Body.Competition.StartsAt.Before(now) || input.Body.Competition.VisibleAt.Before(now) {
 		return nil, huma.Error400BadRequest("competition must start and be visible in the future")
 	}
@@ -174,7 +181,7 @@ func HandlePostUpdateMonthly(ctx context.Context, input *responses.MonthlyInput)
 			}
 		}
 		if !contains {
-			if err := responses.Queries.DeleteCompetitionDivision(ctx, queries.DeleteCompetitionDivisionParams{
+			if _, err := responses.Queries.DeleteCompetitionDivision(ctx, queries.DeleteCompetitionDivisionParams{
 				CompetitionID: cd.CompetitionID,
 				Division:      cd.Division,
 			}); err != nil {

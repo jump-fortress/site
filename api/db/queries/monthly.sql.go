@@ -7,6 +7,7 @@ package queries
 
 import (
 	"context"
+	"database/sql"
 	"time"
 )
 
@@ -21,20 +22,21 @@ func (q *Queries) InsertMonthly(ctx context.Context, competitionID int64) error 
 }
 
 const selectAllMonthly = `-- name: SelectAllMonthly :many
-select m.id, competition_id, c.id, class, starts_at, ends_at, visible_at, complete, created_at from monthly m
+select m.id, competition_id, c.id, class, starts_at, ends_at, visible_at, complete, prizepool, created_at from monthly m
   join competition c on m.competition_id = c.id
 `
 
 type SelectAllMonthlyRow struct {
-	ID            int64     `json:"id"`
-	CompetitionID int64     `json:"competition_id"`
-	ID_2          int64     `json:"id_2"`
-	Class         string    `json:"class"`
-	StartsAt      time.Time `json:"starts_at"`
-	EndsAt        time.Time `json:"ends_at"`
-	VisibleAt     time.Time `json:"visible_at"`
-	Complete      bool      `json:"complete"`
-	CreatedAt     time.Time `json:"created_at"`
+	ID            int64         `json:"id"`
+	CompetitionID int64         `json:"competition_id"`
+	ID_2          int64         `json:"id_2"`
+	Class         string        `json:"class"`
+	StartsAt      time.Time     `json:"starts_at"`
+	EndsAt        time.Time     `json:"ends_at"`
+	VisibleAt     time.Time     `json:"visible_at"`
+	Complete      bool          `json:"complete"`
+	Prizepool     sql.NullInt64 `json:"prizepool"`
+	CreatedAt     time.Time     `json:"created_at"`
 }
 
 func (q *Queries) SelectAllMonthly(ctx context.Context) ([]SelectAllMonthlyRow, error) {
@@ -55,6 +57,7 @@ func (q *Queries) SelectAllMonthly(ctx context.Context) ([]SelectAllMonthlyRow, 
 			&i.EndsAt,
 			&i.VisibleAt,
 			&i.Complete,
+			&i.Prizepool,
 			&i.CreatedAt,
 		); err != nil {
 			return nil, err
@@ -71,21 +74,22 @@ func (q *Queries) SelectAllMonthly(ctx context.Context) ([]SelectAllMonthlyRow, 
 }
 
 const selectMonthly = `-- name: SelectMonthly :one
-select m.id, competition_id, c.id, class, starts_at, ends_at, visible_at, complete, created_at from monthly m
+select m.id, competition_id, c.id, class, starts_at, ends_at, visible_at, complete, prizepool, created_at from monthly m
   join competition c on m.competition_id = c.id
   where m.competition_id = ?
 `
 
 type SelectMonthlyRow struct {
-	ID            int64     `json:"id"`
-	CompetitionID int64     `json:"competition_id"`
-	ID_2          int64     `json:"id_2"`
-	Class         string    `json:"class"`
-	StartsAt      time.Time `json:"starts_at"`
-	EndsAt        time.Time `json:"ends_at"`
-	VisibleAt     time.Time `json:"visible_at"`
-	Complete      bool      `json:"complete"`
-	CreatedAt     time.Time `json:"created_at"`
+	ID            int64         `json:"id"`
+	CompetitionID int64         `json:"competition_id"`
+	ID_2          int64         `json:"id_2"`
+	Class         string        `json:"class"`
+	StartsAt      time.Time     `json:"starts_at"`
+	EndsAt        time.Time     `json:"ends_at"`
+	VisibleAt     time.Time     `json:"visible_at"`
+	Complete      bool          `json:"complete"`
+	Prizepool     sql.NullInt64 `json:"prizepool"`
+	CreatedAt     time.Time     `json:"created_at"`
 }
 
 func (q *Queries) SelectMonthly(ctx context.Context, competitionID int64) (SelectMonthlyRow, error) {
@@ -100,6 +104,7 @@ func (q *Queries) SelectMonthly(ctx context.Context, competitionID int64) (Selec
 		&i.EndsAt,
 		&i.VisibleAt,
 		&i.Complete,
+		&i.Prizepool,
 		&i.CreatedAt,
 	)
 	return i, err

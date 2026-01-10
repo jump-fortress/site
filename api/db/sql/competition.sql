@@ -9,6 +9,16 @@ update competition
   starts_at = ?,
   ends_at = ?,
   visible_at = ?
+  where id = ? and starts_at < current_timestamp;
+
+-- name: UpdateCompetitionPrizepool :exec
+update competition
+  set prizepool = ?
+  where id = ?;
+
+-- name: UpdateCompetitionComplete :exec
+update competition
+  set complete = true
   where id = ?;
 
 -- name: DeleteCompetition :one

@@ -22,18 +22,21 @@ type Bounty struct {
 	ID            int64           `json:"id"`
 	CompetitionID int64           `json:"competition_id"`
 	Map           string          `json:"map"`
+	Course        sql.NullInt64   `json:"course"`
+	Bonus         sql.NullInt64   `json:"bonus"`
 	Type          string          `json:"type"`
 	Time          sql.NullFloat64 `json:"time"`
 }
 
 type Competition struct {
-	ID        int64     `json:"id"`
-	Class     string    `json:"class"`
-	StartsAt  time.Time `json:"starts_at"`
-	EndsAt    time.Time `json:"ends_at"`
-	VisibleAt time.Time `json:"visible_at"`
-	Complete  bool      `json:"complete"`
-	CreatedAt time.Time `json:"created_at"`
+	ID        int64         `json:"id"`
+	Class     string        `json:"class"`
+	StartsAt  time.Time     `json:"starts_at"`
+	EndsAt    time.Time     `json:"ends_at"`
+	VisibleAt time.Time     `json:"visible_at"`
+	Complete  bool          `json:"complete"`
+	Prizepool sql.NullInt64 `json:"prizepool"`
+	CreatedAt time.Time     `json:"created_at"`
 }
 
 type CompetitionDivision struct {
@@ -44,20 +47,17 @@ type CompetitionDivision struct {
 }
 
 type CompetitionPrize struct {
-	ID                    int64       `json:"id"`
-	CompetitionID         int64       `json:"competition_id"`
-	CompetitionDivisionID int64       `json:"competition_division_id"`
-	Placement             int64       `json:"placement"`
-	Amount                int64       `json:"amount"`
-	Foreign               interface{} `json:"foreign"`
+	ID                    int64 `json:"id"`
+	CompetitionDivisionID int64 `json:"competition_division_id"`
+	Placement             int64 `json:"placement"`
+	Amount                int64 `json:"amount"`
 }
 
 type CompetitionResult struct {
-	CompetitionID int64     `json:"competition_id"`
-	PlayerID      string    `json:"player_id"`
-	Placement     int64     `json:"placement"`
-	Points        int64     `json:"points"`
-	CreatedAt     time.Time `json:"created_at"`
+	TimeID    int64         `json:"time_id"`
+	PrizeID   sql.NullInt64 `json:"prize_id"`
+	Points    sql.NullInt64 `json:"points"`
+	CreatedAt time.Time     `json:"created_at"`
 }
 
 type DeletedRecord struct {
@@ -94,6 +94,12 @@ type Motw struct {
 	CompetitionID int64 `json:"competition_id"`
 }
 
+type MotwTimeslot struct {
+	ID       int64     `json:"id"`
+	StartsAt time.Time `json:"starts_at"`
+	EndsAt   time.Time `json:"ends_at"`
+}
+
 type OpenidNonce struct {
 	ID          int64     `json:"id"`
 	Endpoint    string    `json:"endpoint"`
@@ -114,6 +120,7 @@ type Player struct {
 	DisplayName       sql.NullString `json:"display_name"`
 	SoldierDivision   sql.NullString `json:"soldier_division"`
 	DemoDivision      sql.NullString `json:"demo_division"`
+	MotwTimeslot      sql.NullInt64  `json:"motw_timeslot"`
 	PreferredClass    string         `json:"preferred_class"`
 	PreferredLauncher string         `json:"preferred_launcher"`
 	PreferredMap      sql.NullString `json:"preferred_map"`
@@ -147,12 +154,12 @@ type PlayerRequest struct {
 }
 
 type PlayerTime struct {
-	ID            int64     `json:"id"`
-	CompetitionID int64     `json:"competition_id"`
-	PlayerID      string    `json:"player_id"`
-	RunTime       float64   `json:"run_time"`
-	Verified      bool      `json:"verified"`
-	CreatedAt     time.Time `json:"created_at"`
+	ID                    int64     `json:"id"`
+	PlayerID              string    `json:"player_id"`
+	CompetitionDivisionID int64     `json:"competition_division_id"`
+	RunTime               float64   `json:"run_time"`
+	Verified              bool      `json:"verified"`
+	CreatedAt             time.Time `json:"created_at"`
 }
 
 type Quest struct {

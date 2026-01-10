@@ -2,8 +2,8 @@
 insert into player_request (player_id, type, content)
 values (?, ?, ?);
 
--- may be unnecessary
--- name: SelectPendingPlayerRequestsForPlayer :many
+-- todo: unused?
+-- name: SelectPendingPlayerRequests :many
 select * from player_request
 where player_id = ? and pending = true;
 

@@ -15,7 +15,7 @@ insert into player (id)
   values (?)
   on conflict do update
     set id = id
-  returning id, role, steam_avatar_url, steam_trade_token, tempus_id, country, country_code, discord_id, display_name, soldier_division, demo_division, preferred_class, preferred_launcher, preferred_map, created_at
+  returning id, role, steam_avatar_url, steam_trade_token, tempus_id, country, country_code, discord_id, display_name, soldier_division, demo_division, motw_timeslot, preferred_class, preferred_launcher, preferred_map, created_at
 `
 
 func (q *Queries) InsertPlayer(ctx context.Context, id string) (Player, error) {
@@ -33,6 +33,7 @@ func (q *Queries) InsertPlayer(ctx context.Context, id string) (Player, error) {
 		&i.DisplayName,
 		&i.SoldierDivision,
 		&i.DemoDivision,
+		&i.MotwTimeslot,
 		&i.PreferredClass,
 		&i.PreferredLauncher,
 		&i.PreferredMap,
@@ -42,7 +43,7 @@ func (q *Queries) InsertPlayer(ctx context.Context, id string) (Player, error) {
 }
 
 const selectAllPlayers = `-- name: SelectAllPlayers :many
-select id, role, steam_avatar_url, steam_trade_token, tempus_id, country, country_code, discord_id, display_name, soldier_division, demo_division, preferred_class, preferred_launcher, preferred_map, created_at from player
+select id, role, steam_avatar_url, steam_trade_token, tempus_id, country, country_code, discord_id, display_name, soldier_division, demo_division, motw_timeslot, preferred_class, preferred_launcher, preferred_map, created_at from player
 `
 
 func (q *Queries) SelectAllPlayers(ctx context.Context) ([]Player, error) {
@@ -66,6 +67,7 @@ func (q *Queries) SelectAllPlayers(ctx context.Context) ([]Player, error) {
 			&i.DisplayName,
 			&i.SoldierDivision,
 			&i.DemoDivision,
+			&i.MotwTimeslot,
 			&i.PreferredClass,
 			&i.PreferredLauncher,
 			&i.PreferredMap,
@@ -85,7 +87,7 @@ func (q *Queries) SelectAllPlayers(ctx context.Context) ([]Player, error) {
 }
 
 const selectPlayer = `-- name: SelectPlayer :one
-select id, role, steam_avatar_url, steam_trade_token, tempus_id, country, country_code, discord_id, display_name, soldier_division, demo_division, preferred_class, preferred_launcher, preferred_map, created_at from player
+select id, role, steam_avatar_url, steam_trade_token, tempus_id, country, country_code, discord_id, display_name, soldier_division, demo_division, motw_timeslot, preferred_class, preferred_launcher, preferred_map, created_at from player
   where id = ?
 `
 
@@ -104,6 +106,7 @@ func (q *Queries) SelectPlayer(ctx context.Context, id string) (Player, error) {
 		&i.DisplayName,
 		&i.SoldierDivision,
 		&i.DemoDivision,
+		&i.MotwTimeslot,
 		&i.PreferredClass,
 		&i.PreferredLauncher,
 		&i.PreferredMap,
@@ -141,6 +144,22 @@ type UpdatePlayerDisplayNameParams struct {
 
 func (q *Queries) UpdatePlayerDisplayName(ctx context.Context, arg UpdatePlayerDisplayNameParams) error {
 	_, err := q.db.ExecContext(ctx, updatePlayerDisplayName, arg.DisplayName, arg.ID)
+	return err
+}
+
+const updatePlayerMotwTimeslot = `-- name: UpdatePlayerMotwTimeslot :exec
+update player
+  set motw_timeslot = ?
+  where id = ?
+`
+
+type UpdatePlayerMotwTimeslotParams struct {
+	MotwTimeslot sql.NullInt64 `json:"motw_timeslot"`
+	ID           string        `json:"id"`
+}
+
+func (q *Queries) UpdatePlayerMotwTimeslot(ctx context.Context, arg UpdatePlayerMotwTimeslotParams) error {
+	_, err := q.db.ExecContext(ctx, updatePlayerMotwTimeslot, arg.MotwTimeslot, arg.ID)
 	return err
 }
 
@@ -197,7 +216,7 @@ update player
   set steam_avatar_url = ?,
   display_name = ?
   where id = ?
-  returning id, role, steam_avatar_url, steam_trade_token, tempus_id, country, country_code, discord_id, display_name, soldier_division, demo_division, preferred_class, preferred_launcher, preferred_map, created_at
+  returning id, role, steam_avatar_url, steam_trade_token, tempus_id, country, country_code, discord_id, display_name, soldier_division, demo_division, motw_timeslot, preferred_class, preferred_launcher, preferred_map, created_at
 `
 
 type UpdatePlayerSessionInfoParams struct {
@@ -221,6 +240,7 @@ func (q *Queries) UpdatePlayerSessionInfo(ctx context.Context, arg UpdatePlayerS
 		&i.DisplayName,
 		&i.SoldierDivision,
 		&i.DemoDivision,
+		&i.MotwTimeslot,
 		&i.PreferredClass,
 		&i.PreferredLauncher,
 		&i.PreferredMap,

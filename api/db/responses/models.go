@@ -25,6 +25,7 @@ type PlayerPreview struct {
 	DisplayName       string    `json:"display_name"`
 	SoldierDivision   string    `json:"soldier_division,omitempty"`
 	DemoDivision      string    `json:"demo_division,omitempty"`
+	MotwTimeslot      int64     `json:"motw_timeslot"`
 	PreferredClass    string    `json:"preferred_class"`
 	PreferredLauncher string    `json:"preferred_launcher"`
 	PreferredMap      string    `json:"preferred_map,omitempty"`
@@ -49,6 +50,7 @@ type Player struct {
 	DisplayName       string    `json:"display_name"`
 	SoldierDivision   string    `json:"soldier_division,omitempty"`
 	DemoDivision      string    `json:"demo_division,omitempty"`
+	MotwTimeslot      int64     `json:"motw_timeslot"`
 	PreferredClass    string    `json:"preferred_class"`
 	PreferredLauncher string    `json:"preferred_launcher"`
 	PreferredMap      string    `json:"preferred_map,omitempty"`

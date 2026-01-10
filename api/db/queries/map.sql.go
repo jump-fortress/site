@@ -10,69 +10,6 @@ import (
 	"database/sql"
 )
 
-const getMapNames = `-- name: GetMapNames :many
-select name from map
-`
-
-func (q *Queries) GetMapNames(ctx context.Context) ([]string, error) {
-	rows, err := q.db.QueryContext(ctx, getMapNames)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []string
-	for rows.Next() {
-		var name string
-		if err := rows.Scan(&name); err != nil {
-			return nil, err
-		}
-		items = append(items, name)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const getMaps = `-- name: GetMaps :many
-select id, name, courses, bonuses, soldier_tier, demo_tier, soldier_rating, demo_rating from map
-`
-
-func (q *Queries) GetMaps(ctx context.Context) ([]Map, error) {
-	rows, err := q.db.QueryContext(ctx, getMaps)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []Map
-	for rows.Next() {
-		var i Map
-		if err := rows.Scan(
-			&i.ID,
-			&i.Name,
-			&i.Courses,
-			&i.Bonuses,
-			&i.SoldierTier,
-			&i.DemoTier,
-			&i.SoldierRating,
-			&i.DemoRating,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
 const insertMap = `-- name: InsertMap :exec
 insert or ignore into map (id, name, courses, bonuses, soldier_tier, demo_tier, soldier_rating, demo_rating)
   values (?, ?, ?, ?, ?, ?, ?, ?)
@@ -101,4 +38,67 @@ func (q *Queries) InsertMap(ctx context.Context, arg InsertMapParams) error {
 		arg.DemoRating,
 	)
 	return err
+}
+
+const selectMapNames = `-- name: SelectMapNames :many
+select name from map
+`
+
+func (q *Queries) SelectMapNames(ctx context.Context) ([]string, error) {
+	rows, err := q.db.QueryContext(ctx, selectMapNames)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []string
+	for rows.Next() {
+		var name string
+		if err := rows.Scan(&name); err != nil {
+			return nil, err
+		}
+		items = append(items, name)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const selectMaps = `-- name: SelectMaps :many
+select id, name, courses, bonuses, soldier_tier, demo_tier, soldier_rating, demo_rating from map
+`
+
+func (q *Queries) SelectMaps(ctx context.Context) ([]Map, error) {
+	rows, err := q.db.QueryContext(ctx, selectMaps)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Map
+	for rows.Next() {
+		var i Map
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.Courses,
+			&i.Bonuses,
+			&i.SoldierTier,
+			&i.DemoTier,
+			&i.SoldierRating,
+			&i.DemoRating,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }

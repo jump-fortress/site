@@ -51,6 +51,11 @@ update player
   set demo_division = ?
   where id = ?;
 
+-- name: UpdatePlayerMotwTimeslot :exec
+update player
+  set motw_timeslot = ?
+  where id = ?;
+
 -- name: UpdatePlayerPreferredClass :exec
 update player
   set preferred_class = ?
