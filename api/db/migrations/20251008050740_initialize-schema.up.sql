@@ -1,11 +1,11 @@
 -- initial schema
 
--- player
+-- # player info
+-- id: steam_id64
+-- motw_timeslot: preferred timeslot for motws, in motw_times
 create table player(
-  -- steam_id64
   id text not null primary key,
   role text not null default 'Player',
-  -- steam_avatar_url can be non-unique for default and points shop avatars
   steam_avatar_url text,
   steam_trade_token text unique,
   tempus_id integer unique,
@@ -15,6 +15,7 @@ create table player(
   display_name text,
   soldier_division text,
   demo_division text,
+  motw_timeslot integer,
   preferred_class text not null default 'Soldier',
   preferred_launcher text not null default 'None',
   preferred_map text,
@@ -22,31 +23,37 @@ create table player(
   created_at datetime not null default current_timestamp,
 
   check (role in ('Player', 'Consultant', 'Moderator', 'Treasurer', 'Admin')),
+  check (motw_timeslot in (1, 2, 3)),
   check (preferred_class in ('Soldier', 'Demo')),
   check (preferred_launcher in ('Stock', 'Original', 'Mangler', 'None'))
 );
 
--- competition
--- competition types (monthly, motw, bounty, quest, ..., are not autoincremented)
+-- # competition info that applies to each kind 
+-- (monthly, motw, bounty, quest, ..., are not autoincremented)
 -- this is so they may follow a # order even when deleted (canceled)
+--
+-- shouldn't be deleted after starts_at
+--
+-- visible_at: visible to non-admins, without competition_division maps listed
+-- complete: manually set to true after ends_at, generate competition_result
+-- prizepool: total prizepool (keys), updated when competition_prizepool is updated
 create table competition(
   id integer not null primary key autoincrement,
   class text not null,
   starts_at datetime not null,
   ends_at datetime not null,
-  -- visible to players
   visible_at datetime not null,
-  -- manually marked as completed
   complete boolean not null default false,
+  prizepool integer,
 
   created_at datetime not null default current_timestamp,
 
   check (class in ('Soldier', 'Demo'))
 );
 
--- map, pulled from Tempus data
--- courses may be null (a map with no courses is essentially one course)
--- bonuses may be null (a map with no bonuses.. has no bonuses)
+-- # maps pulled from Tempus data
+-- courses: may be null (a map with no courses is basically one course, so course PRs don't matter)
+-- bonuses: may be null (a map with no bonuses.. has no bonuses)
 create table map(
   id integer not null primary key,
   name text not null,
@@ -58,7 +65,12 @@ create table map(
   demo_rating integer not null
 );
 
--- badge, special achievements featured on player profiles
+-- not implemented
+-- # special achievement earned on profiles 
+-- (ex. world cup winner)
+--
+-- label: tooltip text
+-- href: badge link, if appropriate
 create table badge(
   id integer not null primary key,
   label text not null,
@@ -68,14 +80,12 @@ create table badge(
   created_at datetime not null default current_timestamp
 );
 
--- player badges
--- relates to player (id)
--- relates to badge (id)
+-- not implemented
+-- # player badge
 create table player_badge(
   id integer not null primary key,
   player_id text not null,
   badge_id integer not null,
-
   achieved_at datetime not null,
 
   created_at datetime not null default current_timestamp,
@@ -84,8 +94,9 @@ create table player_badge(
   foreign key (badge_id) references badge (id)
 );
 
--- "stardust points" for a player
--- relates to player (id)
+-- # "stardust points" for a player
+-- achieved through some competitions (monthly, motw)
+-- updated when a competition is "complete"
 create table player_points(
   id integer not null primary key autoincrement,
   player_id text not null,
@@ -100,8 +111,7 @@ create table player_points(
   unique (class, player_id)
 );
 
--- requests for a player pending approval
--- relates to player (id)
+-- # player request
 create table player_request(
   id integer not null primary key autoincrement,
   player_id text not null,
@@ -115,61 +125,58 @@ create table player_request(
   check (type in ('Display Name Change', 'Soldier Placement', 'Demo Placement'))
 );
 
--- time for a competition's player
--- relates to player (id) and competition (id)
+-- # time for a competition's player
+-- not a final result, but a table of all times submitted
 create table player_time(
   id integer not null primary key autoincrement,
-  competition_id integer not null,
   player_id text not null,
+  competition_division_id integer not null,
   run_time float not null,
   verified boolean not null,
 
-  created_at datetime not null default current_timestamp
+  created_at datetime not null default current_timestamp,
+
+  foreign key (player_id) references player (id),
+  foreign key (competition_division_id) references competition_division (id)
 );
 
--- info for a division's competition
--- relates to competition (id)
+-- # division and map pair for a competition (excluding bounty)
 create table competition_division(
-  id integer not null primary key autoincrement,
+  id integer not null primary key,
   competition_id integer not null,
   division text not null,
   map text not null,
 
-  unique (competition_id, division),
   foreign key (competition_id) references competition (id) on delete cascade
 );
 
--- end result for a competition (placement and points)
--- relates to competition (id) and player (id)
+-- not implemented
+-- # final result for a competition
+--
+-- prize_id: can be null, not every competition or placement has a prize
 create table competition_result(
-  competition_id integer not null,
-  player_id text not null,
-  placement integer not null,
-  points integer not null,
+  time_id integer not null,
+  prize_id integer,
+  points integer,
 
   created_at datetime not null default current_timestamp,
 
-  primary key (competition_id, player_id),
-  foreign key (competition_id) references competition (id),
-  foreign key (player_id) references player (id)
+  primary key (time_id, prize_id),
+  foreign key (time_id) references player_time (id),
+  foreign key (prize_id) references competition_prize (id)
 );
 
--- prize for a competition (keys)
--- relates to competition (id)
--- relates to competition_division (id)
+-- # prize for a competition (keys)
 create table competition_prize(
-  id integer not null primary key autoincrement,
-  competition_id integer not null,
+  id integer not null primary key,
   competition_division_id integer not null,
   placement integer not null,
   amount integer not null,
 
-  foreign key (competition_id) references competition (id) on delete cascade
-  foreign key (competition_division_id) references competition (division) on delete cascade
+  foreign key (competition_division_id) references competition_division (id) on delete cascade
 );
 
--- monthly, a type of competition
--- relates to competition (id)
+-- # monthly, a type of competition
 create table monthly(
   id integer not null primary key,
   competition_id integer not null,
@@ -177,8 +184,8 @@ create table monthly(
   foreign key (competition_id) references competition (id) on delete cascade
 );
 
--- map of the week, a type of competition
--- relates to competition (id)
+-- not implemented
+-- # map of the week, a type of competition
 create table motw(
   id integer not null primary key,
   competition_id integer not null,
@@ -186,12 +193,23 @@ create table motw(
   foreign key (competition_id) references competition (id) on delete cascade
 );
 
--- bounty, a type of competition with no division relation
--- relates to competition (id)
+-- not implemented
+-- # timeslots limit when a motw is available to view and submit times for
+create table motw_timeslot(
+  id integer not null primary key autoincrement,
+  starts_at datetime not null,
+  ends_at datetime not null
+);
+
+-- not implemented
+-- # bounty, a type of competition with no division relation
+-- if course and bonus are null, bounty is for a map run
 create table bounty(
   id integer not null primary key,
   competition_id integer not null,
   map text not null,
+  course integer,
+  bonus integer,
   type text not null,
   time float,
   
@@ -199,8 +217,8 @@ create table bounty(
   check (type in ('Target Time', 'Record'))
 );
 
--- quest, a type of competition
--- relates to competition (id)
+-- not implemented
+-- # quest, a type of competition
 create table quest(
   id integer not null primary key,
   competition_id integer not null,
@@ -212,9 +230,7 @@ create table quest(
   check (type in ('Target Time', 'Completion'))
 );
 
--- todo create views for competition types
-
--- deleted record from any table
+-- # deleted record from any table
 create table deleted_record(
   id integer not null primary key autoincrement,
   source_table text not null,
@@ -224,7 +240,7 @@ create table deleted_record(
   deleted_at datetime not null default current_timestamp
 );
 
--- openid_nonce
+-- # openid_nonce
 create table openid_nonce(
   id integer not null primary key autoincrement,
   endpoint text not null,
@@ -236,7 +252,7 @@ create table openid_nonce(
   unique (endpoint, nonce_string)
 );
 
--- player openid session
+-- # player openid session
 create table session(
   id integer not null primary key autoincrement,
   player_id text not null,
@@ -246,7 +262,7 @@ create table session(
   foreign key (player_id) references player (id)
 );
 
--- player token blacklist
+-- # player token blacklist
 create table disallow_token(
   token_id text not null unique,
 
@@ -255,8 +271,8 @@ create table disallow_token(
   foreign key (token_id) references session (token_id)
 );
 
--- triggers
--- todo: view instead?
+
+-- # triggers
 
 -- total points
 create trigger update_player_points_total_after_insert 
@@ -305,6 +321,3 @@ begin
   )
   where player_id = new.player_id;
 end;
-
--- todo: deleted record table?
-
