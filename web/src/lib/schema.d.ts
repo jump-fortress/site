@@ -58,6 +58,46 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/internal/admin/competitions/prizepool/create': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * create prizepool
+     * @description create a competition division's prizepool
+     */
+    post: operations['create-prizepool'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/internal/admin/competitions/prizepool/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * delete prizepool
+     * @description reset a competition division's prizepool
+     */
+    post: operations['delete-prizepool'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/internal/admin/competitions/update/monthly': {
     parameters: {
       query?: never;
@@ -110,6 +150,26 @@ export interface paths {
      * @description get all monthlies that are visible
      */
     get: operations['get-all-monthly'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/internal/competitions/prizepool/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * get prizepool
+     * @description get all division prizepools for a competition
+     */
+    get: operations['get-prizepool'];
     put?: never;
     post?: never;
     delete?: never;
@@ -651,6 +711,8 @@ export interface components {
       ends_at: string;
       /** Format: int64 */
       id: number;
+      /** Format: int64 */
+      prizepool?: number;
       /** Format: date-time */
       starts_at: string;
       /** Format: date-time */
@@ -663,6 +725,31 @@ export interface components {
       /** Format: int64 */
       id: number;
       map: string;
+    };
+    CompetitionPrize: {
+      /** Format: int64 */
+      amount: number;
+      /** Format: int64 */
+      division_id: number;
+      /** Format: int64 */
+      id: number;
+      /** Format: int64 */
+      placement: number;
+    };
+    DivisionPrizepool: {
+      competition_division: components['schemas']['CompetitionDivision'];
+      prizes: components['schemas']['CompetitionPrize'][] | null;
+    };
+    DivisionPrizepoolInputBody: {
+      /**
+       * Format: uri
+       * @description A URL to the JSON Schema for this object.
+       * @example https://example.com/schemas/DivisionPrizepoolInputBody.json
+       */
+      readonly $schema?: string;
+      /** Format: int64 */
+      division_id: number;
+      division_prizepool: components['schemas']['DivisionPrizepool'];
     };
     ErrorDetail: {
       /** @description Where the error occurred, e.g. 'body.items[3].tags' or 'path.thing-id' */
@@ -761,6 +848,8 @@ export interface components {
       discord_id?: string;
       display_name: string;
       id: string;
+      /** Format: int64 */
+      motw_timeslot?: number;
       preferred_class: string;
       preferred_launcher: string;
       preferred_map?: string;
@@ -797,6 +886,8 @@ export interface components {
       demo_division?: string;
       display_name: string;
       id: string;
+      /** Format: int64 */
+      motw_timeslot: number;
       preferred_class: string;
       preferred_launcher: string;
       preferred_map?: string;
@@ -871,6 +962,9 @@ export interface components {
 }
 export type Competition = components['schemas']['Competition'];
 export type CompetitionDivision = components['schemas']['CompetitionDivision'];
+export type CompetitionPrize = components['schemas']['CompetitionPrize'];
+export type DivisionPrizepool = components['schemas']['DivisionPrizepool'];
+export type DivisionPrizepoolInputBody = components['schemas']['DivisionPrizepoolInputBody'];
 export type ErrorDetail = components['schemas']['ErrorDetail'];
 export type ErrorModel = components['schemas']['ErrorModel'];
 export type Map = components['schemas']['Map'];
@@ -978,6 +1072,67 @@ export interface operations {
       };
     };
   };
+  'create-prizepool': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['DivisionPrizepoolInputBody'];
+      };
+    };
+    responses: {
+      /** @description No Content */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Error */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ErrorModel'];
+        };
+      };
+    };
+  };
+  'delete-prizepool': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description division id */
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description No Content */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Error */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ErrorModel'];
+        };
+      };
+    };
+  };
   'update-monthly': {
     parameters: {
       query?: never;
@@ -1052,6 +1207,38 @@ export interface operations {
         };
         content: {
           'application/json': components['schemas']['Monthly'][] | null;
+        };
+      };
+      /** @description Error */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ErrorModel'];
+        };
+      };
+    };
+  };
+  'get-prizepool': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description competition id */
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['DivisionPrizepool'][] | null;
         };
       };
       /** @description Error */
@@ -1862,9 +2049,12 @@ export enum ApiPaths {
   get_all_full_monthly = '/internal/admin/competitions/all/monthly',
   cancel_competition = '/internal/admin/competitions/cancel/{id}',
   create_monthly = '/internal/admin/competitions/create/monthly',
+  create_prizepool = '/internal/admin/competitions/prizepool/create',
+  delete_prizepool = '/internal/admin/competitions/prizepool/{id}',
   update_monthly = '/internal/admin/competitions/update/monthly',
   update_maps = '/internal/admin/maps',
   get_all_monthly = '/internal/competitions/all/monthly',
+  get_prizepool = '/internal/competitions/prizepool/{id}',
   get_all_full_players = '/internal/consultant/players/all',
   get_all_pending_player_requests = '/internal/consultant/players/requests/pending',
   get_all_maps = '/internal/maps',
