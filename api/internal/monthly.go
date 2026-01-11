@@ -3,6 +3,7 @@ package internal
 import (
 	"context"
 	"slices"
+	"strconv"
 	"time"
 
 	"github.com/danielgtaylor/huma/v2"
@@ -12,10 +13,11 @@ import (
 
 func getMonthlyResponse(monthly queries.SelectAllMonthlyRow) responses.Monthly {
 	return responses.Monthly{
-		ID: monthly.CompetitionID,
+		ID: monthly.ID,
 		Competition: responses.Competition{
-			ID:        monthly.ID,
+			ID:        monthly.CompetitionID,
 			Class:     monthly.Class,
+			Prizepool: monthly.Prizepool.Int64,
 			StartsAt:  monthly.StartsAt,
 			EndsAt:    monthly.EndsAt,
 			VisibleAt: monthly.VisibleAt,
@@ -68,6 +70,10 @@ func HandleGetAllMonthlies(ctx context.Context, _ *struct{}) (*responses.Monthli
 // admin
 
 func HandlePostCreateMonthly(ctx context.Context, input *responses.MonthlyInput) (*struct{}, error) {
+	if len(input.Body.Divisions) == 0 {
+		return nil, huma.Error400BadRequest("missing divisions")
+	}
+
 	maps, err := responses.Queries.SelectMapNames(ctx)
 	if err != nil {
 		return nil, err
@@ -121,9 +127,9 @@ func HandlePostUpdateMonthly(ctx context.Context, input *responses.MonthlyInput)
 	// insert / update divisions
 	// delete divisions not included in the updated competition
 
-	monthly, err := responses.Queries.SelectMonthly(ctx, input.Body.Competition.ID)
+	monthly, err := responses.Queries.SelectMonthly(ctx, input.Body.ID)
 	if err != nil {
-		return nil, huma.Error400BadRequest("no competition found with this id")
+		return nil, huma.Error400BadRequest("no competition found with id " + strconv.FormatInt(input.Body.ID, 10))
 	}
 
 	now := time.Now()
@@ -170,9 +176,8 @@ func HandlePostUpdateMonthly(ctx context.Context, input *responses.MonthlyInput)
 		for _, icd := range input.Body.Divisions {
 			if cd.Division == icd.Division {
 				if err := responses.Queries.UpdateCompetitionDivision(ctx, queries.UpdateCompetitionDivisionParams{
-					Map:           icd.Map,
-					CompetitionID: cd.CompetitionID,
-					Division:      cd.Division,
+					Map: icd.Map,
+					ID:  cd.ID,
 				}); err != nil {
 					return nil, err
 				}
@@ -181,10 +186,7 @@ func HandlePostUpdateMonthly(ctx context.Context, input *responses.MonthlyInput)
 			}
 		}
 		if !contains {
-			if _, err := responses.Queries.DeleteCompetitionDivision(ctx, queries.DeleteCompetitionDivisionParams{
-				CompetitionID: cd.CompetitionID,
-				Division:      cd.Division,
-			}); err != nil {
+			if _, err := responses.Queries.DeleteCompetitionDivision(ctx, cd.ID); err != nil {
 				return nil, err
 			}
 		}
