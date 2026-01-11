@@ -302,7 +302,7 @@ func HandlePostSelfSteamTradeToken(ctx context.Context, input *responses.SteamTr
 	return nil, nil
 }
 
-// todo: notify to set this player's divisions when they link their tempus
+// todo: notify to set this player's divisions when they link their tempus id
 func HandlePostSelfTempusInfo(ctx context.Context, input *responses.TempusIDInput) (*struct{}, error) {
 	principal, ok := GetPrincipal(ctx)
 	if !ok {
@@ -377,6 +377,18 @@ func HandlePostSelfSteamAvatarUrl(ctx context.Context, _ *struct{}) (*struct{}, 
 	}
 
 	return nil, nil
+}
+
+func HandlePostSubmitPlayerTime(ctx context.Context, input *responses.CompetitionIDInput) (*struct{}, error) {
+	return nil, huma.Error500InternalServerError("not implemented")
+
+	// check for player division and tempus id
+	// check that competition division matches player's division
+	// check that competition is after starts_at and not completed
+	// check tempus pr after, so internal db verifies the request is valid first
+	// check that tempus time is after starts_at and before ends_at
+
+	// if tempus pr is not during competition, request unverified submit
 }
 
 // player requests..
