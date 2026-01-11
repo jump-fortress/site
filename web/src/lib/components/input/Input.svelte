@@ -7,10 +7,11 @@
     type: string;
     placeholder?: string;
     message?: string;
+    clear?: boolean;
     onsubmit: (value: string) => Promise<InputResponse>;
   };
 
-  let { type, placeholder = '', message = '', onsubmit }: Props = $props();
+  let { type, placeholder = '', message = '', clear = false, onsubmit }: Props = $props();
 
   let value: string = $state('');
   let response: Promise<InputResponse> = $derived(
@@ -26,6 +27,9 @@
   onkeydown={(event) => {
     if (event.key === 'Enter' && value) {
       response = onsubmit(value);
+      if (clear) {
+        value = '';
+      }
     }
   }} />
 
@@ -33,9 +37,13 @@
 <button
   in:fade
   class="relative grid size-10 cursor-pointer place-content-center text-content"
+  tabindex="-1"
   onclick={() => {
     if (value) {
       response = onsubmit(value);
+      if (clear) {
+        value = '';
+      }
     }
   }}>
   <SubmitIcon {response} />
