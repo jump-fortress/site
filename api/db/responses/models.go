@@ -50,7 +50,7 @@ type Player struct {
 	DisplayName       string    `json:"display_name"`
 	SoldierDivision   string    `json:"soldier_division,omitempty"`
 	DemoDivision      string    `json:"demo_division,omitempty"`
-	MotwTimeslot      int64     `json:"motw_timeslot"`
+	MotwTimeslot      int64     `json:"motw_timeslot,omitempty"`
 	PreferredClass    string    `json:"preferred_class"`
 	PreferredLauncher string    `json:"preferred_launcher"`
 	PreferredMap      string    `json:"preferred_map,omitempty"`
@@ -248,6 +248,7 @@ type CompetitionDivisionInput struct {
 type Competition struct {
 	ID        int64     `json:"id"`
 	Class     string    `json:"class"`
+	Prizepool int64     `json:"prizepool,omitempty"`
 	StartsAt  time.Time `json:"starts_at"`
 	EndsAt    time.Time `json:"ends_at"`
 	VisibleAt time.Time `json:"visible_at"`
@@ -264,6 +265,33 @@ type CompetitionDivision struct {
 	CompetitionID int64  `json:"competition_id"`
 	Division      string `json:"division"`
 	Map           string `json:"map"`
+}
+
+type DivisionPrizepool struct {
+	Division CompetitionDivision `json:"competition_division"`
+	Prizes   []CompetitionPrize  `json:"prizes"`
+}
+
+type CompetitionPrize struct {
+	ID         int64 `json:"id"`
+	DivisionID int64 `json:"division_id"`
+	Placement  int64 `json:"placement"`
+	Amount     int64 `json:"amount"`
+}
+
+type DivisionPrizepoolInput struct {
+	Body struct {
+		DivisionID int64             `json:"division_id"`
+		Prizepool  DivisionPrizepool `json:"division_prizepool"`
+	}
+}
+
+type DivisionIDInput struct {
+	DivisionID int64 `path:"id" doc:"division id"`
+}
+
+type PrizepoolOutput struct {
+	Body []DivisionPrizepool
 }
 
 type MonthlyInput struct {
