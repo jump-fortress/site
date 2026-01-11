@@ -91,10 +91,12 @@
         </span>
         <span class="icon-[mdi--calendar]"></span>
       </div>
-      <div class="flex items-center gap-1">
-        <span>? keys</span>
-        <span class="icon-[mdi--key]"></span>
-      </div>
+      {#if monthly.competition.prizepool}
+        <div class="flex items-center gap-1">
+          <span>{monthly.competition.prizepool} keys</span>
+          <span class="icon-[mdi--key]"></span>
+        </div>
+      {/if}
     </div>
   </div>
 </div>
