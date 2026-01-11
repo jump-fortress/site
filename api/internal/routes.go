@@ -33,6 +33,16 @@ func registerOpenRoutes(internalApi *huma.Group) {
 		Description: "get all monthlies that are visible",
 		Tags:        []string{"Player"},
 	}, HandleGetAllMonthlies)
+
+	huma.Register(internalApi, huma.Operation{
+		Method:      http.MethodGet,
+		Path:        "/competitions/prizepool/{id}",
+		OperationID: "get-prizepool",
+		Summary:     "get prizepool",
+		Description: "get all division prizepools for a competition",
+		Tags:        []string{"Player"},
+		Security:    sessionCookieSecurityMap,
+	}, HandlePostGetPrizepool)
 }
 
 func registerSessionRoutes(internalApi *huma.Group) {
@@ -165,6 +175,17 @@ func registerSessionRoutes(internalApi *huma.Group) {
 		Security:    sessionCookieSecurityMap,
 		Middlewares: requireUserSessionMiddlewares,
 	}, HandleGetAllMapNames)
+
+	huma.Register(internalApi, huma.Operation{
+		Method:      http.MethodPost,
+		Path:        "/players/times/{id}",
+		OperationID: "submit-player-time",
+		Summary:     "submit player time",
+		Description: "submit a player time for a competition",
+		Tags:        []string{"Player"},
+		Security:    sessionCookieSecurityMap,
+		Middlewares: requireUserSessionMiddlewares,
+	}, HandlePostSubmitPlayerTime)
 }
 
 func registerConsultantRoutes(consultantApi *huma.Group) {
@@ -280,4 +301,24 @@ func registerAdminRoutes(adminApi *huma.Group) {
 		Tags:        []string{"Admin"},
 		Security:    sessionCookieSecurityMap,
 	}, HandlePostCancelCompetition)
+
+	huma.Register(adminApi, huma.Operation{
+		Method:      http.MethodPost,
+		Path:        "/competitions/prizepool/create",
+		OperationID: "create-prizepool",
+		Summary:     "create prizepool",
+		Description: "create a competition division's prizepool",
+		Tags:        []string{"Admin"},
+		Security:    sessionCookieSecurityMap,
+	}, HandlePostCreatePrizepool)
+
+	huma.Register(adminApi, huma.Operation{
+		Method:      http.MethodPost,
+		Path:        "/competitions/prizepool/{id}",
+		OperationID: "delete-prizepool",
+		Summary:     "delete prizepool",
+		Description: "reset a competition division's prizepool",
+		Tags:        []string{"Admin"},
+		Security:    sessionCookieSecurityMap,
+	}, HandlePostDeletePrizepool)
 }
