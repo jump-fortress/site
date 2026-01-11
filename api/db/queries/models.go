@@ -31,11 +31,11 @@ type Bounty struct {
 type Competition struct {
 	ID        int64         `json:"id"`
 	Class     string        `json:"class"`
+	Prizepool sql.NullInt64 `json:"prizepool"`
 	StartsAt  time.Time     `json:"starts_at"`
 	EndsAt    time.Time     `json:"ends_at"`
 	VisibleAt time.Time     `json:"visible_at"`
 	Complete  bool          `json:"complete"`
-	Prizepool sql.NullInt64 `json:"prizepool"`
 	CreatedAt time.Time     `json:"created_at"`
 }
 

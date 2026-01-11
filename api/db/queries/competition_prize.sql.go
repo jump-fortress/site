@@ -9,13 +9,23 @@ import (
 	"context"
 )
 
-const deleteCompetitionPrize = `-- name: DeleteCompetitionPrize :exec
+const deleteCompetitionDivisionPrizepool = `-- name: DeleteCompetitionDivisionPrizepool :exec
 delete from competition_prize
   where competition_division_id = ?
 `
 
-func (q *Queries) DeleteCompetitionPrize(ctx context.Context, competitionDivisionID int64) error {
-	_, err := q.db.ExecContext(ctx, deleteCompetitionPrize, competitionDivisionID)
+func (q *Queries) DeleteCompetitionDivisionPrizepool(ctx context.Context, competitionDivisionID int64) error {
+	_, err := q.db.ExecContext(ctx, deleteCompetitionDivisionPrizepool, competitionDivisionID)
+	return err
+}
+
+const deleteCompetitionPrize = `-- name: DeleteCompetitionPrize :exec
+delete from competition_prize
+  where id = ?
+`
+
+func (q *Queries) DeleteCompetitionPrize(ctx context.Context, id int64) error {
+	_, err := q.db.ExecContext(ctx, deleteCompetitionPrize, id)
 	return err
 }
 
@@ -35,25 +45,41 @@ func (q *Queries) InsertCompetitionPrize(ctx context.Context, arg InsertCompetit
 	return err
 }
 
-const selectCompetitionPrizes = `-- name: SelectCompetitionPrizes :many
-select id, competition_division_id, placement, amount from competition_prize
-  where competition_division_id = ?
+const selectDivisionPrizepool = `-- name: SelectDivisionPrizepool :many
+select cp.id, competition_division_id, placement, amount, cd.id, competition_id, division, map from competition_prize cp
+  join competition_division cd on cp.competition_division_id = cd.id
+  where cd.id = ?
 `
 
-func (q *Queries) SelectCompetitionPrizes(ctx context.Context, competitionDivisionID int64) ([]CompetitionPrize, error) {
-	rows, err := q.db.QueryContext(ctx, selectCompetitionPrizes, competitionDivisionID)
+type SelectDivisionPrizepoolRow struct {
+	ID                    int64  `json:"id"`
+	CompetitionDivisionID int64  `json:"competition_division_id"`
+	Placement             int64  `json:"placement"`
+	Amount                int64  `json:"amount"`
+	ID_2                  int64  `json:"id_2"`
+	CompetitionID         int64  `json:"competition_id"`
+	Division              string `json:"division"`
+	Map                   string `json:"map"`
+}
+
+func (q *Queries) SelectDivisionPrizepool(ctx context.Context, id int64) ([]SelectDivisionPrizepoolRow, error) {
+	rows, err := q.db.QueryContext(ctx, selectDivisionPrizepool, id)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []CompetitionPrize
+	var items []SelectDivisionPrizepoolRow
 	for rows.Next() {
-		var i CompetitionPrize
+		var i SelectDivisionPrizepoolRow
 		if err := rows.Scan(
 			&i.ID,
 			&i.CompetitionDivisionID,
 			&i.Placement,
 			&i.Amount,
+			&i.ID_2,
+			&i.CompetitionID,
+			&i.Division,
+			&i.Map,
 		); err != nil {
 			return nil, err
 		}
@@ -66,6 +92,20 @@ func (q *Queries) SelectCompetitionPrizes(ctx context.Context, competitionDivisi
 		return nil, err
 	}
 	return items, nil
+}
+
+const sumCompetitionPrizepool = `-- name: SumCompetitionPrizepool :one
+select cast(coalesce(sum(amount),0) as integer) from competition_prize cp
+  join competition_division cd on cp.competition_division_id = cd.id
+  join competition c on cd.competition_id = c.id
+  where c.id = ?
+`
+
+func (q *Queries) SumCompetitionPrizepool(ctx context.Context, id int64) (int64, error) {
+	row := q.db.QueryRowContext(ctx, sumCompetitionPrizepool, id)
+	var column_1 int64
+	err := row.Scan(&column_1)
+	return column_1, err
 }
 
 const updateCompetitionPrize = `-- name: UpdateCompetitionPrize :exec

@@ -40,11 +40,11 @@ create table player(
 create table competition(
   id integer not null primary key autoincrement,
   class text not null,
+  prizepool integer,
   starts_at datetime not null,
   ends_at datetime not null,
   visible_at datetime not null,
   complete boolean not null default false,
-  prizepool integer,
 
   created_at datetime not null default current_timestamp,
 

@@ -11,10 +11,21 @@ import (
 	"time"
 )
 
+const completeCompetition = `-- name: CompleteCompetition :exec
+update competition
+  set complete = true
+  where id = ?
+`
+
+func (q *Queries) CompleteCompetition(ctx context.Context, id int64) error {
+	_, err := q.db.ExecContext(ctx, completeCompetition, id)
+	return err
+}
+
 const deleteCompetition = `-- name: DeleteCompetition :one
 delete from competition
   where id = ? and starts_at > current_timestamp
-  returning id, class, starts_at, ends_at, visible_at, complete, prizepool, created_at
+  returning id, class, prizepool, starts_at, ends_at, visible_at, complete, created_at
 `
 
 func (q *Queries) DeleteCompetition(ctx context.Context, id int64) (Competition, error) {
@@ -23,11 +34,11 @@ func (q *Queries) DeleteCompetition(ctx context.Context, id int64) (Competition,
 	err := row.Scan(
 		&i.ID,
 		&i.Class,
+		&i.Prizepool,
 		&i.StartsAt,
 		&i.EndsAt,
 		&i.VisibleAt,
 		&i.Complete,
-		&i.Prizepool,
 		&i.CreatedAt,
 	)
 	return i, err
@@ -36,7 +47,7 @@ func (q *Queries) DeleteCompetition(ctx context.Context, id int64) (Competition,
 const insertCompetition = `-- name: InsertCompetition :one
 insert into competition (class, starts_at, ends_at, visible_at)
   values (?, ?, ?, ?)
-  returning id, class, starts_at, ends_at, visible_at, complete, prizepool, created_at
+  returning id, class, prizepool, starts_at, ends_at, visible_at, complete, created_at
 `
 
 type InsertCompetitionParams struct {
@@ -57,11 +68,32 @@ func (q *Queries) InsertCompetition(ctx context.Context, arg InsertCompetitionPa
 	err := row.Scan(
 		&i.ID,
 		&i.Class,
+		&i.Prizepool,
 		&i.StartsAt,
 		&i.EndsAt,
 		&i.VisibleAt,
 		&i.Complete,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const selectCompetition = `-- name: SelectCompetition :one
+select id, class, prizepool, starts_at, ends_at, visible_at, complete, created_at from competition
+  where id = ?
+`
+
+func (q *Queries) SelectCompetition(ctx context.Context, id int64) (Competition, error) {
+	row := q.db.QueryRowContext(ctx, selectCompetition, id)
+	var i Competition
+	err := row.Scan(
+		&i.ID,
+		&i.Class,
 		&i.Prizepool,
+		&i.StartsAt,
+		&i.EndsAt,
+		&i.VisibleAt,
+		&i.Complete,
 		&i.CreatedAt,
 	)
 	return i, err
@@ -92,17 +124,6 @@ func (q *Queries) UpdateCompetition(ctx context.Context, arg UpdateCompetitionPa
 		arg.VisibleAt,
 		arg.ID,
 	)
-	return err
-}
-
-const updateCompetitionComplete = `-- name: UpdateCompetitionComplete :exec
-update competition
-  set complete = true
-  where id = ?
-`
-
-func (q *Queries) UpdateCompetitionComplete(ctx context.Context, id int64) error {
-	_, err := q.db.ExecContext(ctx, updateCompetitionComplete, id)
 	return err
 }
 

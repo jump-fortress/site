@@ -2,6 +2,10 @@
 insert into competition_division (competition_id, division, map)
   values (?, ?, ?);
 
+-- name: SelectCompetitionDivision :one
+select * from competition_division
+  where id = ?;
+
 -- name: SelectCompetitionDivisions :many
 select * from competition_division
   where competition_id = ?;
@@ -9,9 +13,9 @@ select * from competition_division
 -- name: UpdateCompetitionDivision :exec
 update competition_division
   set map = ?
-  where competition_id = ? and division = ?;
+  where id = ?;
 
 -- name: DeleteCompetitionDivision :one
 delete from competition_division
-  where competition_id = ? and division = ?
+  where id = ?
   returning *;

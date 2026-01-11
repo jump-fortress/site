@@ -11,17 +11,12 @@ import (
 
 const deleteCompetitionDivision = `-- name: DeleteCompetitionDivision :one
 delete from competition_division
-  where competition_id = ? and division = ?
+  where id = ?
   returning id, competition_id, division, map
 `
 
-type DeleteCompetitionDivisionParams struct {
-	CompetitionID int64  `json:"competition_id"`
-	Division      string `json:"division"`
-}
-
-func (q *Queries) DeleteCompetitionDivision(ctx context.Context, arg DeleteCompetitionDivisionParams) (CompetitionDivision, error) {
-	row := q.db.QueryRowContext(ctx, deleteCompetitionDivision, arg.CompetitionID, arg.Division)
+func (q *Queries) DeleteCompetitionDivision(ctx context.Context, id int64) (CompetitionDivision, error) {
+	row := q.db.QueryRowContext(ctx, deleteCompetitionDivision, id)
 	var i CompetitionDivision
 	err := row.Scan(
 		&i.ID,
@@ -46,6 +41,23 @@ type InsertCompetitionDivisionParams struct {
 func (q *Queries) InsertCompetitionDivision(ctx context.Context, arg InsertCompetitionDivisionParams) error {
 	_, err := q.db.ExecContext(ctx, insertCompetitionDivision, arg.CompetitionID, arg.Division, arg.Map)
 	return err
+}
+
+const selectCompetitionDivision = `-- name: SelectCompetitionDivision :one
+select id, competition_id, division, map from competition_division
+  where id = ?
+`
+
+func (q *Queries) SelectCompetitionDivision(ctx context.Context, id int64) (CompetitionDivision, error) {
+	row := q.db.QueryRowContext(ctx, selectCompetitionDivision, id)
+	var i CompetitionDivision
+	err := row.Scan(
+		&i.ID,
+		&i.CompetitionID,
+		&i.Division,
+		&i.Map,
+	)
+	return i, err
 }
 
 const selectCompetitionDivisions = `-- name: SelectCompetitionDivisions :many
@@ -84,16 +96,15 @@ func (q *Queries) SelectCompetitionDivisions(ctx context.Context, competitionID 
 const updateCompetitionDivision = `-- name: UpdateCompetitionDivision :exec
 update competition_division
   set map = ?
-  where competition_id = ? and division = ?
+  where id = ?
 `
 
 type UpdateCompetitionDivisionParams struct {
-	Map           string `json:"map"`
-	CompetitionID int64  `json:"competition_id"`
-	Division      string `json:"division"`
+	Map string `json:"map"`
+	ID  int64  `json:"id"`
 }
 
 func (q *Queries) UpdateCompetitionDivision(ctx context.Context, arg UpdateCompetitionDivisionParams) error {
-	_, err := q.db.ExecContext(ctx, updateCompetitionDivision, arg.Map, arg.CompetitionID, arg.Division)
+	_, err := q.db.ExecContext(ctx, updateCompetitionDivision, arg.Map, arg.ID)
 	return err
 }

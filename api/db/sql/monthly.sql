@@ -5,7 +5,7 @@ insert into monthly (competition_id)
 -- name: SelectMonthly :one
 select * from monthly m
   join competition c on m.competition_id = c.id
-  where m.competition_id = ?;
+  where m.id = ?;
 
 -- name: SelectAllMonthly :many
 select * from monthly m

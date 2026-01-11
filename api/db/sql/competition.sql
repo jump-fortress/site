@@ -3,6 +3,10 @@ insert into competition (class, starts_at, ends_at, visible_at)
   values (?, ?, ?, ?)
   returning *;
 
+-- name: SelectCompetition :one
+select * from competition
+  where id = ?;
+
 -- name: UpdateCompetition :exec
 update competition
   set class = ?,
@@ -16,7 +20,7 @@ update competition
   set prizepool = ?
   where id = ?;
 
--- name: UpdateCompetitionComplete :exec
+-- name: CompleteCompetition :exec
 update competition
   set complete = true
   where id = ?;
