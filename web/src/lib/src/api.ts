@@ -6,8 +6,10 @@ import type {
   PlayerProfile,
   PlayerRequestPreview,
   PlayerWithRequest,
-  Monthly
-} from '../schema';
+  Monthly,
+  DivisionPrizepoolInputBody,
+  DivisionPrizepool
+} from '$lib/schema';
 
 export const Client = createClient<paths>({
   baseUrl: 'http://localhost:5173/'
@@ -303,7 +305,7 @@ export async function createMonthly(monthly: Monthly): Promise<InputResponse> {
 
   return error
     ? { error: true, message: error.detail ?? 'unknown error' }
-    : { error: false, message: '' };
+    : { error: false, message: 'success' };
 }
 
 export async function updateMonthly(monthly: Monthly): Promise<InputResponse> {
@@ -314,7 +316,7 @@ export async function updateMonthly(monthly: Monthly): Promise<InputResponse> {
 
   return error
     ? { error: true, message: error.detail ?? 'unknown error' }
-    : { error: false, message: '' };
+    : { error: false, message: 'success' };
 }
 
 export async function cancelCompetition(id: number): Promise<InputResponse> {
@@ -328,7 +330,7 @@ export async function cancelCompetition(id: number): Promise<InputResponse> {
   });
   return error
     ? { error: true, message: error.detail ?? 'unknown error' }
-    : { error: false, message: '' };
+    : { error: false, message: 'success' };
 }
 
 export async function getAllMonthlies(): Promise<Monthly[] | null> {
@@ -345,4 +347,55 @@ export async function getAllFullMonthlies(): Promise<Monthly[] | null> {
   });
 
   return data ?? null;
+}
+
+export async function updateMapList(): Promise<InputResponse> {
+  const { error } = await Client.POST('/internal/admin/maps', {
+    fetch: fetch
+  });
+
+  return error
+    ? { error: true, message: error.detail ?? 'unknown error' }
+    : { error: false, message: 'success' };
+}
+
+export async function createPrizepool(
+  prizepool: DivisionPrizepoolInputBody
+): Promise<InputResponse> {
+  const { error } = await Client.POST('/internal/admin/competitions/prizepool/create', {
+    fetch: fetch,
+    body: prizepool
+  });
+
+  return error
+    ? { error: true, message: error.detail ?? 'unknown error' }
+    : { error: false, message: 'success' };
+}
+
+export async function getCompetitionPrizepool(id: number): Promise<DivisionPrizepool[] | null> {
+  const { data } = await Client.GET('/internal/competitions/prizepool/{id}', {
+    fetch: fetch,
+    params: {
+      path: {
+        id: id
+      }
+    }
+  });
+
+  return data ?? null;
+}
+
+export async function deletePrizepool(id: number): Promise<InputResponse> {
+  const { error } = await Client.POST('/internal/admin/competitions/prizepool/{id}', {
+    fetch: fetch,
+    params: {
+      path: {
+        id: id
+      }
+    }
+  });
+
+  return error
+    ? { error: true, message: error.detail ?? 'unknown error' }
+    : { error: false, message: 'success' };
 }
