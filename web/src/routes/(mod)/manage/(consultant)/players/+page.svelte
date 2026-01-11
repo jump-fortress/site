@@ -16,7 +16,6 @@
   } from '$lib/src/api.js';
   import { divisions } from '$lib/src/divisions.js';
   import { slide } from 'svelte/transition';
-  import { Temporal } from 'temporal-polyfill';
 
   import type { Player } from '$lib/schema.js';
 
@@ -42,40 +41,44 @@
 
 <PlayerHeader player={selected} selected_class={selected.preferred_class} />
 
-{#if data.session.role === 'Moderator' || (data.session.role === 'Admin' && selected.display_name !== 'select a player')}
-  <div in:slide>
-    <Section label="manage player">
-      <Label label="update display name">
-        <Input
-          type="text"
-          placeholder={selected.display_name}
-          onsubmit={(value) => {
-            return updatePlayerDisplayName(selected.id, value);
-          }} />
-      </Label>
+{#await data.session then session}
+  {#if session}
+    {#if (session.role === 'Moderator' || session.role === 'Admin') && selected.display_name !== 'select a player'}
+      <div in:slide>
+        <Section label="manage player">
+          <Label label="update display name">
+            <Input
+              type="text"
+              placeholder={selected.display_name}
+              onsubmit={(value) => {
+                return updatePlayerDisplayName(selected.id, value);
+              }} />
+          </Label>
 
-      <Label label="update soldier div">
-        <Select
-          type="text"
-          placeholder={selected.soldier_division}
-          options={divisions.concat(['None'])}
-          onsubmit={(value) => {
-            return updatePlayerSoldierDivision(selected.id, value);
-          }} />
-      </Label>
+          <Label label="update soldier div">
+            <Select
+              type="text"
+              placeholder={selected.soldier_division}
+              options={divisions.concat(['None'])}
+              onsubmit={(value) => {
+                return updatePlayerSoldierDivision(selected.id, value);
+              }} />
+          </Label>
 
-      <Label label="update demo div">
-        <Select
-          type="text"
-          placeholder={selected.demo_division}
-          options={divisions.concat(['None'])}
-          onsubmit={(value) => {
-            return updatePlayerDemoDivision(selected.id, value);
-          }} />
-      </Label>
-    </Section>
-  </div>
-{/if}
+          <Label label="update demo div">
+            <Select
+              type="text"
+              placeholder={selected.demo_division}
+              options={divisions.concat(['None'])}
+              onsubmit={(value) => {
+                return updatePlayerDemoDivision(selected.id, value);
+              }} />
+          </Label>
+        </Section>
+      </div>
+    {/if}
+  {/if}
+{/await}
 
 {#await data.players then _}
   {#if players.length}

@@ -4,6 +4,7 @@
   import rl_original from '$lib/assets/tf/rl_original.png';
   import rl_stock from '$lib/assets/tf/rl_stock.png';
   import soldier from '$lib/assets/tf/soldier.png';
+  import ClassImage from '$lib/components/display/ClassImage.svelte';
   import Table from '$lib/components/display/table/Table.svelte';
   import TableDate from '$lib/components/display/table/TableDate.svelte';
   import Button from '$lib/components/input/Button.svelte';
@@ -79,7 +80,8 @@
         onsubmit={() => {
           return updateSteamAvatar();
         }}>
-        <span>update avatar from Steam</span>
+        <span class="icon-[mdi--image-outline]"></span>
+        <span>update Steam avatar</span>
       </Button>
 
       <!-- todo: favorite map -->
@@ -117,14 +119,16 @@
         onsubmit={() => {
           return createPlayerRequest('Soldier Placement', 'null');
         }}>
-        <span>soldier division placement</span>
+        <span class="h-6"><ClassImage selected={'Soldier'} /></span>
+        <span>soldier placement</span>
       </Button>
 
       <Button
         onsubmit={() => {
           return createPlayerRequest('Demo Placement', 'null');
         }}>
-        <span>demo division placement</span>
+        <span class="h-6"><ClassImage selected={'Demo'} /></span>
+        <span>demo placement</span>
       </Button>
     </Section>
 

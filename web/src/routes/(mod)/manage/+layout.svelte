@@ -13,7 +13,7 @@
       <InnerNav
         {route}
         parentRoute="manage"
-        pages={['formats', 'players', 'requests', 'payouts']} />
+        pages={['formats', 'prizepools', 'players', 'requests', 'payouts']} />
     {:else if session.role === 'Mod' || session.role === 'Consultant'}
       <InnerNav {route} parentRoute="manage" pages={['players', 'requests']} />
     {:else if session.role === 'Treasurer'}

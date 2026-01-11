@@ -18,7 +18,8 @@
       {/if}
     {/each}
 
-    <Table data={monthlies.filter(({ competition }) => !competition.complete)}>
+    <!-- completed monthlies -->
+    <Table data={monthlies.filter(({ competition }) => competition.complete)}>
       {#snippet header()}
         <th></th>
         <th class="w-48"></th>
