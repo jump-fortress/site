@@ -345,7 +345,7 @@ func registerAdminRoutes(adminApi *huma.Group) {
 
 	huma.Register(adminApi, huma.Operation{
 		Method:      http.MethodPost,
-		Path:        "/players/times/{competition_id}/{player_id}/{run_time}",
+		Path:        "/players/times/{id}/{player_id}/{run_time}",
 		OperationID: "create-player-time",
 		Summary:     "create player time",
 		Description: "create a time for a competition",
