@@ -218,6 +218,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/internal/competitions/monthly/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * get monthly info
+     * @description get monthly info by monthly id
+     */
+    get: operations['get-monthly'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/internal/competitions/prizepool/{id}': {
     parameters: {
       query?: never;
@@ -226,7 +246,7 @@ export interface paths {
       cookie?: never;
     };
     /**
-     * get prizepool
+     * get competition prizepool
      * @description get all division prizepools for a competition
      */
     get: operations['get-prizepool'];
@@ -328,7 +348,7 @@ export interface paths {
     get?: never;
     put?: never;
     /**
-     * update a Player's demo division
+     * update a player's demo division
      * @description update a player's demo division
      */
     post: operations['update-player-demodivision'];
@@ -348,7 +368,7 @@ export interface paths {
     get?: never;
     put?: never;
     /**
-     * update a Player's display name
+     * update a player's display name
      * @description update a player's display name
      */
     post: operations['update-player-displayname'];
@@ -388,7 +408,7 @@ export interface paths {
     get?: never;
     put?: never;
     /**
-     * update a Player's soldier division
+     * update a player's soldier division
      * @description update a player's soldier division
      */
     post: operations['update-player-soldierdivision'];
@@ -446,7 +466,7 @@ export interface paths {
       cookie?: never;
     };
     /**
-     * get all Players
+     * get all players
      * @description get all players
      */
     get: operations['get-all-players'];
@@ -588,8 +608,8 @@ export interface paths {
     get?: never;
     put?: never;
     /**
-     * update a Player's own Steam avatar url
-     * @description update a player's own Steam avatar from their Steam Profile
+     * update a player's own Steam avatar url
+     * @description update a player's own Steam avatar from their Steam profile
      */
     post: operations['update-player-steam-avatar-url'];
     delete?: never;
@@ -608,7 +628,7 @@ export interface paths {
     get?: never;
     put?: never;
     /**
-     * set a Player's own Steam trade token
+     * set a player's own Steam trade token
      * @description set a player's own Steam trade token from their Steam Trade URL, found at https://steamcommunity.com/id/{steamid}/tradeoffers/privacy
      */
     post: operations['set-player-steam-trade-token'];
@@ -686,7 +706,7 @@ export interface paths {
       cookie?: never;
     };
     /**
-     * get a Player
+     * get a player
      * @description get a player by ID
      */
     get: operations['get-player-by-id'];
@@ -937,6 +957,12 @@ export interface components {
       soldier_tier: number;
     };
     Monthly: {
+      /**
+       * Format: uri
+       * @description A URL to the JSON Schema for this object.
+       * @example https://example.com/schemas/Monthly.json
+       */
+      readonly $schema?: string;
       competition: components['schemas']['Competition'];
       divisions: components['schemas']['CompetitionDivision'][] | null;
       /** Format: int64 */
@@ -1424,6 +1450,38 @@ export interface operations {
         };
         content: {
           'application/json': components['schemas']['Monthly'][] | null;
+        };
+      };
+      /** @description Error */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ErrorModel'];
+        };
+      };
+    };
+  };
+  'get-monthly': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description monthly id */
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Monthly'];
         };
       };
       /** @description Error */
@@ -2364,6 +2422,7 @@ export enum ApiPaths {
   delete_player_time = '/internal/admin/players/times/{id}',
   create_player_time = '/internal/admin/players/times/{id}/{player_id}/{run_time}',
   get_all_monthly = '/internal/competitions/all/monthly',
+  get_monthly = '/internal/competitions/monthly/{id}',
   get_prizepool = '/internal/competitions/prizepool/{id}',
   get_all_full_players = '/internal/consultant/players/all',
   get_all_pending_player_requests = '/internal/consultant/players/requests/pending',
