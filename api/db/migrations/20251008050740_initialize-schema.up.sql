@@ -39,6 +39,7 @@ create table player(
 -- prizepool: total prizepool (keys), updated when competition_prizepool is updated
 create table competition(
   id integer not null primary key autoincrement,
+  type text not null,
   class text not null,
   prizepool integer,
   starts_at datetime not null,
@@ -48,6 +49,7 @@ create table competition(
 
   created_at datetime not null default current_timestamp,
 
+  check (type in ('Monthly', 'Motw', 'Bounty', 'Quest', 'Playoffs', 'JWC', 'Archive', 'Other')),
   check (class in ('Soldier', 'Demo'))
 );
 
@@ -207,7 +209,6 @@ create table motw_timeslot(
 create table bounty(
   id integer not null primary key,
   competition_id integer not null,
-  map text not null,
   course integer,
   bonus integer,
   type text not null,
