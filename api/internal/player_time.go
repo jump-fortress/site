@@ -180,7 +180,6 @@ func HandlePostSubmitPlayerTime(ctx context.Context, input *responses.Competitio
 	}
 
 	return nil, nil
-
 }
 
 func HandlePostSubmitUnverifiedPlayerTime(ctx context.Context, input *responses.CompetitionIDInput) (*struct{}, error) {
@@ -280,7 +279,6 @@ func HandlePostCreatePlayerTime(ctx context.Context, input *responses.PlayerTime
 	}
 
 	return nil, nil
-
 }
 
 func HandlePostDeletePlayerTime(ctx context.Context, input *responses.PlayerTimeIDInput) (*struct{}, error) {
