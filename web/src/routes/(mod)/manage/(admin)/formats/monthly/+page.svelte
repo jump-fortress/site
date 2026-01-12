@@ -34,6 +34,7 @@
   const defaultMonthly = {
     id: 0,
     competition: {
+      competition_type: 'Monthly',
       id: 0,
       class: 'Soldier',
       prizepool: 0,
@@ -62,6 +63,7 @@
       id: monthlyId,
       competition: {
         id: competitionId,
+        competition_type: 'Monthly',
         class: competitionClass,
         prizepool: 0,
         starts_at: `${competitionDate}T${competitionTime}:00Z`,
