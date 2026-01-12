@@ -14,7 +14,7 @@
         {route}
         parentRoute="manage"
         pages={['formats', 'prizepools', 'players', 'requests', 'payouts']} />
-    {:else if session.role === 'Mod' || session.role === 'Consultant'}
+    {:else if session.role === 'Moderator' || session.role === 'Consultant'}
       <InnerNav {route} parentRoute="manage" pages={['players', 'requests']} />
     {:else if session.role === 'Treasurer'}
       <InnerNav {route} parentRoute="manage" pages={['payouts']} />

@@ -11,7 +11,7 @@ export const load: LayoutServerLoad = async ({ locals }) => {
   if (
     session.role === 'Consultant' ||
     session.role === 'Treasurer' ||
-    session.role === 'Mod' ||
+    session.role === 'Moderator' ||
     session.role === 'Admin'
   ) {
     return;

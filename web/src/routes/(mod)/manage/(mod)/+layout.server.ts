@@ -8,7 +8,7 @@ export const load: LayoutServerLoad = async ({ locals }) => {
     redirect(302, '/');
   }
 
-  if (session.role === 'Mod' || session.role === 'Admin') {
+  if (session.role === 'Moderator' || session.role === 'Admin') {
     return;
   } else {
     redirect(302, '/');

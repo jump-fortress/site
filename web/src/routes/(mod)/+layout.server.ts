@@ -9,7 +9,7 @@ export const load: LayoutServerLoad = async ({ parent }) => {
   }
   if (
     session.role === 'Admin' ||
-    session.role === 'Mod' ||
+    session.role === 'Moderator' ||
     session.role === 'Consultant' ||
     session.role === 'Treasurer'
   ) {
