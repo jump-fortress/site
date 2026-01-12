@@ -5,7 +5,7 @@
 <Section label="moderation">
   <div class="flex flex-col">
     <h2 class="text-lg text-primary">moderation pages are split among 4 roles:</h2>
-    <span>admins - can manage competitions, players, and payouts.</span>
+    <span>admins - can manage competitions, prizepools, players, and payouts.</span>
     <span>moderators - can manage players.</span>
     <span>consultants - can view detailed info for players.</span>
     <span>
