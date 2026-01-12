@@ -11,7 +11,7 @@ import (
 	"github.com/spiritov/jump/api/db/responses"
 )
 
-func getMonthlyResponse(monthly queries.SelectAllMonthlyRow) responses.Monthly {
+func getMonthlyResponse(monthly queries.SelectMonthlyRow) responses.Monthly {
 	return responses.Monthly{
 		ID: monthly.ID,
 		Competition: responses.Competition{
@@ -29,7 +29,7 @@ func getMonthlyResponse(monthly queries.SelectAllMonthlyRow) responses.Monthly {
 	}
 }
 
-func HandleGetAllMonthlies(ctx context.Context, _ *struct{}) (*responses.MonthliesOutput, error) {
+func HandlePostGetAllMonthlies(ctx context.Context, _ *struct{}) (*responses.MonthliesOutput, error) {
 	monthlies, err := responses.Queries.SelectAllMonthly(ctx)
 	if err != nil {
 		return nil, err
@@ -47,7 +47,7 @@ func HandleGetAllMonthlies(ctx context.Context, _ *struct{}) (*responses.Monthli
 			continue
 		}
 
-		monthlyResponse := getMonthlyResponse(m)
+		monthlyResponse := getMonthlyResponse(queries.SelectMonthlyRow(m))
 
 		divisions, err := responses.Queries.SelectCompetitionDivisions(ctx, m.CompetitionID)
 		if err != nil {
@@ -56,13 +56,44 @@ func HandleGetAllMonthlies(ctx context.Context, _ *struct{}) (*responses.Monthli
 
 		for _, d := range divisions {
 			// hide maps if competition hasn't started
-			if m.StartsAt.Before(now) {
+			if m.StartsAt.After(now) {
 				d.Map = ""
 			}
 			monthlyResponse.Divisions = append(monthlyResponse.Divisions, getCompetitionDivisionResponse(d))
 		}
 
 		resp.Body = append(resp.Body, monthlyResponse)
+	}
+
+	return resp, nil
+}
+
+func HandlePostGetMonthly(ctx context.Context, input *responses.MonthlyIDInput) (*responses.MonthlyOutput, error) {
+	monthly, err := responses.Queries.SelectMonthly(ctx, input.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	now := time.Now()
+	if monthly.VisibleAt.After(now) {
+		return nil, huma.Error403Forbidden("")
+	}
+
+	resp := &responses.MonthlyOutput{
+		Body: getMonthlyResponse(monthly),
+	}
+
+	divisions, err := responses.Queries.SelectCompetitionDivisions(ctx, monthly.CompetitionID)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, d := range divisions {
+		// hide maps if competition hasn't started
+		if monthly.StartsAt.After(now) {
+			d.Map = ""
+		}
+		resp.Body.Divisions = append(resp.Body.Divisions, getCompetitionDivisionResponse(d))
 	}
 
 	return resp, nil
@@ -228,7 +259,7 @@ func HandleGetAllFullMonthlies(ctx context.Context, _ *struct{}) (*responses.Mon
 	}
 
 	for _, m := range monthlies {
-		monthlyResponse := getMonthlyResponse(m)
+		monthlyResponse := getMonthlyResponse(queries.SelectMonthlyRow(m))
 
 		divisions, err := responses.Queries.SelectCompetitionDivisions(ctx, m.CompetitionID)
 		if err != nil {

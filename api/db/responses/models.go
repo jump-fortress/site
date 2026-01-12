@@ -272,6 +272,10 @@ type CompetitionIDInput struct {
 	ID int64 `path:"id" doc:"competition id"`
 }
 
+type MonthlyIDInput struct {
+	ID int64 `path:"id" doc:"monthly id"`
+}
+
 type CompetitionDivision struct {
 	ID            int64  `json:"id"`
 	CompetitionID int64  `json:"competition_id"`
@@ -316,6 +320,10 @@ type Monthly struct {
 	ID          int64                 `json:"id"`
 	Competition Competition           `json:"competition"`
 	Divisions   []CompetitionDivision `json:"divisions"`
+}
+
+type MonthlyOutput struct {
+	Body Monthly
 }
 
 type MonthliesOutput struct {
