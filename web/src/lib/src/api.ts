@@ -320,7 +320,7 @@ export async function updateMonthly(monthly: Monthly): Promise<InputResponse> {
 }
 
 export async function cancelCompetition(id: number): Promise<InputResponse> {
-  const { error } = await Client.POST('/internal/admin/competitions/cancel/{id}', {
+  const { error } = await Client.DELETE('/internal/admin/competitions/cancel/{id}', {
     fetch: fetch,
     params: {
       path: {
@@ -386,7 +386,7 @@ export async function getCompetitionPrizepool(id: number): Promise<DivisionPrize
 }
 
 export async function deletePrizepool(id: number): Promise<InputResponse> {
-  const { error } = await Client.POST('/internal/admin/competitions/prizepool/{id}', {
+  const { error } = await Client.DELETE('/internal/admin/competitions/prizepool/{id}', {
     fetch: fetch,
     params: {
       path: {
@@ -464,11 +464,27 @@ export async function createPlayerTime(id: number, player_id: string, run_time: 
 }
 
 export async function deletePlayerTime(id: number) {
-  const { error } = await Client.POST('/internal/admin/players/times/{id}', {
+  const { error } = await Client.DELETE('/internal/admin/players/times/{id}', {
     fetch: fetch,
     params: {
       path: {
         id: id
+      }
+    }
+  });
+
+  return error
+    ? { error: true, message: error.detail ?? 'unknown error' }
+    : { error: false, message: 'success' };
+}
+
+export async function updatePlayerRole(id: string, role: string): Promise<InputResponse> {
+  const { error } = await Client.POST('/internal/admin/players/role/{id}/{role}', {
+    fetch: fetch,
+    params: {
+      path: {
+        id: id,
+        role: role
       }
     }
   });

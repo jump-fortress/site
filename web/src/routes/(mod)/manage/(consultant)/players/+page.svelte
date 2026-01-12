@@ -12,6 +12,7 @@
   import {
     updatePlayerDemoDivision,
     updatePlayerDisplayName,
+    updatePlayerRole,
     updatePlayerSoldierDivision
   } from '$lib/src/api.js';
   import { divisions } from '$lib/src/divisions.js';
@@ -74,6 +75,18 @@
                 return updatePlayerDemoDivision(selected.id, value);
               }} />
           </Label>
+
+          {#if session.role === 'Admin'}
+            <Label label="update role">
+              <Select
+                type="text"
+                placeholder={selected.demo_division}
+                options={['Admin', 'Moderator', 'Consultant', 'Treasurer', 'Player']}
+                onsubmit={(value) => {
+                  return updatePlayerRole(selected.id, value);
+                }} />
+            </Label>
+          {/if}
         </Section>
       </div>
     {/if}
@@ -85,6 +98,7 @@
     <Table data={players}>
       {#snippet header()}
         <th class="w-36">steam id</th>
+        <th class="w-24">role</th>
         <th></th>
         <th class="w-24">soldier</th>
         <th class="w-24">demo</th>
@@ -92,6 +106,7 @@
       {/snippet}
       {#snippet row(player: Player)}
         <td>{player.id}</td>
+        <td>{player.role}</td>
         <td
           onclick={() => {
             selected = player;

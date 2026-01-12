@@ -331,3 +331,8 @@ type PlayerTimeInput struct {
 type PlayerTimeIDInput struct {
 	ID int64 `path:"id" doc:"time id"`
 }
+
+type PlayerRoleInput struct {
+	ID   string `path:"id" minimum:"1" doc:"player ID, SteamID64"`
+	Role string `path:"role" doc:"player role"`
+}

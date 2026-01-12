@@ -70,3 +70,8 @@ update player
 update player
   set preferred_map = ?
   where id = ?;
+
+-- name: UpdatePlayerRole :exec
+update player
+  set role = ?
+  where id = ?;

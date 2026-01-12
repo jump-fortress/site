@@ -2,6 +2,7 @@ package main
 
 import (
 	_ "embed"
+	"fmt"
 	"log"
 
 	"github.com/spiritov/jump/api/db/responses"
@@ -38,8 +39,12 @@ func main() {
 		log.Fatal(err)
 	}
 
-	database := responses.OpenDB("./db/jump.db")
+	database := responses.OpenDB("./db/jump.db?_foreign_keys=on")
 	defer database.Close()
+
+	var enabled int
+	_ = database.QueryRow("pragma foreign_keys").Scan(&enabled)
+	fmt.Println(enabled)
 
 	log.Print("db uppies")
 

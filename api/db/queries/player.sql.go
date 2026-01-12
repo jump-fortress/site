@@ -211,6 +211,22 @@ func (q *Queries) UpdatePlayerPreferredMap(ctx context.Context, arg UpdatePlayer
 	return err
 }
 
+const updatePlayerRole = `-- name: UpdatePlayerRole :exec
+update player
+  set role = ?
+  where id = ?
+`
+
+type UpdatePlayerRoleParams struct {
+	Role string `json:"role"`
+	ID   string `json:"id"`
+}
+
+func (q *Queries) UpdatePlayerRole(ctx context.Context, arg UpdatePlayerRoleParams) error {
+	_, err := q.db.ExecContext(ctx, updatePlayerRole, arg.Role, arg.ID)
+	return err
+}
+
 const updatePlayerSessionInfo = `-- name: UpdatePlayerSessionInfo :one
 update player
   set steam_avatar_url = ?,

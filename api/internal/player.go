@@ -605,3 +605,15 @@ func HandlePostResolvePlayerRequest(ctx context.Context, input *responses.Player
 
 	return nil, nil
 }
+
+// admin
+func HandlePostUpdatePlayerRole(ctx context.Context, input *responses.PlayerRoleInput) (*struct{}, error) {
+	if err := responses.Queries.UpdatePlayerRole(ctx, queries.UpdatePlayerRoleParams{
+		Role: input.Role,
+		ID:   input.ID,
+	}); err != nil {
+		return nil, err
+	}
+
+	return nil, nil
+}
