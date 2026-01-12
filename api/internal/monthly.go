@@ -17,6 +17,7 @@ func getMonthlyResponse(monthly queries.SelectAllMonthlyRow) responses.Monthly {
 		Competition: responses.Competition{
 			ID:        monthly.CompetitionID,
 			Class:     monthly.Class,
+			Type:      monthly.Type,
 			Prizepool: monthly.Prizepool.Int64,
 			StartsAt:  monthly.StartsAt,
 			EndsAt:    monthly.EndsAt,
