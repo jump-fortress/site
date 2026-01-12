@@ -1,6 +1,6 @@
 -- name: InsertCompetition :one
-insert into competition (class, starts_at, ends_at, visible_at)
-  values (?, ?, ?, ?)
+insert into competition (type, class, starts_at, ends_at, visible_at)
+  values (?, ?, ?, ?, ?)
   returning *;
 
 -- name: SelectCompetition :one
