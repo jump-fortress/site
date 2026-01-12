@@ -399,3 +399,81 @@ export async function deletePrizepool(id: number): Promise<InputResponse> {
     ? { error: true, message: error.detail ?? 'unknown error' }
     : { error: false, message: 'success' };
 }
+
+export async function submitPlayerTime(id: number) {
+  const { error } = await Client.POST('/internal/players/times/{id}', {
+    fetch: fetch,
+    params: {
+      path: {
+        id: id
+      }
+    }
+  });
+
+  return error
+    ? { error: true, message: error.detail ?? 'unknown error' }
+    : { error: false, message: 'success' };
+}
+
+export async function submitUnverifiedPlayerTime(id: number, time: number) {
+  const { error } = await Client.POST('/internal/players/times/{id}', {
+    fetch: fetch,
+    params: {
+      path: {
+        id: id,
+        time: time
+      }
+    }
+  });
+
+  return error
+    ? { error: true, message: error.detail ?? 'unknown error' }
+    : { error: false, message: 'success' };
+}
+
+export async function verifyPlayerTime(id: number) {
+  const { error } = await Client.POST('/internal/moderator/players/times/{id}', {
+    fetch: fetch,
+    params: {
+      path: {
+        id: id
+      }
+    }
+  });
+
+  return error
+    ? { error: true, message: error.detail ?? 'unknown error' }
+    : { error: false, message: 'success' };
+}
+
+export async function createPlayerTime(id: number, player_id: string, run_time: number) {
+  const { error } = await Client.POST('/internal/admin/players/times/{id}/{player_id}/{run_time}', {
+    fetch: fetch,
+    params: {
+      path: {
+        id: id,
+        player_id: player_id,
+        run_time: run_time
+      }
+    }
+  });
+
+  return error
+    ? { error: true, message: error.detail ?? 'unknown error' }
+    : { error: false, message: 'success' };
+}
+
+export async function deletePlayerTime(id: number) {
+  const { error } = await Client.POST('/internal/admin/players/times/{id}', {
+    fetch: fetch,
+    params: {
+      path: {
+        id: id
+      }
+    }
+  });
+
+  return error
+    ? { error: true, message: error.detail ?? 'unknown error' }
+    : { error: false, message: 'success' };
+}
