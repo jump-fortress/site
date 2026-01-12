@@ -22,7 +22,7 @@ func (q *Queries) InsertMonthly(ctx context.Context, competitionID int64) error 
 }
 
 const selectAllMonthly = `-- name: SelectAllMonthly :many
-select m.id, competition_id, c.id, class, prizepool, starts_at, ends_at, visible_at, complete, created_at from monthly m
+select m.id, competition_id, c.id, type, class, prizepool, starts_at, ends_at, visible_at, complete, created_at from monthly m
   join competition c on m.competition_id = c.id
 `
 
@@ -30,6 +30,7 @@ type SelectAllMonthlyRow struct {
 	ID            int64         `json:"id"`
 	CompetitionID int64         `json:"competition_id"`
 	ID_2          int64         `json:"id_2"`
+	Type          string        `json:"type"`
 	Class         string        `json:"class"`
 	Prizepool     sql.NullInt64 `json:"prizepool"`
 	StartsAt      time.Time     `json:"starts_at"`
@@ -52,6 +53,7 @@ func (q *Queries) SelectAllMonthly(ctx context.Context) ([]SelectAllMonthlyRow, 
 			&i.ID,
 			&i.CompetitionID,
 			&i.ID_2,
+			&i.Type,
 			&i.Class,
 			&i.Prizepool,
 			&i.StartsAt,
@@ -74,7 +76,7 @@ func (q *Queries) SelectAllMonthly(ctx context.Context) ([]SelectAllMonthlyRow, 
 }
 
 const selectMonthly = `-- name: SelectMonthly :one
-select m.id, competition_id, c.id, class, prizepool, starts_at, ends_at, visible_at, complete, created_at from monthly m
+select m.id, competition_id, c.id, type, class, prizepool, starts_at, ends_at, visible_at, complete, created_at from monthly m
   join competition c on m.competition_id = c.id
   where m.id = ?
 `
@@ -83,6 +85,7 @@ type SelectMonthlyRow struct {
 	ID            int64         `json:"id"`
 	CompetitionID int64         `json:"competition_id"`
 	ID_2          int64         `json:"id_2"`
+	Type          string        `json:"type"`
 	Class         string        `json:"class"`
 	Prizepool     sql.NullInt64 `json:"prizepool"`
 	StartsAt      time.Time     `json:"starts_at"`
@@ -99,6 +102,7 @@ func (q *Queries) SelectMonthly(ctx context.Context, id int64) (SelectMonthlyRow
 		&i.ID,
 		&i.CompetitionID,
 		&i.ID_2,
+		&i.Type,
 		&i.Class,
 		&i.Prizepool,
 		&i.StartsAt,

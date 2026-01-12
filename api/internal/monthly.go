@@ -96,6 +96,7 @@ func HandlePostCreateMonthly(ctx context.Context, input *responses.MonthlyInput)
 
 	competition, err := responses.Queries.InsertCompetition(ctx, queries.InsertCompetitionParams{
 		Class:     input.Body.Competition.Class,
+		Type:      "Monthly",
 		StartsAt:  input.Body.Competition.StartsAt,
 		EndsAt:    input.Body.Competition.StartsAt.AddDate(0, 0, 2), // 2 days
 		VisibleAt: input.Body.Competition.VisibleAt,
