@@ -379,18 +379,6 @@ func HandlePostSelfSteamAvatarUrl(ctx context.Context, _ *struct{}) (*struct{}, 
 	return nil, nil
 }
 
-func HandlePostSubmitPlayerTime(ctx context.Context, input *responses.CompetitionIDInput) (*struct{}, error) {
-	return nil, huma.Error500InternalServerError("not implemented")
-
-	// check for player division and tempus id
-	// check that competition division matches player's division
-	// check that competition is after starts_at and not completed
-	// check tempus pr after, so internal db verifies the request is valid first
-	// check that tempus time is after starts_at and before ends_at
-
-	// if tempus pr is not during competition, request unverified submit
-}
-
 // player requests..
 // 1. make sure there are no pending requests for this request type
 // 2. create the request if it's for a display name change

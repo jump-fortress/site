@@ -21,7 +21,6 @@ type Badge struct {
 type Bounty struct {
 	ID            int64           `json:"id"`
 	CompetitionID int64           `json:"competition_id"`
-	Map           string          `json:"map"`
 	Course        sql.NullInt64   `json:"course"`
 	Bonus         sql.NullInt64   `json:"bonus"`
 	Type          string          `json:"type"`
@@ -30,6 +29,7 @@ type Bounty struct {
 
 type Competition struct {
 	ID        int64         `json:"id"`
+	Type      string        `json:"type"`
 	Class     string        `json:"class"`
 	Prizepool sql.NullInt64 `json:"prizepool"`
 	StartsAt  time.Time     `json:"starts_at"`

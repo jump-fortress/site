@@ -186,6 +186,17 @@ func registerSessionRoutes(internalApi *huma.Group) {
 		Security:    sessionCookieSecurityMap,
 		Middlewares: requireUserSessionMiddlewares,
 	}, HandlePostSubmitPlayerTime)
+
+	huma.Register(internalApi, huma.Operation{
+		Method:      http.MethodPost,
+		Path:        "/players/times/{id}/{time}",
+		OperationID: "submit-unverified-player-time",
+		Summary:     "submit unverified player time",
+		Description: "submit an unverified player time for a competition",
+		Tags:        []string{"Player"},
+		Security:    sessionCookieSecurityMap,
+		Middlewares: requireUserSessionMiddlewares,
+	}, HandlePostSubmitUnverifiedPlayerTime)
 }
 
 func registerConsultantRoutes(consultantApi *huma.Group) {
@@ -251,6 +262,16 @@ func registerModeratorRoutes(moderatorApi *huma.Group) {
 		Tags:        []string{"Moderator"},
 		Security:    sessionCookieSecurityMap,
 	}, HandlePostResolvePlayerRequest)
+
+	huma.Register(moderatorApi, huma.Operation{
+		Method:      http.MethodPost,
+		Path:        "/players/times/{id}",
+		OperationID: "verify-player-time",
+		Summary:     "verify player time",
+		Description: "verify a player time id",
+		Tags:        []string{"Moderator"},
+		Security:    sessionCookieSecurityMap,
+	}, HandlePostVerifyPlayerTime)
 }
 
 func registerAdminRoutes(adminApi *huma.Group) {
@@ -321,4 +342,24 @@ func registerAdminRoutes(adminApi *huma.Group) {
 		Tags:        []string{"Admin"},
 		Security:    sessionCookieSecurityMap,
 	}, HandlePostDeletePrizepool)
+
+	huma.Register(adminApi, huma.Operation{
+		Method:      http.MethodPost,
+		Path:        "/players/times/{competition_id}/{player_id}/{run_time}",
+		OperationID: "create-player-time",
+		Summary:     "create player time",
+		Description: "create a time for a competition",
+		Tags:        []string{"Moderator"},
+		Security:    sessionCookieSecurityMap,
+	}, HandlePostCreatePlayerTime)
+
+	huma.Register(adminApi, huma.Operation{
+		Method:      http.MethodPost,
+		Path:        "/players/times/{id}",
+		OperationID: "delete-player-time",
+		Summary:     "delete player time",
+		Description: "delete a time id",
+		Tags:        []string{"Moderator"},
+		Security:    sessionCookieSecurityMap,
+	}, HandlePostDeletePlayerTime)
 }

@@ -164,9 +164,20 @@ type TempusPlayerInfo struct {
 	CountryCode string `json:"country_code"`
 }
 
-// used to read in player_info property from the Tempus API
+// used to read in player info from the Tempus API
 type TempusPlayerInfoResponse struct {
 	PlayerInfo TempusPlayerInfo `json:"player_info"`
+}
+
+type TempusPlayerTimeResult struct {
+	ID      int64   `json:"id"`
+	Date    float64 `json:"date"`
+	RunTime float64 `json:"duration"`
+}
+
+// used to read in a player's Tempus PR
+type TempusPlayerTimeResultReponse struct {
+	PlayerPR TempusPlayerTimeResult `json:"result"`
 }
 
 type TempusResponseMaps struct {
@@ -247,6 +258,7 @@ type CompetitionDivisionInput struct {
 
 type Competition struct {
 	ID        int64     `json:"id"`
+	Type      string    `json:"competition_type"`
 	Class     string    `json:"class"`
 	Prizepool int64     `json:"prizepool,omitempty"`
 	StartsAt  time.Time `json:"starts_at"`
@@ -308,4 +320,14 @@ type Monthly struct {
 
 type MonthliesOutput struct {
 	Body []Monthly
+}
+
+type PlayerTimeInput struct {
+	CompetitionID int64   `path:"id" doc:"competition id"`
+	PlayerID      string  `path:"player_id" doc:"player ID, SteamID64"`
+	RunTime       float64 `path:"run_time" doc:"run time in seconds"`
+}
+
+type PlayerTimeIDInput struct {
+	ID int64 `path:"id" doc:"time id"`
 }

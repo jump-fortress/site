@@ -25,7 +25,7 @@ func (q *Queries) CompleteCompetition(ctx context.Context, id int64) error {
 const deleteCompetition = `-- name: DeleteCompetition :one
 delete from competition
   where id = ? and starts_at > current_timestamp
-  returning id, class, prizepool, starts_at, ends_at, visible_at, complete, created_at
+  returning id, type, class, prizepool, starts_at, ends_at, visible_at, complete, created_at
 `
 
 func (q *Queries) DeleteCompetition(ctx context.Context, id int64) (Competition, error) {
@@ -33,6 +33,7 @@ func (q *Queries) DeleteCompetition(ctx context.Context, id int64) (Competition,
 	var i Competition
 	err := row.Scan(
 		&i.ID,
+		&i.Type,
 		&i.Class,
 		&i.Prizepool,
 		&i.StartsAt,
@@ -45,12 +46,13 @@ func (q *Queries) DeleteCompetition(ctx context.Context, id int64) (Competition,
 }
 
 const insertCompetition = `-- name: InsertCompetition :one
-insert into competition (class, starts_at, ends_at, visible_at)
-  values (?, ?, ?, ?)
-  returning id, class, prizepool, starts_at, ends_at, visible_at, complete, created_at
+insert into competition (type, class, starts_at, ends_at, visible_at)
+  values (?, ?, ?, ?, ?)
+  returning id, type, class, prizepool, starts_at, ends_at, visible_at, complete, created_at
 `
 
 type InsertCompetitionParams struct {
+	Type      string    `json:"type"`
 	Class     string    `json:"class"`
 	StartsAt  time.Time `json:"starts_at"`
 	EndsAt    time.Time `json:"ends_at"`
@@ -59,6 +61,7 @@ type InsertCompetitionParams struct {
 
 func (q *Queries) InsertCompetition(ctx context.Context, arg InsertCompetitionParams) (Competition, error) {
 	row := q.db.QueryRowContext(ctx, insertCompetition,
+		arg.Type,
 		arg.Class,
 		arg.StartsAt,
 		arg.EndsAt,
@@ -67,6 +70,7 @@ func (q *Queries) InsertCompetition(ctx context.Context, arg InsertCompetitionPa
 	var i Competition
 	err := row.Scan(
 		&i.ID,
+		&i.Type,
 		&i.Class,
 		&i.Prizepool,
 		&i.StartsAt,
@@ -79,7 +83,7 @@ func (q *Queries) InsertCompetition(ctx context.Context, arg InsertCompetitionPa
 }
 
 const selectCompetition = `-- name: SelectCompetition :one
-select id, class, prizepool, starts_at, ends_at, visible_at, complete, created_at from competition
+select id, type, class, prizepool, starts_at, ends_at, visible_at, complete, created_at from competition
   where id = ?
 `
 
@@ -88,6 +92,7 @@ func (q *Queries) SelectCompetition(ctx context.Context, id int64) (Competition,
 	var i Competition
 	err := row.Scan(
 		&i.ID,
+		&i.Type,
 		&i.Class,
 		&i.Prizepool,
 		&i.StartsAt,
