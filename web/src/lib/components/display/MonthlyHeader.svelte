@@ -1,8 +1,5 @@
 <script lang="ts">
-  import demo from '$lib/assets/tf/demo.png';
-  import soldier from '$lib/assets/tf/soldier.png';
   import { compareDivisions } from '$lib/src/divisions';
-  import { Temporal } from 'temporal-polyfill';
 
   import ClassImage from './ClassImage.svelte';
   import DivisionTag from './DivisionTag.svelte';
@@ -30,9 +27,10 @@
   type Props = {
     monthly: Monthly;
     header?: boolean;
+    link?: boolean;
   };
 
-  let { monthly, header = false }: Props = $props();
+  let { monthly, header = false, link = false }: Props = $props();
   let maps = $derived(cdToMaps(monthly.divisions));
 
   const twCols = new Map([
@@ -57,15 +55,23 @@
     <!-- map wrapper -->
     <div class="relative flex size-full items-end justify-center">
       <!-- absolute map bg image -->
-      <a
-        class="relative flex size-full cursor-pointer overflow-hidden"
-        href="/formats/monthly/{monthly.id}">
-        <img
-          class="over absolute z-10 h-48 w-full scale-105 object-cover brightness-90 not-first:mask-x-from-98% not-last:mask-x-from-98%"
-          src="https://tempusplaza.xyz/map-backgrounds/{map}.jpg"
-          alt=""
-          draggable="false" />
-      </a>
+      {#if link}
+        <a class="relative flex size-full overflow-hidden" href="/formats/monthly/{monthly.id}">
+          <img
+            class="over absolute z-10 h-48 w-full scale-105 object-cover brightness-90 not-first:mask-x-from-98% not-last:mask-x-from-98%"
+            src="https://tempusplaza.xyz/map-backgrounds/{map}.jpg"
+            alt=""
+            draggable="false" />
+        </a>
+      {:else}
+        <div class="relative flex size-full overflow-hidden">
+          <img
+            class="over absolute z-10 h-48 w-full scale-105 object-cover brightness-90 not-first:mask-x-from-98% not-last:mask-x-from-98%"
+            src="https://tempusplaza.xyz/map-backgrounds/{map}.jpg"
+            alt=""
+            draggable="false" />
+        </div>
+      {/if}
       <div class="absolute z-10 flex flex-col items-center gap-1 p-2">
         <span class="z-10 truncate text-lg text-shadow-sm/100">{map}</span>
         <div class="flex gap-2">
