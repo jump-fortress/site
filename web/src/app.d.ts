@@ -28,6 +28,7 @@ declare global {
       requests?: Promise<PlayerRequest[]>;
       playersWithRequests?: Promise<PlayerWithRequest[]>;
       maps?: Promise<Map[]>;
+      monthly?: Promise<Monthly>;
     }
     // interface PageState {}
     // interface Platform {}
