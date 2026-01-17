@@ -208,10 +208,10 @@
       <!-- maps, as divisions are selected -->
       {#await data.maps then maps}
         {#if maps && maps.length !== 0}
-          <div class="flex flex-col gap-2">
+          <div class="flex flex-col">
             {#each competitionDivisions as [div, map]}
-              <div class="flex items-center gap-2">
-                <div class="flex w-24 justify-center">
+              <div class="flex items-center gap-1">
+                <div class="flex w-24">
                   <DivisionTag {div} />
                 </div>
 
