@@ -12,13 +12,6 @@ select * from player
 -- name: SelectAllPlayers :many
 select * from player;
 
--- name: UpdatePlayerSessionInfo :one
-update player
-  set steam_avatar_url = ?,
-  display_name = ?
-  where id = ?
-  returning *;
-
 -- name: UpdatePlayerSteamAvatarURL :exec
 update player
   set steam_avatar_url = ?

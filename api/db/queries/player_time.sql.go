@@ -14,7 +14,7 @@ import (
 const deletePlayerTime = `-- name: DeletePlayerTime :one
 delete from player_time
   where id = ?
-  returning id, player_id, competition_division_id, run_time, verified, created_at
+  returning id, player_id, competition_division_id, tempus_time_id, run_time, verified, created_at
 `
 
 func (q *Queries) DeletePlayerTime(ctx context.Context, id int64) (PlayerTime, error) {
@@ -24,6 +24,7 @@ func (q *Queries) DeletePlayerTime(ctx context.Context, id int64) (PlayerTime, e
 		&i.ID,
 		&i.PlayerID,
 		&i.CompetitionDivisionID,
+		&i.TempusTimeID,
 		&i.RunTime,
 		&i.Verified,
 		&i.CreatedAt,

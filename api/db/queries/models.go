@@ -122,7 +122,7 @@ type Player struct {
 	DemoDivision      sql.NullString `json:"demo_division"`
 	MotwTimeslot      sql.NullInt64  `json:"motw_timeslot"`
 	PreferredClass    string         `json:"preferred_class"`
-	PreferredLauncher string         `json:"preferred_launcher"`
+	PreferredLauncher sql.NullString `json:"preferred_launcher"`
 	PreferredMap      sql.NullString `json:"preferred_map"`
 	CreatedAt         time.Time      `json:"created_at"`
 }
@@ -154,12 +154,13 @@ type PlayerRequest struct {
 }
 
 type PlayerTime struct {
-	ID                    int64     `json:"id"`
-	PlayerID              string    `json:"player_id"`
-	CompetitionDivisionID int64     `json:"competition_division_id"`
-	RunTime               float64   `json:"run_time"`
-	Verified              bool      `json:"verified"`
-	CreatedAt             time.Time `json:"created_at"`
+	ID                    int64         `json:"id"`
+	PlayerID              string        `json:"player_id"`
+	CompetitionDivisionID int64         `json:"competition_division_id"`
+	TempusTimeID          sql.NullInt64 `json:"tempus_time_id"`
+	RunTime               float64       `json:"run_time"`
+	Verified              bool          `json:"verified"`
+	CreatedAt             time.Time     `json:"created_at"`
 }
 
 type Quest struct {

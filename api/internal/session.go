@@ -35,32 +35,57 @@ func HandleGetSession(ctx context.Context, _ *struct{}) (*responses.SessionOutpu
 
 	var session responses.Session
 
-	// if this player is missing fields, set these required fields with their Steam info
+	// only fetch from steam if something is needed
 	if !player.DisplayName.Valid || !player.SteamAvatarUrl.Valid {
 		steamProfileSummary, err := FetchProfileSummary(principal.SteamID.ID())
 		if err != nil {
 			return nil, err
 		}
 
-		updatedPlayer, err := responses.Queries.UpdatePlayerSessionInfo(ctx, queries.UpdatePlayerSessionInfoParams{
-			SteamAvatarUrl: sql.NullString{
-				String: steamProfileSummary.AvatarFullURL,
+		// set initial display name
+		if !player.DisplayName.Valid {
+			var displayName = steamProfileSummary.PersonaName
+			if !displayNameRegex.MatchString(displayName) {
+				displayName = "invalid alias" // or something..
+			}
+
+			if err := responses.Queries.UpdatePlayerDisplayName(ctx, queries.UpdatePlayerDisplayNameParams{
+				DisplayName: sql.NullString{
+					String: displayName,
+					Valid:  true,
+				},
+				ID: player.ID,
+			}); err != nil {
+				return nil, err
+			}
+
+			player.DisplayName = sql.NullString{
+				String: displayName,
 				Valid:  true,
-			},
-			DisplayName: sql.NullString{
-				String: steamProfileSummary.PersonaName,
-				Valid:  true,
-			},
-			ID: principal.SteamID.String(),
-		})
-		if err != nil {
-			return nil, err
+			}
 		}
 
-		session = SessionFromPlayer(updatedPlayer)
-	} else {
-		session = SessionFromPlayer(player)
+		// set initial avatar
+		if !player.SteamAvatarUrl.Valid {
+			if err := responses.Queries.UpdatePlayerSteamAvatarURL(ctx, queries.UpdatePlayerSteamAvatarURLParams{
+				SteamAvatarUrl: sql.NullString{
+					String: steamProfileSummary.AvatarFullURL,
+					Valid:  true,
+				},
+				ID: player.ID,
+			}); err != nil {
+				return nil, err
+			}
+
+			player.SteamAvatarUrl = sql.NullString{
+				String: steamProfileSummary.AvatarFullURL,
+				Valid:  true,
+			}
+		}
 	}
+
+	session = SessionFromPlayer(player)
 	resp := &responses.SessionOutput{Body: session}
+
 	return resp, nil
 }

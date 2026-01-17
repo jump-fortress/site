@@ -8,7 +8,9 @@ import (
 	"io"
 	"regexp"
 	"slices"
+	"strconv"
 	"strings"
+	"time"
 
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/hashicorp/go-retryablehttp"
@@ -17,7 +19,8 @@ import (
 )
 
 var (
-	displayNameRegex = regexp.MustCompile(`^(([[:word:]]|[[:punct:]])+[[:space:]]?)*([[:word:]]|[[:punct:]])+$`)
+	// alphanumeric, allow non-leading, non-repeating underscores, whitespace, and dashes
+	displayNameRegex = regexp.MustCompile(`^((([a-z]|[A-Z]|\d|\.)+(_|\ |\-)?)+)*([a-z]|[A-Z]|\d|\.)+$`)
 )
 
 func getTempusPlayerInfo(tempusID int64) (*responses.TempusPlayerInfo, error) {
@@ -55,7 +58,7 @@ func getPlayerPreviewResponse(player queries.Player) responses.PlayerPreview {
 		DemoDivision:      player.DemoDivision.String,
 		MotwTimeslot:      player.MotwTimeslot.Int64,
 		PreferredClass:    player.PreferredClass,
-		PreferredLauncher: player.PreferredLauncher,
+		PreferredLauncher: player.PreferredLauncher.String,
 		PreferredMap:      player.PreferredMap.String,
 		CreatedAt:         player.CreatedAt,
 	}
@@ -76,7 +79,7 @@ func getPlayerResponse(player queries.Player) responses.Player {
 		DemoDivision:      player.DemoDivision.String,
 		MotwTimeslot:      player.MotwTimeslot.Int64,
 		PreferredClass:    player.PreferredClass,
-		PreferredLauncher: player.PreferredLauncher,
+		PreferredLauncher: player.PreferredLauncher.String,
 		PreferredMap:      player.PreferredMap.String,
 		CreatedAt:         player.CreatedAt,
 	}
@@ -113,7 +116,7 @@ func getPlayerWithRequestResponse(request queries.SelectAllPendingPlayerRequests
 			SoldierDivision:   request.SoldierDivision.String,
 			DemoDivision:      request.DemoDivision.String,
 			PreferredClass:    request.PreferredClass,
-			PreferredLauncher: request.PreferredLauncher,
+			PreferredLauncher: request.PreferredLauncher.String,
 			CreatedAt:         request.CreatedAt_2,
 		},
 	}
@@ -209,9 +212,14 @@ func HandlePostSelfPreferredLauncher(ctx context.Context, input *responses.Launc
 		return nil, huma.Error401Unauthorized("a session is required")
 	}
 
+	noLauncher := input.Launcher == "None"
+
 	if err := responses.Queries.UpdatePlayerPreferredLauncher(ctx, queries.UpdatePlayerPreferredLauncherParams{
-		PreferredLauncher: input.Launcher,
-		ID:                principal.SteamID.String(),
+		PreferredLauncher: sql.NullString{
+			String: input.Launcher,
+			Valid:  !noLauncher,
+		},
+		ID: principal.SteamID.String(),
 	}); err != nil {
 		return nil, err
 	}
@@ -259,7 +267,35 @@ func HandleGetAllPlayers(ctx context.Context, _ *struct{}) (*responses.PlayerPre
 		Body: []responses.PlayerPreview{},
 	}
 
-	for _, p := range players {
+	for i, p := range players {
+
+		if p.Country.String == "" {
+			fmt.Println(strconv.Itoa(i) + ": attempting for " + strconv.Itoa(int(p.TempusID.Int64)))
+			t, err := getTempusPlayerInfo(p.TempusID.Int64)
+			time.Sleep(1 * time.Second)
+			if err != nil {
+				continue
+			}
+			err = responses.Queries.UpdatePlayerTempusInfo(ctx, queries.UpdatePlayerTempusInfoParams{
+				TempusID: sql.NullInt64{
+					Int64: p.TempusID.Int64,
+					Valid: true,
+				},
+				Country: sql.NullString{
+					String: t.Country,
+					Valid:  true,
+				},
+				CountryCode: sql.NullString{
+					String: strings.ToLower(t.CountryCode),
+					Valid:  true,
+				},
+				ID: p.ID,
+			})
+			if err != nil {
+				continue
+			}
+		}
+
 		playerResponse := getPlayerPreviewResponse(p)
 		resp.Body = append(resp.Body, playerResponse)
 	}

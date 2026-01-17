@@ -83,7 +83,7 @@ type SelectAllPendingPlayerRequestsRow struct {
 	DemoDivision      sql.NullString `json:"demo_division"`
 	MotwTimeslot      sql.NullInt64  `json:"motw_timeslot"`
 	PreferredClass    string         `json:"preferred_class"`
-	PreferredLauncher string         `json:"preferred_launcher"`
+	PreferredLauncher sql.NullString `json:"preferred_launcher"`
 	PreferredMap      sql.NullString `json:"preferred_map"`
 	CreatedAt_2       time.Time      `json:"created_at_2"`
 }
