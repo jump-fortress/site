@@ -10,7 +10,7 @@
   let { label, indent = 0, children }: Props = $props();
 </script>
 
-<div class="flex flex-col gap-2">
+<div class="flex flex-col gap-1">
   <!-- label -->
   <div class="relative flex items-center gap-1">
     <span class="text-lg text-content/50">></span>

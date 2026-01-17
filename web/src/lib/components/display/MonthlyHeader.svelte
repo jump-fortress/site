@@ -74,7 +74,7 @@
       {/if}
       <div class="absolute z-10 flex flex-col items-center gap-1 p-2">
         <span class="z-10 truncate text-lg text-shadow-sm/100">{map}</span>
-        <div class="flex gap-2">
+        <div class="flex flex-wrap justify-center gap-2">
           {#each divisions as division}
             <DivisionTag div={division} />
           {/each}
