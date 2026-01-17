@@ -19,6 +19,9 @@ import (
 	"github.com/spiritov/jump/api/env"
 	"github.com/spiritov/jump/api/slog"
 	"github.com/yohcop/openid-go"
+
+	"github.com/ravener/discord-oauth2"
+	"golang.org/x/oauth2"
 )
 
 const (
@@ -42,6 +45,8 @@ var (
 	SteamApiKey         string
 
 	discoveryCache *NoOpDiscoveryCache
+
+	OauthConfig *oauth2.Config
 )
 
 // todo: use steamid.SteamID
@@ -244,6 +249,29 @@ func handleSteamSignOut(ctx context.Context, _ *struct{}) (*SignOutOutput, error
 	}, nil
 }
 
+func handleDiscordDiscover(ctx context.Context, input *DiscoverInput) (*DiscoverOutput, error) {
+	principal, ok := GetPrincipal(ctx)
+	if !ok {
+		return nil, huma.Error401Unauthorized("a session is required")
+	}
+
+	return &DiscoverOutput{
+		Status: http.StatusTemporaryRedirect,
+		// todo: what to use for auth code per user?
+		Url: OauthConfig.AuthCodeURL(string(principal.SteamID.String())),
+	}, nil
+}
+
+type DiscordCallbackOutput struct {
+	Status int
+	Url    string `header:"Location"`
+}
+
+func handleDiscordCallback(ctx context.Context, input *CallbackInput) (*DiscordCallbackOutput, error) {
+	//
+	return nil, huma.Error404NotFound("not implemented")
+}
+
 func registerAuth(sessionApi *huma.Group) {
 	OidRealm = env.GetString("JUMP_OID_REALM")
 	oidRealmURL, err := url.Parse(OidRealm)
@@ -319,4 +347,48 @@ func registerAuth(sessionApi *huma.Group) {
 		Security:    sessionCookieSecurityMap,
 		Middlewares: requireUserSessionMiddlewares,
 	}, handleSteamSignOut)
+}
+
+func registerDiscordConnection(sessionApi *huma.Group) {
+	redirectURL, err := url.JoinPath(OidRealmURL.String(), "/internal/discord/callback")
+	if err != nil {
+		log.Fatal("[fatal] error joining Discord redirect URL")
+	}
+
+	clientID := env.GetString("JUMP_DISCORD_CLIENT_ID")
+	clientSecret := env.GetString("JUMP_DISCORD_CLIENT_SECRET")
+
+	OauthConfig = &oauth2.Config{
+		ClientID:     clientID,
+		ClientSecret: clientSecret,
+		Endpoint:     discord.Endpoint,
+		RedirectURL:  redirectURL,
+		Scopes:       []string{discord.ScopeIdentify},
+	}
+
+	huma.Register(sessionApi, huma.Operation{
+		Method:      http.MethodGet,
+		Path:        "/discord/discover",
+		OperationID: "discord-discover",
+		Summary:     "Discord discover",
+		Description: "discord discover",
+		Tags:        []string{"Discord Auth"},
+		Errors:      []int{http.StatusUnauthorized},
+
+		Security:    sessionCookieSecurityMap,
+		Middlewares: requireUserSessionMiddlewares,
+	}, handleDiscordDiscover)
+
+	huma.Register(sessionApi, huma.Operation{
+		Method:      http.MethodGet,
+		Path:        "/discord/callback",
+		OperationID: "discord-callback",
+		Summary:     "Discord callback",
+		Description: "discord callback",
+		Tags:        []string{"Discord Auth"},
+		Errors:      []int{http.StatusUnauthorized},
+
+		Security:    sessionCookieSecurityMap,
+		Middlewares: requireUserSessionMiddlewares,
+	}, handleDiscordCallback)
 }
