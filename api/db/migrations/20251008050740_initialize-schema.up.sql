@@ -17,7 +17,7 @@ create table player(
   demo_division text,
   motw_timeslot integer,
   preferred_class text not null default 'Soldier',
-  preferred_launcher text not null default 'None',
+  preferred_launcher text,
   preferred_map text,
 
   created_at datetime not null default current_timestamp,
@@ -25,7 +25,7 @@ create table player(
   check (role in ('Player', 'Consultant', 'Moderator', 'Treasurer', 'Admin')),
   check (motw_timeslot in (1, 2, 3)),
   check (preferred_class in ('Soldier', 'Demo')),
-  check (preferred_launcher in ('Stock', 'Original', 'Mangler', 'None'))
+  check (preferred_launcher in ('Stock', 'Original', 'Mangler', null))
 );
 
 -- # competition info that applies to each kind 
@@ -133,6 +133,7 @@ create table player_time(
   id integer not null primary key autoincrement,
   player_id text not null,
   competition_division_id integer not null,
+  tempus_time_id integer,
   run_time float not null,
   verified boolean not null,
 
