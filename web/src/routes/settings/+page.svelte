@@ -34,7 +34,9 @@
   player = (await data.player) ?? null;
 </script>
 
-{#await data.player then _}
+{#await data.player}
+  <span></span>
+{:then _}
   {#if player}
     <Section label="profile">
       <SelectButton
