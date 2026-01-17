@@ -15,7 +15,7 @@
     updatePlayerRole,
     updatePlayerSoldierDivision
   } from '$lib/src/api.js';
-  import { divisions } from '$lib/src/divisions.js';
+  import { compareBothDivisions, compareDivisions, divisions } from '$lib/src/divisions.js';
   import { slide } from 'svelte/transition';
 
   import type { Player } from '$lib/schema.js';
@@ -25,7 +25,14 @@
   let players: Player[] | [] = $state([]);
 
   // svelte-ignore state_referenced_locally
-  players = (await data.players) ?? [];
+  players = ((await data.players) ?? []).sort((a, b) =>
+    compareBothDivisions(
+      a.soldier_division ?? '',
+      a.demo_division ?? '',
+      b.soldier_division ?? '',
+      b.demo_division ?? ''
+    )
+  );
 
   const placeholder = {
     created_at: '',
@@ -80,7 +87,7 @@
             <Label label="update role">
               <Select
                 type="text"
-                placeholder={selected.demo_division}
+                placeholder={selected.role}
                 options={['Admin', 'Moderator', 'Consultant', 'Treasurer', 'Player']}
                 onsubmit={(value) => {
                   return updatePlayerRole(selected.id, value);
@@ -93,28 +100,28 @@
   {/if}
 {/await}
 
-{#await data.players then _}
+{#await data.players}
+  <span></span>
+{:then _}
   {#if players.length}
     <Table data={players}>
       {#snippet header()}
-        <th class="w-36">steam id</th>
         <th class="w-24">role</th>
         <th></th>
-        <th class="w-24">soldier</th>
-        <th class="w-24">demo</th>
-        <th class="w-48">join date</th>
+        <th class="w-24 text-left">soldier</th>
+        <th class="w-24 text-left">demo</th>
+        <th class="w-46">join date</th>
       {/snippet}
       {#snippet row(player: Player)}
-        <td>{player.id}</td>
-        <td>{player.role}</td>
+        <td>{player.role === 'Player' ? '' : player.role}</td>
         <td
           onclick={() => {
             selected = player;
           }}
           ><TablePlayer {player} />
         </td>
-        <td><DivisionTag div={player.soldier_division} /></td>
-        <td><DivisionTag div={player.demo_division} /></td>
+        <td><div class="flex"><DivisionTag div={player.soldier_division} /></div></td>
+        <td><div class="flex"><DivisionTag div={player.demo_division} /></div></td>
         <td><TableDate date={player.created_at} /></td>
       {/snippet}
     </Table>
