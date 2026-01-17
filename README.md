@@ -22,6 +22,8 @@ api documentation is provided at `/docs` (see [.env.local.example](api/env/.env.
 > go install -tags 'sqlite3' github.com/golang-migrate/migrate/v4/cmd/migrate
 > migrate -source file://db/migrations -database sqlite3://db/jump.db up
 > ```
+>
+> most API endpoints require a session cookie, and many require an elevated "role" stored in the player table. for a local database, set your role to "Admin"
 
 ```sh
 cd api
