@@ -15,6 +15,7 @@ require (
 require (
 	github.com/escrow-tf/steam v0.0.0-20251105072554-5d32165389d1 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
+	golang.org/x/oauth2 v0.34.0 // indirect
 	google.golang.org/protobuf v1.36.10 // indirect
 )
 
@@ -22,5 +23,6 @@ require (
 	github.com/gofrs/uuid v4.4.0+incompatible
 	github.com/golang-jwt/jwt/v5 v5.3.0
 	github.com/hashicorp/go-retryablehttp v0.7.8
+	github.com/ravener/discord-oauth2 v0.0.0-20230514095040-ae65713199b3
 	golang.org/x/net v0.40.0 // indirect
 )
