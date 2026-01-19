@@ -14,7 +14,7 @@
   {#if monthlies}
     {#each monthlies as monthly, i}
       {#if !monthly.competition.complete}
-        <MonthlyHeader {monthly} header={i === 0} link={true} />
+        <MonthlyHeader {monthly} link={true} />
       {/if}
     {/each}
 

@@ -10,7 +10,7 @@
   <span class="relative z-10 truncate text-shadow-base-900 text-shadow-sm">{map}</span>
   <img
     class="absolute size-full object-cover"
-    src="https://tempusplaza.xyz/map-backgrounds/{map}.jpg"
+    src="https://tempusplaza.com/map-backgrounds/{map}.jpg"
     alt=""
     loading="lazy" />
 </div>

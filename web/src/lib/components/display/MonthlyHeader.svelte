@@ -48,7 +48,7 @@
 <!-- container -->
 <!-- todo: link to competition page for maps -->
 <div
-  class="grid h-48 w-full items-end justify-center bg-base-900 drop-shadow-md/50
+  class="grid h-48 w-full items-end justify-center bg-base-900
   {header ? 'absolute top-0 left-0' : 'relative rounded-layout'}
   {twCols.get(maps.size)}">
   {#each maps as [map, divisions]}
@@ -59,7 +59,7 @@
         <a class="relative flex size-full overflow-hidden" href="/formats/monthly/{monthly.id}">
           <img
             class="over absolute z-10 h-48 w-full scale-105 object-cover brightness-90 not-first:mask-x-from-98% not-last:mask-x-from-98%"
-            src="https://tempusplaza.xyz/map-backgrounds/{map}.jpg"
+            src="https://tempusplaza.com/map-backgrounds/{map}.jpg"
             alt=""
             draggable="false" />
         </a>
@@ -67,7 +67,7 @@
         <div class="relative flex size-full overflow-hidden">
           <img
             class="over absolute z-10 h-48 w-full scale-105 object-cover brightness-90 not-first:mask-x-from-98% not-last:mask-x-from-98%"
-            src="https://tempusplaza.xyz/map-backgrounds/{map}.jpg"
+            src="https://tempusplaza.com/map-backgrounds/{map}.jpg"
             alt=""
             draggable="false" />
         </div>

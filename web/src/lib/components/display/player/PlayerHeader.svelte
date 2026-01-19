@@ -62,7 +62,7 @@
   {#if player.preferred_map}
     <img
       class="h-2/3 w-full mask-b-from-95% object-cover object-center"
-      src="https://tempusplaza.xyz/map-backgrounds/{player.preferred_map}.jpg"
+      src="https://tempusplaza.com/map-backgrounds/{player.preferred_map}.jpg"
       alt="" />
   {:else}
     <div class="h-2/3 w-full mask-b-from-95%">
@@ -102,7 +102,7 @@
       <Link
         label="Plaza"
         src={plaza}
-        href={`https://tempusplaza.xyz/players/${player.tempus_id}`}
+        href={`https://tempusplaza.com/players/${player.tempus_id}`}
         newTab={true} />
     {/if}
   </div>

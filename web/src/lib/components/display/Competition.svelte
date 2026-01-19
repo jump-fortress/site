@@ -38,7 +38,7 @@
       <!-- absolute map bg image -->
       <img
         class="absolute z-10 h-48 w-full scale-105 object-cover brightness-90 not-first:mask-x-from-98% not-last:mask-x-from-98%"
-        src="https://tempusplaza.xyz/map-backgrounds/{name}.jpg"
+        src="https://tempusplaza.com/map-backgrounds/{name}.jpg"
         alt=""
         draggable="false" />
       <div class="relative z-10 flex flex-col items-center gap-1 p-2">
