@@ -8,9 +8,7 @@ import (
 	"io"
 	"regexp"
 	"slices"
-	"strconv"
 	"strings"
-	"time"
 
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/hashicorp/go-retryablehttp"
@@ -267,35 +265,7 @@ func HandleGetAllPlayers(ctx context.Context, _ *struct{}) (*responses.PlayerPre
 		Body: []responses.PlayerPreview{},
 	}
 
-	for i, p := range players {
-
-		if p.Country.String == "" {
-			fmt.Println(strconv.Itoa(i) + ": attempting for " + strconv.Itoa(int(p.TempusID.Int64)))
-			t, err := getTempusPlayerInfo(p.TempusID.Int64)
-			time.Sleep(1 * time.Second)
-			if err != nil {
-				continue
-			}
-			err = responses.Queries.UpdatePlayerTempusInfo(ctx, queries.UpdatePlayerTempusInfoParams{
-				TempusID: sql.NullInt64{
-					Int64: p.TempusID.Int64,
-					Valid: true,
-				},
-				Country: sql.NullString{
-					String: t.Country,
-					Valid:  true,
-				},
-				CountryCode: sql.NullString{
-					String: strings.ToLower(t.CountryCode),
-					Valid:  true,
-				},
-				ID: p.ID,
-			})
-			if err != nil {
-				continue
-			}
-		}
-
+	for _, p := range players {
 		playerResponse := getPlayerPreviewResponse(p)
 		resp.Body = append(resp.Body, playerResponse)
 	}
@@ -310,7 +280,7 @@ func HandlePostSelfSteamTradeToken(ctx context.Context, input *responses.SteamTr
 	}
 
 	if len(input.Url) > 100 {
-		return nil, huma.Error400BadRequest("URL is too long. please paste the full Steam Trade URL")
+		return nil, huma.Error400BadRequest("URL is too long. please paste the full Steam Trade URL.")
 	}
 
 	// extract steam3ID and token from input

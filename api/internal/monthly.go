@@ -117,14 +117,14 @@ func HandlePostCreateMonthly(ctx context.Context, input *responses.MonthlyInput)
 		}
 	}
 
-	if input.Body.Competition.StartsAt.Before(input.Body.Competition.VisibleAt) {
-		return nil, huma.Error400BadRequest("competition must be visible before it starts")
-	}
-
-	now := time.Now()
-	if input.Body.Competition.StartsAt.Before(now) || input.Body.Competition.VisibleAt.Before(now) {
-		return nil, huma.Error400BadRequest("competition must start and be visible in the future")
-	}
+	//if input.Body.Competition.StartsAt.Before(input.Body.Competition.VisibleAt) {
+	//	return nil, huma.Error400BadRequest("competition must be visible before it starts")
+	//}
+	//
+	//now := time.Now()
+	//if input.Body.Competition.StartsAt.Before(now) || input.Body.Competition.VisibleAt.Before(now) {
+	//	return nil, huma.Error400BadRequest("competition must start and be visible in the future")
+	//}
 
 	competition, err := responses.Queries.InsertCompetition(ctx, queries.InsertCompetitionParams{
 		Class:     input.Body.Competition.Class,
