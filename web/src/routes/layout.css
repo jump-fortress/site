@@ -64,11 +64,11 @@
   }
 
   th {
-    @apply py-1;
+    @apply px-1 pb-0.5;
   }
 
   td {
-    @apply h-10 bg-base-900;
+    @apply h-10 bg-base-900 px-1;
   }
 
   tr:hover td {

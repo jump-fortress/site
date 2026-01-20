@@ -4,13 +4,16 @@
   import TableCompetition from '$lib/components/display/table/TableCompetition.svelte';
   import TableDate from '$lib/components/display/table/TableDate.svelte';
   import TableMap from '$lib/components/display/table/TableMap.svelte';
+  import Section from '$lib/components/layout/Section.svelte';
 
   import type { Monthly } from '$lib/schema';
 
   let { data } = $props();
 </script>
 
-{#await data.monthlies then monthlies}
+{#await data.monthlies}
+  <span></span>
+{:then monthlies}
   {#if monthlies}
     {#each monthlies as monthly, i}
       {#if !monthly.competition.complete}
@@ -19,19 +22,28 @@
     {/each}
 
     <!-- completed monthlies -->
-    <Table data={monthlies.filter(({ competition }) => competition.complete)}>
-      {#snippet header()}
-        <th></th>
-        <th class="w-48"></th>
-        <th class="w-48"></th>
-        <th class="w-32">end date</th>
-      {/snippet}
-      {#snippet row(m: Monthly)}
-        <td><TableCompetition competition={m.competition} format="monthly" formatId={m.id} /></td>
-        <td><TableMap map="jump_beef" /></td>
-        <td><TableMap map="jump_escape_rc4" /></td>
-        <td><TableDate date={m.competition.ends_at} /></td>
-      {/snippet}
-    </Table>
+    <Section label="past results">
+      <Table data={monthlies.filter(({ competition }) => competition.complete)}>
+        {#snippet header()}
+          <th class="w-40"></th>
+          <th></th>
+          <th class="w-32"></th>
+        {/snippet}
+        {#snippet row(m: Monthly)}
+          {@const maps = new Set(m.divisions?.map((cd) => cd.map))}
+          <td
+            ><a href="/formats/monthly/{m.id}"
+              ><TableCompetition competition={m.competition} format="monthly" formatId={m.id} /></a
+            ></td>
+          <td
+            ><div class="flex h-full overflow-hidden">
+              {#each maps as map}
+                <TableMap {map} />
+              {/each}
+            </div></td>
+          <td><TableDate date={m.competition.ends_at} /></td>
+        {/snippet}
+      </Table>
+    </Section>
   {/if}
 {/await}
