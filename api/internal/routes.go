@@ -25,6 +25,7 @@ func registerOpenRoutes(internalApi *huma.Group) {
 		Tags:        []string{"Open"},
 	}, HandleGetAllPlayers)
 
+	// todo: generalize for all competition types, competition type path param
 	huma.Register(internalApi, huma.Operation{
 		Method:      http.MethodGet,
 		Path:        "/competitions/all/monthly",
@@ -53,6 +54,16 @@ func registerOpenRoutes(internalApi *huma.Group) {
 		Tags:        []string{"Open"},
 		Security:    sessionCookieSecurityMap,
 	}, HandleGetMonthly)
+
+	huma.Register(internalApi, huma.Operation{
+		Method:      http.MethodGet,
+		Path:        "/players/times/{competition}/{id}",
+		OperationID: "get-player-times",
+		Summary:     "get player times",
+		Description: "get player times by competition type and id",
+		Tags:        []string{"Open"},
+		Security:    sessionCookieSecurityMap,
+	}, HandleGetCompetitionPlayerTimes)
 }
 
 func registerSessionRoutes(internalApi *huma.Group) {

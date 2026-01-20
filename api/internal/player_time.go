@@ -2,9 +2,11 @@ package internal
 
 import (
 	"context"
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"io"
+	"math"
 	"slices"
 	"strconv"
 	"time"
@@ -14,6 +16,50 @@ import (
 	"github.com/spiritov/jump/api/db/queries"
 	"github.com/spiritov/jump/api/db/responses"
 )
+
+func formatTime(run_time float64) string {
+	minutes := int(run_time / 60)
+	seconds := math.Mod(run_time, 60)
+
+	return fmt.Sprintf("%02d:%06.3f", minutes, seconds)
+}
+
+func getTimeWithPlayerResponse(row queries.SelectCompetitionDivisionPRTimesRow) responses.TimeWithPlayer {
+	return responses.TimeWithPlayer{
+		Player: responses.PlayerPreview{
+			ID:                row.PlayerID,
+			Role:              row.Role,
+			SteamAvatarUrl:    row.SteamAvatarUrl.String,
+			TempusID:          row.TempusID.Int64,
+			Country:           row.Country.String,
+			CountryCode:       row.CountryCode.String,
+			DisplayName:       row.DisplayName.String,
+			SoldierDivision:   row.SoldierDivision.String,
+			DemoDivision:      row.DemoDivision.String,
+			MotwTimeslot:      row.MotwTimeslot.Int64,
+			PreferredClass:    row.PreferredClass,
+			PreferredLauncher: row.PreferredLauncher.String,
+			PreferredMap:      row.PreferredMap.String,
+			CreatedAt:         row.CreatedAt_2,
+		},
+		Time: responses.PlayerTime{
+			ID:                    row.ID,
+			PlayerID:              row.PlayerID,
+			CompetitionDivisionID: row.CompetitionDivisionID,
+			TempusTimeID:          row.TempusTimeID.Int64,
+			RunTime:               row.RunTime,
+			Verified:              row.Verified,
+			CreatedAt:             row.CreatedAt,
+		},
+	}
+}
+
+func getCompetitionDivisionTimesResponse(cd queries.CompetitionDivision) responses.CompetitionDivisionTimes {
+	return responses.CompetitionDivisionTimes{
+		ID:    cd.ID,
+		Times: []responses.TimeWithPlayer{},
+	}
+}
 
 func getCompetitionInProgress(ctx context.Context, id int64) (*queries.Competition, error) {
 	competition, err := responses.Queries.SelectCompetition(ctx, id)
@@ -48,7 +94,7 @@ func isDivisionRestricted(competition_type string) bool {
 }
 
 func getTempusPlayerTime(tempusID int64, mapName string, zoneType string, zoneIndex int64, classID int64) (*responses.TempusPlayerTimeResult, error) {
-	url := fmt.Sprintf("/maps/name/%s/zones/typeindex/%s/%d/records/player/%d/%d", mapName, zoneType, zoneIndex, tempusID, classID)
+	url := fmt.Sprintf("https://tempus2.xyz/api/v0/maps/name/%s/zones/typeindex/%s/%d/records/player/%d/%d", mapName, zoneType, zoneIndex, tempusID, classID)
 
 	response, err := retryablehttp.Get(url)
 	if err != nil {
@@ -115,10 +161,10 @@ func HandlePostSubmitPlayerTime(ctx context.Context, input *responses.Competitio
 	// todo: bounty may be course or bonus
 	if competition.Type == "Bounty" {
 		fmt.Println("todo not implemented - submitting course / bonus zones for a bounty")
-		zoneType = "Map"
+		zoneType = "map"
 		zoneIndex = 1
 	} else {
-		zoneType = "Map"
+		zoneType = "map"
 		zoneIndex = 1
 	}
 
@@ -169,8 +215,13 @@ func HandlePostSubmitPlayerTime(ctx context.Context, input *responses.Competitio
 		if err := responses.Queries.InsertPlayerTime(ctx, queries.InsertPlayerTimeParams{
 			PlayerID:              principal.SteamID.String(),
 			CompetitionDivisionID: mcd.ID,
-			RunTime:               tempusPR.RunTime,
-			Verified:              true,
+			TempusTimeID: sql.NullInt64{
+				Int64: tempusPR.ID,
+				Valid: true,
+			},
+			RunTime:   tempusPR.RunTime,
+			Verified:  true,
+			CreatedAt: prDate,
 		}); err != nil {
 			// something went wrong submitting time..
 			return nil, err
@@ -301,4 +352,66 @@ func HandlePostDeletePlayerTime(ctx context.Context, input *responses.PlayerTime
 	}
 
 	return nil, nil
+}
+
+func HandleGetCompetitionPlayerTimes(ctx context.Context, input *responses.CompetitionTypeAndIDInput) (*responses.CompetitionTimesOutput, error) {
+	cid, err := getCompetitionID(ctx, input.Type, input.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	//c, err := responses.Queries.SelectCompetition(ctx, cid)
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	competitionDivisions, err := responses.Queries.SelectCompetitionDivisions(ctx, cid)
+	if err != nil {
+		return nil, huma.Error400BadRequest(fmt.Sprintf("no competition found with id %d", cid))
+	}
+
+	resp := &responses.CompetitionTimesOutput{
+		Body: []responses.CompetitionDivisionTimes{},
+	}
+
+	for _, cd := range competitionDivisions {
+		cdtResponse := getCompetitionDivisionTimesResponse(cd)
+
+		times, err := responses.Queries.SelectCompetitionDivisionPRTimes(ctx, cd.ID)
+		if err != nil {
+			return nil, err
+		}
+
+		for _, t := range times {
+			cdtResponse.Times = append(cdtResponse.Times, getTimeWithPlayerResponse(t))
+
+			// todo: move verifying manual times elsewhere
+			//	tt, err := getTempusPlayerTime(t.TempusID.Int64, "jump_doom_final", "map", 1, 3)
+			//	if err != nil {
+			//		return nil, err
+			//	}
+			//
+			//	// check that tempus time is after starts_at and before ends_at
+			//	prUnixSeconds := int64(tt.Date)
+			//	prDate := time.Unix(prUnixSeconds, 0)
+			//	fmt.Printf("%s: %f", t.DisplayName.String, tt.RunTime)
+			//
+			//	if prDate.After(c.StartsAt) && prDate.Before(c.EndsAt.AddDate(0, 0, 1)) {
+			//		fmt.Println("valid")
+			//		err := responses.Queries.UpdatePlayerTimeFromTempus(ctx, queries.UpdatePlayerTimeFromTempusParams{
+			//			RunTime:   tt.RunTime,
+			//			CreatedAt: prDate,
+			//			TempusTimeID: tt.ID,
+			//			ID:        t.ID,
+			//		})
+			//		if err != nil {
+			//			return nil, err
+			//		}
+			//	}
+
+		}
+		resp.Body = append(resp.Body, cdtResponse)
+	}
+
+	return resp, nil
 }

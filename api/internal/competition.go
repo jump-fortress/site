@@ -9,6 +9,38 @@ import (
 	"github.com/spiritov/jump/api/db/responses"
 )
 
+func getCompetitionID(ctx context.Context, competitionType string, typeID int64) (int64, error) {
+	var err error = nil
+	var id int64 = 0
+
+	switch competitionType {
+	case "Monthly":
+		id, err = responses.Queries.SelectMonthlyCompetitionID(ctx, typeID)
+		// case "Motw":
+		// 	return id, huma.Error404NotFound("todo not implemented")
+		//
+		// case "Bounty":
+		// 	return id, huma.Error404NotFound("todo not implemented")
+		//
+		// case "Quest":
+		// 	return id, huma.Error404NotFound("todo not implemented")
+		//
+		// case "Playoffs":
+		// 	return id, huma.Error404NotFound("todo not implemented")
+		//
+		// case "JWC":
+		// 	return id, huma.Error404NotFound("todo not implemented")
+		//
+		// case "Archive":
+		// 	return id, huma.Error404NotFound("todo not implemented")
+		//
+		// case "Other":
+		// 	return id, huma.Error404NotFound("todo not implemented")
+	}
+
+	return id, err
+}
+
 func HandlePostCancelCompetition(ctx context.Context, input *responses.CompetitionIDInput) (*struct{}, error) {
 	// this query also checks that the competition hasn't started yet
 	competition, err := responses.Queries.DeleteCompetition(ctx, input.ID)
