@@ -4,11 +4,11 @@ import type {
   Player,
   PlayerPreview,
   PlayerRequestPreview,
-  PlayerProfile,
   PlayerRequest,
   PlayerWithRequest,
   Map,
-  CompetitionDivisionTimes
+  CompetitionDivisionTimes,
+  PlayerWithPoints
 } from '$lib/schema';
 
 // for information about these interfaces
@@ -23,8 +23,8 @@ declare global {
       player?: Promise<Player>;
       players?: Promise<Player[]>;
       playerPreview?: Promise<PlayerPreview>;
-      playerPreviews?: Promise<PlayerPreview[]>;
-      playerProfile?: Promise<PlayerProfile>;
+      playersWithPoints?: Promise<PlayerWithPoints[]>;
+      playerWithPoints?: Promise<PlayerWithPoints>;
       requestPreviews?: Promise<PlayerRequestPreview[]>;
       requests?: Promise<PlayerRequest[]>;
       playersWithRequests?: Promise<PlayerWithRequest[]>;

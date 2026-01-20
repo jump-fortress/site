@@ -1,23 +1,33 @@
 <script lang="ts">
-  import { dateToMs } from '$lib/src/temporal';
   import { formatRunTime } from '$lib/src/times';
   import { Chart } from 'chart.js/auto';
   import 'chartjs-adapter-date-fns';
-  import { onMount } from 'svelte';
-  import { Temporal } from 'temporal-polyfill';
 
   import type { TimeWithPlayer } from '$lib/schema';
-  import type { Attachment } from 'svelte/attachments';
 
   type Props = {
     data: TimeWithPlayer[];
+    div: string;
   };
 
-  let { data }: Props = $props();
+  let { data, div }: Props = $props();
 
-  $inspect(dateToMs(data.at(0)?.time.created_at ?? ''));
+  const timeData = $derived(
+    data.map(({ player, time }) => ({
+      x: time.created_at,
+      y: time.run_time
+    }))
+  );
 
-  const timeData = $derived(data.map(({ time }) => ({ x: time.created_at, y: time.run_time })));
+  const divisionColors = new Map([
+    ['Diamond', '#94e2d5'],
+    ['Platinum', '#74c7ec'],
+    ['Gold', '#f9e2af'],
+    ['Silver', '#f5e0dc'],
+    ['Bronze', '#fab387'],
+    ['Steel', '#cdd6f4'],
+    ['Wood', '#f2cdcd']
+  ]);
 
   function chart(nd: Array<object>) {
     return (node: HTMLCanvasElement) => {
@@ -26,17 +36,46 @@
         data: {
           datasets: [{ data: nd }]
         },
-
         options: {
+          font: {
+            family: 'fredoka'
+          },
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
+          layout: {
+            padding: 0
+          },
+          interaction: {
+            mode: 'nearest'
+          },
+          aspectRatio: 4,
+          elements: {
+            line: {
+              borderColor: divisionColors.get(div),
+              borderWidth: 2
+            },
+            point: {
+              pointStyle: 'circle',
+              hitRadius: 1024,
+              backgroundColor: divisionColors.get(div),
+              hoverBorderColor: '#cdd6f4',
+              hoverBorderWidth: 2,
+              radius: 4,
+              hoverRadius: 8
+            }
+          },
           scales: {
             x: {
               type: 'time',
               time: {
                 unit: 'hour'
               },
-              title: {
-                display: true,
-                text: 'run time'
+
+              ticks: {
+                stepSize: 1
               }
             },
             y: {
