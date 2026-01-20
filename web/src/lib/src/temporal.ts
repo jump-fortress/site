@@ -43,6 +43,6 @@ export function formatRelative(time: number) {
   return relativeFormatter.format(Math.round(diff / (60 * 1000)), 'minute');
 }
 
-export function DateToMs(date: string) {
+export function dateToMs(date: string) {
   return Temporal.Instant.from(date).epochMilliseconds;
 }
