@@ -5,7 +5,7 @@ import type { PageServerLoad } from './$types';
 
 // this call doesn't need credentials
 export const load: PageServerLoad = async ({ fetch, params }) => {
-  const data = Client.GET('/internal/competitions/monthly/{id}', {
+  const monthlyData = Client.GET('/internal/competitions/monthly/{id}', {
     fetch: fetch,
     params: {
       path: { id: parseInt(params.id) }
@@ -13,5 +13,18 @@ export const load: PageServerLoad = async ({ fetch, params }) => {
   }).then((response) => {
     return response.data;
   });
-  return { monthly: data };
+
+  const timesData = Client.GET('/internal/players/times/{competition}/{id}', {
+    fetch: fetch,
+    params: {
+      path: {
+        competition: 'Monthly',
+        id: parseInt(params.id)
+      }
+    }
+  }).then((response) => {
+    return response.data;
+  });
+
+  return { monthly: monthlyData, times: timesData };
 };

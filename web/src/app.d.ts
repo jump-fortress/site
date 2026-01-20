@@ -7,7 +7,8 @@ import type {
   PlayerProfile,
   PlayerRequest,
   PlayerWithRequest,
-  Map
+  Map,
+  CompetitionDivisionTimes
 } from '$lib/schema';
 
 // for information about these interfaces
@@ -29,6 +30,7 @@ declare global {
       playersWithRequests?: Promise<PlayerWithRequest[]>;
       maps?: Promise<Map[]>;
       monthly?: Promise<Monthly>;
+      times?: Promise<CompetitionDivisionTimes[]>;
     }
     // interface PageState {}
     // interface Platform {}

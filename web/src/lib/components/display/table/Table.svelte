@@ -6,7 +6,7 @@
   type Props = {
     data: object[];
     header: Snippet;
-    row: Snippet<[any]>;
+    row: Snippet<[any, number]>;
   };
 
   let { data, header, row }: Props = $props();
@@ -23,9 +23,9 @@
 
   <!-- rows -->
   <tbody>
-    {#each data as object}
+    {#each data as object, i}
       <tr transition:fade class="my-1">
-        {@render row(object)}
+        {@render row(object, i)}
         <!-- <td>{content}</td> -->
       </tr>
     {/each}
