@@ -32,7 +32,7 @@ func registerOpenRoutes(internalApi *huma.Group) {
 		Summary:     "get all monthlies",
 		Description: "get all monthlies that are visible",
 		Tags:        []string{"Open"},
-	}, HandlePostGetAllMonthlies)
+	}, HandleGetAllMonthlies)
 
 	huma.Register(internalApi, huma.Operation{
 		Method:      http.MethodGet,
@@ -42,7 +42,7 @@ func registerOpenRoutes(internalApi *huma.Group) {
 		Description: "get all division prizepools for a competition",
 		Tags:        []string{"Open"},
 		Security:    sessionCookieSecurityMap,
-	}, HandlePostGetPrizepool)
+	}, HandleGetPrizepool)
 
 	huma.Register(internalApi, huma.Operation{
 		Method:      http.MethodGet,
@@ -52,7 +52,7 @@ func registerOpenRoutes(internalApi *huma.Group) {
 		Description: "get monthly info by monthly id",
 		Tags:        []string{"Open"},
 		Security:    sessionCookieSecurityMap,
-	}, HandlePostGetMonthly)
+	}, HandleGetMonthly)
 }
 
 func registerSessionRoutes(internalApi *huma.Group) {

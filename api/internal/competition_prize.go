@@ -61,7 +61,7 @@ func getCdPrizepoolResponse(cdPrizepool []queries.SelectDivisionPrizepoolRow, cd
 
 // open
 
-func HandlePostGetPrizepool(ctx context.Context, input *responses.CompetitionIDInput) (*responses.PrizepoolOutput, error) {
+func HandleGetPrizepool(ctx context.Context, input *responses.CompetitionIDInput) (*responses.PrizepoolOutput, error) {
 	cds, err := responses.Queries.SelectCompetitionDivisions(ctx, input.ID)
 	if err != nil {
 		return nil, huma.Error400BadRequest("competition not found with id " + strconv.FormatInt(input.ID, 10))

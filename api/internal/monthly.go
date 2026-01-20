@@ -29,7 +29,7 @@ func getMonthlyResponse(monthly queries.SelectMonthlyRow) responses.Monthly {
 	}
 }
 
-func HandlePostGetAllMonthlies(ctx context.Context, _ *struct{}) (*responses.MonthliesOutput, error) {
+func HandleGetAllMonthlies(ctx context.Context, _ *struct{}) (*responses.MonthliesOutput, error) {
 	monthlies, err := responses.Queries.SelectAllMonthly(ctx)
 	if err != nil {
 		return nil, err
@@ -68,7 +68,7 @@ func HandlePostGetAllMonthlies(ctx context.Context, _ *struct{}) (*responses.Mon
 	return resp, nil
 }
 
-func HandlePostGetMonthly(ctx context.Context, input *responses.MonthlyIDInput) (*responses.MonthlyOutput, error) {
+func HandleGetMonthly(ctx context.Context, input *responses.MonthlyIDInput) (*responses.MonthlyOutput, error) {
 	monthly, err := responses.Queries.SelectMonthly(ctx, input.ID)
 	if err != nil {
 		return nil, err
