@@ -28,9 +28,10 @@
     monthly: Monthly;
     header?: boolean;
     link?: boolean;
+    ends_at?: boolean;
   };
 
-  let { monthly, header = false, link = false }: Props = $props();
+  let { monthly, header = false, link = false, ends_at = true }: Props = $props();
   let maps = $derived(cdToMaps(monthly.divisions));
 
   const twCols = new Map([
@@ -46,10 +47,10 @@
 </script>
 
 <!-- container -->
-<!-- todo: link to competition page for maps -->
+<!-- todo: link to competition page for divs -->
 <div
-  class="grid h-48 w-full items-end justify-center bg-base-900
-  {header ? 'absolute top-0 left-0' : 'relative rounded-layout'}
+  class="group grid h-48 w-full items-end justify-center overflow-hidden bg-base-900
+  {header ? 'absolute top-0 left-0 rounded-t-layout' : 'relative rounded-layout'}
   {twCols.get(maps.size)}">
   {#each maps as [map, divisions]}
     <!-- map wrapper -->
@@ -58,7 +59,7 @@
       {#if link}
         <a class="relative flex size-full overflow-hidden" href="/formats/monthly/{monthly.id}">
           <img
-            class="over absolute z-10 h-48 w-full scale-105 object-cover brightness-90 not-first:mask-x-from-98% not-last:mask-x-from-98%"
+            class="over absolute z-10 h-48 w-full scale-105 object-cover brightness-75 transition-all not-first:mask-x-from-98% not-last:mask-x-from-98% group-hover:brightness-100"
             src="https://tempusplaza.com/map-backgrounds/{map}.jpg"
             alt=""
             draggable="false" />
@@ -66,14 +67,16 @@
       {:else}
         <div class="relative flex size-full overflow-hidden">
           <img
-            class="over absolute z-10 h-48 w-full scale-105 object-cover brightness-90 not-first:mask-x-from-98% not-last:mask-x-from-98%"
+            class="over absolute z-10 h-48 w-full scale-105 object-cover brightness-75 transition-all not-first:mask-x-from-98% not-last:mask-x-from-98% group-hover:brightness-100"
             src="https://tempusplaza.com/map-backgrounds/{map}.jpg"
             alt=""
             draggable="false" />
         </div>
       {/if}
-      <div class="absolute z-10 flex flex-col items-center gap-1 p-2">
-        <span class="z-10 truncate text-lg text-shadow-sm/100">{map}</span>
+      <div
+        class="absolute z-10 flex flex-col items-center gap-1
+      p-2">
+        <span class="z-10 truncate text-lg">{map}</span>
         <div class="flex flex-wrap justify-center gap-2">
           {#each divisions as division}
             <DivisionTag div={division} />
@@ -83,20 +86,30 @@
     </div>
   {/each}
   <!-- absolute details container -->
-  <div class="absolute top-0 flex w-full justify-between p-2">
+  <div
+    class="absolute top-0 flex w-full justify-between text-shadow-xs/100 text-shadow-base-900
+    {header ? 'p-6' : 'p-2'}">
     <!-- competition name -->
     <div class="z-10 flex h-12 items-center gap-1">
       <ClassImage selected={monthly.competition.class} />
-      <span class="text-lg text-shadow-sm/100">monthly #{monthly.id}</span>
+      <span class="text-lg">monthly #{monthly.id}</span>
     </div>
     <!-- date / prizepool -->
-    <div class="z-10 flex flex-col items-end text-shadow-sm/100">
-      <div class="flex items-center gap-1">
+    <div class="z-10 flex flex-col items-end">
+      <div class="flex items-center gap-2">
         <span class="relative z-10">
-          <TableDate date={monthly.competition.starts_at} />
+          <TableDate date={monthly.competition.starts_at} fade={false} />
         </span>
-        <span class="icon-[mdi--calendar]"></span>
+        <span class="mt-auto icon-[mdi--calendar-outline]"></span>
       </div>
+      {#if ends_at}
+        <div class="flex items-center gap-2">
+          <span class="relative z-10">
+            <TableDate date={monthly.competition.ends_at} fade={false} />
+          </span>
+          <span class="icon-[mdi--clock-outline]"></span>
+        </div>
+      {/if}
       {#if monthly.competition.prizepool}
         <div class="flex items-center gap-1">
           <span>{monthly.competition.prizepool} keys</span>

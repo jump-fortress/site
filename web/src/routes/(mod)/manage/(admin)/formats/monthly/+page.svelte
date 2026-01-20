@@ -114,7 +114,7 @@
 </script>
 
 <div class="relative -top-4">
-  <MonthlyHeader header={true} {monthly} />
+  <MonthlyHeader header={false} {monthly} ends_at={false} />
 </div>
 
 {#if create || edit}

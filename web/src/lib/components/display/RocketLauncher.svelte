@@ -16,8 +16,10 @@
   let { launcher }: Props = $props();
 </script>
 
-<img
-  class="filter-lavender h-full object-cover"
-  src={rlMap.get(launcher)}
-  alt=""
-  draggable="false" />
+{#if launcher !== 'None'}
+  <img
+    class="filter-lavender h-full object-cover"
+    src={rlMap.get(launcher)}
+    alt=""
+    draggable="false" />
+{/if}

@@ -6,7 +6,7 @@
   import TablePlayer from '$lib/components/display/table/TablePlayer.svelte';
   import Section from '$lib/components/layout/Section.svelte';
 
-  import type { PlayerPreview } from '$lib/schema.js';
+  import type { PlayerWithPoints } from '$lib/schema.js';
 
   let { data } = $props();
 </script>
@@ -16,34 +16,32 @@
   <!-- todo: sort by.. -->
   <span></span>
 </Section>
-{#await data.playerPreviews then players}
-  {#if players}
-    <Table data={players}>
+{#await data.playersWithPoints}
+  <span></span>
+{:then pwp}
+  {#if pwp}
+    <Table data={pwp}>
       {#snippet header()}
-        <th class="w-16">rank</th>
-        <th class="w-16">div</th>
-        <th class="w-24"></th>
+        <th class="w-10"></th>
         <th></th>
-        <th class="w-22"></th>
-        <th class="w-64">a map</th>
-        <th class="w-16"># monthly</th>
-        <th class="w-16"># motw</th>
+        <th class="w-24 text-left"></th>
+        <th class="w-24"></th>
+        <th class="w-24">total points</th>
+        <th class="w-24">last 3 monthly</th>
+        <th class="w-24">last 9 motw</th>
       {/snippet}
-      {#snippet row(player: PlayerPreview)}
-        <td>1</td>
-        <td>1</td>
-        <td><DivisionTag div={player.soldier_division ?? ''} /></td>
-        <td><TablePlayer {player} /></td>
+      {#snippet row({ player, points }: PlayerWithPoints, i)}
+        <td>#{i}</td>
+        <td class="pl-10"><TablePlayer {player} /></td>
+        <td class="text-left"><DivisionTag div={player.soldier_division ?? ''} /></td>
         <td>
-          {#if player.preferred_launcher !== 'None'}
-            <div class="flex h-6 justify-center">
-              <RocketLauncher launcher={player.preferred_launcher} />
-            </div>
-          {/if}
+          <div class="flex h-6 justify-center">
+            <RocketLauncher launcher={player.preferred_launcher} />
+          </div>
         </td>
-        <td><TableMap map={'jump_flood'} /></td>
-        <td>3</td>
-        <td>9</td>
+        <td>{points.soldier.total}</td>
+        <td>{points.soldier.last_3_monthly}</td>
+        <td>{points.soldier.last_9_motw}</td>
       {/snippet}
     </Table>
   {/if}

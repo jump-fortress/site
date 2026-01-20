@@ -106,11 +106,11 @@
   {#if players.length}
     <Table data={players}>
       {#snippet header()}
-        <th class="w-24">role</th>
+        <th class="w-div">role</th>
         <th></th>
-        <th class="w-24 text-left">soldier</th>
-        <th class="w-24 text-left">demo</th>
-        <th class="w-46">join date</th>
+        <th class="w-div text-left">soldier</th>
+        <th class="w-div text-left">demo</th>
+        <th class="w-date">join date</th>
       {/snippet}
       {#snippet row(player: Player)}
         <td>{player.role === 'Player' ? '' : player.role}</td>
@@ -118,11 +118,11 @@
           onclick={() => {
             selected = player;
           }}
-          ><TablePlayer {player} />
+          ><TablePlayer {player} link={false} />
         </td>
-        <td><div class="flex"><DivisionTag div={player.soldier_division} /></div></td>
-        <td><div class="flex"><DivisionTag div={player.demo_division} /></div></td>
-        <td><TableDate date={player.created_at} /></td>
+        <td class="text-left"><DivisionTag div={player.soldier_division} /></td>
+        <td class="text-left"><DivisionTag div={player.demo_division} /></td>
+        <td class="table-date"><TableDate date={player.created_at} /></td>
       {/snippet}
     </Table>
   {/if}

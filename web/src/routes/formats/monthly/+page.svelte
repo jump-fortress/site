@@ -27,7 +27,7 @@
         {#snippet header()}
           <th class="w-40"></th>
           <th></th>
-          <th class="w-32"></th>
+          <th class="w-date"></th>
         {/snippet}
         {#snippet row(m: Monthly)}
           {@const maps = new Set(m.divisions?.map((cd) => cd.map))}
@@ -41,7 +41,7 @@
                 <TableMap {map} />
               {/each}
             </div></td>
-          <td><TableDate date={m.competition.ends_at} /></td>
+          <td class="table-date"><TableDate date={m.competition.ends_at} /></td>
         {/snippet}
       </Table>
     </Section>

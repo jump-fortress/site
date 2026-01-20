@@ -5,16 +5,17 @@
   type Props = {
     /** Format: date-time */
     date: string;
+    fade?: boolean;
   };
 
-  let { date }: Props = $props();
+  let { date, fade = true }: Props = $props();
   let ms = $derived(Temporal.Instant.from(date).epochMilliseconds);
 </script>
 
 <div class="relative">
-  <span class="peer">{formatRelative(ms)}</span>
+  <span class="peer {fade ? 'text-content/75' : ''}">{formatRelative(ms)}</span>
   <div
-    class="invisible absolute -top-1 left-1/2 -translate-x-1/2 rounded-box bg-base-900 px-2 py-1 text-nowrap peer-hover:visible hover:visible">
+    class="invisible absolute -top-1 right-0 rounded-box bg-base-900 px-2 py-1 text-nowrap drop-shadow-sm/100 drop-shadow-base-900 peer-hover:visible hover:visible">
     <span>
       {formatDate(ms)}
       <span class="text-primary">{formatTime(ms)}</span>

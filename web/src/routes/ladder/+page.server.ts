@@ -10,5 +10,5 @@ export const load: PageServerLoad = async ({ fetch }) => {
     return response.data;
   });
 
-  return { playerPreviews: data };
+  return { playersWithPoints: data };
 };
