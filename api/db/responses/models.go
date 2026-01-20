@@ -272,6 +272,11 @@ type CompetitionIDInput struct {
 	ID int64 `path:"id" doc:"competition id"`
 }
 
+type CompetitionTypeAndIDInput struct {
+	CompetitionIDInput
+	Type string `path:"competition"`
+}
+
 type MonthlyIDInput struct {
 	ID int64 `path:"id" doc:"monthly id"`
 }
@@ -343,4 +348,28 @@ type PlayerTimeIDInput struct {
 type PlayerRoleInput struct {
 	ID   string `path:"id" minimum:"1" doc:"player ID, SteamID64"`
 	Role string `path:"role" doc:"player role"`
+}
+
+type TimeWithPlayer struct {
+	Player PlayerPreview `json:"player"`
+	Time   PlayerTime    `json:"time"`
+}
+
+type PlayerTime struct {
+	ID                    int64     `json:"id" doc:"time id"`
+	PlayerID              string    `json:"player_id" doc:"player ID, SteamID64"`
+	CompetitionDivisionID int64     `json:"competition_division_id"`
+	TempusTimeID          int64     `json:"tempus_time_id,omitempty"`
+	RunTime               float64   `json:"run_time" doc:"run time in seconds"`
+	Verified              bool      `json:"verified"`
+	CreatedAt             time.Time `json:"created_at"`
+}
+
+type CompetitionDivisionTimes struct {
+	ID    int64            `json:"id" doc:"competition division id"`
+	Times []TimeWithPlayer `json:"times"`
+}
+
+type CompetitionTimesOutput struct {
+	Body []CompetitionDivisionTimes
 }

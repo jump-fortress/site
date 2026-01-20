@@ -33,30 +33,34 @@ func (q *Queries) DeletePlayerTime(ctx context.Context, id int64) (PlayerTime, e
 }
 
 const insertPlayerTime = `-- name: InsertPlayerTime :exec
-insert into player_time (player_id, competition_division_id, run_time, verified)
-  values (?, ?, ?, ?)
+insert into player_time (player_id, competition_division_id, tempus_time_id, run_time, verified, created_at)
+  values (?, ?, ?, ?, ?, ?)
 `
 
 type InsertPlayerTimeParams struct {
-	PlayerID              string  `json:"player_id"`
-	CompetitionDivisionID int64   `json:"competition_division_id"`
-	RunTime               float64 `json:"run_time"`
-	Verified              bool    `json:"verified"`
+	PlayerID              string        `json:"player_id"`
+	CompetitionDivisionID int64         `json:"competition_division_id"`
+	TempusTimeID          sql.NullInt64 `json:"tempus_time_id"`
+	RunTime               float64       `json:"run_time"`
+	Verified              bool          `json:"verified"`
+	CreatedAt             time.Time     `json:"created_at"`
 }
 
 func (q *Queries) InsertPlayerTime(ctx context.Context, arg InsertPlayerTimeParams) error {
 	_, err := q.db.ExecContext(ctx, insertPlayerTime,
 		arg.PlayerID,
 		arg.CompetitionDivisionID,
+		arg.TempusTimeID,
 		arg.RunTime,
 		arg.Verified,
+		arg.CreatedAt,
 	)
 	return err
 }
 
 const selectCompetitionDivisionPRTimes = `-- name: SelectCompetitionDivisionPRTimes :many
-select pt.id, pt.player_id, pt.competition_division_id, min(run_time) as run_time, pt.verified, pt.created_at,
-p.steam_avatar_url, p.display_name
+select pt.id, pt.player_id, pt.competition_division_id, pt.tempus_time_id, cast(min(run_time) as float) as run_time, pt.verified, pt.created_at,
+p.id, p.role, p.steam_avatar_url, p.steam_trade_token, p.tempus_id, p.country, p.country_code, p.discord_id, p.display_name, p.soldier_division, p.demo_division, p.motw_timeslot, p.preferred_class, p.preferred_launcher, p.preferred_map, p.created_at
 from player_time pt
   join player p on pt.player_id = p.id
     where pt.competition_division_id = ?
@@ -68,11 +72,26 @@ type SelectCompetitionDivisionPRTimesRow struct {
 	ID                    int64          `json:"id"`
 	PlayerID              string         `json:"player_id"`
 	CompetitionDivisionID int64          `json:"competition_division_id"`
-	RunTime               interface{}    `json:"run_time"`
+	TempusTimeID          sql.NullInt64  `json:"tempus_time_id"`
+	RunTime               float64        `json:"run_time"`
 	Verified              bool           `json:"verified"`
 	CreatedAt             time.Time      `json:"created_at"`
+	ID_2                  string         `json:"id_2"`
+	Role                  string         `json:"role"`
 	SteamAvatarUrl        sql.NullString `json:"steam_avatar_url"`
+	SteamTradeToken       sql.NullString `json:"steam_trade_token"`
+	TempusID              sql.NullInt64  `json:"tempus_id"`
+	Country               sql.NullString `json:"country"`
+	CountryCode           sql.NullString `json:"country_code"`
+	DiscordID             sql.NullString `json:"discord_id"`
 	DisplayName           sql.NullString `json:"display_name"`
+	SoldierDivision       sql.NullString `json:"soldier_division"`
+	DemoDivision          sql.NullString `json:"demo_division"`
+	MotwTimeslot          sql.NullInt64  `json:"motw_timeslot"`
+	PreferredClass        string         `json:"preferred_class"`
+	PreferredLauncher     sql.NullString `json:"preferred_launcher"`
+	PreferredMap          sql.NullString `json:"preferred_map"`
+	CreatedAt_2           time.Time      `json:"created_at_2"`
 }
 
 func (q *Queries) SelectCompetitionDivisionPRTimes(ctx context.Context, competitionDivisionID int64) ([]SelectCompetitionDivisionPRTimesRow, error) {
@@ -88,11 +107,26 @@ func (q *Queries) SelectCompetitionDivisionPRTimes(ctx context.Context, competit
 			&i.ID,
 			&i.PlayerID,
 			&i.CompetitionDivisionID,
+			&i.TempusTimeID,
 			&i.RunTime,
 			&i.Verified,
 			&i.CreatedAt,
+			&i.ID_2,
+			&i.Role,
 			&i.SteamAvatarUrl,
+			&i.SteamTradeToken,
+			&i.TempusID,
+			&i.Country,
+			&i.CountryCode,
+			&i.DiscordID,
 			&i.DisplayName,
+			&i.SoldierDivision,
+			&i.DemoDivision,
+			&i.MotwTimeslot,
+			&i.PreferredClass,
+			&i.PreferredLauncher,
+			&i.PreferredMap,
+			&i.CreatedAt_2,
 		); err != nil {
 			return nil, err
 		}
@@ -105,6 +139,31 @@ func (q *Queries) SelectCompetitionDivisionPRTimes(ctx context.Context, competit
 		return nil, err
 	}
 	return items, nil
+}
+
+const updatePlayerTimeFromTempus = `-- name: UpdatePlayerTimeFromTempus :exec
+update player_time
+  set run_time = ?,
+  created_at = ?,
+  tempus_time_id = ?
+  where id = ?
+`
+
+type UpdatePlayerTimeFromTempusParams struct {
+	RunTime      float64       `json:"run_time"`
+	CreatedAt    time.Time     `json:"created_at"`
+	TempusTimeID sql.NullInt64 `json:"tempus_time_id"`
+	ID           int64         `json:"id"`
+}
+
+func (q *Queries) UpdatePlayerTimeFromTempus(ctx context.Context, arg UpdatePlayerTimeFromTempusParams) error {
+	_, err := q.db.ExecContext(ctx, updatePlayerTimeFromTempus,
+		arg.RunTime,
+		arg.CreatedAt,
+		arg.TempusTimeID,
+		arg.ID,
+	)
+	return err
 }
 
 const verifyPlayerTime = `-- name: VerifyPlayerTime :exec

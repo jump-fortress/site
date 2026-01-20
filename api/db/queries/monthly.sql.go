@@ -113,3 +113,15 @@ func (q *Queries) SelectMonthly(ctx context.Context, id int64) (SelectMonthlyRow
 	)
 	return i, err
 }
+
+const selectMonthlyCompetitionID = `-- name: SelectMonthlyCompetitionID :one
+select competition_id from monthly m
+  where m.id = ?
+`
+
+func (q *Queries) SelectMonthlyCompetitionID(ctx context.Context, id int64) (int64, error) {
+	row := q.db.QueryRowContext(ctx, selectMonthlyCompetitionID, id)
+	var competition_id int64
+	err := row.Scan(&competition_id)
+	return competition_id, err
+}
