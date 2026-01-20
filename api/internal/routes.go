@@ -21,7 +21,7 @@ func registerOpenRoutes(internalApi *huma.Group) {
 		Path:        "/players/all",
 		OperationID: "get-all-players",
 		Summary:     "get all players",
-		Description: "get all players",
+		Description: "get all players with stats",
 		Tags:        []string{"Open"},
 	}, HandleGetAllPlayers)
 
@@ -82,10 +82,10 @@ func registerSessionRoutes(internalApi *huma.Group) {
 		Method:      http.MethodGet,
 		Path:        "/players/profile/{id}",
 		OperationID: "get-player-profile-by-id",
-		Summary:     "get player profile",
-		Description: "get info for a player's profile by ID",
+		Summary:     "get player and points",
+		Description: "get info for a player and points by id",
 		Tags:        []string{"Player"},
-	}, HandleGetPlayerProfile)
+	}, HandleGetPlayerWithPoints)
 
 	huma.Register(internalApi, huma.Operation{
 		Method:      http.MethodPost,

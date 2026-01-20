@@ -21,6 +21,59 @@ var (
 	displayNameRegex = regexp.MustCompile(`^((([a-z]|[A-Z]|\d|\.)+(_|\ |\-)?)+)*([a-z]|[A-Z]|\d|\.)+$`)
 )
 
+func getPlayerPointsResponse(ctx context.Context, id string) responses.PlayerPoints {
+	soldierPoints, err := responses.Queries.SelectPlayerPoints(ctx, queries.SelectPlayerPointsParams{
+		PlayerID: id,
+		Class:    "Soldier",
+	})
+	if err != nil {
+		return responses.PlayerPoints{
+			SoldierPoints: responses.PlayerClassPoints{
+				Total:        0,
+				Last3Monthly: 0,
+				Last9Motw:    0,
+			},
+			DemoPoints: responses.PlayerClassPoints{
+				Total:        0,
+				Last3Monthly: 0,
+				Last9Motw:    0,
+			},
+		}
+	}
+
+	demoPoints, err := responses.Queries.SelectPlayerPoints(ctx, queries.SelectPlayerPointsParams{
+		PlayerID: id,
+		Class:    "Demo",
+	})
+	if err != nil {
+		return responses.PlayerPoints{
+			SoldierPoints: responses.PlayerClassPoints{
+				Total:        0,
+				Last3Monthly: 0,
+				Last9Motw:    0,
+			},
+			DemoPoints: responses.PlayerClassPoints{
+				Total:        0,
+				Last3Monthly: 0,
+				Last9Motw:    0,
+			},
+		}
+	}
+
+	return responses.PlayerPoints{
+		SoldierPoints: responses.PlayerClassPoints{
+			Total:        soldierPoints.Total,
+			Last3Monthly: soldierPoints.Last3Monthly,
+			Last9Motw:    soldierPoints.Last9Motw,
+		},
+		DemoPoints: responses.PlayerClassPoints{
+			Total:        demoPoints.Total,
+			Last3Monthly: demoPoints.Last3Monthly,
+			Last9Motw:    demoPoints.Last9Motw,
+		},
+	}
+}
+
 func getTempusPlayerInfo(tempusID int64) (*responses.TempusPlayerInfo, error) {
 	url := fmt.Sprintf("https://tempus2.xyz/api/v0/players/id/%d/stats", tempusID)
 
@@ -145,46 +198,20 @@ func HandleGetPlayer(ctx context.Context, input *responses.PlayerIDInput) (*resp
 	return resp, nil
 }
 
-func HandleGetPlayerProfile(ctx context.Context, input *responses.PlayerIDInput) (*responses.PlayerProfileOutput, error) {
+func HandleGetPlayerWithPoints(ctx context.Context, input *responses.PlayerIDInput) (*responses.PlayerWithPointsOutput, error) {
 
 	player, err := responses.Queries.SelectPlayer(ctx, input.ID)
 	if err != nil {
 		return nil, err
 	}
 
-	soldierPoints, err := responses.Queries.SelectPlayerPoints(ctx, queries.SelectPlayerPointsParams{
-		PlayerID: player.ID,
-		Class:    "Soldier",
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	demoPoints, err := responses.Queries.SelectPlayerPoints(ctx, queries.SelectPlayerPointsParams{
-		PlayerID: player.ID,
-		Class:    "Demo",
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	resp := &responses.PlayerProfileOutput{
-		Body: responses.PlayerProfile{
+	resp := &responses.PlayerWithPointsOutput{
+		Body: responses.PlayerWithPoints{
 			PlayerPreview: getPlayerPreviewResponse(player),
-			PlayerPoints: responses.PlayerPoints{
-				SoldierPoints: responses.PlayerClassPoints{
-					Total:        soldierPoints.Total,
-					Last3Monthly: soldierPoints.Last3Monthly,
-					Last9Motw:    soldierPoints.Last9Motw,
-				},
-				DemoPoints: responses.PlayerClassPoints{
-					Total:        demoPoints.Total,
-					Last3Monthly: demoPoints.Last3Monthly,
-					Last9Motw:    demoPoints.Last9Motw,
-				},
-			},
+			PlayerPoints:  getPlayerPointsResponse(ctx, player.ID),
 		},
 	}
+
 	return resp, nil
 }
 
@@ -255,19 +282,21 @@ func HandlePostSelfPreferredMap(ctx context.Context, input *responses.MapNameInp
 	return nil, nil
 }
 
-func HandleGetAllPlayers(ctx context.Context, _ *struct{}) (*responses.PlayerPreviewsOutput, error) {
+func HandleGetAllPlayers(ctx context.Context, _ *struct{}) (*responses.PlayersWithPointsOutput, error) {
 	players, err := responses.Queries.SelectAllPlayers(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	resp := &responses.PlayerPreviewsOutput{
-		Body: []responses.PlayerPreview{},
+	resp := &responses.PlayersWithPointsOutput{
+		Body: []responses.PlayerWithPoints{},
 	}
 
 	for _, p := range players {
-		playerResponse := getPlayerPreviewResponse(p)
-		resp.Body = append(resp.Body, playerResponse)
+		resp.Body = append(resp.Body, responses.PlayerWithPoints{
+			PlayerPreview: getPlayerPreviewResponse(p),
+			PlayerPoints:  getPlayerPointsResponse(ctx, p.ID),
+		})
 	}
 
 	return resp, nil

@@ -75,8 +75,8 @@ type PlayerPreviewOutput struct {
 	Body PlayerPreview
 }
 
-type PlayerPreviewsOutput struct {
-	Body []PlayerPreview
+type PlayersWithPointsOutput struct {
+	Body []PlayerWithPoints
 }
 
 type PlayerOutput struct {
@@ -115,13 +115,13 @@ type PlayerClassPoints struct {
 }
 
 // todo: a separate type to return competition placements
-type PlayerProfile struct {
+type PlayerWithPoints struct {
 	PlayerPreview PlayerPreview `json:"player"`
 	PlayerPoints  PlayerPoints  `json:"points"`
 }
 
-type PlayerProfileOutput struct {
-	Body PlayerProfile
+type PlayerWithPointsOutput struct {
+	Body PlayerWithPoints
 }
 
 type Session struct {
