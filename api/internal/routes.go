@@ -393,4 +393,25 @@ func registerAdminRoutes(adminApi *huma.Group) {
 		Tags:        []string{"Admin"},
 		Security:    sessionCookieSecurityMap,
 	}, HandlePostUpdatePlayerRole)
+
+	// dev
+	huma.Register(adminApi, huma.Operation{
+		Method:      http.MethodPost,
+		Path:        "dev/players/times/{competition}/{id}",
+		OperationID: "update-player-times-tempus",
+		Summary:     "update player times with tempus pr",
+		Description: "update player times for a competition, with their tempus pr during that competition, if it exists",
+		Tags:        []string{"Admin"},
+		Security:    sessionCookieSecurityMap,
+	}, HandlePostUpdatePlayerTimesTempus)
+
+	huma.Register(adminApi, huma.Operation{
+		Method:      http.MethodPost,
+		Path:        "dev/players/tempus",
+		OperationID: "update-players-tempus",
+		Summary:     "update player tempus info",
+		Description: "update every player's tempus info",
+		Tags:        []string{"Admin"},
+		Security:    sessionCookieSecurityMap,
+	}, HandlePostUpdatePlayerTimesTempus)
 }

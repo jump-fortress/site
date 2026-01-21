@@ -12,7 +12,6 @@ import (
 )
 
 func main() {
-	// todo: purpose of providing key JUMP_ENV?
 	// env is a wrapper around the `godotenv` library
 	if err := env.Load("JUMP_ENV"); err != nil {
 		log.Fatalf("[fatal] error loading .env: %v", err)

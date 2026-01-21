@@ -384,34 +384,70 @@ func HandleGetCompetitionPlayerTimes(ctx context.Context, input *responses.Compe
 
 		for _, t := range times {
 			cdtResponse.Times = append(cdtResponse.Times, getTimeWithPlayerResponse(t))
-
-			// todo: move verifying manual times elsewhere
-			//	tt, err := getTempusPlayerTime(t.TempusID.Int64, "jump_doom_final", "map", 1, 3)
-			//	if err != nil {
-			//		return nil, err
-			//	}
-			//
-			//	// check that tempus time is after starts_at and before ends_at
-			//	prUnixSeconds := int64(tt.Date)
-			//	prDate := time.Unix(prUnixSeconds, 0)
-			//	fmt.Printf("%s: %f", t.DisplayName.String, tt.RunTime)
-			//
-			//	if prDate.After(c.StartsAt) && prDate.Before(c.EndsAt.AddDate(0, 0, 1)) {
-			//		fmt.Println("valid")
-			//		err := responses.Queries.UpdatePlayerTimeFromTempus(ctx, queries.UpdatePlayerTimeFromTempusParams{
-			//			RunTime:   tt.RunTime,
-			//			CreatedAt: prDate,
-			//			TempusTimeID: tt.ID,
-			//			ID:        t.ID,
-			//		})
-			//		if err != nil {
-			//			return nil, err
-			//		}
-			//	}
-
 		}
+
 		resp.Body = append(resp.Body, cdtResponse)
 	}
 
 	return resp, nil
+}
+
+// dev
+func HandlePostUpdatePlayerTimesTempus(ctx context.Context, input *responses.CompetitionTypeAndIDInput) (*struct{}, error) {
+	cid, err := getCompetitionID(ctx, input.Type, input.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	c, err := responses.Queries.SelectCompetition(ctx, cid)
+	if err != nil {
+		return nil, err
+	}
+
+	competitionDivisions, err := responses.Queries.SelectCompetitionDivisions(ctx, cid)
+	if err != nil {
+		return nil, huma.Error400BadRequest(fmt.Sprintf("no competition found with id %d", cid))
+	}
+
+	for _, cd := range competitionDivisions {
+
+		times, err := responses.Queries.SelectCompetitionDivisionPRTimes(ctx, cd.ID)
+		if err != nil {
+			return nil, err
+		}
+
+		for _, t := range times {
+
+			tt, err := getTempusPlayerTime(t.TempusID.Int64, cd.Map, "map", 1, 3)
+			if err != nil {
+				return nil, err
+			}
+
+			time.Sleep(time.Second)
+
+			// check that tempus time is after starts_at and before ends_at
+			prUnixSeconds := int64(tt.Date)
+			prDate := time.Unix(prUnixSeconds, 0)
+			fmt.Printf("%s: %f", t.DisplayName.String, tt.RunTime)
+
+			if prDate.After(c.StartsAt) && prDate.Before(c.EndsAt.AddDate(0, 0, 1)) {
+				fmt.Println("valid")
+				err := responses.Queries.UpdatePlayerTimeFromTempus(ctx, queries.UpdatePlayerTimeFromTempusParams{
+					RunTime:   tt.RunTime,
+					CreatedAt: prDate,
+					TempusTimeID: sql.NullInt64{
+						Int64: int64(tt.RunTime),
+						Valid: true,
+					},
+					ID: t.ID,
+				})
+				if err != nil {
+					return nil, err
+				}
+			}
+
+		}
+	}
+
+	return nil, nil
 }

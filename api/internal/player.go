@@ -9,6 +9,7 @@ import (
 	"regexp"
 	"slices"
 	"strings"
+	"time"
 
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/hashicorp/go-retryablehttp"
@@ -648,6 +649,48 @@ func HandlePostUpdatePlayerRole(ctx context.Context, input *responses.PlayerRole
 		ID:   input.ID,
 	}); err != nil {
 		return nil, err
+	}
+
+	return nil, nil
+}
+
+// dev
+func HandlePostUpdatePlayerTempusInfo(ctx context.Context, input *struct{}) (*struct{}, error) {
+	players, err := responses.Queries.SelectAllPlayers(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	for i, p := range players {
+
+		if p.Country.String == "" {
+			fmt.Printf("%d: %d", i, p.TempusID.Int64)
+
+			t, err := getTempusPlayerInfo(p.TempusID.Int64)
+			time.Sleep(time.Second)
+
+			if err != nil {
+				continue
+			}
+			err = responses.Queries.UpdatePlayerTempusInfo(ctx, queries.UpdatePlayerTempusInfoParams{
+				TempusID: sql.NullInt64{
+					Int64: p.TempusID.Int64,
+					Valid: true,
+				},
+				Country: sql.NullString{
+					String: t.Country,
+					Valid:  true,
+				},
+				CountryCode: sql.NullString{
+					String: strings.ToLower(t.CountryCode),
+					Valid:  true,
+				},
+				ID: p.ID,
+			})
+			if err != nil {
+				continue
+			}
+		}
 	}
 
 	return nil, nil
