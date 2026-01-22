@@ -57,7 +57,7 @@ func registerOpenRoutes(internalApi *huma.Group) {
 
 	huma.Register(internalApi, huma.Operation{
 		Method:      http.MethodGet,
-		Path:        "/players/times/{competition}/{id}",
+		Path:        "/players/times/{competition_type}/{id}",
 		OperationID: "get-player-times",
 		Summary:     "get player times",
 		Description: "get player times by competition type and id",
@@ -397,7 +397,7 @@ func registerAdminRoutes(adminApi *huma.Group) {
 	// dev
 	huma.Register(adminApi, huma.Operation{
 		Method:      http.MethodPost,
-		Path:        "dev/players/times/{competition}/{id}",
+		Path:        "dev/players/times/{competition_type}/{id}",
 		OperationID: "update-player-times-tempus",
 		Summary:     "update player times with tempus pr",
 		Description: "update player times for a competition, with their tempus pr during that competition, if it exists",

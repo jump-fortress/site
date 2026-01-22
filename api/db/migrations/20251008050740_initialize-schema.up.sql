@@ -179,6 +179,13 @@ create table competition_prize(
   foreign key (competition_division_id) references competition_division (id) on delete cascade
 );
 
+create table prize_status(
+  prize_id integer not null,
+  pending boolean default true
+
+  foreign key (prize_id) references competition_prize (id);
+);
+
 -- # monthly, a type of competition
 create table monthly(
   id integer not null primary key,
@@ -230,6 +237,15 @@ create table quest(
 
   foreign key (competition_id) references competition (id) on delete cascade,
   check (type in ('Target Time', 'Completion'))
+);
+
+-- not implemented
+-- # archive, a type of old / other jump fortress competition
+create table archive(
+  id integer not null primary key,
+  competition_id integer not null,
+
+  foreign key (competition_id) references competition (id) on delete cascade
 );
 
 -- # deleted record from any table

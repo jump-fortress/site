@@ -14,11 +14,11 @@ export const load: PageServerLoad = async ({ fetch, params }) => {
     return response.data;
   });
 
-  const timesData = Client.GET('/internal/players/times/{competition}/{id}', {
+  const timesData = Client.GET('/internal/players/times/{competition_type}/{id}', {
     fetch: fetch,
     params: {
       path: {
-        competition: 'Monthly',
+        competition_type: 'Monthly',
         id: parseInt(params.id)
       }
     }

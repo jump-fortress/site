@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { invalidate, invalidateAll } from '$app/navigation';
   import DivisionTag from '$lib/components/display/DivisionTag.svelte';
   import MonthlyHeader from '$lib/components/display/MonthlyHeader.svelte';
   import Line from '$lib/components/display/charts/ScatterTimes.svelte';

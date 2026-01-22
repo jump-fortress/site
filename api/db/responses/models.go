@@ -272,9 +272,13 @@ type CompetitionIDInput struct {
 	ID int64 `path:"id" doc:"competition id"`
 }
 
+type CompetitionTypeInput struct {
+	CompetitionType string `path:"competition_type"`
+}
+
 type CompetitionTypeAndIDInput struct {
 	CompetitionIDInput
-	Type string `path:"competition"`
+	CompetitionTypeInput
 }
 
 type MonthlyIDInput struct {

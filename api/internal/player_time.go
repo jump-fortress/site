@@ -355,7 +355,7 @@ func HandlePostDeletePlayerTime(ctx context.Context, input *responses.PlayerTime
 }
 
 func HandleGetCompetitionPlayerTimes(ctx context.Context, input *responses.CompetitionTypeAndIDInput) (*responses.CompetitionTimesOutput, error) {
-	cid, err := getCompetitionID(ctx, input.Type, input.ID)
+	cid, err := getCompetitionID(ctx, input.CompetitionType, input.ID)
 	if err != nil {
 		return nil, err
 	}
@@ -394,7 +394,7 @@ func HandleGetCompetitionPlayerTimes(ctx context.Context, input *responses.Compe
 
 // dev
 func HandlePostUpdatePlayerTimesTempus(ctx context.Context, input *responses.CompetitionTypeAndIDInput) (*struct{}, error) {
-	cid, err := getCompetitionID(ctx, input.Type, input.ID)
+	cid, err := getCompetitionID(ctx, input.CompetitionType, input.ID)
 	if err != nil {
 		return nil, err
 	}

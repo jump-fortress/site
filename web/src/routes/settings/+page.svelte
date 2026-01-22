@@ -28,10 +28,10 @@
 
   let { data } = $props();
 
-  let player: Player | null = $state(null);
+  let player: Player | undefined = $derived(undefined);
 
   // svelte-ignore state_referenced_locally
-  player = (await data.player) ?? null;
+  player = await data.player;
 </script>
 
 {#await data.player}
