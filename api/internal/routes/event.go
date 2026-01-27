@@ -150,6 +150,35 @@ func HandleCreateEvent(ctx context.Context, input *models.EventInput) (*struct{}
 	return nil, nil
 }
 
+func HandleUpdateEvent(ctx context.Context, input *models.EventInput) (*struct{}, error) {
+	// validate event info
+	ie := input.Body
+	event, err := db.Queries.SelectEvent(ctx, ie.ID)
+	if err != nil {
+		return nil, models.WrapDBErr(err)
+	}
+
+	if ie.Kind != event.Kind || ie.KindID != event.KindID {
+		return nil, huma.Error400BadRequest("can't modify the event kind or kind_id")
+	}
+
+	now := time.Now()
+	if event.StartsAt.Before(now) {
+		return nil, huma.Error400BadRequest("event has already started")
+	}
+	if ie.EndsAt.Before(ie.StartsAt) {
+		return nil, huma.Error400BadRequest(fmt.Sprintf("event can't end before it starts (%s)", ie.EndsAt.String()))
+	}
+	if ie.StartsAt.Before(now) {
+		return nil, huma.Error400BadRequest(fmt.Sprintf("event can't start in the past (%s)", ie.StartsAt.String()))
+	}
+	if ie.StartsAt.Before(ie.VisibleAt) {
+		return nil, huma.Error400BadRequest(fmt.Sprintf("event can't start before it's visible (%s)", ie.VisibleAt.String()))
+	}
+
+	return nil, nil
+}
+
 func HandleCancelEvent(ctx context.Context, input *models.EventIDInput) (*struct{}, error) {
 	// check that the event hasn't started
 	event, err := db.Queries.SelectEvent(ctx, input.ID)

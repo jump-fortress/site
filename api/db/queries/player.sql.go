@@ -173,6 +173,38 @@ func (q *Queries) UpdatePlayerDemoDiv(ctx context.Context, arg UpdatePlayerDemoD
 	return err
 }
 
+const updatePlayerLauncherPref = `-- name: UpdatePlayerLauncherPref :exec
+update player
+  set launcher_pref = ?
+  where id = ?
+`
+
+type UpdatePlayerLauncherPrefParams struct {
+	LauncherPref sql.NullString
+	ID           string
+}
+
+func (q *Queries) UpdatePlayerLauncherPref(ctx context.Context, arg UpdatePlayerLauncherPrefParams) error {
+	_, err := q.db.ExecContext(ctx, updatePlayerLauncherPref, arg.LauncherPref, arg.ID)
+	return err
+}
+
+const updatePlayerMapPref = `-- name: UpdatePlayerMapPref :exec
+update player
+  set map_pref = ?
+  where id = ?
+`
+
+type UpdatePlayerMapPrefParams struct {
+	MapPref sql.NullString
+	ID      string
+}
+
+func (q *Queries) UpdatePlayerMapPref(ctx context.Context, arg UpdatePlayerMapPrefParams) error {
+	_, err := q.db.ExecContext(ctx, updatePlayerMapPref, arg.MapPref, arg.ID)
+	return err
+}
+
 const updatePlayerRole = `-- name: UpdatePlayerRole :exec
 update player
   set role = ?

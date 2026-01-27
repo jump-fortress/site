@@ -58,3 +58,15 @@ type PlayerTimeInput struct {
 type TimeIDInput struct {
 	ID int64 `path:"time_id"`
 }
+
+type PlayerClassInput struct {
+	PlayerClass string `path:"player_class" enum:"solder,demo"`
+}
+
+type MapNameInput struct {
+	MapName string `path:"map_name"`
+}
+
+type LauncherInput struct {
+	Launcher string `path:"launcher" enum:"stock,original,mangler,"`
+}

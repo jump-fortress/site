@@ -21,6 +21,18 @@ var (
 	AliasRegex = regexp.MustCompile(`^((([a-z]|[A-Z]|\d|\.)+(_|\ |\-)?)+)*([a-z]|[A-Z]|\d|\.)+$`)
 )
 
+func GetMapNames(ctx context.Context) ([]string, error) {
+	maps, err := db.Queries.SelectMaps(ctx)
+	if err != nil {
+		return nil, models.WrapDBErr(err)
+	}
+	mapNames := []string{}
+	for _, m := range maps {
+		mapNames = append(mapNames, m.Name)
+	}
+	return mapNames, nil
+}
+
 func ValidateModRole(ctx context.Context) (bool, error) {
 	var steamID uint64
 	principal, ok := principal.Get(ctx)
@@ -141,6 +153,75 @@ func HandleSetTempusID(ctx context.Context, input *models.TempusIDInput) (*struc
 		CountryCode: sql.NullString{
 			String: strings.ToLower(tp.CountryCode),
 			Valid:  true,
+		},
+		ID: principal.SteamID.String(),
+	})
+	if err != nil {
+		return nil, models.WrapDBErr(err)
+	}
+
+	return nil, nil
+}
+
+func HandleUpdateClassPref(ctx context.Context, input *models.PlayerClassInput) (*struct{}, error) {
+	principal, ok := principal.Get(ctx)
+	if !ok {
+		return nil, models.SessionErr()
+	}
+
+	err := db.Queries.UpdatePlayerClassPref(ctx, queries.UpdatePlayerClassPrefParams{
+		ClassPref: input.PlayerClass,
+		ID:        principal.SteamID.String(),
+	})
+	if err != nil {
+		return nil, models.WrapDBErr(err)
+	}
+	return nil, nil
+}
+
+func HandleUpdateMapPref(ctx context.Context, input *models.MapNameInput) (*struct{}, error) {
+	principal, ok := principal.Get(ctx)
+	if !ok {
+		return nil, models.SessionErr()
+	}
+
+	nullInput := input.MapName == ""
+	maps, err := GetMapNames(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if !nullInput && !slices.Contains(maps, input.MapName) {
+		return nil, huma.Error400BadRequest(fmt.Sprintf("%s isn't a map name", input.MapName))
+	}
+
+	err = db.Queries.UpdatePlayerMapPref(ctx, queries.UpdatePlayerMapPrefParams{
+		MapPref: sql.NullString{
+			String: input.MapName,
+			Valid:  !nullInput,
+		},
+		ID: principal.SteamID.String(),
+	})
+	if err != nil {
+		return nil, models.WrapDBErr(err)
+	}
+	return nil, nil
+}
+
+func HandleUpdateLauncherPref(ctx context.Context, input *models.LauncherInput) (*struct{}, error) {
+	principal, ok := principal.Get(ctx)
+	if !ok {
+		return nil, models.SessionErr()
+	}
+
+	nullInput := input.Launcher == ""
+	if !nullInput && !slices.Contains([]string{"stock", "original", "mangler"}, input.Launcher) {
+		return nil, huma.Error400BadRequest(fmt.Sprintf("%s isn't a launcher name", input.Launcher))
+	}
+
+	err := db.Queries.UpdatePlayerLauncherPref(ctx, queries.UpdatePlayerLauncherPrefParams{
+		LauncherPref: sql.NullString{
+			String: input.Launcher,
+			Valid:  !nullInput,
 		},
 		ID: principal.SteamID.String(),
 	})

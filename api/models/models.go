@@ -39,7 +39,7 @@ type Event struct {
 }
 
 type Leaderboard struct {
-	ID      int64  `json:"json:id"`
+	ID      int64  `json:"id"`
 	EventID int64  `json:"event_id"`
 	Div     string `json:"div,omitempty"`
 	Map     string `json:"map"`

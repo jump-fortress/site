@@ -49,6 +49,16 @@ update player
   set class_pref = ?
   where id = ?;
 
+-- name: UpdatePlayerMapPref :exec
+update player
+  set map_pref = ?
+  where id = ?;
+
+-- name: UpdatePlayerLauncherPref :exec
+update player
+  set launcher_pref = ?
+  where id = ?;
+
 -- name: UpdatePlayerRole :exec
 update player
   set role = ?

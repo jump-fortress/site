@@ -63,10 +63,20 @@ func HandleUpdateLeaderboards(ctx context.Context, input *models.LeaderboardsInp
 		return nil, huma.Error400BadRequest("can't add a divisionless leaderboard for an event containing a leaderboard with a division")
 	}
 
+	// validate input map names
+	maps, err := GetMapNames(ctx)
+	if err != nil {
+		return nil, err
+	}
+
 	// if event contains an input div, update it
 	// if it doesn't, insert it
 	// competition must be deleted to remove leaderboards
 	for _, ilb := range ilbs {
+		if !slices.Contains(maps, ilb.Map) {
+			return nil, huma.Error400BadRequest(fmt.Sprintf("%s isn't a map", ilb.Map))
+		}
+
 		contains := false
 		for _, elb := range elbs {
 			if ilb.Div == elb.Div.String {

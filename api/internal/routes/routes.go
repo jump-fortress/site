@@ -73,6 +73,33 @@ func RegisterSessionRoutes(sessionApi *huma.Group) {
 	}, HandleSetTempusID)
 
 	huma.Register(sessionApi, huma.Operation{
+		Method:      http.MethodGet,
+		Path:        "/players/{player_class}",
+		Tags:        []string{"players"},
+		Summary:     "update class pref",
+		Description: "update your class preference",
+		OperationID: "update-class-pref",
+	}, HandleUpdateClassPref)
+
+	huma.Register(sessionApi, huma.Operation{
+		Method:      http.MethodGet,
+		Path:        "/players/{map_name}",
+		Tags:        []string{"players"},
+		Summary:     "update map pref",
+		Description: "update your map preference",
+		OperationID: "update-map-pref",
+	}, HandleUpdateMapPref)
+
+	huma.Register(sessionApi, huma.Operation{
+		Method:      http.MethodGet,
+		Path:        "/players/{launcher}",
+		Tags:        []string{"players"},
+		Summary:     "update launcher pref",
+		Description: "update your soldier launcher preference",
+		OperationID: "update-launcher-pref",
+	}, HandleUpdateLauncherPref)
+
+	huma.Register(sessionApi, huma.Operation{
 		Method:      http.MethodPost,
 		Path:        "/events/leaderboards/{leaderboard_id}/times",
 		Tags:        []string{"times"},
@@ -89,6 +116,7 @@ func RegisterSessionRoutes(sessionApi *huma.Group) {
 		Description: "submit a time manually for an event's leaderboard",
 		OperationID: "submit-unverified-time",
 	}, HandleSubmitUnverifiedTime)
+
 }
 
 func RegisterModRoutes(modApi *huma.Group) {
@@ -130,7 +158,7 @@ func RegisterModRoutes(modApi *huma.Group) {
 	}, HandleVerifyPlayerTime)
 
 	huma.Register(modApi, huma.Operation{
-		Method:      http.MethodPost,
+		Method:      http.MethodDelete,
 		Path:        "/events/leaderboards/times/{time_id}",
 		Tags:        []string{"mod"},
 		Summary:     "delete player time",
@@ -142,12 +170,30 @@ func RegisterModRoutes(modApi *huma.Group) {
 func RegisterAdminRoutes(adminApi *huma.Group) {
 	huma.Register(adminApi, huma.Operation{
 		Method:      http.MethodPost,
-		Path:        "/events",
+		Path:        "/events/create",
 		Tags:        []string{"admin"},
 		Summary:     "create event",
 		Description: "create an event (competition)",
 		OperationID: "create-event",
 	}, HandleCreateEvent)
+
+	huma.Register(adminApi, huma.Operation{
+		Method:      http.MethodPost,
+		Path:        "/events/update",
+		Tags:        []string{"admin"},
+		Summary:     "update event",
+		Description: "update an event (competition)",
+		OperationID: "update-event",
+	}, HandleUpdateEvent)
+
+	huma.Register(adminApi, huma.Operation{
+		Method:      http.MethodDelete,
+		Path:        "/events/{event_id}",
+		Tags:        []string{"admin"},
+		Summary:     "cancel event",
+		Description: "cancel an event (competition) that hasn't started",
+		OperationID: "cancel-event",
+	}, HandleCancelEvent)
 
 	huma.Register(adminApi, huma.Operation{
 		Method:      http.MethodPost,
@@ -157,15 +203,6 @@ func RegisterAdminRoutes(adminApi *huma.Group) {
 		Description: "update an event's leaderboards",
 		OperationID: "update-leaderboards",
 	}, HandleUpdateLeaderboards)
-
-	huma.Register(adminApi, huma.Operation{
-		Method:      http.MethodPost,
-		Path:        "/events/{event_id}",
-		Tags:        []string{"admin"},
-		Summary:     "cancel event",
-		Description: "cancel an event (competition) that hasn't started",
-		OperationID: "cancel-event",
-	}, HandleCancelEvent)
 
 	huma.Register(adminApi, huma.Operation{
 		Method:      http.MethodPost,
