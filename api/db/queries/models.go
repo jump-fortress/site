@@ -10,170 +10,85 @@ import (
 	"time"
 )
 
-type Badge struct {
-	ID        int64          `json:"id"`
-	Label     string         `json:"label"`
-	Href      sql.NullString `json:"href"`
-	Src       string         `json:"src"`
-	CreatedAt time.Time      `json:"created_at"`
-}
-
-type Bounty struct {
-	ID            int64           `json:"id"`
-	CompetitionID int64           `json:"competition_id"`
-	Course        sql.NullInt64   `json:"course"`
-	Bonus         sql.NullInt64   `json:"bonus"`
-	Type          string          `json:"type"`
-	Time          sql.NullFloat64 `json:"time"`
-}
-
-type Competition struct {
-	ID        int64         `json:"id"`
-	Type      string        `json:"type"`
-	Class     string        `json:"class"`
-	Prizepool sql.NullInt64 `json:"prizepool"`
-	StartsAt  time.Time     `json:"starts_at"`
-	EndsAt    time.Time     `json:"ends_at"`
-	VisibleAt time.Time     `json:"visible_at"`
-	Complete  bool          `json:"complete"`
-	CreatedAt time.Time     `json:"created_at"`
-}
-
-type CompetitionDivision struct {
-	ID            int64  `json:"id"`
-	CompetitionID int64  `json:"competition_id"`
-	Division      string `json:"division"`
-	Map           string `json:"map"`
-}
-
-type CompetitionPrize struct {
-	ID                    int64 `json:"id"`
-	CompetitionDivisionID int64 `json:"competition_division_id"`
-	Placement             int64 `json:"placement"`
-	Amount                int64 `json:"amount"`
-}
-
-type CompetitionResult struct {
-	TimeID    int64         `json:"time_id"`
-	PrizeID   sql.NullInt64 `json:"prize_id"`
-	Points    sql.NullInt64 `json:"points"`
-	CreatedAt time.Time     `json:"created_at"`
-}
-
-type DeletedRecord struct {
-	ID          int64           `json:"id"`
-	SourceTable string          `json:"source_table"`
-	SourceID    string          `json:"source_id"`
-	Data        json.RawMessage `json:"data"`
-	DeletedAt   time.Time       `json:"deleted_at"`
+type DeletedRow struct {
+	ID          int64
+	SourceTable string
+	SourceID    string
+	Data        json.RawMessage
+	DeletedAt   time.Time
 }
 
 type DisallowToken struct {
-	TokenID   string    `json:"token_id"`
-	CreatedAt time.Time `json:"created_at"`
+	TokenID   string
+	CreatedAt time.Time
+}
+
+type Event struct {
+	ID        int64
+	Kind      string
+	KindID    int64
+	Class     string
+	VisibleAt time.Time
+	StartsAt  time.Time
+	EndsAt    time.Time
+	CreatedAt time.Time
+}
+
+type Leaderboard struct {
+	ID      int64
+	EventID int64
+	Div     sql.NullString
+	Map     string
 }
 
 type Map struct {
-	ID            int64         `json:"id"`
-	Name          string        `json:"name"`
-	Courses       sql.NullInt64 `json:"courses"`
-	Bonuses       sql.NullInt64 `json:"bonuses"`
-	SoldierTier   int64         `json:"soldier_tier"`
-	DemoTier      int64         `json:"demo_tier"`
-	SoldierRating int64         `json:"soldier_rating"`
-	DemoRating    int64         `json:"demo_rating"`
-}
-
-type Monthly struct {
-	ID            int64 `json:"id"`
-	CompetitionID int64 `json:"competition_id"`
-}
-
-type Motw struct {
-	ID            int64 `json:"id"`
-	CompetitionID int64 `json:"competition_id"`
-}
-
-type MotwTimeslot struct {
-	ID       int64     `json:"id"`
-	StartsAt time.Time `json:"starts_at"`
-	EndsAt   time.Time `json:"ends_at"`
+	Name          string
+	Courses       sql.NullInt64
+	Bonuses       sql.NullInt64
+	SoldierTier   int64
+	DemoTier      int64
+	SoldierRating int64
+	DemoRating    int64
 }
 
 type OpenidNonce struct {
-	ID          int64     `json:"id"`
-	Endpoint    string    `json:"endpoint"`
-	NonceTime   time.Time `json:"nonce_time"`
-	NonceString string    `json:"nonce_string"`
-	CreatedAt   time.Time `json:"created_at"`
+	ID          int64
+	Endpoint    string
+	NonceTime   time.Time
+	NonceString string
+	CreatedAt   time.Time
 }
 
 type Player struct {
-	ID                string         `json:"id"`
-	Role              string         `json:"role"`
-	SteamAvatarUrl    sql.NullString `json:"steam_avatar_url"`
-	SteamTradeToken   sql.NullString `json:"steam_trade_token"`
-	TempusID          sql.NullInt64  `json:"tempus_id"`
-	Country           sql.NullString `json:"country"`
-	CountryCode       sql.NullString `json:"country_code"`
-	DiscordID         sql.NullString `json:"discord_id"`
-	DisplayName       sql.NullString `json:"display_name"`
-	SoldierDivision   sql.NullString `json:"soldier_division"`
-	DemoDivision      sql.NullString `json:"demo_division"`
-	MotwTimeslot      sql.NullInt64  `json:"motw_timeslot"`
-	PreferredClass    string         `json:"preferred_class"`
-	PreferredLauncher sql.NullString `json:"preferred_launcher"`
-	PreferredMap      sql.NullString `json:"preferred_map"`
-	CreatedAt         time.Time      `json:"created_at"`
-}
-
-type PlayerBadge struct {
-	ID         int64     `json:"id"`
-	PlayerID   string    `json:"player_id"`
-	BadgeID    int64     `json:"badge_id"`
-	AchievedAt time.Time `json:"achieved_at"`
-	CreatedAt  time.Time `json:"created_at"`
-}
-
-type PlayerPoint struct {
-	ID           int64  `json:"id"`
-	PlayerID     string `json:"player_id"`
-	Class        string `json:"class"`
-	Total        int64  `json:"total"`
-	Last9Motw    int64  `json:"last_9_motw"`
-	Last3Monthly int64  `json:"last_3_monthly"`
-}
-
-type PlayerRequest struct {
-	ID        int64          `json:"id"`
-	PlayerID  string         `json:"player_id"`
-	Type      string         `json:"type"`
-	Content   sql.NullString `json:"content"`
-	Pending   bool           `json:"pending"`
-	CreatedAt time.Time      `json:"created_at"`
-}
-
-type PlayerTime struct {
-	ID                    int64         `json:"id"`
-	PlayerID              string        `json:"player_id"`
-	CompetitionDivisionID int64         `json:"competition_division_id"`
-	TempusTimeID          sql.NullInt64 `json:"tempus_time_id"`
-	RunTime               float64       `json:"run_time"`
-	Verified              bool          `json:"verified"`
-	CreatedAt             time.Time     `json:"created_at"`
-}
-
-type Quest struct {
-	ID              int64           `json:"id"`
-	CompetitionID   int64           `json:"competition_id"`
-	Type            string          `json:"type"`
-	Time            sql.NullFloat64 `json:"time"`
-	CompletionLimit string          `json:"completion_limit"`
+	ID           string
+	Role         string
+	Alias        sql.NullString
+	SoldierDiv   sql.NullString
+	DemoDiv      sql.NullString
+	AvatarUrl    sql.NullString
+	TradeToken   sql.NullString
+	TempusID     sql.NullInt64
+	Country      sql.NullString
+	CountryCode  sql.NullString
+	ClassPref    string
+	MapPref      sql.NullString
+	LauncherPref sql.NullString
+	CreatedAt    time.Time
 }
 
 type Session struct {
-	ID        int64     `json:"id"`
-	PlayerID  string    `json:"player_id"`
-	TokenID   string    `json:"token_id"`
-	CreatedAt time.Time `json:"created_at"`
+	ID        int64
+	PlayerID  string
+	TokenID   string
+	CreatedAt time.Time
+}
+
+type Time struct {
+	ID            int64
+	LeaderboardID int64
+	PlayerID      string
+	TempusTimeID  sql.NullInt64
+	Duration      float64
+	Verified      bool
+	CreatedAt     time.Time
 }

@@ -1,14 +1,42 @@
-# ui
+# sv
 
-this repo contains the Svelte components and Tailwind theme initially created for use in the Jump Fortress website..
+Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
 
-- [layout.css](/src/routes/layout.css) contains the customizable theme
-- [todo.md](todo.md) is used to track component progress
-- [Storybook](https://storybook.js.org/) is used to preview components
+## Creating a project
 
-## preview components
+If you're seeing this, you've probably already done this step. Congrats!
 
 ```sh
-npm i
-npm run storybook
+# create a new project
+npx sv create my-app
 ```
+
+To recreate this project with the same configuration:
+
+```sh
+# recreate this project
+npx sv create --template minimal --types ts --add prettier eslint tailwindcss="plugins:typography" --install npm ./
+```
+
+## Developing
+
+Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+
+```sh
+npm run dev
+
+# or start the server and open the app in a new browser tab
+npm run dev -- --open
+```
+
+## Building
+
+To create a production version of your app:
+
+```sh
+npm run build
+```
+
+You can preview the production build with `npm run preview`.
+
+> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.

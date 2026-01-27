@@ -5,87 +5,74 @@ import (
 	"database/sql"
 
 	"github.com/danielgtaylor/huma/v2"
-	"github.com/spiritov/jump/api/db/queries"
-	"github.com/spiritov/jump/api/db/responses"
+	"github.com/jump-fortress/site/db"
+	"github.com/jump-fortress/site/db/queries"
+	"github.com/jump-fortress/site/internal/principal"
+	"github.com/jump-fortress/site/internal/routes"
+	"github.com/jump-fortress/site/models"
 )
 
-// todo: error handling / logging
-
-// map a database player to the session fields we want
-func SessionFromPlayer(player queries.Player) responses.Session {
-	return responses.Session{
-		ID:             player.ID,
-		Role:           player.Role,
-		DisplayName:    player.DisplayName.String,
-		SteamAvatarURL: player.SteamAvatarUrl.String,
-	}
-}
-
-func HandleGetSession(ctx context.Context, _ *struct{}) (*responses.SessionOutput, error) {
-	principal, ok := GetPrincipal(ctx)
+func HandleGetSession(ctx context.Context, _ *struct{}) (*models.SessionOutput, error) {
+	principal, ok := principal.Get(ctx)
 	if !ok {
-		return nil, huma.Error401Unauthorized("a session is required")
+		return nil, models.SessionErr()
 	}
 
-	// use steamID64 to derive a session from a player in the database
-	player, err := responses.Queries.SelectPlayer(ctx, principal.SteamID.String())
+	player, err := db.Queries.SelectPlayer(ctx, principal.SteamID.String())
 	if err != nil {
-		return nil, err
+		return nil, models.WrapDBErr(err)
 	}
 
-	var session responses.Session
-
-	// only fetch from steam if something is needed
-	if !player.DisplayName.Valid || !player.SteamAvatarUrl.Valid {
-		steamProfileSummary, err := FetchProfileSummary(principal.SteamID.ID())
+	// set alias or avatar from Steam info, if either are missing
+	if !player.Alias.Valid || !player.AvatarUrl.Valid {
+		steamProfile, err := FetchProfileSummary(principal.SteamID.ID())
 		if err != nil {
-			return nil, err
+			return nil, huma.Error503ServiceUnavailable("something went wrong getting this Steam profile")
 		}
 
-		// set initial display name
-		if !player.DisplayName.Valid {
-			var displayName = steamProfileSummary.PersonaName
-			if !displayNameRegex.MatchString(displayName) {
-				displayName = "invalid alias" // or something..
+		if !player.Alias.Valid {
+			steamAlias := steamProfile.PersonaName
+
+			// set default alias if Steam name doesn't match
+			if !routes.AliasRegex.MatchString(steamAlias) {
+				steamAlias = "update alias"
 			}
 
-			if err := responses.Queries.UpdatePlayerDisplayName(ctx, queries.UpdatePlayerDisplayNameParams{
-				DisplayName: sql.NullString{
-					String: displayName,
+			// then update it
+			err := db.Queries.UpdatePlayerAlias(ctx, queries.UpdatePlayerAliasParams{
+				Alias: sql.NullString{
+					String: steamAlias,
 					Valid:  true,
 				},
 				ID: player.ID,
-			}); err != nil {
-				return nil, err
+			})
+			if err != nil {
+				return nil, models.WrapDBErr(err)
 			}
-
-			player.DisplayName = sql.NullString{
-				String: displayName,
+			player.Alias = sql.NullString{
+				String: steamAlias,
 				Valid:  true,
 			}
 		}
 
-		// set initial avatar
-		if !player.SteamAvatarUrl.Valid {
-			if err := responses.Queries.UpdatePlayerSteamAvatarURL(ctx, queries.UpdatePlayerSteamAvatarURLParams{
-				SteamAvatarUrl: sql.NullString{
-					String: steamProfileSummary.AvatarFullURL,
+		if !player.AvatarUrl.Valid {
+			err := db.Queries.UpdatePlayerAvatarURL(ctx, queries.UpdatePlayerAvatarURLParams{
+				AvatarUrl: sql.NullString{
+					String: steamProfile.AvatarFullURL,
 					Valid:  true,
 				},
 				ID: player.ID,
-			}); err != nil {
-				return nil, err
+			})
+			if err != nil {
+				return nil, models.WrapDBErr(err)
 			}
-
-			player.SteamAvatarUrl = sql.NullString{
-				String: steamProfileSummary.AvatarFullURL,
+			player.AvatarUrl = sql.NullString{
+				String: steamProfile.AvatarFullURL,
 				Valid:  true,
 			}
 		}
 	}
 
-	session = SessionFromPlayer(player)
-	resp := &responses.SessionOutput{Body: session}
-
+	resp := &models.SessionOutput{Body: models.GetSessionResponse(player)}
 	return resp, nil
 }

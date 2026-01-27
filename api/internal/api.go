@@ -3,28 +3,31 @@ package internal
 import (
 	"context"
 	"log"
+	"log/slog"
 	"net/http"
 
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/danielgtaylor/huma/v2/adapters/humachi"
 	"github.com/go-chi/chi/v5"
+	"github.com/jump-fortress/site/internal/routes"
 	"github.com/rs/cors"
 )
 
 var (
-	api                             huma.API
-	sessionCookieSecurityMap        = []map[string][]string{{"Steam": {}}}
-	requireUserSessionMiddlewares   huma.Middlewares
-	requireUserModeratorMiddlewares huma.Middlewares
-	requireUserAdminMiddlewares     huma.Middlewares
+	api                       huma.API
+	sessionCookieSecurityMap  = []map[string][]string{{"Steam": {}}}
+	requireSessionMiddlewares huma.Middlewares
+	requireModMiddlewares     huma.Middlewares
+	requireAdminMiddlewares   huma.Middlewares
+	requireDevMiddlewares     huma.Middlewares
 )
 
 func setupRouter() *chi.Mux {
 	router := chi.NewMux()
 
-	// todo: use strict `AllowedOrigins`
-	// todo: use CSRF middleware (aa)
-	// todo: rate limit
+	// todo (spiritov): use strict `AllowedOrigins`
+	// todo (spiritov): use CSRF middleware (?)
+	// todo (spiritov): rate limit
 	router.Use(cors.New(cors.Options{
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowCredentials: true,
@@ -49,46 +52,6 @@ func setupHumaConfig() huma.Config {
 	return config
 }
 
-func ServeAPI(address string) {
-	router := setupRouter()
-	config := setupHumaConfig()
-	api = humachi.New(router, config)
-
-	registerRoutes()
-
-	// last
-	log.Print("serving api on " + address)
-	if err := http.ListenAndServe(address, router); err != nil {
-		log.Fatalf("[fatal] failed to serve api: %v", err)
-	}
-}
-
-func registerRoutes() {
-	internalApi := huma.NewGroup(api, "/internal")
-	sessionApi := huma.NewGroup(internalApi, "/session")
-	consultantApi := huma.NewGroup(internalApi, "/consultant")
-	moderatorApi := huma.NewGroup(internalApi, "/moderator")
-	adminApi := huma.NewGroup(internalApi, "/admin")
-
-	requireUserSessionMiddlewares = huma.Middlewares{UserAuthHandler, CreateRequireUserAuthHandler(internalApi)}
-	requireUserModeratorMiddlewares = huma.Middlewares{UserAuthHandler, CreateRequireUserModeratorHandler(moderatorApi)}
-	requireUserAdminMiddlewares = huma.Middlewares{UserAuthHandler, CreateRequireUserAdminHandler(adminApi)}
-
-	moderatorApi.UseMiddleware(requireUserModeratorMiddlewares...)
-	adminApi.UseMiddleware(requireUserAdminMiddlewares...)
-
-	// register health check & steam openid
-	registerHealthCheck(internalApi)
-	registerAuth(sessionApi)
-
-	// then register standard internal routes
-	registerOpenRoutes(internalApi)
-	registerSessionRoutes(internalApi)
-	registerConsultantRoutes(consultantApi)
-	registerModeratorRoutes(moderatorApi)
-	registerAdminRoutes(adminApi)
-}
-
 // A readiness endpoint is important - it can be used to inform your infrastructure
 // (e.g. fly.io) that the API is available. Readiness checks can help keep your API
 // alive, by informing fly on when it should try restarting a machine in case of a
@@ -100,10 +63,55 @@ func registerHealthCheck(internalApi *huma.Group) {
 		Method:      http.MethodGet,
 		Path:        "/readyz",
 		OperationID: "readyz",
-		Summary:     "Get Readiness",
-		Description: "Get whether or not the API is ready to process requests",
-		Tags:        []string{"Health Check"},
+		Summary:     "get readiness",
+		Description: "get whether or not the API is ready to process requests",
 	}, func(ctx context.Context, _ *struct{}) (*ReadyResponse, error) {
 		return &ReadyResponse{OK: true}, nil
 	})
+}
+
+func ServeAPI(address string) {
+	router := setupRouter()
+	config := setupHumaConfig()
+	api = humachi.New(router, config)
+
+	registerRoutes()
+
+	err := http.ListenAndServe(address, router)
+	if err != nil {
+		slog.Error("failed to serve api", "error", err)
+		log.Fatal()
+	}
+
+	slog.Info("serving api", "address", address)
+}
+
+func registerRoutes() {
+	// create api groups and middlewares
+	internalApi := huma.NewGroup(api, "/internal")
+	sessionApi := huma.NewGroup(internalApi, "/session")
+	modApi := huma.NewGroup(internalApi, "/mod")
+	adminApi := huma.NewGroup(internalApi, "/admin")
+	devApi := huma.NewGroup(internalApi, "/dev")
+
+	requireSessionMiddlewares = huma.Middlewares{AuthHandler, RequireUserAuthHandler(internalApi)}
+	requireModMiddlewares = huma.Middlewares{AuthHandler, RequireModHandler(modApi)}
+	requireAdminMiddlewares = huma.Middlewares{AuthHandler, RequireAdminHandler(adminApi)}
+	requireDevMiddlewares = huma.Middlewares{AuthHandler, RequireAdminHandler(devApi)}
+
+	sessionApi.UseMiddleware(requireSessionMiddlewares...)
+	modApi.UseMiddleware(requireModMiddlewares...)
+	adminApi.UseMiddleware(requireAdminMiddlewares...)
+	devApi.UseMiddleware(requireDevMiddlewares...)
+
+	// register essential routes
+	registerHealthCheck(internalApi)
+	registerAuth(internalApi, sessionApi)
+
+	// register all other routes
+	routes.RegisterOpenRoutes(internalApi)
+	routes.RegisterSessionRoutes(sessionApi)
+	routes.RegisterModRoutes(modApi)
+	routes.RegisterAdminRoutes(adminApi)
+	routes.RegisterDevRoutes(devApi)
 }

@@ -1,0 +1,182 @@
+package routes
+
+import (
+	"net/http"
+
+	"github.com/danielgtaylor/huma/v2"
+)
+
+func RegisterOpenRoutes(internalApi *huma.Group) {
+	huma.Register(internalApi, huma.Operation{
+		Method:      http.MethodGet,
+		Path:        "/players/{player_id}",
+		Tags:        []string{"players"},
+		Summary:     "get player",
+		Description: "get a player by player_id",
+		OperationID: "get-player",
+	}, HandleGetPlayer)
+
+	huma.Register(internalApi, huma.Operation{
+		Method:      http.MethodGet,
+		Path:        "/players",
+		Tags:        []string{"players"},
+		Summary:     "get all players",
+		Description: "get all players",
+		OperationID: "get-players",
+	}, HandleGetPlayers)
+
+	huma.Register(internalApi, huma.Operation{
+		Method:      http.MethodGet,
+		Path:        "/events/{event_kind}/{kind_id}",
+		Tags:        []string{"events"},
+		Summary:     "get event",
+		Description: "get an event by its kind and kind_id",
+		OperationID: "get-event",
+	}, HandleGetEvent)
+
+	huma.Register(internalApi, huma.Operation{
+		Method:      http.MethodGet,
+		Path:        "/events/{event_kind}",
+		Tags:        []string{"events"},
+		Summary:     "get all of event kind",
+		Description: "get all of a kind of event",
+		OperationID: "get-event-kinds",
+	}, HandleGetEventKinds)
+
+	huma.Register(internalApi, huma.Operation{
+		Method:      http.MethodGet,
+		Path:        "/maps",
+		Tags:        []string{"maps"},
+		Summary:     "get maps",
+		Description: "get all maps",
+		OperationID: "get-maps",
+	}, HandleGetMaps)
+
+	huma.Register(internalApi, huma.Operation{
+		Method:      http.MethodGet,
+		Path:        "/events/leaderboards/{leaderboard_id}/times",
+		Tags:        []string{"maps"},
+		Summary:     "get leaderboard times",
+		Description: "get all times for an event's leaderboard",
+		OperationID: "get-leaderboard-times",
+	}, HandleGetLeaderboardTimes)
+}
+
+func RegisterSessionRoutes(sessionApi *huma.Group) {
+	huma.Register(sessionApi, huma.Operation{
+		Method:      http.MethodGet,
+		Path:        "/players/{tempus_id}",
+		Tags:        []string{"players"},
+		Summary:     "set Tempus ID",
+		Description: "set your Tempus ID and country",
+		OperationID: "set-tempus-id",
+	}, HandleSetTempusID)
+
+	huma.Register(sessionApi, huma.Operation{
+		Method:      http.MethodPost,
+		Path:        "/events/leaderboards/{leaderboard_id}/times",
+		Tags:        []string{"times"},
+		Summary:     "submit a time",
+		Description: "submit a time for an event's leaderboard",
+		OperationID: "submit-time",
+	}, HandleSubmitTime)
+
+	huma.Register(sessionApi, huma.Operation{
+		Method:      http.MethodPost,
+		Path:        "/events/leaderboards/{leaderboard_id}/times/{duration}",
+		Tags:        []string{"times"},
+		Summary:     "submit an unverified time",
+		Description: "submit a time manually for an event's leaderboard",
+		OperationID: "submit-unverified-time",
+	}, HandleSubmitUnverifiedTime)
+}
+
+func RegisterModRoutes(modApi *huma.Group) {
+
+	huma.Register(modApi, huma.Operation{
+		Method:      http.MethodPost,
+		Path:        "/players/{player_id}/{player_class}/{div}",
+		Tags:        []string{"mod"},
+		Summary:     "update div",
+		Description: "update player div",
+		OperationID: "update-div",
+	}, HandleUpdatePlayerDiv)
+
+	huma.Register(modApi, huma.Operation{
+		Method:      http.MethodPost,
+		Path:        "/players/{player_id}/{alias}",
+		Tags:        []string{"mod"},
+		Summary:     "update alias",
+		Description: "update player div",
+		OperationID: "update-alias",
+	}, HandleUpdatePlayerAlias)
+
+	huma.Register(modApi, huma.Operation{
+		Method:      http.MethodPost,
+		Path:        "/events/leaderboards/{leaderboard_id}/times/{duration}/{player_id}",
+		Tags:        []string{"mod"},
+		Summary:     "submit player time",
+		Description: "submit a player's time for an event's leaderboard (up to one week after event end)",
+		OperationID: "submit-player-time",
+	}, HandleSubmitPlayerTime)
+
+	huma.Register(modApi, huma.Operation{
+		Method:      http.MethodPost,
+		Path:        "/events/leaderboards/times/{time_id}",
+		Tags:        []string{"mod"},
+		Summary:     "verify player time",
+		Description: "verify a player's time for an event's leaderboard",
+		OperationID: "verify-player-time",
+	}, HandleVerifyPlayerTime)
+
+	huma.Register(modApi, huma.Operation{
+		Method:      http.MethodPost,
+		Path:        "/events/leaderboards/times/{time_id}",
+		Tags:        []string{"mod"},
+		Summary:     "delete player time",
+		Description: "delete a player's unverified time for an event's leaderboard",
+		OperationID: "delete-player-time",
+	}, HandleDeletePlayerTime)
+}
+
+func RegisterAdminRoutes(adminApi *huma.Group) {
+	huma.Register(adminApi, huma.Operation{
+		Method:      http.MethodPost,
+		Path:        "/events",
+		Tags:        []string{"admin"},
+		Summary:     "create event",
+		Description: "create an event (competition)",
+		OperationID: "create-event",
+	}, HandleCreateEvent)
+
+	huma.Register(adminApi, huma.Operation{
+		Method:      http.MethodPost,
+		Path:        "/events/leaderboards",
+		Tags:        []string{"admin"},
+		Summary:     "update leaderboards",
+		Description: "update an event's leaderboards",
+		OperationID: "update-leaderboards",
+	}, HandleUpdateLeaderboards)
+
+	huma.Register(adminApi, huma.Operation{
+		Method:      http.MethodPost,
+		Path:        "/events/{event_id}",
+		Tags:        []string{"admin"},
+		Summary:     "cancel event",
+		Description: "cancel an event (competition) that hasn't started",
+		OperationID: "cancel-event",
+	}, HandleCancelEvent)
+
+	huma.Register(adminApi, huma.Operation{
+		Method:      http.MethodPost,
+		Path:        "/maps",
+		Tags:        []string{"admin"},
+		Summary:     "update maps",
+		Description: "update map list from Tempus",
+		OperationID: "update-maps",
+	}, HandleUpdateMaps)
+}
+
+func RegisterDevRoutes(devApi *huma.Group) {
+
+}

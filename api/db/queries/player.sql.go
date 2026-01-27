@@ -15,7 +15,7 @@ insert into player (id)
   values (?)
   on conflict do update
     set id = id
-  returning id, role, steam_avatar_url, steam_trade_token, tempus_id, country, country_code, discord_id, display_name, soldier_division, demo_division, motw_timeslot, preferred_class, preferred_launcher, preferred_map, created_at
+  returning id, role, alias, soldier_div, demo_div, avatar_url, trade_token, tempus_id, country, country_code, class_pref, map_pref, launcher_pref, created_at
 `
 
 func (q *Queries) InsertPlayer(ctx context.Context, id string) (Player, error) {
@@ -24,30 +24,55 @@ func (q *Queries) InsertPlayer(ctx context.Context, id string) (Player, error) {
 	err := row.Scan(
 		&i.ID,
 		&i.Role,
-		&i.SteamAvatarUrl,
-		&i.SteamTradeToken,
+		&i.Alias,
+		&i.SoldierDiv,
+		&i.DemoDiv,
+		&i.AvatarUrl,
+		&i.TradeToken,
 		&i.TempusID,
 		&i.Country,
 		&i.CountryCode,
-		&i.DiscordID,
-		&i.DisplayName,
-		&i.SoldierDivision,
-		&i.DemoDivision,
-		&i.MotwTimeslot,
-		&i.PreferredClass,
-		&i.PreferredLauncher,
-		&i.PreferredMap,
+		&i.ClassPref,
+		&i.MapPref,
+		&i.LauncherPref,
 		&i.CreatedAt,
 	)
 	return i, err
 }
 
-const selectAllPlayers = `-- name: SelectAllPlayers :many
-select id, role, steam_avatar_url, steam_trade_token, tempus_id, country, country_code, discord_id, display_name, soldier_division, demo_division, motw_timeslot, preferred_class, preferred_launcher, preferred_map, created_at from player
+const selectPlayer = `-- name: SelectPlayer :one
+select id, role, alias, soldier_div, demo_div, avatar_url, trade_token, tempus_id, country, country_code, class_pref, map_pref, launcher_pref, created_at from player
+  where id = ?
 `
 
-func (q *Queries) SelectAllPlayers(ctx context.Context) ([]Player, error) {
-	rows, err := q.db.QueryContext(ctx, selectAllPlayers)
+func (q *Queries) SelectPlayer(ctx context.Context, id string) (Player, error) {
+	row := q.db.QueryRowContext(ctx, selectPlayer, id)
+	var i Player
+	err := row.Scan(
+		&i.ID,
+		&i.Role,
+		&i.Alias,
+		&i.SoldierDiv,
+		&i.DemoDiv,
+		&i.AvatarUrl,
+		&i.TradeToken,
+		&i.TempusID,
+		&i.Country,
+		&i.CountryCode,
+		&i.ClassPref,
+		&i.MapPref,
+		&i.LauncherPref,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const selectPlayers = `-- name: SelectPlayers :many
+select id, role, alias, soldier_div, demo_div, avatar_url, trade_token, tempus_id, country, country_code, class_pref, map_pref, launcher_pref, created_at from player
+`
+
+func (q *Queries) SelectPlayers(ctx context.Context) ([]Player, error) {
+	rows, err := q.db.QueryContext(ctx, selectPlayers)
 	if err != nil {
 		return nil, err
 	}
@@ -58,19 +83,17 @@ func (q *Queries) SelectAllPlayers(ctx context.Context) ([]Player, error) {
 		if err := rows.Scan(
 			&i.ID,
 			&i.Role,
-			&i.SteamAvatarUrl,
-			&i.SteamTradeToken,
+			&i.Alias,
+			&i.SoldierDiv,
+			&i.DemoDiv,
+			&i.AvatarUrl,
+			&i.TradeToken,
 			&i.TempusID,
 			&i.Country,
 			&i.CountryCode,
-			&i.DiscordID,
-			&i.DisplayName,
-			&i.SoldierDivision,
-			&i.DemoDivision,
-			&i.MotwTimeslot,
-			&i.PreferredClass,
-			&i.PreferredLauncher,
-			&i.PreferredMap,
+			&i.ClassPref,
+			&i.MapPref,
+			&i.LauncherPref,
 			&i.CreatedAt,
 		); err != nil {
 			return nil, err
@@ -86,128 +109,67 @@ func (q *Queries) SelectAllPlayers(ctx context.Context) ([]Player, error) {
 	return items, nil
 }
 
-const selectPlayer = `-- name: SelectPlayer :one
-select id, role, steam_avatar_url, steam_trade_token, tempus_id, country, country_code, discord_id, display_name, soldier_division, demo_division, motw_timeslot, preferred_class, preferred_launcher, preferred_map, created_at from player
-  where id = ?
-`
-
-func (q *Queries) SelectPlayer(ctx context.Context, id string) (Player, error) {
-	row := q.db.QueryRowContext(ctx, selectPlayer, id)
-	var i Player
-	err := row.Scan(
-		&i.ID,
-		&i.Role,
-		&i.SteamAvatarUrl,
-		&i.SteamTradeToken,
-		&i.TempusID,
-		&i.Country,
-		&i.CountryCode,
-		&i.DiscordID,
-		&i.DisplayName,
-		&i.SoldierDivision,
-		&i.DemoDivision,
-		&i.MotwTimeslot,
-		&i.PreferredClass,
-		&i.PreferredLauncher,
-		&i.PreferredMap,
-		&i.CreatedAt,
-	)
-	return i, err
-}
-
-const updatePlayerDemoDivision = `-- name: UpdatePlayerDemoDivision :exec
+const updatePlayerAlias = `-- name: UpdatePlayerAlias :exec
 update player
-  set demo_division = ?
+  set alias = ?
   where id = ?
 `
 
-type UpdatePlayerDemoDivisionParams struct {
-	DemoDivision sql.NullString `json:"demo_division"`
-	ID           string         `json:"id"`
+type UpdatePlayerAliasParams struct {
+	Alias sql.NullString
+	ID    string
 }
 
-func (q *Queries) UpdatePlayerDemoDivision(ctx context.Context, arg UpdatePlayerDemoDivisionParams) error {
-	_, err := q.db.ExecContext(ctx, updatePlayerDemoDivision, arg.DemoDivision, arg.ID)
+func (q *Queries) UpdatePlayerAlias(ctx context.Context, arg UpdatePlayerAliasParams) error {
+	_, err := q.db.ExecContext(ctx, updatePlayerAlias, arg.Alias, arg.ID)
 	return err
 }
 
-const updatePlayerDisplayName = `-- name: UpdatePlayerDisplayName :exec
+const updatePlayerAvatarURL = `-- name: UpdatePlayerAvatarURL :exec
 update player
-  set display_name = ?
+  set avatar_url = ?
   where id = ?
 `
 
-type UpdatePlayerDisplayNameParams struct {
-	DisplayName sql.NullString `json:"display_name"`
-	ID          string         `json:"id"`
+type UpdatePlayerAvatarURLParams struct {
+	AvatarUrl sql.NullString
+	ID        string
 }
 
-func (q *Queries) UpdatePlayerDisplayName(ctx context.Context, arg UpdatePlayerDisplayNameParams) error {
-	_, err := q.db.ExecContext(ctx, updatePlayerDisplayName, arg.DisplayName, arg.ID)
+func (q *Queries) UpdatePlayerAvatarURL(ctx context.Context, arg UpdatePlayerAvatarURLParams) error {
+	_, err := q.db.ExecContext(ctx, updatePlayerAvatarURL, arg.AvatarUrl, arg.ID)
 	return err
 }
 
-const updatePlayerMotwTimeslot = `-- name: UpdatePlayerMotwTimeslot :exec
+const updatePlayerClassPref = `-- name: UpdatePlayerClassPref :exec
 update player
-  set motw_timeslot = ?
+  set class_pref = ?
   where id = ?
 `
 
-type UpdatePlayerMotwTimeslotParams struct {
-	MotwTimeslot sql.NullInt64 `json:"motw_timeslot"`
-	ID           string        `json:"id"`
+type UpdatePlayerClassPrefParams struct {
+	ClassPref string
+	ID        string
 }
 
-func (q *Queries) UpdatePlayerMotwTimeslot(ctx context.Context, arg UpdatePlayerMotwTimeslotParams) error {
-	_, err := q.db.ExecContext(ctx, updatePlayerMotwTimeslot, arg.MotwTimeslot, arg.ID)
+func (q *Queries) UpdatePlayerClassPref(ctx context.Context, arg UpdatePlayerClassPrefParams) error {
+	_, err := q.db.ExecContext(ctx, updatePlayerClassPref, arg.ClassPref, arg.ID)
 	return err
 }
 
-const updatePlayerPreferredClass = `-- name: UpdatePlayerPreferredClass :exec
+const updatePlayerDemoDiv = `-- name: UpdatePlayerDemoDiv :exec
 update player
-  set preferred_class = ?
+  set demo_div = ?
   where id = ?
 `
 
-type UpdatePlayerPreferredClassParams struct {
-	PreferredClass string `json:"preferred_class"`
-	ID             string `json:"id"`
+type UpdatePlayerDemoDivParams struct {
+	DemoDiv sql.NullString
+	ID      string
 }
 
-func (q *Queries) UpdatePlayerPreferredClass(ctx context.Context, arg UpdatePlayerPreferredClassParams) error {
-	_, err := q.db.ExecContext(ctx, updatePlayerPreferredClass, arg.PreferredClass, arg.ID)
-	return err
-}
-
-const updatePlayerPreferredLauncher = `-- name: UpdatePlayerPreferredLauncher :exec
-update player
-  set preferred_launcher = ?
-  where id = ?
-`
-
-type UpdatePlayerPreferredLauncherParams struct {
-	PreferredLauncher sql.NullString `json:"preferred_launcher"`
-	ID                string         `json:"id"`
-}
-
-func (q *Queries) UpdatePlayerPreferredLauncher(ctx context.Context, arg UpdatePlayerPreferredLauncherParams) error {
-	_, err := q.db.ExecContext(ctx, updatePlayerPreferredLauncher, arg.PreferredLauncher, arg.ID)
-	return err
-}
-
-const updatePlayerPreferredMap = `-- name: UpdatePlayerPreferredMap :exec
-update player
-  set preferred_map = ?
-  where id = ?
-`
-
-type UpdatePlayerPreferredMapParams struct {
-	PreferredMap sql.NullString `json:"preferred_map"`
-	ID           string         `json:"id"`
-}
-
-func (q *Queries) UpdatePlayerPreferredMap(ctx context.Context, arg UpdatePlayerPreferredMapParams) error {
-	_, err := q.db.ExecContext(ctx, updatePlayerPreferredMap, arg.PreferredMap, arg.ID)
+func (q *Queries) UpdatePlayerDemoDiv(ctx context.Context, arg UpdatePlayerDemoDivParams) error {
+	_, err := q.db.ExecContext(ctx, updatePlayerDemoDiv, arg.DemoDiv, arg.ID)
 	return err
 }
 
@@ -218,8 +180,8 @@ update player
 `
 
 type UpdatePlayerRoleParams struct {
-	Role string `json:"role"`
-	ID   string `json:"id"`
+	Role string
+	ID   string
 }
 
 func (q *Queries) UpdatePlayerRole(ctx context.Context, arg UpdatePlayerRoleParams) error {
@@ -227,67 +189,35 @@ func (q *Queries) UpdatePlayerRole(ctx context.Context, arg UpdatePlayerRolePara
 	return err
 }
 
-const updatePlayerSoldierDivision = `-- name: UpdatePlayerSoldierDivision :exec
+const updatePlayerSoldierDiv = `-- name: UpdatePlayerSoldierDiv :exec
 update player
-  set soldier_division = ?
+  set soldier_div = ?
   where id = ?
 `
 
-type UpdatePlayerSoldierDivisionParams struct {
-	SoldierDivision sql.NullString `json:"soldier_division"`
-	ID              string         `json:"id"`
+type UpdatePlayerSoldierDivParams struct {
+	SoldierDiv sql.NullString
+	ID         string
 }
 
-func (q *Queries) UpdatePlayerSoldierDivision(ctx context.Context, arg UpdatePlayerSoldierDivisionParams) error {
-	_, err := q.db.ExecContext(ctx, updatePlayerSoldierDivision, arg.SoldierDivision, arg.ID)
-	return err
-}
-
-const updatePlayerSteamAvatarURL = `-- name: UpdatePlayerSteamAvatarURL :exec
-update player
-  set steam_avatar_url = ?
-  where id = ?
-`
-
-type UpdatePlayerSteamAvatarURLParams struct {
-	SteamAvatarUrl sql.NullString `json:"steam_avatar_url"`
-	ID             string         `json:"id"`
-}
-
-func (q *Queries) UpdatePlayerSteamAvatarURL(ctx context.Context, arg UpdatePlayerSteamAvatarURLParams) error {
-	_, err := q.db.ExecContext(ctx, updatePlayerSteamAvatarURL, arg.SteamAvatarUrl, arg.ID)
-	return err
-}
-
-const updatePlayerSteamTradeToken = `-- name: UpdatePlayerSteamTradeToken :exec
-update player
-  set steam_trade_token = ?
-  where id = ?
-`
-
-type UpdatePlayerSteamTradeTokenParams struct {
-	SteamTradeToken sql.NullString `json:"steam_trade_token"`
-	ID              string         `json:"id"`
-}
-
-func (q *Queries) UpdatePlayerSteamTradeToken(ctx context.Context, arg UpdatePlayerSteamTradeTokenParams) error {
-	_, err := q.db.ExecContext(ctx, updatePlayerSteamTradeToken, arg.SteamTradeToken, arg.ID)
+func (q *Queries) UpdatePlayerSoldierDiv(ctx context.Context, arg UpdatePlayerSoldierDivParams) error {
+	_, err := q.db.ExecContext(ctx, updatePlayerSoldierDiv, arg.SoldierDiv, arg.ID)
 	return err
 }
 
 const updatePlayerTempusInfo = `-- name: UpdatePlayerTempusInfo :exec
 update player
   set tempus_id = ?,
-  country = ?,
-  country_code = ?
+    country = ?,
+    country_code = ?
   where id = ?
 `
 
 type UpdatePlayerTempusInfoParams struct {
-	TempusID    sql.NullInt64  `json:"tempus_id"`
-	Country     sql.NullString `json:"country"`
-	CountryCode sql.NullString `json:"country_code"`
-	ID          string         `json:"id"`
+	TempusID    sql.NullInt64
+	Country     sql.NullString
+	CountryCode sql.NullString
+	ID          string
 }
 
 func (q *Queries) UpdatePlayerTempusInfo(ctx context.Context, arg UpdatePlayerTempusInfoParams) error {
@@ -297,5 +227,21 @@ func (q *Queries) UpdatePlayerTempusInfo(ctx context.Context, arg UpdatePlayerTe
 		arg.CountryCode,
 		arg.ID,
 	)
+	return err
+}
+
+const updatePlayerTradeToken = `-- name: UpdatePlayerTradeToken :exec
+update player
+  set trade_token = ?
+  where id = ?
+`
+
+type UpdatePlayerTradeTokenParams struct {
+	TradeToken sql.NullString
+	ID         string
+}
+
+func (q *Queries) UpdatePlayerTradeToken(ctx context.Context, arg UpdatePlayerTradeTokenParams) error {
+	_, err := q.db.ExecContext(ctx, updatePlayerTradeToken, arg.TradeToken, arg.ID)
 	return err
 }

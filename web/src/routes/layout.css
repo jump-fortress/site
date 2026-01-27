@@ -1,9 +1,9 @@
+@import 'tailwindcss';
+
+@plugin '@tailwindcss/typography';
 @plugin '@iconify/tailwind4' {
   scale: 1.4;
 }
-
-@import 'tailwindcss';
-@import '@catppuccin/tailwindcss/mocha.css';
 
 @font-face {
   font-family: 'fredoka';
@@ -55,63 +55,4 @@
   :root {
     @apply bg-base-900 font-theme text-base text-content selection:bg-primary/50 selection:text-content;
   }
-
-  input,
-  button {
-    @apply outline-0 focus:outline-0;
-  }
-
-  th,
-  td {
-    @apply text-center text-nowrap first:rounded-l-box last:rounded-r-box;
-  }
-
-  th {
-    @apply px-1 pb-0.5;
-  }
-
-  td {
-    @apply h-10 bg-base-900 px-1;
-  }
-
-  tr:hover td {
-    @apply bg-base-900/50;
-  }
-
-  img {
-    @apply select-none;
-  }
-
-  .filter-lavender {
-    filter: brightness(0) saturate(100%) invert(97%) sepia(49%) saturate(6023%) hue-rotate(179deg)
-      brightness(100%) contrast(108%);
-  }
-
-  .filter-purelavender {
-    filter: brightness(0) saturate(100%) invert(68%) sepia(55%) saturate(547%) hue-rotate(197deg)
-      brightness(105%) contrast(99%);
-  }
-
-  .table-date {
-    @apply pr-3 text-end;
-  }
-
-  .w-rank {
-    @apply w-10;
-  }
-
-  .w-div {
-    @apply w-24;
-  }
-
-  .w-date {
-    @apply w-32 pr-3 text-end;
-  }
-
-  .w-time {
-    @apply w-20;
-  }
 }
-
-@source inline('text-division-{wood,steel,bronze,silver,gold,platinum,diamond}');
-@source inline('bg-division-{wood,steel,bronze,silver,gold,platinum,diamond}');

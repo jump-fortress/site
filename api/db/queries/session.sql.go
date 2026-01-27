@@ -9,19 +9,19 @@ import (
 	"context"
 )
 
-const addSession = `-- name: AddSession :one
+const insertSession = `-- name: InsertSession :one
 insert into session (player_id, token_id)
   values (?, ?)
   returning id, player_id, token_id, created_at
 `
 
-type AddSessionParams struct {
-	PlayerID string `json:"player_id"`
-	TokenID  string `json:"token_id"`
+type InsertSessionParams struct {
+	PlayerID string
+	TokenID  string
 }
 
-func (q *Queries) AddSession(ctx context.Context, arg AddSessionParams) (Session, error) {
-	row := q.db.QueryRowContext(ctx, addSession, arg.PlayerID, arg.TokenID)
+func (q *Queries) InsertSession(ctx context.Context, arg InsertSessionParams) (Session, error) {
+	row := q.db.QueryRowContext(ctx, insertSession, arg.PlayerID, arg.TokenID)
 	var i Session
 	err := row.Scan(
 		&i.ID,

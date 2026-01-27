@@ -11,24 +11,22 @@ import (
 )
 
 const insertMap = `-- name: InsertMap :exec
-insert or ignore into map (id, name, courses, bonuses, soldier_tier, demo_tier, soldier_rating, demo_rating)
-  values (?, ?, ?, ?, ?, ?, ?, ?)
+insert or ignore into map (name, courses, bonuses, soldier_tier, demo_tier, soldier_rating, demo_rating)
+values (?, ?, ?, ?, ?, ?, ?)
 `
 
 type InsertMapParams struct {
-	ID            int64         `json:"id"`
-	Name          string        `json:"name"`
-	Courses       sql.NullInt64 `json:"courses"`
-	Bonuses       sql.NullInt64 `json:"bonuses"`
-	SoldierTier   int64         `json:"soldier_tier"`
-	DemoTier      int64         `json:"demo_tier"`
-	SoldierRating int64         `json:"soldier_rating"`
-	DemoRating    int64         `json:"demo_rating"`
+	Name          string
+	Courses       sql.NullInt64
+	Bonuses       sql.NullInt64
+	SoldierTier   int64
+	DemoTier      int64
+	SoldierRating int64
+	DemoRating    int64
 }
 
 func (q *Queries) InsertMap(ctx context.Context, arg InsertMapParams) error {
 	_, err := q.db.ExecContext(ctx, insertMap,
-		arg.ID,
 		arg.Name,
 		arg.Courses,
 		arg.Bonuses,
@@ -40,35 +38,8 @@ func (q *Queries) InsertMap(ctx context.Context, arg InsertMapParams) error {
 	return err
 }
 
-const selectMapNames = `-- name: SelectMapNames :many
-select name from map
-`
-
-func (q *Queries) SelectMapNames(ctx context.Context) ([]string, error) {
-	rows, err := q.db.QueryContext(ctx, selectMapNames)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []string
-	for rows.Next() {
-		var name string
-		if err := rows.Scan(&name); err != nil {
-			return nil, err
-		}
-		items = append(items, name)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
 const selectMaps = `-- name: SelectMaps :many
-select id, name, courses, bonuses, soldier_tier, demo_tier, soldier_rating, demo_rating from map
+select name, courses, bonuses, soldier_tier, demo_tier, soldier_rating, demo_rating from map
 `
 
 func (q *Queries) SelectMaps(ctx context.Context) ([]Map, error) {
@@ -81,7 +52,6 @@ func (q *Queries) SelectMaps(ctx context.Context) ([]Map, error) {
 	for rows.Next() {
 		var i Map
 		if err := rows.Scan(
-			&i.ID,
 			&i.Name,
 			&i.Courses,
 			&i.Bonuses,

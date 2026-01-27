@@ -9,25 +9,25 @@ import (
 	"context"
 )
 
-const disallowToken = `-- name: DisallowToken :exec
+const insertDisallowToken = `-- name: InsertDisallowToken :exec
 insert into disallow_token (token_id)
   values (?)
 `
 
-func (q *Queries) DisallowToken(ctx context.Context, tokenID string) error {
-	_, err := q.db.ExecContext(ctx, disallowToken, tokenID)
+func (q *Queries) InsertDisallowToken(ctx context.Context, tokenID string) error {
+	_, err := q.db.ExecContext(ctx, insertDisallowToken, tokenID)
 	return err
 }
 
-const getDisallowToken = `-- name: GetDisallowToken :one
+const selectDisallowToken = `-- name: SelectDisallowToken :one
 select exists(
   select 1 from disallow_token
     where token_id = ?
 )
 `
 
-func (q *Queries) GetDisallowToken(ctx context.Context, tokenID string) (int64, error) {
-	row := q.db.QueryRowContext(ctx, getDisallowToken, tokenID)
+func (q *Queries) SelectDisallowToken(ctx context.Context, tokenID string) (int64, error) {
+	row := q.db.QueryRowContext(ctx, selectDisallowToken, tokenID)
 	var column_1 int64
 	err := row.Scan(&column_1)
 	return column_1, err

@@ -9,59 +9,44 @@ insert into player (id)
 select * from player
   where id = ?;
 
--- name: SelectAllPlayers :many
+-- name: SelectPlayers :many
 select * from player;
 
--- name: UpdatePlayerSteamAvatarURL :exec
+-- name: UpdatePlayerAlias :exec
 update player
-  set steam_avatar_url = ?
+  set alias = ?
   where id = ?;
 
--- name: UpdatePlayerSteamTradeToken :exec
+-- name: UpdatePlayerAvatarURL :exec
 update player
-  set steam_trade_token = ?
+  set avatar_url = ?
+  where id = ?;
+
+-- name: UpdatePlayerSoldierDiv :exec
+update player
+  set soldier_div = ?
+  where id = ?;
+
+-- name: UpdatePlayerDemoDiv :exec
+update player
+  set demo_div = ?
+  where id = ?;
+
+-- name: UpdatePlayerTradeToken :exec
+update player
+  set trade_token = ?
   where id = ?;
 
 -- name: UpdatePlayerTempusInfo :exec
 update player
   set tempus_id = ?,
-  country = ?,
-  country_code = ?
+    country = ?,
+    country_code = ?
   where id = ?;
 
--- name: UpdatePlayerDisplayName :exec
+-- name: UpdatePlayerClassPref :exec
 update player
-  set display_name = ?
-  where id = ?;
-
--- name: UpdatePlayerSoldierDivision :exec
-update player
-  set soldier_division = ?
-  where id = ?;
-
--- name: UpdatePlayerDemoDivision :exec
-update player
-  set demo_division = ?
-  where id = ?;
-
--- name: UpdatePlayerMotwTimeslot :exec
-update player
-  set motw_timeslot = ?
-  where id = ?;
-
--- name: UpdatePlayerPreferredClass :exec
-update player
-  set preferred_class = ?
-  where id = ?;
-
--- name: UpdatePlayerPreferredLauncher :exec
-update player
-  set preferred_launcher = ?
-  where id = ?;
-
--- name: UpdatePlayerPreferredMap :exec
-update player
-  set preferred_map = ?
+  set class_pref = ?
   where id = ?;
 
 -- name: UpdatePlayerRole :exec

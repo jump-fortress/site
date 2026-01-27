@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"log/slog"
 	"net/http"
 	"net/url"
 	"strings"
@@ -13,28 +14,24 @@ import (
 	"github.com/escrow-tf/steam/steamid"
 	"github.com/gofrs/uuid"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/jump-fortress/site/db"
+	"github.com/jump-fortress/site/db/queries"
+	"github.com/jump-fortress/site/env"
+	"github.com/jump-fortress/site/internal/principal"
 	"github.com/rotisserie/eris"
-	"github.com/spiritov/jump/api/db/queries"
-	db "github.com/spiritov/jump/api/db/responses"
-	"github.com/spiritov/jump/api/env"
-	"github.com/spiritov/jump/api/slog"
 	"github.com/yohcop/openid-go"
-
-	"github.com/ravener/discord-oauth2"
-	"golang.org/x/oauth2"
 )
 
 const (
 	SessionCookieName = "sessionid"
 
-	SessionIssuer       = "jump"
-	SessionAudience     = "jump"
-	SessionDuration     = time.Hour * 24 * 7
-	SessionJitter       = time.Minute
-	PrincipalContextKey = "principal"
+	SessionIssuer   = "jump"
+	SessionAudience = "jump"
+	SessionDuration = time.Hour * 24 * 7
+	SessionJitter   = time.Minute
 
 	SteamOidcIssuer      = "https://steamcommunity.com/openid/"
-	SteamOidRedirectPath = "internal/session/steam/callback"
+	SteamOidRedirectPath = "internal/steam/callback"
 )
 
 var (
@@ -45,27 +42,7 @@ var (
 	SteamApiKey         string
 
 	discoveryCache *NoOpDiscoveryCache
-
-	OauthConfig *oauth2.Config
 )
-
-// todo: use steamid.SteamID
-type Principal struct {
-	SteamID steamid.SteamID
-	TokenID uuid.UUID
-	Claims  *jwt.RegisteredClaims
-}
-
-func GetPrincipal(ctx context.Context) (result *Principal, ok bool) {
-	result, ok = ctx.Value(PrincipalContextKey).(*Principal)
-	ok = ok && result != nil
-	return
-}
-
-func HasPrincipal(ctx context.Context) bool {
-	result, ok := ctx.Value(PrincipalContextKey).(*Principal)
-	return ok && result != nil
-}
 
 type DiscoverInput struct {
 	URL url.URL
@@ -84,9 +61,8 @@ type DiscoverOutput struct {
 func handleSteamDiscover(ctx context.Context, input *DiscoverInput) (*DiscoverOutput, error) {
 	callbackURL := OidRealmURL.JoinPath(SteamOidRedirectPath)
 	redirectUrl, err := openid.RedirectURL(SteamOidcIssuer, callbackURL.String(), OidRealm)
-
 	if err != nil {
-		log.Printf("[error] couldn't create openid redirect: %v", err)
+		slog.Error("couldn't create openid redirect", "error", err)
 		return nil, err
 	}
 
@@ -124,11 +100,11 @@ func handleSteamCallback(ctx context.Context, input *CallbackInput) (*CallbackOu
 	// is never processed by our servers more than once.
 	id, err := openid.Verify(fullURL.String(), discoveryCache, db.NewNonceStore(ctx, db.Queries))
 	if err != nil {
-		slog.Logger.Debug("Error verifying openid callback", "error", err, "uri", fullURL)
+		slog.Debug("Error verifying openid callback", "error", err, "uri", fullURL)
 		return nil, eris.Wrap(err, "Error verifying openid callback")
 	}
 
-	slog.Logger.Debug("Verified openid callback for steam user", "user_id", id)
+	slog.Debug("Verified openid callback for steam user", "user_id", id)
 
 	// the openid id is in the format `https?://steamcommunity.com/openid/id/[0-9]+`. We only care about the
 	// last part, which is the user's Steam ID 64.
@@ -139,40 +115,24 @@ func handleSteamCallback(ctx context.Context, input *CallbackInput) (*CallbackOu
 		_, err = fmt.Sscanf(id, "http://steamcommunity.com/openid/id/%s", &steamID64)
 	}
 	if err != nil {
-		slog.Logger.Error("Verified openid callback but couldn't parse Steam ID 64 from ID.", "id", id, "error", err)
+		slog.Error("Verified openid callback but couldn't parse Steam ID 64 from ID.", "id", id, "error", err)
 		return nil, eris.Wrap(err, "Error parsing Steam ID 64 from ID")
 	}
 
 	steamID, err := steamid.ParseSteamID64(steamID64)
 	if err != nil {
-		slog.Logger.Error("Verified openid callback but couldn't parse SteamID64 to a full SteamID")
+		slog.Error("Verified openid callback but couldn't parse SteamID64 to a full SteamID")
 		return nil, eris.Wrap(err, "Error parsing SteamID64 to full SteamID")
 	}
 
 	// if the user doesn't already exist in the database, we need to ensure they exist
-	player, dbErr := db.Queries.InsertPlayer(ctx, steamID.String())
-	if dbErr != nil {
-		return nil, eris.Wrap(dbErr, "Error creating new user")
-	}
-
-	err = db.Queries.InsertPlayerPoints(ctx, queries.InsertPlayerPointsParams{
-		Class:    "Soldier",
-		PlayerID: player.ID,
-	})
+	_, err = db.Queries.InsertPlayer(ctx, steamID.String())
 	if err != nil {
-		return nil, eris.Wrapf(err, "Error creating soldier points for new user %s, ID %s", player.DisplayName.String, player.ID)
-	}
-
-	err = db.Queries.InsertPlayerPoints(ctx, queries.InsertPlayerPointsParams{
-		Class:    "Demo",
-		PlayerID: player.ID,
-	})
-	if err != nil {
-		return nil, eris.Wrapf(err, "Error creating demo points for new user %s, ID %s", player.DisplayName.String, player.ID)
+		return nil, eris.Wrap(err, "Error creating new user")
 	}
 
 	// AddSession will create a new session UUIDv7 token entry and link it to the user.
-	session, dbErr := db.Queries.AddSession(ctx, queries.AddSessionParams{
+	session, dbErr := db.Queries.InsertSession(ctx, queries.InsertSessionParams{
 		TokenID:  uuid.Must(uuid.NewV7()).String(),
 		PlayerID: steamID.String(),
 	})
@@ -222,7 +182,7 @@ type SignOutOutput struct {
 
 func handleSteamSignOut(ctx context.Context, _ *struct{}) (*SignOutOutput, error) {
 	// if we don't have a principal, that means the user is not signed in or their session has expired.
-	principal, ok := GetPrincipal(ctx)
+	principal, ok := principal.Get(ctx)
 	if !ok {
 		return nil, huma.Error401Unauthorized("a session is required")
 	}
@@ -230,9 +190,9 @@ func handleSteamSignOut(ctx context.Context, _ *struct{}) (*SignOutOutput, error
 	// but, if we do have a session, we should forcefully invalidate the session to ensure the user's token
 	// can't be re-used. TokenIDs are UUIDv7, which have a time-based monotonic counter as part of the ID...
 	// as a result, it's virtually impossible for the same token to be generated twice.
-	err := db.Queries.DisallowToken(ctx, principal.TokenID.String())
+	err := db.Queries.InsertDisallowToken(ctx, principal.TokenID.String())
 	if err != nil {
-		return nil, eris.Wrap(err, "Error signing out session")
+		return nil, eris.Wrap(err, "error signing out session")
 	}
 
 	// then we expire their session cookie.
@@ -249,30 +209,7 @@ func handleSteamSignOut(ctx context.Context, _ *struct{}) (*SignOutOutput, error
 	}, nil
 }
 
-func handleDiscordDiscover(ctx context.Context, input *DiscoverInput) (*DiscoverOutput, error) {
-	principal, ok := GetPrincipal(ctx)
-	if !ok {
-		return nil, huma.Error401Unauthorized("a session is required")
-	}
-
-	return &DiscoverOutput{
-		Status: http.StatusTemporaryRedirect,
-		// todo: what to use for auth code per user?
-		Url: OauthConfig.AuthCodeURL(string(principal.SteamID.String())),
-	}, nil
-}
-
-type DiscordCallbackOutput struct {
-	Status int
-	Url    string `header:"Location"`
-}
-
-func handleDiscordCallback(ctx context.Context, input *CallbackInput) (*DiscordCallbackOutput, error) {
-	//
-	return nil, huma.Error404NotFound("not implemented")
-}
-
-func registerAuth(sessionApi *huma.Group) {
+func registerAuth(internalApi *huma.Group, sessionApi *huma.Group) {
 	OidRealm = env.GetString("JUMP_OID_REALM")
 	oidRealmURL, err := url.Parse(OidRealm)
 	if err != nil {
@@ -291,22 +228,22 @@ func registerAuth(sessionApi *huma.Group) {
 	//   with some information about the user's auth session
 	// - `/internal/session/steam/callback` creates a new session token for the user
 	// - the user is redirected back to home with their session cookies set
-	huma.Register(sessionApi, huma.Operation{
+	huma.Register(internalApi, huma.Operation{
 		Method:      http.MethodGet,
 		Path:        "/steam/discover",
 		OperationID: "steam-discover",
 		Summary:     "Steam discover",
 		Description: "steam discover",
-		Tags:        []string{"Auth"},
+		Tags:        []string{"auth"},
 	}, handleSteamDiscover)
 
-	huma.Register(sessionApi, huma.Operation{
+	huma.Register(internalApi, huma.Operation{
 		Method:      http.MethodGet,
 		Path:        "/steam/callback",
 		OperationID: "steam-callback",
 		Summary:     "Steam callback",
 		Description: "steam callback",
-		Tags:        []string{"Auth"},
+		Tags:        []string{"auth"},
 	}, handleSteamCallback)
 
 	huma.Register(sessionApi, huma.Operation{
@@ -314,81 +251,44 @@ func registerAuth(sessionApi *huma.Group) {
 		Path:        "/steam/profile",
 		OperationID: "steam-profile",
 		Summary:     "Steam profile",
-		Tags:        []string{"Steam"},
+		Tags:        []string{"auth"},
 		Description: "get the authenticated user's steam profile info",
 		Errors:      []int{http.StatusUnauthorized},
 
-		Security:    sessionCookieSecurityMap,
-		Middlewares: requireUserSessionMiddlewares,
+		Security: sessionCookieSecurityMap,
 	}, HandleGetSteamProfile)
-
-	huma.Register(sessionApi, huma.Operation{
-		Method:      http.MethodGet,
-		Path:        "",
-		OperationID: "session",
-		Summary:     "session profile",
-		Tags:        []string{"Auth"},
-		Description: "get the authenticated user's session profile",
-		Errors:      []int{http.StatusUnauthorized},
-
-		Security:    sessionCookieSecurityMap,
-		Middlewares: requireUserSessionMiddlewares,
-	}, HandleGetSession)
+	//
+	// huma.Register(sessionApi, huma.Operation{
+	// 	Method:      http.MethodGet,
+	// 	Path:        "",
+	// 	OperationID: "session",
+	// 	Summary:     "session profile",
+	// 	Tags:        []string{"Auth"},
+	// 	Description: "get the authenticated user's session profile",
+	// 	Errors:      []int{http.StatusUnauthorized},
+	//
+	// 	Security:    sessionCookieSecurityMap,
+	// 	Middlewares: requireSessionMiddlewares,
+	// }, HandleGetSession)
 
 	huma.Register(sessionApi, huma.Operation{
 		Method:      http.MethodPost,
 		Path:        "/sign-out",
 		OperationID: "sign-out",
-		Summary:     "Sign out",
+		Summary:     "sign out",
 		Description: "sign out & clear session",
-		Tags:        []string{"Auth"},
+		Tags:        []string{"auth"},
 		Errors:      []int{http.StatusUnauthorized},
 
-		Security:    sessionCookieSecurityMap,
-		Middlewares: requireUserSessionMiddlewares,
+		Security: sessionCookieSecurityMap,
 	}, handleSteamSignOut)
-}
-
-func registerDiscordConnection(sessionApi *huma.Group) {
-	redirectURL, err := url.JoinPath(OidRealmURL.String(), "/internal/discord/callback")
-	if err != nil {
-		log.Fatal("[fatal] error joining Discord redirect URL")
-	}
-
-	clientID := env.GetString("JUMP_DISCORD_CLIENT_ID")
-	clientSecret := env.GetString("JUMP_DISCORD_CLIENT_SECRET")
-
-	OauthConfig = &oauth2.Config{
-		ClientID:     clientID,
-		ClientSecret: clientSecret,
-		Endpoint:     discord.Endpoint,
-		RedirectURL:  redirectURL,
-		Scopes:       []string{discord.ScopeIdentify},
-	}
 
 	huma.Register(sessionApi, huma.Operation{
 		Method:      http.MethodGet,
-		Path:        "/discord/discover",
-		OperationID: "discord-discover",
-		Summary:     "Discord discover",
-		Description: "discord discover",
-		Tags:        []string{"Discord Auth"},
-		Errors:      []int{http.StatusUnauthorized},
-
-		Security:    sessionCookieSecurityMap,
-		Middlewares: requireUserSessionMiddlewares,
-	}, handleDiscordDiscover)
-
-	huma.Register(sessionApi, huma.Operation{
-		Method:      http.MethodGet,
-		Path:        "/discord/callback",
-		OperationID: "discord-callback",
-		Summary:     "Discord callback",
-		Description: "discord callback",
-		Tags:        []string{"Discord Auth"},
-		Errors:      []int{http.StatusUnauthorized},
-
-		Security:    sessionCookieSecurityMap,
-		Middlewares: requireUserSessionMiddlewares,
-	}, handleDiscordCallback)
+		Path:        "",
+		Tags:        []string{"auth"},
+		Summary:     "get session",
+		Description: "get session info",
+		OperationID: "get-session",
+	}, HandleGetSession)
 }

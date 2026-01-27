@@ -7,10 +7,34 @@ import (
 	"github.com/escrow-tf/steam/steamid"
 	"github.com/gofrs/uuid"
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/spiritov/jump/api/db/responses"
+	"github.com/jump-fortress/site/db"
+	"github.com/jump-fortress/site/internal/principal"
 )
 
-func UserAuthHandler(ctx huma.Context, next func(huma.Context)) {
+func checkRoles(ctx huma.Context, roles []string) error {
+	principal, ok := principal.Get(ctx.Context())
+	if !ok {
+		err := huma.WriteErr(api, ctx, http.StatusUnauthorized, "")
+		return err
+	}
+
+	player, err := db.Queries.SelectPlayer(ctx.Context(), principal.SteamID.String())
+	if err != nil {
+		err = huma.WriteErr(api, ctx, http.StatusInternalServerError, "")
+		return err
+	}
+
+	for _, r := range roles {
+		if player.Role == r {
+			return nil
+		}
+	}
+
+	err = huma.WriteErr(api, ctx, http.StatusUnauthorized, "")
+	return err
+}
+
+func AuthHandler(ctx huma.Context, next func(huma.Context)) {
 	// the session cookie is a JWT. The JWT contains claims like `sub`, `jti`, `exp`
 	// these claims are strings which store information about the session
 	sessionCookie, cookieErr := huma.ReadCookie(ctx, SessionCookieName)
@@ -65,7 +89,7 @@ func UserAuthHandler(ctx huma.Context, next func(huma.Context)) {
 
 	// if the user's token has been marked as disallowed, then the authentication
 	// should always fail
-	isDisallowed, err := responses.Queries.GetDisallowToken(ctx.Context(), tokenId.String())
+	isDisallowed, err := db.Queries.SelectDisallowToken(ctx.Context(), tokenId.String())
 	if isDisallowed == 1 || err != nil {
 		next(ctx)
 		return
@@ -76,7 +100,7 @@ func UserAuthHandler(ctx huma.Context, next func(huma.Context)) {
 	// key-value pairs. In this case, we want to add the "principal".
 	// The Principal is the user that was authenticated during the request,
 	// it can contain any information we want.
-	ctx = huma.WithValue(ctx, PrincipalContextKey, &Principal{
+	ctx = huma.WithValue(ctx, principal.PrincipalContextKey, &principal.Principal{
 		SteamID: steamID,
 		TokenID: tokenId,
 		Claims:  token.Claims.(*jwt.RegisteredClaims),
@@ -84,7 +108,7 @@ func UserAuthHandler(ctx huma.Context, next func(huma.Context)) {
 	next(ctx)
 }
 
-func CreateRequireUserAuthHandler(api huma.API) func(ctx huma.Context, next func(huma.Context)) {
+func RequireUserAuthHandler(api huma.API) func(ctx huma.Context, next func(huma.Context)) {
 	// this is a function which returns a function.
 	// Think of this like a constructor for a class called "RequireUserAuthHandler", which takes one
 	// parameter: a huma.API. We need that huma.API in order to call huma.WriteErr whenever the user is not
@@ -92,7 +116,7 @@ func CreateRequireUserAuthHandler(api huma.API) func(ctx huma.Context, next func
 	//
 	// also, this is called function currying! We're returning a new function that has a closure on `api` (:
 	return func(ctx huma.Context, next func(huma.Context)) {
-		if !HasPrincipal(ctx.Context()) {
+		if !principal.Has(ctx.Context()) {
 			_ = huma.WriteErr(api, ctx, http.StatusUnauthorized, "")
 			return
 		}
@@ -101,23 +125,10 @@ func CreateRequireUserAuthHandler(api huma.API) func(ctx huma.Context, next func
 	}
 }
 
-// treasurer endpoints are also accessible by admins, but not moderators or consultants
-func CreateRequireUserTreasurerHandler(api huma.API) func(ctx huma.Context, next func(huma.Context)) {
+func RequireModHandler(api huma.API) func(ctx huma.Context, next func(huma.Context)) {
 	return func(ctx huma.Context, next func(huma.Context)) {
-		principal, ok := GetPrincipal(ctx.Context())
-		if !ok {
-			_ = huma.WriteErr(api, ctx, http.StatusUnauthorized, "")
-			return
-		}
-
-		player, err := responses.Queries.SelectPlayer(ctx.Context(), principal.SteamID.String())
+		err := checkRoles(ctx, []string{"mod, admin, dev"})
 		if err != nil {
-			_ = huma.WriteErr(api, ctx, http.StatusInternalServerError, "")
-			return
-		}
-
-		if player.Role != "Treasurer" && player.Role != "Admin" {
-			_ = huma.WriteErr(api, ctx, http.StatusUnauthorized, "")
 			return
 		}
 
@@ -125,22 +136,10 @@ func CreateRequireUserTreasurerHandler(api huma.API) func(ctx huma.Context, next
 	}
 }
 
-func CreateRequireUserConsultantHandler(api huma.API) func(ctx huma.Context, next func(huma.Context)) {
+func RequireAdminHandler(api huma.API) func(ctx huma.Context, next func(huma.Context)) {
 	return func(ctx huma.Context, next func(huma.Context)) {
-		principal, ok := GetPrincipal(ctx.Context())
-		if !ok {
-			_ = huma.WriteErr(api, ctx, http.StatusUnauthorized, "")
-			return
-		}
-
-		player, err := responses.Queries.SelectPlayer(ctx.Context(), principal.SteamID.String())
+		err := checkRoles(ctx, []string{"admin, dev"})
 		if err != nil {
-			_ = huma.WriteErr(api, ctx, http.StatusInternalServerError, "")
-			return
-		}
-
-		if player.Role != "Mod" && player.Role != "Admin" && player.Role != "Consultant" {
-			_ = huma.WriteErr(api, ctx, http.StatusUnauthorized, "")
 			return
 		}
 
@@ -148,45 +147,10 @@ func CreateRequireUserConsultantHandler(api huma.API) func(ctx huma.Context, nex
 	}
 }
 
-func CreateRequireUserModeratorHandler(api huma.API) func(ctx huma.Context, next func(huma.Context)) {
+func RequireDevHandler(api huma.API) func(ctx huma.Context, next func(huma.Context)) {
 	return func(ctx huma.Context, next func(huma.Context)) {
-		principal, ok := GetPrincipal(ctx.Context())
-		if !ok {
-			_ = huma.WriteErr(api, ctx, http.StatusUnauthorized, "")
-			return
-		}
-
-		player, err := responses.Queries.SelectPlayer(ctx.Context(), principal.SteamID.String())
+		err := checkRoles(ctx, []string{"dev"})
 		if err != nil {
-			_ = huma.WriteErr(api, ctx, http.StatusInternalServerError, "")
-			return
-		}
-
-		if player.Role != "Mod" && player.Role != "Admin" {
-			_ = huma.WriteErr(api, ctx, http.StatusUnauthorized, "")
-			return
-		}
-
-		next(ctx)
-	}
-}
-
-func CreateRequireUserAdminHandler(api huma.API) func(ctx huma.Context, next func(huma.Context)) {
-	return func(ctx huma.Context, next func(huma.Context)) {
-		principal, ok := GetPrincipal(ctx.Context())
-		if !ok {
-			_ = huma.WriteErr(api, ctx, http.StatusUnauthorized, "")
-			return
-		}
-
-		player, err := responses.Queries.SelectPlayer(ctx.Context(), principal.SteamID.String())
-		if err != nil {
-			_ = huma.WriteErr(api, ctx, http.StatusInternalServerError, "")
-			return
-		}
-
-		if player.Role != "Admin" {
-			_ = huma.WriteErr(api, ctx, http.StatusUnauthorized, "")
 			return
 		}
 

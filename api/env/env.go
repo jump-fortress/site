@@ -44,7 +44,6 @@ func GetMatched[T any](key string, into func(value string) (T, error)) (T, error
 		var result T
 		return result, eris.Errorf("%s must be set", key)
 	}
-
 	return into(value)
 }
 
@@ -61,22 +60,22 @@ func Require(keys ...string) {
 	}
 
 	if len(missing) > 0 {
-		log.Fatalf("Missing required environment variables: %s", strings.Join(missing, ", "))
+		log.Fatalf("missing required environment variables: %s", strings.Join(missing, ", "))
 	}
 }
 
-// Load loads .env files, using the environment variable keyed by envKey to determine which .env files to load.
+// load loads .env files, using the environment variable keyed by envKey to determine which .env files to load.
 //
-// If the environment variable is empty or not set, it defaults to "development".
+// if the environment variable is empty or not set, it defaults to "development".
 //
-// The .env precedence is as follows:
+// the .env precedence is as follows:
 //
 //	.env.{env}.local
 //	.env.local
 //	.env.{env}
 //	.env
 //
-// If the matched environment variable is "test", .env.local is not loaded.
+// if the matched environment variable is "test", .env.local is not loaded.
 func Load(envKey string) (err error) {
 	env := os.Getenv(envKey)
 	if env == "" {

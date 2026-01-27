@@ -10,6 +10,7 @@ import (
 
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/hashicorp/go-retryablehttp"
+	"github.com/jump-fortress/site/internal/principal"
 	"github.com/rotisserie/eris"
 )
 
@@ -97,7 +98,7 @@ func FetchProfileSummary(steamId uint64) (*PlayerSummary, error) {
 
 func HandleGetSteamProfile(ctx context.Context, _ *struct{}) (*SteamProfileOutput, error) {
 	// if we don't have a principal, that means the user is not signed in or their session has expired.
-	principal, ok := GetPrincipal(ctx)
+	principal, ok := principal.Get(ctx)
 	if !ok {
 		return nil, huma.Error401Unauthorized("a session is required")
 	}

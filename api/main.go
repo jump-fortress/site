@@ -1,20 +1,22 @@
 package main
 
 import (
-	_ "embed"
 	"fmt"
 	"log"
+	"log/slog"
 
-	"github.com/spiritov/jump/api/db/responses"
-	"github.com/spiritov/jump/api/env"
-	"github.com/spiritov/jump/api/internal"
-	"github.com/spiritov/jump/api/slog"
+	"github.com/jump-fortress/site/db"
+	"github.com/jump-fortress/site/env"
+	"github.com/jump-fortress/site/internal"
+	"github.com/jump-fortress/site/slogger"
 )
 
 func main() {
 	// env is a wrapper around the `godotenv` library
-	if err := env.Load("JUMP_ENV"); err != nil {
-		log.Fatalf("[fatal] error loading .env: %v", err)
+	err := env.Load("JUMP_ENV")
+	if err != nil {
+		slog.Error("error loading .env", "error", err)
+		log.Fatal()
 	}
 
 	env.Require(
@@ -34,18 +36,20 @@ func main() {
 		"JUMP_OID_REALM",
 	)
 
-	if err := slog.Setup(); err != nil {
+	err = slogger.Setup()
+	if err != nil {
 		log.Fatal(err)
 	}
+	slog.SetDefault(slogger.Logger)
 
-	database := responses.OpenDB("./db/jump.db?_foreign_keys=on")
+	database := db.OpenDB("./db/jump.db?_foreign_keys=on")
 	defer database.Close()
 
-	var enabled int
-	_ = database.QueryRow("pragma foreign_keys").Scan(&enabled)
-	fmt.Println(enabled)
+	var foreign_keys_enabled int
+	err = database.QueryRow("pragma foreign_keys").Scan(&foreign_keys_enabled)
+	slog.Info(fmt.Sprintf("foreign keys: %d", foreign_keys_enabled))
 
-	log.Print("db uppies")
+	slog.Info("db up")
 
 	address := env.GetString("JUMP_HTTP_ADDRESS")
 	internal.ServeAPI(address)

@@ -1,0 +1,60 @@
+package models
+
+type PlayerIDInput struct {
+	PlayerID string `path:"player_id" doc:"player id, SteamID64"`
+}
+
+type UpdatePlayerDivInput struct {
+	PlayerID    string `path:"player_id" doc:"player id, SteamID64"`
+	PlayerClass string `path:"player_class" enum:"solder,demo"`
+	Div         string `path:"div"`
+}
+
+type UpdatePlayerAliasInput struct {
+	PlayerID string `path:"player_id" doc:"player id, SteamID64"`
+	Alias    string `path:"alias"`
+}
+
+type TempusIDInput struct {
+	TempusID int64 `path:"tempus_id" doc:"see: https://tempus2.xyz/"`
+}
+
+type EventIDInput struct {
+	ID int64 `path:"event_id"`
+}
+
+type EventKindInput struct {
+	Kind string `path:"event_kind"`
+}
+
+type EventKindAndIDInput struct {
+	Kind   string `path:"event_kind"`
+	KindID int64  `path:"kind_id"`
+}
+
+type EventInput struct {
+	Body Event
+}
+
+type LeaderboardsInput struct {
+	Body []Leaderboard
+}
+
+type LeaderboardIDInput struct {
+	ID int64 `path:"leaderboard_id"`
+}
+
+type UnverifiedTimeInput struct {
+	ID       int64   `path:"leaderboard_id"`
+	Duration float64 `path:"duration"`
+}
+
+type PlayerTimeInput struct {
+	LeaderboardID int64   `path:"leaderboard_id"`
+	PlayerID      string  `path:"player_id"`
+	Duration      float64 `path:"duration"`
+}
+
+type TimeIDInput struct {
+	ID int64 `path:"time_id"`
+}
