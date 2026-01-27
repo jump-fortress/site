@@ -6,7 +6,7 @@ type PlayerIDInput struct {
 
 type UpdatePlayerDivInput struct {
 	PlayerID    string `path:"player_id" doc:"player id, SteamID64"`
-	PlayerClass string `path:"player_class" enum:"solder,demo"`
+	PlayerClass string `path:"player_class" enum:"Soldier,Demo"`
 	Div         string `path:"div"`
 }
 
@@ -60,7 +60,7 @@ type TimeIDInput struct {
 }
 
 type PlayerClassInput struct {
-	PlayerClass string `path:"player_class" enum:"solder,demo"`
+	PlayerClass string `path:"player_class" enum:"Soldier,Demo"`
 }
 
 type MapNameInput struct {

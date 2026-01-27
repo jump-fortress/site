@@ -71,7 +71,7 @@ func GetEventDetailsForLeaderboard(ctx context.Context, leaderboard_id int64, pl
 	}
 
 	var playerDiv sql.NullString
-	if event.Class == "soldier" {
+	if event.Class == "Soldier" {
 		playerDiv = player.SoldierDiv
 	} else {
 		playerDiv = player.DemoDiv
@@ -105,7 +105,7 @@ func HandleSubmitTime(ctx context.Context, input *models.LeaderboardIDInput) (*s
 		return nil, huma.Error400BadRequest("missing a Tempus ID")
 	}
 	var tempusClassID int64
-	if event.Class == "soldier" {
+	if event.Class == "Soldier" {
 		tempusClassID = 3
 	} else {
 		tempusClassID = 4

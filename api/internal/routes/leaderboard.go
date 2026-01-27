@@ -57,10 +57,10 @@ func HandleUpdateLeaderboards(ctx context.Context, input *models.LeaderboardsInp
 		return nil, models.DivErr(ilbs[0].Div)
 	}
 	if len(elbs) > 1 && inputDivless {
-		return nil, huma.Error400BadRequest("can't add a divisionless leaderboard for an event with multiple leaderboards")
+		return nil, huma.Error400BadRequest("can't add a divless leaderboard for an event with multiple leaderboards")
 	}
 	if len(elbs) == 1 && elbs[0].Div.Valid && inputDivless {
-		return nil, huma.Error400BadRequest("can't add a divisionless leaderboard for an event containing a leaderboard with a division")
+		return nil, huma.Error400BadRequest("can't add a divless leaderboard for an event containing a leaderboard with a div")
 	}
 
 	// validate input map names

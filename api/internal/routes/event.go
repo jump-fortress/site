@@ -109,7 +109,7 @@ func HandleCreateEvent(ctx context.Context, input *models.EventInput) (*struct{}
 	if !slices.Contains(models.EventKinds, ie.Kind) {
 		return nil, models.EventKindErr(ie.Kind)
 	}
-	if ie.PlayerClass != "soldier" && ie.PlayerClass != "demo" {
+	if ie.PlayerClass != "Soldier" && ie.PlayerClass != "Demo" {
 		return nil, models.PlayerClassErr(ie.PlayerClass)
 	}
 

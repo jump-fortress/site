@@ -236,7 +236,7 @@ func HandleUpdateLauncherPref(ctx context.Context, input *models.LauncherInput) 
 
 func HandleUpdatePlayerDiv(ctx context.Context, input *models.UpdatePlayerDivInput) (*struct{}, error) {
 	// validate inputs
-	if input.PlayerClass != "soldier" && input.PlayerClass != "demo" {
+	if input.PlayerClass != "Soldier" && input.PlayerClass != "Demo" {
 		return nil, models.PlayerClassErr(input.PlayerClass)
 	}
 	if !slices.Contains(models.Divs, input.Div) {
@@ -244,7 +244,7 @@ func HandleUpdatePlayerDiv(ctx context.Context, input *models.UpdatePlayerDivInp
 	}
 
 	// update div
-	if input.PlayerClass == "soldier" {
+	if input.PlayerClass == "Soldier" {
 		err := db.Queries.UpdatePlayerSoldierDiv(ctx, queries.UpdatePlayerSoldierDivParams{
 			SoldierDiv: sql.NullString{
 				String: input.Div,

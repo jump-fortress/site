@@ -9,14 +9,14 @@ create table player(
   tempus_id integer unique,
   country text,
   country_code text,
-  class_pref text not null default 'soldier',
+  class_pref text not null default 'Soldier',
   map_pref text,
   launcher_pref text,
 
   created_at datetime not null default current_timestamp,
 
   check (role in ('player', 'mod', 'dev', 'admin')),
-  check (class_pref in ('soldier', 'demo'))
+  check (class_pref in ('Soldier', 'Demo'))
 );
 
 create table event(
@@ -31,7 +31,7 @@ create table event(
 
   created_at datetime not null default current_timestamp,
 
-  check (class in ('soldier', 'demo')),
+  check (class in ('Soldier', 'Demo')),
   unique (kind, kind_id)
 );
 
