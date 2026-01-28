@@ -185,7 +185,7 @@ func HandleUpdateMapPref(ctx context.Context, input *models.MapNameInput) (*stru
 		return nil, models.SessionErr()
 	}
 
-	nullInput := input.MapName == ""
+	nullInput := input.MapName == "none"
 	maps, err := GetMapNames(ctx)
 	if err != nil {
 		return nil, err
@@ -213,7 +213,7 @@ func HandleUpdateLauncherPref(ctx context.Context, input *models.LauncherInput) 
 		return nil, models.SessionErr()
 	}
 
-	nullInput := input.Launcher == ""
+	nullInput := input.Launcher == "none"
 	if !nullInput && !slices.Contains([]string{"stock", "original", "mangler"}, input.Launcher) {
 		return nil, huma.Error400BadRequest(fmt.Sprintf("%s isn't a launcher name", input.Launcher))
 	}

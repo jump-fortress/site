@@ -65,7 +65,7 @@ func RegisterOpenRoutes(internalApi *huma.Group) {
 func RegisterSessionRoutes(sessionApi *huma.Group) {
 	huma.Register(sessionApi, huma.Operation{
 		Method:      http.MethodGet,
-		Path:        "/players/{tempus_id}",
+		Path:        "/players/tempusid/{tempus_id}",
 		Tags:        []string{"players"},
 		Summary:     "set Tempus ID",
 		Description: "set your Tempus ID and country",
@@ -74,7 +74,7 @@ func RegisterSessionRoutes(sessionApi *huma.Group) {
 
 	huma.Register(sessionApi, huma.Operation{
 		Method:      http.MethodGet,
-		Path:        "/players/{player_class}",
+		Path:        "/players/class/{player_class}",
 		Tags:        []string{"players"},
 		Summary:     "update class pref",
 		Description: "update your class preference",
@@ -83,7 +83,7 @@ func RegisterSessionRoutes(sessionApi *huma.Group) {
 
 	huma.Register(sessionApi, huma.Operation{
 		Method:      http.MethodGet,
-		Path:        "/players/{map_name}",
+		Path:        "/players/map/{map_name}",
 		Tags:        []string{"players"},
 		Summary:     "update map pref",
 		Description: "update your map preference",
@@ -92,7 +92,7 @@ func RegisterSessionRoutes(sessionApi *huma.Group) {
 
 	huma.Register(sessionApi, huma.Operation{
 		Method:      http.MethodGet,
-		Path:        "/players/{launcher}",
+		Path:        "/players/launcher/{launcher}",
 		Tags:        []string{"players"},
 		Summary:     "update launcher pref",
 		Description: "update your soldier launcher preference",
