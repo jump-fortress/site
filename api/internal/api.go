@@ -97,7 +97,7 @@ func registerRoutes() {
 	requireSessionMiddlewares = huma.Middlewares{AuthHandler, RequireUserAuthHandler(internalApi)}
 	requireModMiddlewares = huma.Middlewares{AuthHandler, RequireModHandler(modApi)}
 	requireAdminMiddlewares = huma.Middlewares{AuthHandler, RequireAdminHandler(adminApi)}
-	requireDevMiddlewares = huma.Middlewares{AuthHandler, RequireAdminHandler(devApi)}
+	requireDevMiddlewares = huma.Middlewares{AuthHandler, RequireDevHandler(devApi)}
 
 	sessionApi.UseMiddleware(requireSessionMiddlewares...)
 	modApi.UseMiddleware(requireModMiddlewares...)

@@ -2,6 +2,7 @@ package internal
 
 import (
 	"net/http"
+	"slices"
 
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/escrow-tf/steam/steamid"
@@ -24,14 +25,11 @@ func checkRoles(ctx huma.Context, roles []string) error {
 		return err
 	}
 
-	for _, r := range roles {
-		if player.Role == r {
-			return nil
-		}
+	if !slices.Contains(roles, player.Role) {
+		err = huma.WriteErr(api, ctx, http.StatusUnauthorized, "")
+		return err
 	}
-
-	err = huma.WriteErr(api, ctx, http.StatusUnauthorized, "")
-	return err
+	return nil
 }
 
 func AuthHandler(ctx huma.Context, next func(huma.Context)) {
@@ -127,23 +125,19 @@ func RequireUserAuthHandler(api huma.API) func(ctx huma.Context, next func(huma.
 
 func RequireModHandler(api huma.API) func(ctx huma.Context, next func(huma.Context)) {
 	return func(ctx huma.Context, next func(huma.Context)) {
-		err := checkRoles(ctx, []string{"mod, admin, dev"})
+		err := checkRoles(ctx, []string{"mod", "admin", "dev"})
 		if err != nil {
-			return
+			next(ctx)
 		}
-
-		next(ctx)
 	}
 }
 
 func RequireAdminHandler(api huma.API) func(ctx huma.Context, next func(huma.Context)) {
 	return func(ctx huma.Context, next func(huma.Context)) {
-		err := checkRoles(ctx, []string{"admin, dev"})
+		err := checkRoles(ctx, []string{"admin", "dev"})
 		if err != nil {
-			return
+			next(ctx)
 		}
-
-		next(ctx)
 	}
 }
 
@@ -151,9 +145,7 @@ func RequireDevHandler(api huma.API) func(ctx huma.Context, next func(huma.Conte
 	return func(ctx huma.Context, next func(huma.Context)) {
 		err := checkRoles(ctx, []string{"dev"})
 		if err != nil {
-			return
+			next(ctx)
 		}
-
-		next(ctx)
 	}
 }
