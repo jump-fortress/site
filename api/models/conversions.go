@@ -18,18 +18,20 @@ func GetPlayerResponse(p queries.Player, sensitive bool) Player {
 	}
 
 	return Player{
-		ID:          p.ID,
-		Role:        p.Role,
-		Alias:       p.Alias.String,
-		SoldierDiv:  p.SoldierDiv.String,
-		DemoDiv:     p.DemoDiv.String,
-		AvatarURL:   p.AvatarUrl.String,
-		TradeToken:  tradeToken,
-		TempusID:    p.TempusID.Int64,
-		Country:     p.Country.String,
-		CountryCode: p.CountryCode.String,
-		ClassPref:   p.ClassPref,
-		CreatedAt:   p.CreatedAt,
+		ID:           p.ID,
+		Role:         p.Role,
+		Alias:        p.Alias.String,
+		SoldierDiv:   p.SoldierDiv.String,
+		DemoDiv:      p.DemoDiv.String,
+		AvatarURL:    p.AvatarUrl.String,
+		TradeToken:   tradeToken,
+		TempusID:     p.TempusID.Int64,
+		Country:      p.Country.String,
+		CountryCode:  p.CountryCode.String,
+		ClassPref:    p.ClassPref,
+		MapPref:      p.MapPref.String,
+		LauncherPref: p.LauncherPref.String,
+		CreatedAt:    p.CreatedAt,
 	}
 }
 

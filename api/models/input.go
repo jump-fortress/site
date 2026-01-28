@@ -68,5 +68,5 @@ type MapNameInput struct {
 }
 
 type LauncherInput struct {
-	Launcher string `path:"launcher" enum:"stock,original,mangler,"`
+	Launcher string `path:"launcher" enum:"stock,original,mangler,none"`
 }

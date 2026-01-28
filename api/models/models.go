@@ -13,18 +13,20 @@ type Session struct {
 }
 
 type Player struct {
-	ID          string    `json:"id"`
-	Role        string    `json:"role"`
-	Alias       string    `json:"alias"`
-	SoldierDiv  string    `json:"soldier_div,omitempty"`
-	DemoDiv     string    `json:"demo_div,omitempty"`
-	AvatarURL   string    `json:"avatar_url"`
-	TradeToken  string    `json:"trade_token,omitempty"`
-	TempusID    int64     `json:"tempus_id,omitempty"`
-	Country     string    `json:"country,omitempty"`
-	CountryCode string    `json:"country_code,omitempty"`
-	ClassPref   string    `json:"class_pref"`
-	CreatedAt   time.Time `json:"created_at"`
+	ID           string    `json:"id"`
+	Role         string    `json:"role"`
+	Alias        string    `json:"alias"`
+	SoldierDiv   string    `json:"soldier_div,omitempty"`
+	DemoDiv      string    `json:"demo_div,omitempty"`
+	AvatarURL    string    `json:"avatar_url"`
+	TradeToken   string    `json:"trade_token,omitempty"`
+	TempusID     int64     `json:"tempus_id,omitempty"`
+	Country      string    `json:"country,omitempty"`
+	CountryCode  string    `json:"country_code,omitempty"`
+	ClassPref    string    `json:"class_pref"`
+	MapPref      string    `json:"map_pref,omitempty"`
+	LauncherPref string    `json:"launcher_pref,omitempty"`
+	CreatedAt    time.Time `json:"created_at"`
 }
 
 type Event struct {
