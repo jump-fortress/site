@@ -3,14 +3,16 @@
   import favicon from '$lib/assets/favicon.svg';
   import Nav from '$lib/components/layout/nav/Nav.svelte';
 
-  let { children } = $props();
+  let { data, children } = $props();
 </script>
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
 
 <div class="flex w-full justify-center">
-  <div class="bg-base-902 flex w-full max-w-5xl flex-col gap-1">
-    <Nav />
-    {@render children()}
+  <div class="flex w-full max-w-5xl flex-col gap-1 bg-base-900">
+    <Nav session={data.session} />
+    <main class="bg-base-800">
+      {@render children()}
+    </main>
   </div>
 </div>

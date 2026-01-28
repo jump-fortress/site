@@ -9,10 +9,34 @@ declare global {
     interface Locals {
       session: Promise<Session | undefined>;
     }
-    // interface PageData {}
+    interface PageData {
+      session: Promise<Session | undefined>;
+      player: Player | undefined;
+    }
     // interface PageState {}
     // interface Platform {}
   }
+
+  type OpenAPIError =
+    | {
+        readonly $schema?: string;
+        detail?: string;
+        errors?:
+          | {
+              /** @description Where the error occurred, e.g. 'body.items[3].tags' or 'path.thing-id' */
+              location?: string;
+              /** @description Error message text */
+              message?: string;
+              /** @description The value at the given location */
+              value?: unknown;
+            }[]
+          | null;
+        instance?: string;
+        status?: number;
+        title?: string;
+        type: string;
+      }
+    | undefined;
 }
 
 export {};

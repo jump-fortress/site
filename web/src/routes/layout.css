@@ -2,7 +2,7 @@
 
 @plugin '@tailwindcss/typography';
 @plugin '@iconify/tailwind4' {
-  scale: 1.4;
+  scale: 1.3;
 }
 
 @font-face {
@@ -30,16 +30,18 @@
   --radius-box: 0.25rem;
 }
 
-/* division colors */
+/* div colors */
 @theme {
-  --color-division-wood: #f2cdcd;
-  --color-division-steel: #cdd6f4;
-  --color-division-bronze: #fab387;
-  --color-division-silver: #f5e0dc;
-  --color-division-gold: #f9e2af;
-  --color-division-platinum: #74c7ec;
-  --color-division-diamond: #94e2d5;
+  --color-div-wood: #f2cdcd;
+  --color-div-steel: #cdd6f4;
+  --color-div-bronze: #fab387;
+  --color-div-silver: #f5e0dc;
+  --color-div-gold: #f9e2af;
+  --color-div-platinum: #74c7ec;
+  --color-div-diamond: #94e2d5;
 }
+@source inline('text-div-{wood,steel,bronze,silver,gold,platinum,diamond}');
+@source inline('bg-div-{wood,steel,bronze,silver,gold,platinum,diamond}');
 
 /* reverse spin for spinning logo */
 @theme {
@@ -54,5 +56,20 @@
 @layer base {
   :root {
     @apply bg-base-900 font-theme text-base text-content selection:bg-primary/50 selection:text-content;
+  }
+
+  input,
+  button {
+    @apply outline-0 focus:outline-0;
+  }
+
+  .filter-lavender {
+    filter: brightness(0) saturate(100%) invert(97%) sepia(49%) saturate(6023%) hue-rotate(179deg)
+      brightness(100%) contrast(108%);
+  }
+
+  .filter-purelavender {
+    filter: brightness(0) saturate(100%) invert(68%) sepia(55%) saturate(547%) hue-rotate(197deg)
+      brightness(105%) contrast(99%);
   }
 }

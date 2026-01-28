@@ -11,8 +11,8 @@
 </script>
 
 <div
-  in:slide={{ duration: 250 }}
-  class="absolute top-0 right-0 -z-10 flex w-full cursor-default flex-col gap-px rounded-b-box border border-t-0 border-content/50 bg-base-900 px-1 py-1 pt-18 backdrop-blur-md"
+  in:slide={{ duration: 200 }}
+  class="absolute top-0 right-0 -z-10 flex w-full cursor-default flex-col gap-px overflow-hidden rounded-b-box border border-t-0 border-primary/75 bg-base-900 p-1 pt-22 backdrop-blur-md"
   data-nav="true">
   {@render page(session.alias, `/players/${session.id}`)}
   <hr class="relative left-1/24 my-px w-11/12 text-base-700" />
