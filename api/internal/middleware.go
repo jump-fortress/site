@@ -12,24 +12,24 @@ import (
 	"github.com/jump-fortress/site/internal/principal"
 )
 
-func checkRoles(ctx huma.Context, roles []string) error {
+func checkRoles(ctx huma.Context, roles []string) bool {
 	principal, ok := principal.Get(ctx.Context())
 	if !ok {
-		err := huma.WriteErr(api, ctx, http.StatusUnauthorized, "")
-		return err
+		_ = huma.WriteErr(api, ctx, http.StatusUnauthorized, "")
+		return false
 	}
 
 	player, err := db.Queries.SelectPlayer(ctx.Context(), principal.SteamID.String())
 	if err != nil {
-		err = huma.WriteErr(api, ctx, http.StatusInternalServerError, "")
-		return err
+		_ = huma.WriteErr(api, ctx, http.StatusInternalServerError, "")
+		return false
 	}
 
 	if !slices.Contains(roles, player.Role) {
-		err = huma.WriteErr(api, ctx, http.StatusUnauthorized, "")
-		return err
+		_ = huma.WriteErr(api, ctx, http.StatusUnauthorized, "")
+		return false
 	}
-	return nil
+	return true
 }
 
 func AuthHandler(ctx huma.Context, next func(huma.Context)) {
@@ -125,27 +125,30 @@ func RequireUserAuthHandler(api huma.API) func(ctx huma.Context, next func(huma.
 
 func RequireModHandler(api huma.API) func(ctx huma.Context, next func(huma.Context)) {
 	return func(ctx huma.Context, next func(huma.Context)) {
-		err := checkRoles(ctx, []string{"mod", "admin", "dev"})
-		if err != nil {
-			next(ctx)
+		hasRole := checkRoles(ctx, []string{"mod", "admin", "dev"})
+		if !hasRole {
+			return
 		}
+		next(ctx)
 	}
 }
 
 func RequireAdminHandler(api huma.API) func(ctx huma.Context, next func(huma.Context)) {
 	return func(ctx huma.Context, next func(huma.Context)) {
-		err := checkRoles(ctx, []string{"admin", "dev"})
-		if err != nil {
-			next(ctx)
+		hasRole := checkRoles(ctx, []string{"admin", "dev"})
+		if !hasRole {
+			return
 		}
+		next(ctx)
 	}
 }
 
 func RequireDevHandler(api huma.API) func(ctx huma.Context, next func(huma.Context)) {
 	return func(ctx huma.Context, next func(huma.Context)) {
-		err := checkRoles(ctx, []string{"dev"})
-		if err != nil {
-			next(ctx)
+		hasRole := checkRoles(ctx, []string{"dev"})
+		if !hasRole {
+			return
 		}
+		next(ctx)
 	}
 }
