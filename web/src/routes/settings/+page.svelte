@@ -64,7 +64,6 @@
           <span></span>
         {:then { data: maps }}
           {#if maps}
-            {$inspect(maps)}
             <Select
               label="fav map"
               type="text"

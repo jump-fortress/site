@@ -2,9 +2,7 @@
   import { Client } from '$lib/api/api';
   import ClassSelect from '$lib/components/display/ClassSelect.svelte';
   import EventHeader from '$lib/components/display/EventHeader.svelte';
-  import Table from '$lib/components/display/table/Table.svelte';
-  import TableEvent from '$lib/components/display/table/TableEvent.svelte';
-  import TableMaps from '$lib/components/display/table/TableMaps.svelte';
+  import TableEvents from '$lib/components/display/table/presets/TableEvents.svelte';
   import TemporalDate from '$lib/components/display/TemporalDate.svelte';
   import Button from '$lib/components/input/Button.svelte';
   import Errors from '$lib/components/input/Errors.svelte';
@@ -25,16 +23,16 @@
   let start_time: string = $state('');
 
   const visible_at: string = $derived(validDateTime(`${visible_date}T${visible_time}:00Z`));
-  const starts_at: string = $derived(validDateTime(`${visible_date}T${visible_time}:00Z`));
+  const starts_at: string = $derived(validDateTime(`${start_date}T${start_date}:00Z`));
 
-  let leaderboards: Leaderboard[] = $state([{ event_id: 0, id: 0, map: 'jump_beef' }]);
+  let leaderboards: Leaderboard[] = $state([]);
 
+  // key to fetch updated events
   let reloadEvents: boolean = $state(true);
   let mode: 'create' | 'update' = $state('create');
-
   let oerror: OpenAPIError = $state(undefined);
 
-  // update event with the accessed event
+  // update event with the selected event
   function loadEvent({ event: e, leaderboards: l }: EventWithLeaderboards): void {
     event_id = e.id;
     player_class = e.player_class;
@@ -47,10 +45,7 @@
     );
     console.log(visible_time);
     start_date = e.starts_at.substring(0, e.starts_at.indexOf('T'));
-    start_time = e.starts_at.substring(
-      e.visible_at.indexOf('T') + 1,
-      e.visible_at.indexOf('Z') - 3
-    );
+    start_time = e.starts_at.substring(e.starts_at.indexOf('T') + 1, e.starts_at.indexOf('Z') - 3);
     console.log(start_time);
     event.ends_at = e.ends_at;
     leaderboards = l ?? [];
@@ -149,6 +144,7 @@
       </div>
     </div>
 
+    <!-- buttons -->
     <div class="flex gap-1">
       {#if mode === 'create'}
         <Button
@@ -157,9 +153,11 @@
               body: event
             });
             oerror = resp.error;
-            reloadEvents = !reloadEvents;
+            if (resp.response.ok) {
+              reloadEvents = !reloadEvents;
+            }
             return resp.response.ok;
-          }}>create</Button>
+          }}><span>create</span></Button>
       {:else}
         <Button
           onsubmit={async () => {
@@ -167,18 +165,22 @@
               body: event
             });
             oerror = resp.error;
-            reloadEvents = !reloadEvents;
+            if (resp.response.ok) {
+              reloadEvents = !reloadEvents;
+            }
             return resp.response.ok;
-          }}>update</Button>
+          }}><span>update</span></Button>
         <Button
           onsubmit={async () => {
             const resp = await Client.DELETE(ApiPaths.cancel_event, {
               params: { path: { event_id: event.id } }
             });
             oerror = resp.error;
-            reloadEvents = !reloadEvents;
+            if (resp.response.ok) {
+              reloadEvents = !reloadEvents;
+            }
             return resp.response.ok;
-          }}>delete</Button>
+          }}><span>delete</span></Button>
       {/if}
     </div>
   </div>
@@ -192,22 +194,13 @@
     {:then { data: ewls }}
       {@const now = Temporal.Now.instant().epochMilliseconds}
       {@const editable = ewls?.filter(({ event }) => datetimeToMs(event.starts_at) > now) ?? []}
-      <Table data={editable}>
-        {#snippet header()}
-          <th class="w-event"></th>
-          <th></th>
-          <th class="w-date"></th>
-        {/snippet}
-        {#snippet row({ event, leaderboards }: EventWithLeaderboards)}
-          <td
-            onclick={() => {
-              mode = 'update';
-              loadEvent({ event, leaderboards });
-            }}><TableEvent {event} /></td>
-          <td><TableMaps leaderboards={leaderboards ?? []} /></td>
-          <td class="table-date"><TemporalDate datetime={event.starts_at} /></td>
-        {/snippet}
-      </Table>
+      <TableEvents
+        data={editable}
+        onclick={(ewl) => {
+          mode = 'update';
+          loadEvent(ewl);
+        }}>
+      </TableEvents>
     {/await}
   {/key}
 </Section>
