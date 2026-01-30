@@ -6,16 +6,16 @@
     player_class: string;
   };
 
-  let { player_class: selected = $bindable() }: Props = $props();
+  let { player_class = $bindable() }: Props = $props();
 </script>
 
 <!-- bring your own container -->
 <!-- soldier -->
 <button
   class="cursor-pointer p-2 transition-opacity
-  {selected === 'Demo' ? 'opacity-25 hover:opacity-75' : ''}"
+  {player_class === 'Demo' ? 'opacity-25 hover:opacity-75' : ''}"
   onclick={() => {
-    selected = 'Soldier';
+    player_class = 'Soldier';
   }}
   draggable="false">
   <img class="filter-lavender max-w-16 object-cover" src={soldier} alt="" />
@@ -23,9 +23,9 @@
 <!-- demo -->
 <button
   class="cursor-pointer p-2 transition-opacity
-  {selected === 'Soldier' ? 'opacity-25 hover:opacity-75' : ''}"
+  {player_class === 'Soldier' ? 'opacity-25 hover:opacity-75' : ''}"
   onclick={() => {
-    selected = 'Demo';
+    player_class = 'Demo';
   }}
   draggable="false">
   <img class="filter-lavender max-w-16 object-cover" src={demo} alt="" />
