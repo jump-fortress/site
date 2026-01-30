@@ -120,6 +120,14 @@ func RegisterSessionRoutes(sessionApi *huma.Group) {
 }
 
 func RegisterModRoutes(modApi *huma.Group) {
+	huma.Register(modApi, huma.Operation{
+		Method:      http.MethodGet,
+		Path:        "/players",
+		Tags:        []string{"players"},
+		Summary:     "get all players",
+		Description: "get all players",
+		OperationID: "get-full-players",
+	}, HandleGetFullPlayers)
 
 	huma.Register(modApi, huma.Operation{
 		Method:      http.MethodPost,
@@ -168,6 +176,15 @@ func RegisterModRoutes(modApi *huma.Group) {
 }
 
 func RegisterAdminRoutes(adminApi *huma.Group) {
+	huma.Register(adminApi, huma.Operation{
+		Method:      http.MethodGet,
+		Path:        "/events",
+		Tags:        []string{"events"},
+		Summary:     "get all events",
+		Description: "get all events",
+		OperationID: "get-full-events",
+	}, HandleGetFullEvents)
+
 	huma.Register(adminApi, huma.Operation{
 		Method:      http.MethodPost,
 		Path:        "/events/create",

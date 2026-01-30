@@ -32,9 +32,10 @@ func (q *Queries) DeleteEvent(ctx context.Context, id int64) error {
 	return err
 }
 
-const insertEvent = `-- name: InsertEvent :exec
+const insertEvent = `-- name: InsertEvent :one
 insert into event (kind, kind_id, class, visible_at, starts_at, ends_at)
   values (?, ?, ?, ?, ?, ?)
+  returning id, kind, kind_id, class, visible_at, starts_at, ends_at, created_at
 `
 
 type InsertEventParams struct {
@@ -46,8 +47,8 @@ type InsertEventParams struct {
 	EndsAt    time.Time
 }
 
-func (q *Queries) InsertEvent(ctx context.Context, arg InsertEventParams) error {
-	_, err := q.db.ExecContext(ctx, insertEvent,
+func (q *Queries) InsertEvent(ctx context.Context, arg InsertEventParams) (Event, error) {
+	row := q.db.QueryRowContext(ctx, insertEvent,
 		arg.Kind,
 		arg.KindID,
 		arg.Class,
@@ -55,7 +56,18 @@ func (q *Queries) InsertEvent(ctx context.Context, arg InsertEventParams) error 
 		arg.StartsAt,
 		arg.EndsAt,
 	)
-	return err
+	var i Event
+	err := row.Scan(
+		&i.ID,
+		&i.Kind,
+		&i.KindID,
+		&i.Class,
+		&i.VisibleAt,
+		&i.StartsAt,
+		&i.EndsAt,
+		&i.CreatedAt,
+	)
+	return i, err
 }
 
 const selectEvent = `-- name: SelectEvent :one
@@ -204,6 +216,42 @@ func (q *Queries) SelectEventLeaderboards(ctx context.Context, arg SelectEventLe
 			&i.Leaderboard.EventID,
 			&i.Leaderboard.Div,
 			&i.Leaderboard.Map,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const selectEvents = `-- name: SelectEvents :many
+select id, kind, kind_id, class, visible_at, starts_at, ends_at, created_at from event
+`
+
+func (q *Queries) SelectEvents(ctx context.Context) ([]Event, error) {
+	rows, err := q.db.QueryContext(ctx, selectEvents)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Event
+	for rows.Next() {
+		var i Event
+		if err := rows.Scan(
+			&i.ID,
+			&i.Kind,
+			&i.KindID,
+			&i.Class,
+			&i.VisibleAt,
+			&i.StartsAt,
+			&i.EndsAt,
+			&i.CreatedAt,
 		); err != nil {
 			return nil, err
 		}

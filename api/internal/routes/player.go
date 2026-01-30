@@ -21,6 +21,21 @@ var (
 	AliasRegex = regexp.MustCompile(`^((([a-z]|[A-Z]|\d|\.)+(_|\ |\-)?)+)*([a-z]|[A-Z]|\d|\.)+$`)
 )
 
+func GetPlayersResponse(ctx context.Context, sensitive bool) (*models.PlayersOutput, error) {
+	players, err := db.Queries.SelectPlayers(ctx)
+	if err != nil {
+		return nil, models.WrapDBErr(err)
+	}
+
+	resp := &models.PlayersOutput{
+		Body: []models.Player{},
+	}
+	for _, p := range players {
+		resp.Body = append(resp.Body, models.GetPlayerResponse(p, sensitive))
+	}
+	return resp, nil
+}
+
 func GetMapNames(ctx context.Context) ([]string, error) {
 	maps, err := db.Queries.SelectMaps(ctx)
 	if err != nil {
@@ -74,6 +89,7 @@ func ValidateAdminRole(ctx context.Context) (bool, error) {
 }
 
 func HandleGetPlayer(ctx context.Context, input *models.PlayerIDInput) (*models.PlayerOutput, error) {
+	// todo: open routes don't have principals
 	modPerms, err := ValidateModRole(ctx)
 	if err != nil {
 		return nil, err
@@ -91,22 +107,11 @@ func HandleGetPlayer(ctx context.Context, input *models.PlayerIDInput) (*models.
 }
 
 func HandleGetPlayers(ctx context.Context, input *struct{}) (*models.PlayersOutput, error) {
-	modPerms, err := ValidateModRole(ctx)
+	resp, err := GetPlayersResponse(ctx, true)
 	if err != nil {
 		return nil, err
 	}
 
-	players, err := db.Queries.SelectPlayers(ctx)
-	if err != nil {
-		return nil, models.WrapDBErr(err)
-	}
-
-	resp := &models.PlayersOutput{
-		Body: []models.Player{},
-	}
-	for _, p := range players {
-		resp.Body = append(resp.Body, models.GetPlayerResponse(p, !modPerms))
-	}
 	return resp, nil
 }
 
@@ -233,6 +238,15 @@ func HandleUpdateLauncherPref(ctx context.Context, input *models.LauncherInput) 
 }
 
 // mod
+
+func HandleGetFullPlayers(ctx context.Context, input *struct{}) (*models.PlayersOutput, error) {
+	resp, err := GetPlayersResponse(ctx, false)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, nil
+}
 
 func HandleUpdatePlayerDiv(ctx context.Context, input *models.UpdatePlayerDivInput) (*struct{}, error) {
 	// validate inputs

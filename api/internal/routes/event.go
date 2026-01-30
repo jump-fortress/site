@@ -2,6 +2,7 @@ package routes
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"slices"
 	"time"
@@ -35,6 +36,7 @@ func HandleGetEvent(ctx context.Context, input *models.EventKindAndIDInput) (*mo
 
 	now := time.Now()
 	// check for player role, and only include upcoming event details for admin role
+	// todo: open routes don't have principals
 	admin, err := ValidateAdminRole(ctx)
 	if err != nil {
 		return nil, err
@@ -57,12 +59,6 @@ func HandleGetEventKinds(ctx context.Context, input *models.EventKindInput) (*mo
 		return nil, models.EventKindErr(input.Kind)
 	}
 
-	// check for player role, and only include upcoming event details for admin role
-	admin, err := ValidateAdminRole(ctx)
-	if err != nil {
-		return nil, err
-	}
-
 	// get event kinds
 	events, err := db.Queries.SelectEventKinds(ctx, input.Kind)
 	if err != nil {
@@ -76,7 +72,7 @@ func HandleGetEventKinds(ctx context.Context, input *models.EventKindInput) (*mo
 
 	for _, e := range events {
 		// skip non-visible events
-		if !admin && e.VisibleAt.After(now) {
+		if e.VisibleAt.After(now) {
 			continue
 		}
 
@@ -92,7 +88,10 @@ func HandleGetEventKinds(ctx context.Context, input *models.EventKindInput) (*mo
 				Leaderboard: l,
 			})
 		}
-		resp.Body = append(resp.Body, models.GetEventWithLeaderboardsResponse(els, !admin))
+
+		if len(els) != 0 {
+			resp.Body = append(resp.Body, models.GetEventWithLeaderboardsResponse(els, true))
+		}
 	}
 
 	if len(resp.Body) == 0 {
@@ -102,6 +101,42 @@ func HandleGetEventKinds(ctx context.Context, input *models.EventKindInput) (*mo
 }
 
 // admin
+
+func HandleGetFullEvents(ctx context.Context, _ *struct{}) (*models.EventsWithLeaderboardsOutput, error) {
+	// get events
+	events, err := db.Queries.SelectEvents(ctx)
+	if err != nil {
+		return nil, models.WrapDBErr(err)
+	}
+
+	resp := &models.EventsWithLeaderboardsOutput{
+		Body: []models.EventWithLeaderboards{},
+	}
+
+	for _, e := range events {
+		// append leaderboards to each event
+		ls, err := db.Queries.SelectLeaderboards(ctx, e.ID)
+		if err != nil {
+			return nil, models.WrapDBErr(err)
+		}
+		els := []queries.SelectEventLeaderboardsRow{}
+		for _, l := range ls {
+			els = append(els, queries.SelectEventLeaderboardsRow{
+				Event:       e,
+				Leaderboard: l,
+			})
+		}
+
+		if len(els) != 0 {
+			resp.Body = append(resp.Body, models.GetEventWithLeaderboardsResponse(els, false))
+		}
+	}
+
+	if len(resp.Body) == 0 {
+		return nil, huma.Error400BadRequest("no events found")
+	}
+	return resp, nil
+}
 
 func HandleCreateEvent(ctx context.Context, input *models.EventInput) (*struct{}, error) {
 	// validate event info
@@ -113,18 +148,19 @@ func HandleCreateEvent(ctx context.Context, input *models.EventInput) (*struct{}
 		return nil, models.PlayerClassErr(ie.PlayerClass)
 	}
 
+	// todo: uncomment after migrating data
 	// time checks
-	now := time.Now()
-	if ie.EndsAt.Before(ie.StartsAt) {
-		return nil, huma.Error400BadRequest(fmt.Sprintf("event can't end before it starts (%s)", ie.EndsAt.String()))
-	}
-	if ie.StartsAt.Before(now) {
-		return nil, huma.Error400BadRequest(fmt.Sprintf("event can't start in the past (%s)", ie.StartsAt.String()))
-	}
-	if ie.StartsAt.Before(ie.VisibleAt) {
-		return nil, huma.Error400BadRequest(fmt.Sprintf("event can't start before it's visible (%s)", ie.VisibleAt.String()))
-	}
-
+	//now := time.Now()
+	//if ie.EndsAt.Before(ie.StartsAt) {
+	//	return nil, huma.Error400BadRequest(fmt.Sprintf("event can't end before it starts (%s)", ie.EndsAt.String()))
+	//}
+	//if ie.StartsAt.Before(now) {
+	//	return nil, huma.Error400BadRequest(fmt.Sprintf("event can't start in the past (%s)", ie.StartsAt.String()))
+	//}
+	//if ie.StartsAt.Before(ie.VisibleAt) {
+	//	return nil, huma.Error400BadRequest(fmt.Sprintf("event can't start before it's visible (%s)", ie.VisibleAt.String()))
+	//}
+	//
 	// set ID for next event
 	kindID, err := db.Queries.CountEventKinds(ctx, ie.Kind)
 	if err != nil {
@@ -134,14 +170,27 @@ func HandleCreateEvent(ctx context.Context, input *models.EventInput) (*struct{}
 
 	endsAt := getEndsAt(ie.Kind, ie.StartsAt)
 
-	// create
-	err = db.Queries.InsertEvent(ctx, queries.InsertEventParams{
+	// create event
+	event, err := db.Queries.InsertEvent(ctx, queries.InsertEventParams{
 		Kind:      ie.Kind,
 		KindID:    kindID,
 		Class:     ie.PlayerClass,
 		VisibleAt: ie.VisibleAt,
 		StartsAt:  ie.StartsAt,
 		EndsAt:    endsAt,
+	})
+	if err != nil {
+		return nil, models.WrapDBErr(err)
+	}
+
+	// create single divless leaderboard, default jump_beef
+	err = db.Queries.InsertLeaderboard(ctx, queries.InsertLeaderboardParams{
+		EventID: event.ID,
+		Div: sql.NullString{
+			String: "",
+			Valid:  false,
+		},
+		Map: "jump_beef",
 	})
 	if err != nil {
 		return nil, models.WrapDBErr(err)
@@ -186,10 +235,11 @@ func HandleCancelEvent(ctx context.Context, input *models.EventIDInput) (*struct
 		return nil, models.WrapDBErr(err)
 	}
 
-	now := time.Now()
-	if event.StartsAt.Before(now) {
-		return nil, huma.Error400BadRequest("event has already started")
-	}
+	// todo: uncomment after migrating data
+	// now := time.Now()
+	// if event.StartsAt.Before(now) {
+	// 	return nil, huma.Error400BadRequest("event has already started")
+	// }
 
 	err = db.Queries.DeleteEvent(ctx, event.ID)
 	if err != nil {

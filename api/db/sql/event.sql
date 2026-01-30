@@ -2,6 +2,9 @@
 select * from event
   where id = ?;
 
+-- name: SelectEvents :many
+select * from event;
+
 -- name: SelectEventFromLeaderboardID :one
 select e.* from event e
   join leaderboard l on l.event_id = e.id
@@ -26,9 +29,10 @@ select sqlc.embed(event), sqlc.embed(leaderboard) from event
 select count(*) from event
   where kind = ?;
 
--- name: InsertEvent :exec
+-- name: InsertEvent :one
 insert into event (kind, kind_id, class, visible_at, starts_at, ends_at)
-  values (?, ?, ?, ?, ?, ?);
+  values (?, ?, ?, ?, ?, ?)
+  returning *;
 
 -- name: DeleteEvent :exec
 delete from event
