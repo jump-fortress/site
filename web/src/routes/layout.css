@@ -55,7 +55,7 @@
 
 @layer base {
   :root {
-    @apply bg-base-900 font-theme text-base text-content selection:bg-primary/50 selection:text-content;
+    @apply bg-base-900 font-theme text-base leading-snug text-content selection:bg-primary/50 selection:text-content;
   }
 
   input,
@@ -71,5 +71,49 @@
   .filter-purelavender {
     filter: brightness(0) saturate(100%) invert(68%) sepia(55%) saturate(547%) hue-rotate(197deg)
       brightness(105%) contrast(99%);
+  }
+}
+
+/* tables */
+@layer base {
+  th,
+  td {
+    @apply text-center text-nowrap first:rounded-l-box last:rounded-r-box;
+  }
+
+  th {
+    @apply px-1 pb-0.5;
+  }
+
+  td {
+    @apply h-10 bg-base-900 px-1;
+  }
+
+  tr:hover td {
+    @apply bg-base-900/50;
+  }
+
+  .table-date {
+    @apply pr-3 text-end text-content/75;
+  }
+
+  .w-rank {
+    @apply w-10;
+  }
+
+  .w-event {
+    @apply w-64;
+  }
+
+  .w-div {
+    @apply w-24;
+  }
+
+  .w-date {
+    @apply w-32 pr-3 text-end;
+  }
+
+  .w-time {
+    @apply w-20;
   }
 }
