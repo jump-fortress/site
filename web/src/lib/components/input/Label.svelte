@@ -3,11 +3,11 @@
 
   type Props = {
     label: string;
-    max_width: string;
+    max_width?: string;
     children: Snippet;
   };
 
-  let { label, max_width, children }: Props = $props();
+  let { label, max_width = 'max-w-80', children }: Props = $props();
 </script>
 
 <label

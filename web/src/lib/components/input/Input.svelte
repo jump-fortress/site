@@ -9,6 +9,7 @@
     max_width?: string;
     placeholder?: string;
     value?: string;
+    withSubmit?: boolean;
     onsubmit: (value: string) => Promise<boolean>;
   };
 
@@ -18,6 +19,7 @@
     max_width = 'max-w-80',
     placeholder = '',
     value = $bindable(),
+    withSubmit = true,
     onsubmit
   }: Props = $props();
 
@@ -40,19 +42,21 @@
       }
     }} />
   <!-- submit button & response -->
-  <button
-    in:fade
-    class="relative grid size-9 cursor-pointer place-content-center text-content"
-    tabindex="-1"
-    onclick={async () => {
-      if (value) {
-        valid = onsubmit(value);
-        if (await valid) {
-          placeholder = value;
-          value = '';
+  {#if withSubmit}
+    <button
+      in:fade
+      class="relative grid size-9 cursor-pointer place-content-center text-content"
+      tabindex="-1"
+      onclick={async () => {
+        if (value) {
+          valid = onsubmit(value);
+          if (await valid) {
+            placeholder = value;
+            value = '';
+          }
         }
-      }
-    }}>
-    <SubmitIcon {valid} />
-  </button>
+      }}>
+      <SubmitIcon {valid} />
+    </button>
+  {/if}
 </Label>
