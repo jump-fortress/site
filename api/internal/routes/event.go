@@ -2,7 +2,6 @@ package routes
 
 import (
 	"context"
-	"database/sql"
 	"fmt"
 	"slices"
 	"time"
@@ -127,8 +126,14 @@ func HandleGetFullEvents(ctx context.Context, _ *struct{}) (*models.EventsWithLe
 			})
 		}
 
+		// don't throw out events with no divisions
 		if len(els) != 0 {
 			resp.Body = append(resp.Body, models.GetEventWithLeaderboardsResponse(els, false))
+		} else {
+			resp.Body = append(resp.Body, models.GetEventWithLeaderboardsResponse([]queries.SelectEventLeaderboardsRow{{
+				Event:       e,
+				Leaderboard: queries.Leaderboard{},
+			}}, false))
 		}
 	}
 
@@ -171,26 +176,13 @@ func HandleCreateEvent(ctx context.Context, input *models.EventInput) (*struct{}
 	endsAt := getEndsAt(ie.Kind, ie.StartsAt)
 
 	// create event
-	event, err := db.Queries.InsertEvent(ctx, queries.InsertEventParams{
+	_, err = db.Queries.InsertEvent(ctx, queries.InsertEventParams{
 		Kind:      ie.Kind,
 		KindID:    kindID,
 		Class:     ie.PlayerClass,
 		VisibleAt: ie.VisibleAt,
 		StartsAt:  ie.StartsAt,
 		EndsAt:    endsAt,
-	})
-	if err != nil {
-		return nil, models.WrapDBErr(err)
-	}
-
-	// create single divless leaderboard, default jump_beef
-	err = db.Queries.InsertLeaderboard(ctx, queries.InsertLeaderboardParams{
-		EventID: event.ID,
-		Div: sql.NullString{
-			String: "",
-			Valid:  false,
-		},
-		Map: "jump_beef",
 	})
 	if err != nil {
 		return nil, models.WrapDBErr(err)

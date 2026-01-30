@@ -3,9 +3,9 @@ package routes
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	"slices"
-	"time"
 
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/jump-fortress/site/db"
@@ -33,27 +33,54 @@ func HandleUpdateLeaderboards(ctx context.Context, input *models.LeaderboardsInp
 		return nil, huma.Error400BadRequest("event must have at least one leaderboard")
 	}
 
+	// check for duplicates with empty structs
+	divs := make(map[string]struct{})
+	dupe := false
+	for _, ilb := range ilbs {
+		_, existingDiv := divs[ilb.Div]
+		if existingDiv {
+			dupe = true
+			break
+		}
+		divs[ilb.Div] = struct{}{}
+	}
+	if dupe {
+		return nil, huma.Error400BadRequest("can't have duplicate divs")
+	}
+
+	// check for divless input with multiple leaderboards
+	if len(ilbs) > 1 {
+		for _, ilb := range ilbs {
+			if ilb.Div == "" {
+				return nil, huma.Error400BadRequest("event can't be divless and have multiple divs")
+			}
+		}
+	}
+
 	eventID := ilbs[0].EventID
-	event, err := db.Queries.SelectEvent(ctx, eventID)
+	_, err := db.Queries.SelectEvent(ctx, eventID)
 	if err != nil {
 		return nil, models.WrapDBErr(err)
 	}
 
+	// todo: uncomment after migrating data
 	// if event has started, leaderboards can't be changed
-	now := time.Now()
-	if event.StartsAt.Before(now) {
-		return nil, huma.Error400BadRequest(fmt.Sprintf("event has already started (%s)", event.StartsAt))
-	}
+	// now := time.Now()
+	// if event.StartsAt.Before(now) {
+	// 	return nil, huma.Error400BadRequest(fmt.Sprintf("event has already started (%s)", event.StartsAt))
+	// }
 
 	elbs, err := db.Queries.SelectLeaderboards(ctx, eventID)
 	if err != nil {
-		return nil, models.WrapDBErr(err)
+		if !errors.Is(err, sql.ErrNoRows) {
+			return nil, models.WrapDBErr(err)
+		}
 	}
 	inputDivless := len(ilbs) == 1 && ilbs[0].Div == ""
 
 	// only events with one leaderboard can be divless
 	// can't be divless if event has more than 1 leaderboard, or if it has a single leaderboard with a div
-	if !inputDivless || !slices.Contains(models.Divs, ilbs[0].Div) {
+	if !inputDivless && !slices.Contains(models.Divs, ilbs[0].Div) {
 		return nil, models.DivErr(ilbs[0].Div)
 	}
 	if len(elbs) > 1 && inputDivless {
@@ -79,7 +106,7 @@ func HandleUpdateLeaderboards(ctx context.Context, input *models.LeaderboardsInp
 
 		contains := false
 		for _, elb := range elbs {
-			if ilb.Div == elb.Div.String {
+			if ilb.ID == elb.ID {
 				// update
 				err := db.Queries.UpdateLeaderboard(ctx, queries.UpdateLeaderboardParams{
 					Div: sql.NullString{
@@ -87,7 +114,7 @@ func HandleUpdateLeaderboards(ctx context.Context, input *models.LeaderboardsInp
 						Valid:  !inputDivless,
 					},
 					Map: ilb.Map,
-					ID:  ilb.ID,
+					ID:  elb.ID,
 				})
 				if err != nil {
 					return nil, models.WrapDBErr(err)
