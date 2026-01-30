@@ -10,8 +10,8 @@ declare global {
       session: Promise<Session | undefined>;
     }
     interface PageData {
-      session: Promise<Session | undefined>;
-      player: Player | undefined;
+      session: Session | undefined;
+      player?: Player | undefined;
     }
     // interface PageState {}
     // interface Platform {}
