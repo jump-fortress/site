@@ -7,10 +7,11 @@
   };
 
   let { leaderboards }: Props = $props();
-  $inspect(leaderboards);
   const maps: Set<string> = $derived(new Set(leaderboards.map((l) => l.map)));
 </script>
 
-{#each maps as map}
-  <TableMap {map} />
-{/each}
+<div class="flex w-full overflow-hidden">
+  {#each maps as map}
+    <TableMap {map} />
+  {/each}
+</div>

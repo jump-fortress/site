@@ -7,10 +7,11 @@
 
   type Props = {
     data: EventWithLeaderboards[];
+    link?: boolean;
     onclick: (ewl: EventWithLeaderboards) => void;
   };
 
-  let { data, onclick }: Props = $props();
+  let { data, link = false, onclick }: Props = $props();
 </script>
 
 <Table {data}>
@@ -23,7 +24,7 @@
     <td
       onclick={() => {
         onclick({ event, leaderboards });
-      }}><TableEvent {event} /></td>
+      }}><TableEvent {event} {link} /></td>
     <td class="flex"><TableMaps leaderboards={leaderboards ?? []} /></td>
     <td class="table-date"><TemporalDate datetime={event.starts_at} /></td>
   {/snippet}

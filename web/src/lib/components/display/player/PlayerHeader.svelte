@@ -18,7 +18,7 @@
 <div class="relative h-56 flex-col bg-base-800 inset-shadow-sm inset-shadow-base-700">
   <div
     class="h-36 w-full mask-b-from-98% bg-cover bg-center"
-    style:background-image={`url("https://tempusplaza.com/map-backgrounds/jump_escape_rc4.jpg")`}>
+    style:background-image={`url("https://tempusplaza.com/map-backgrounds/${player.map_pref}.jpg")`}>
   </div>
   <!-- avatar -->
   <img
