@@ -55,7 +55,7 @@ func RegisterOpenRoutes(internalApi *huma.Group) {
 	huma.Register(internalApi, huma.Operation{
 		Method:      http.MethodGet,
 		Path:        "/events/leaderboards/{leaderboard_id}/times",
-		Tags:        []string{"maps"},
+		Tags:        []string{"times"},
 		Summary:     "get leaderboard times",
 		Description: "get all times for an event's leaderboard",
 		OperationID: "get-leaderboard-times",

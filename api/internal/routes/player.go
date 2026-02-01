@@ -253,7 +253,9 @@ func HandleUpdatePlayerDiv(ctx context.Context, input *models.UpdatePlayerDivInp
 	if input.PlayerClass != "Soldier" && input.PlayerClass != "Demo" {
 		return nil, models.PlayerClassErr(input.PlayerClass)
 	}
-	if !slices.Contains(models.Divs, input.Div) {
+
+	nullInput := input.Div == "none"
+	if !slices.Contains(models.Divs, input.Div) && !nullInput {
 		return nil, huma.Error400BadRequest(fmt.Sprintf("%s isn't a div", input.Div))
 	}
 
@@ -262,7 +264,7 @@ func HandleUpdatePlayerDiv(ctx context.Context, input *models.UpdatePlayerDivInp
 		err := db.Queries.UpdatePlayerSoldierDiv(ctx, queries.UpdatePlayerSoldierDivParams{
 			SoldierDiv: sql.NullString{
 				String: input.Div,
-				Valid:  true,
+				Valid:  !nullInput,
 			},
 			ID: input.PlayerID,
 		})
@@ -270,10 +272,10 @@ func HandleUpdatePlayerDiv(ctx context.Context, input *models.UpdatePlayerDivInp
 			return nil, models.WrapDBErr(err)
 		}
 	} else {
-		err := db.Queries.UpdatePlayerSoldierDiv(ctx, queries.UpdatePlayerSoldierDivParams{
-			SoldierDiv: sql.NullString{
+		err := db.Queries.UpdatePlayerDemoDiv(ctx, queries.UpdatePlayerDemoDivParams{
+			DemoDiv: sql.NullString{
 				String: input.Div,
-				Valid:  true,
+				Valid:  !nullInput,
 			},
 			ID: input.PlayerID,
 		})

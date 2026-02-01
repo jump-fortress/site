@@ -16,10 +16,10 @@ import (
 func getEndsAt(kind string, starts_at time.Time) time.Time {
 	switch kind {
 	case "monthly":
-		return starts_at.Add(time.Hour * 48)
+		return starts_at.Add(time.Hour * 24 * 2)
 	default:
-		// should never be reached
-		return starts_at.Add(time.Hour * 48)
+		// return, since ends_at was actually passed in
+		return starts_at
 	}
 }
 
@@ -44,8 +44,9 @@ func HandleGetEvent(ctx context.Context, input *models.EventKindAndIDInput) (*mo
 		return nil, huma.Error400BadRequest("event not visible")
 	}
 
+	sensitive := els[0].Event.StartsAt.After(now)
 	resp := &models.EventWithLeaderboardsOutput{
-		Body: models.GetEventWithLeaderboardsResponse(els, !admin),
+		Body: models.GetEventWithLeaderboardsResponse(els, sensitive),
 	}
 
 	return resp, nil
@@ -88,8 +89,9 @@ func HandleGetEventKinds(ctx context.Context, input *models.EventKindInput) (*mo
 			})
 		}
 
+		sensitive := e.StartsAt.After(now)
 		if len(els) != 0 {
-			resp.Body = append(resp.Body, models.GetEventWithLeaderboardsResponse(els, true))
+			resp.Body = append(resp.Body, models.GetEventWithLeaderboardsResponse(els, sensitive))
 		}
 	}
 
@@ -173,7 +175,8 @@ func HandleCreateEvent(ctx context.Context, input *models.EventInput) (*struct{}
 	}
 	kindID++
 
-	endsAt := getEndsAt(ie.Kind, ie.StartsAt)
+	endsAt := ie.EndsAt
+	endsAt = getEndsAt(ie.Kind, ie.EndsAt)
 
 	// create event
 	_, err = db.Queries.InsertEvent(ctx, queries.InsertEventParams{
