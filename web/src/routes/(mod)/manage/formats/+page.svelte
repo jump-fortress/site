@@ -22,9 +22,17 @@
   let start_date: string = $state('');
   let start_time: string = $state('');
 
-  const visible_at: string = $derived(validDateTime(`${visible_date}T${visible_time}:00Z`));
-  const starts_at: string = $derived(validDateTime(`${start_date}T${start_date}:00Z`));
+  // non-monthly
+  let end_date: string = $state('');
+  let end_time: string = $state('');
 
+  const visible_at: string = $derived(validDateTime(`${visible_date}T${visible_time}:00Z`));
+  const starts_at: string = $derived(validDateTime(`${start_date}T${start_time}:00Z`));
+  const ends_at: string = $derived(
+    event_kind === 'monthly'
+      ? validDateTime(`${start_date}T${start_time}:00Z`)
+      : validDateTime(`${end_date}T${end_time}:00Z`)
+  );
   let leaderboards: Leaderboard[] = $state([]);
 
   // key to fetch updated events
@@ -43,10 +51,13 @@
       e.visible_at.indexOf('T') + 1,
       e.visible_at.indexOf('Z') - 3
     );
-    console.log(visible_time);
+
     start_date = e.starts_at.substring(0, e.starts_at.indexOf('T'));
     start_time = e.starts_at.substring(e.starts_at.indexOf('T') + 1, e.starts_at.indexOf('Z') - 3);
-    console.log(start_time);
+
+    end_date = e.ends_at.substring(0, e.ends_at.indexOf('T'));
+    end_time = e.ends_at.substring(e.ends_at.indexOf('T') + 1, e.ends_at.indexOf('Z') - 3);
+
     event.ends_at = e.ends_at;
     leaderboards = l ?? [];
   }
@@ -59,7 +70,7 @@
       player_class: player_class,
       visible_at: visible_at,
       starts_at: starts_at,
-      ends_at: starts_at,
+      ends_at: ends_at,
       created_at: starts_at
     };
     return event;
@@ -84,7 +95,7 @@
     <Select
       label="kind"
       type="button"
-      options={['monthly']}
+      options={['monthly', 'archive']}
       bind:value={event_kind}
       withSubmit={false}
       onsubmit={async () => {
@@ -130,6 +141,27 @@
               return true;
             }} />
         </div>
+
+        {#if event_kind !== 'monthly'}
+          <div class="flex gap-1">
+            <Input
+              label="end date"
+              type="date"
+              withSubmit={false}
+              bind:value={end_date}
+              onsubmit={async () => {
+                return true;
+              }} />
+            <Input
+              label="end time"
+              type="time"
+              withSubmit={false}
+              bind:value={end_time}
+              onsubmit={async () => {
+                return true;
+              }} />
+          </div>
+        {/if}
       </div>
 
       <div class="flex flex-col">

@@ -14,7 +14,7 @@
 
   let event_id: number = $state(0);
   let player_class: 'Soldier' | 'Demo' = $state('Soldier');
-  let event_kind: string = $state('monthly');
+  let event_kind: string = $state('event');
   let event_kind_id: number = $state(0);
   let visible_date: string = $state('');
   let visible_time: string = $state('');
@@ -54,6 +54,7 @@
     );
     start_date = e.starts_at.substring(0, e.starts_at.indexOf('T'));
     start_time = e.starts_at.substring(e.starts_at.indexOf('T') + 1, e.starts_at.indexOf('Z') - 3);
+    event.starts_at = e.starts_at;
     event.ends_at = e.ends_at;
     leaderboards = l ?? divless;
     leaderboards[0]!.event_id = e.id;
