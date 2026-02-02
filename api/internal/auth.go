@@ -142,7 +142,6 @@ func handleSteamCallback(ctx context.Context, input *CallbackInput) (*CallbackOu
 
 	// There are a handful of "claims" we need to specify in the JWT. The subject and ID are the most
 	// important, since they specify the user's authenticated steam ID and the token's UUID.
-	// todo: use steamid struct for claim subject
 	expiresAt := session.CreatedAt.Add(SessionDuration)
 	claims := jwt.RegisteredClaims{
 		Issuer:    SessionIssuer,
@@ -291,4 +290,13 @@ func registerAuth(internalApi *huma.Group, sessionApi *huma.Group) {
 		Description: "get session info",
 		OperationID: "get-session",
 	}, HandleGetSession)
+
+	huma.Register(sessionApi, huma.Operation{
+		Method:      http.MethodPost,
+		Path:        "players/avatar_url",
+		Tags:        []string{"auth"},
+		Summary:     "update avatar url",
+		Description: "update avatar url from Steam",
+		OperationID: "update-avatar",
+	}, HandleUpdateAvatarURL)
 }

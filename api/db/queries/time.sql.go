@@ -8,6 +8,7 @@ package queries
 import (
 	"context"
 	"database/sql"
+	"time"
 )
 
 const countPlayerTimesFromLeaderboard = `-- name: CountPlayerTimesFromLeaderboard :one
@@ -123,27 +124,47 @@ func (q *Queries) SelectTimeExists(ctx context.Context, arg SelectTimeExistsPara
 }
 
 const selectTimesFromLeaderboard = `-- name: SelectTimesFromLeaderboard :many
-select id, leaderboard_id, player_id, tempus_time_id, duration, verified, created_at from time
-where leaderboard_id = ?
+select time.id, time.leaderboard_id, time.player_id, time.tempus_time_id, time.duration, time.verified, time.created_at, player.id, player.role, player.alias, player.soldier_div, player.demo_div, player.avatar_url, player.trade_token, player.tempus_id, player.country, player.country_code, player.class_pref, player.map_pref, player.launcher_pref, player.created_at from time
+join player on time.player_id = player.id
+where time.leaderboard_id = ?
 `
 
-func (q *Queries) SelectTimesFromLeaderboard(ctx context.Context, leaderboardID int64) ([]Time, error) {
+type SelectTimesFromLeaderboardRow struct {
+	Time   Time
+	Player Player
+}
+
+func (q *Queries) SelectTimesFromLeaderboard(ctx context.Context, leaderboardID int64) ([]SelectTimesFromLeaderboardRow, error) {
 	rows, err := q.db.QueryContext(ctx, selectTimesFromLeaderboard, leaderboardID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Time
+	var items []SelectTimesFromLeaderboardRow
 	for rows.Next() {
-		var i Time
+		var i SelectTimesFromLeaderboardRow
 		if err := rows.Scan(
-			&i.ID,
-			&i.LeaderboardID,
-			&i.PlayerID,
-			&i.TempusTimeID,
-			&i.Duration,
-			&i.Verified,
-			&i.CreatedAt,
+			&i.Time.ID,
+			&i.Time.LeaderboardID,
+			&i.Time.PlayerID,
+			&i.Time.TempusTimeID,
+			&i.Time.Duration,
+			&i.Time.Verified,
+			&i.Time.CreatedAt,
+			&i.Player.ID,
+			&i.Player.Role,
+			&i.Player.Alias,
+			&i.Player.SoldierDiv,
+			&i.Player.DemoDiv,
+			&i.Player.AvatarUrl,
+			&i.Player.TradeToken,
+			&i.Player.TempusID,
+			&i.Player.Country,
+			&i.Player.CountryCode,
+			&i.Player.ClassPref,
+			&i.Player.MapPref,
+			&i.Player.LauncherPref,
+			&i.Player.CreatedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -156,6 +177,31 @@ func (q *Queries) SelectTimesFromLeaderboard(ctx context.Context, leaderboardID 
 		return nil, err
 	}
 	return items, nil
+}
+
+const updateTimeFromTempus = `-- name: UpdateTimeFromTempus :exec
+update time
+  set duration = ?,
+  tempus_time_id = ?,
+  created_at = ?
+  where id = ?
+`
+
+type UpdateTimeFromTempusParams struct {
+	Duration     float64
+	TempusTimeID sql.NullInt64
+	CreatedAt    time.Time
+	ID           int64
+}
+
+func (q *Queries) UpdateTimeFromTempus(ctx context.Context, arg UpdateTimeFromTempusParams) error {
+	_, err := q.db.ExecContext(ctx, updateTimeFromTempus,
+		arg.Duration,
+		arg.TempusTimeID,
+		arg.CreatedAt,
+		arg.ID,
+	)
+	return err
 }
 
 const verifyTime = `-- name: VerifyTime :exec

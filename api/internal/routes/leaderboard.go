@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"slices"
+	"time"
 
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/jump-fortress/site/db"
@@ -58,17 +59,16 @@ func HandleUpdateLeaderboards(ctx context.Context, input *models.LeaderboardsInp
 	}
 
 	eventID := ilbs[0].EventID
-	_, err := db.Queries.SelectEvent(ctx, eventID)
+	event, err := db.Queries.SelectEvent(ctx, eventID)
 	if err != nil {
 		return nil, models.WrapDBErr(err)
 	}
 
-	// todo: uncomment after migrating data
 	// if event has started, leaderboards can't be changed
-	// now := time.Now()
-	// if event.StartsAt.Before(now) {
-	// 	return nil, huma.Error400BadRequest(fmt.Sprintf("event has already started (%s)", event.StartsAt))
-	// }
+	now := time.Now()
+	if event.StartsAt.Before(now) {
+		return nil, huma.Error400BadRequest(fmt.Sprintf("event has already started (%s)", event.StartsAt))
+	}
 
 	elbs, err := db.Queries.SelectLeaderboards(ctx, eventID)
 	if err != nil {
@@ -142,18 +142,21 @@ func HandleUpdateLeaderboards(ctx context.Context, input *models.LeaderboardsInp
 	return nil, nil
 }
 
-func HandleGetLeaderboardTimes(ctx context.Context, input *models.LeaderboardIDInput) (*models.TimesOutput, error) {
-	times, err := db.Queries.SelectTimesFromLeaderboard(ctx, input.ID)
+func HandleGetLeaderboardTimes(ctx context.Context, input *models.LeaderboardIDInput) (*models.TimesWithPlayerOutput, error) {
+	twps, err := db.Queries.SelectTimesFromLeaderboard(ctx, input.ID)
 	if err != nil {
 		return nil, models.WrapDBErr(err)
 	}
 
-	resp := &models.TimesOutput{
-		Body: []models.Time{},
+	resp := &models.TimesWithPlayerOutput{
+		Body: []models.TimeWithPlayer{},
 	}
 
-	for _, t := range times {
-		resp.Body = append(resp.Body, models.GetTimeResponse(t))
+	for _, twp := range twps {
+		resp.Body = append(resp.Body, models.TimeWithPlayer{
+			Time:   models.GetTimeResponse(twp.Time),
+			Player: models.GetPlayerResponse(twp.Player, true),
+		})
 	}
 	return resp, nil
 }

@@ -116,7 +116,6 @@ func RegisterSessionRoutes(sessionApi *huma.Group) {
 		Description: "submit a time manually for an event's leaderboard",
 		OperationID: "submit-unverified-time",
 	}, HandleSubmitUnverifiedTime)
-
 }
 
 func RegisterModRoutes(modApi *huma.Group) {
@@ -232,5 +231,12 @@ func RegisterAdminRoutes(adminApi *huma.Group) {
 }
 
 func RegisterDevRoutes(devApi *huma.Group) {
-
+	huma.Register(devApi, huma.Operation{
+		Method:      http.MethodPost,
+		Path:        "events/leaderboards/{leaderboard_id}",
+		Tags:        []string{"dev"},
+		Summary:     "update leaderboard Tempus times",
+		Description: "update Tempus time IDs for a leaderboard's times",
+		OperationID: "update-leaderboard-tempus-times",
+	}, HandleUpdateLeaderboardTempusTimes)
 }

@@ -2,6 +2,7 @@ package internal
 
 import (
 	"context"
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -10,7 +11,10 @@ import (
 
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/hashicorp/go-retryablehttp"
+	"github.com/jump-fortress/site/db"
+	"github.com/jump-fortress/site/db/queries"
 	"github.com/jump-fortress/site/internal/principal"
+	"github.com/jump-fortress/site/models"
 	"github.com/rotisserie/eris"
 )
 
@@ -112,4 +116,28 @@ func HandleGetSteamProfile(ctx context.Context, _ *struct{}) (*SteamProfileOutpu
 	return &SteamProfileOutput{
 		Body: SteamProfileFromSummary(*summary),
 	}, nil
+}
+
+func HandleUpdateAvatarURL(ctx context.Context, input *struct{}) (*struct{}, error) {
+	principal, ok := principal.Get(ctx)
+	if !ok {
+		return nil, models.SessionErr()
+	}
+
+	steamProfile, err := FetchProfileSummary(principal.SteamID.ID())
+	if err != nil {
+		return nil, huma.Error503ServiceUnavailable("couldn't get your profile from Steam. If Steam isn't down, please try again.")
+	}
+
+	if err = db.Queries.UpdatePlayerAvatarURL(ctx, queries.UpdatePlayerAvatarURLParams{
+		AvatarUrl: sql.NullString{
+			String: steamProfile.AvatarFullURL,
+			Valid:  true,
+		},
+		ID: principal.SteamID.String(),
+	}); err != nil {
+		return nil, err
+	}
+
+	return nil, nil
 }

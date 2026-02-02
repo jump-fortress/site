@@ -34,17 +34,12 @@ func HandleGetEvent(ctx context.Context, input *models.EventKindAndIDInput) (*mo
 	}
 
 	now := time.Now()
-	// check for player role, and only include upcoming event details for admin role
-	// todo: open routes don't have principals
-	admin, err := ValidateAdminRole(ctx)
-	if err != nil {
-		return nil, err
-	}
-	if !admin && els[0].Event.VisibleAt.After(now) {
+
+	sensitive := els[0].Event.StartsAt.After(now)
+	if sensitive && els[0].Event.VisibleAt.After(now) {
 		return nil, huma.Error400BadRequest("event not visible")
 	}
 
-	sensitive := els[0].Event.StartsAt.After(now)
 	resp := &models.EventWithLeaderboardsOutput{
 		Body: models.GetEventWithLeaderboardsResponse(els, sensitive),
 	}
@@ -155,19 +150,17 @@ func HandleCreateEvent(ctx context.Context, input *models.EventInput) (*struct{}
 		return nil, models.PlayerClassErr(ie.PlayerClass)
 	}
 
-	// todo: uncomment after migrating data
-	// time checks
-	//now := time.Now()
-	//if ie.EndsAt.Before(ie.StartsAt) {
-	//	return nil, huma.Error400BadRequest(fmt.Sprintf("event can't end before it starts (%s)", ie.EndsAt.String()))
-	//}
-	//if ie.StartsAt.Before(now) {
-	//	return nil, huma.Error400BadRequest(fmt.Sprintf("event can't start in the past (%s)", ie.StartsAt.String()))
-	//}
-	//if ie.StartsAt.Before(ie.VisibleAt) {
-	//	return nil, huma.Error400BadRequest(fmt.Sprintf("event can't start before it's visible (%s)", ie.VisibleAt.String()))
-	//}
-	//
+	now := time.Now()
+	if ie.EndsAt.Before(ie.StartsAt) {
+		return nil, huma.Error400BadRequest(fmt.Sprintf("event can't end before it starts (%s)", ie.EndsAt.String()))
+	}
+	if ie.StartsAt.Before(now) {
+		return nil, huma.Error400BadRequest(fmt.Sprintf("event can't start in the past (%s)", ie.StartsAt.String()))
+	}
+	if ie.StartsAt.Before(ie.VisibleAt) {
+		return nil, huma.Error400BadRequest(fmt.Sprintf("event can't start before it's visible (%s)", ie.VisibleAt.String()))
+	}
+
 	// set ID for next event
 	kindID, err := db.Queries.CountEventKinds(ctx, ie.Kind)
 	if err != nil {
@@ -230,11 +223,10 @@ func HandleCancelEvent(ctx context.Context, input *models.EventIDInput) (*struct
 		return nil, models.WrapDBErr(err)
 	}
 
-	// todo: uncomment after migrating data
-	// now := time.Now()
-	// if event.StartsAt.Before(now) {
-	// 	return nil, huma.Error400BadRequest("event has already started")
-	// }
+	now := time.Now()
+	if event.StartsAt.Before(now) {
+		return nil, huma.Error400BadRequest("event has already started")
+	}
 
 	err = db.Queries.DeleteEvent(ctx, event.ID)
 	if err != nil {

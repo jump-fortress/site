@@ -34,5 +34,13 @@ delete from time
   where id = ?;
 
 -- name: SelectTimesFromLeaderboard :many
-select * from time
-where leaderboard_id = ?;
+select sqlc.embed(time), sqlc.embed(player) from time
+join player on time.player_id = player.id
+where time.leaderboard_id = ?;
+
+-- name: UpdateTimeFromTempus :exec
+update time
+  set duration = ?,
+  tempus_time_id = ?,
+  created_at = ?
+  where id = ?;

@@ -4,9 +4,12 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"math"
 	"regexp"
 	"slices"
+	"strconv"
 	"strings"
+	"time"
 
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/jump-fortress/site/db"
@@ -89,19 +92,13 @@ func ValidateAdminRole(ctx context.Context) (bool, error) {
 }
 
 func HandleGetPlayer(ctx context.Context, input *models.PlayerIDInput) (*models.PlayerOutput, error) {
-	// todo: open routes don't have principals
-	modPerms, err := ValidateModRole(ctx)
-	if err != nil {
-		return nil, err
-	}
-
 	player, err := db.Queries.SelectPlayer(ctx, input.PlayerID)
 	if err != nil {
 		return nil, models.WrapDBErr(err)
 	}
 
 	resp := &models.PlayerOutput{
-		Body: models.GetPlayerResponse(player, !modPerms),
+		Body: models.GetPlayerResponse(player, true),
 	}
 	return resp, nil
 }
@@ -309,4 +306,58 @@ func HandleUpdatePlayerAlias(ctx context.Context, input *models.UpdatePlayerAlia
 	}
 
 	return nil, nil
+}
+
+func HandleUpdateLeaderboardTempusTimes(ctx context.Context, input *models.LeaderboardIDInput) (*struct{}, error) {
+	event, err := db.Queries.SelectEventFromLeaderboardID(ctx, input.ID)
+	if err != nil {
+		return nil, models.WrapDBErr(err)
+	}
+	tClassID := 3
+	if event.Class == "Demo" {
+		tClassID = 4
+	}
+	leaderboard, err := db.Queries.SelectLeaderboard(ctx, input.ID)
+	if err != nil {
+		return nil, models.WrapDBErr(err)
+	}
+	twps, err := db.Queries.SelectTimesFromLeaderboard(ctx, leaderboard.ID)
+	if err != nil {
+		return nil, models.WrapDBErr(err)
+	}
+
+	fmt.Println("found " + strconv.Itoa(len(twps)) + " times")
+	for _, twp := range twps {
+		if !twp.Time.TempusTimeID.Valid {
+			fmt.Printf("attempt: %f by %s\n", twp.Time.Duration, twp.Player.Alias.String)
+			time.Sleep(time.Second)
+			tt, err := tempus.GetPR(leaderboard.Map, twp.Player.TempusID.Int64, int64(tClassID))
+			if err != nil {
+				fmt.Println("not found.")
+				continue
+			}
+			tDate := time.UnixMilli(int64(tt.Date) * 1000)
+			timeDiff := math.Abs(twp.Time.Duration - tt.Duration)
+			// assume margins of error
+			if timeDiff < 0.015 && tDate.Add(time.Hour*48).After(event.StartsAt) && tDate.Before(event.EndsAt.Add(time.Hour*48)) {
+				fmt.Println("found valid.")
+				err = db.Queries.UpdateTimeFromTempus(ctx, queries.UpdateTimeFromTempusParams{
+					Duration: tt.Duration,
+					TempusTimeID: sql.NullInt64{
+						Int64: tt.ID,
+						Valid: true,
+					},
+					CreatedAt: tDate,
+					ID:        twp.Time.ID,
+				})
+				if err != nil {
+					return nil, models.WrapDBErr(err)
+				}
+			} else {
+				fmt.Println("not during event.")
+			}
+		}
+	}
+	return nil, nil
+
 }

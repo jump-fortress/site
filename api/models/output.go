@@ -20,8 +20,8 @@ type EventsOutput struct {
 	Body []Event
 }
 
-type TimesOutput struct {
-	Body []Time
+type TimesWithPlayerOutput struct {
+	Body []TimeWithPlayer
 }
 
 type EventWithLeaderboardsOutput struct {
