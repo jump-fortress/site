@@ -82,7 +82,7 @@
         <span>under construction</span>
         <Button
           onsubmit={async () => {
-            let resp = await Client.GET(ApiPaths.readyz);
+            let resp = await Client.POST(ApiPaths.update_avatar);
             oerror = resp.error;
             return resp.response.ok;
           }}>

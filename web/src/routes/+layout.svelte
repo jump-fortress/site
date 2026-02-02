@@ -17,7 +17,7 @@
 <div class="flex w-full justify-center">
   <div class="flex w-full max-w-5xl flex-col gap-1 bg-base-900">
     <Nav session={data.session} />
-    <main class="flex flex-col bg-base-800">
+    <main class="flex flex-col bg-base-800 pb-2">
       {@render children()}
     </main>
   </div>

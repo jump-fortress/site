@@ -12,6 +12,7 @@ declare global {
     interface PageData {
       session: Session | undefined;
       player?: Player | undefined;
+      players?: Player[] | undefined;
       events?: Event[] | undefined;
       ewl?: EventWithLeaderboards | undefined;
     }
