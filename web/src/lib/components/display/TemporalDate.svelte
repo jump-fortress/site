@@ -3,9 +3,10 @@
 
   type Props = {
     datetime: string;
+    player?: boolean;
   };
 
-  let { datetime }: Props = $props();
+  let { datetime, player = false }: Props = $props();
   const ms = $derived(datetimeToMs(datetime));
 </script>
 

@@ -66,7 +66,10 @@
       <div
         class="absolute z-10 flex flex-col items-center gap-1
       p-2">
-        <span class="z-10 truncate text-lg">{map}</span>
+        <a
+          class="z-10 truncate text-lg text-shadow-xs/100 text-shadow-base-900 hover:text-primary hover:underline"
+          href="https://tempus2.xyz/maps/{map}"
+          target="_blank">{map}</a>
         <div class="flex flex-wrap justify-center gap-2">
           {#each divisions as division}
             <Div div={division} />

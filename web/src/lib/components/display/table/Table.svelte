@@ -24,7 +24,7 @@
   <!-- rows -->
   <tbody>
     {#each data as object, i}
-      <tr transition:fade class="my-1">
+      <tr class="my-1">
         {@render row(object, i + 1)}
         <!-- <td>{content}</td> -->
       </tr>
