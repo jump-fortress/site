@@ -1,12 +1,16 @@
 <script lang="ts">
   import { Client } from '$lib/api/api';
   import EventHeader from '$lib/components/display/EventHeader.svelte';
-  import { ApiPaths, type Time } from '$lib/schema';
+  import { ApiPaths, type TimeWithPlayer } from '$lib/schema';
   import { onMount } from 'svelte';
   import type { PageData } from './$types';
   import Table from '$lib/components/display/table/Table.svelte';
   import Div from '$lib/components/display/Div.svelte';
   import Section from '$lib/components/layout/Section.svelte';
+  import TablePlayer from '$lib/components/display/table/TablePlayer.svelte';
+  import { filterBestTimes, twTimes } from '$lib/helpers/times';
+  import TableTime from '$lib/components/display/table/TableTime.svelte';
+  import TemporalDate from '$lib/components/display/TemporalDate.svelte';
 
   type Props = {
     data: PageData;
@@ -46,16 +50,21 @@
     {#await Client.GET( ApiPaths.get_leaderboard_times, { params: { path: { leaderboard_id: selectedLeaderboardID } } } )}
       <span>under construction..</span>
     {:then { data: times }}
-      {#if times}
-        <Table data={times}>
-          {#snippet header()}
-            <th></th>
-          {/snippet}
-          {#snippet row(t: Time)}
-            <td>{t.duration}</td>
-          {/snippet}
-        </Table>
-      {/if}
+      {@const bestTimes = filterBestTimes(times ?? [])}
+      <Table data={bestTimes}>
+        {#snippet header()}
+          <th class="w-rank"></th>
+          <th class="w-32"></th>
+          <th class=""></th>
+          <th class="w-date"></th>
+        {/snippet}
+        {#snippet row({ player, time }: TimeWithPlayer, i)}
+          <td class={twTimes.get(`r${i}`)}>{i}</td>
+          <td class={twTimes.get(`t${i}`)}><TableTime {time} /></td>
+          <td><TablePlayer {player} link={true} /></td>
+          <td class="table-date"><TemporalDate datetime={time.created_at} /></td>
+        {/snippet}
+      </Table>
     {/await}
   </Section>
 {/if}
