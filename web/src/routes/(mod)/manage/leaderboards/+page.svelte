@@ -7,7 +7,7 @@
   import Errors from '$lib/components/input/Errors.svelte';
   import Select from '$lib/components/input/Select.svelte';
   import Section from '$lib/components/layout/Section.svelte';
-  import { divs } from '$lib/helpers/sort';
+  import { divs } from '$lib/helpers/divs';
   import { datetimeToMs, validDateTime } from '$lib/helpers/temporal';
   import { ApiPaths, type Event, type EventWithLeaderboards, type Leaderboard } from '$lib/schema';
   import { Temporal } from 'temporal-polyfill';

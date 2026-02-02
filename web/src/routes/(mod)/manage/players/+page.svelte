@@ -11,7 +11,7 @@
   import Input from '$lib/components/input/Input.svelte';
   import Errors from '$lib/components/input/Errors.svelte';
   import Select from '$lib/components/input/Select.svelte';
-  import { divs } from '$lib/helpers/sort';
+  import { divs } from '$lib/helpers/divs';
   import type { PageData } from './$types';
 
   type Props = {
