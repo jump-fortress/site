@@ -548,6 +548,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/internal/sessionplayers/avatar_url": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * update avatar url
+         * @description update avatar url from Steam
+         */
+        post: operations["update-avatar"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/internal/steam/callback": {
         parameters: {
             query?: never;
@@ -760,6 +780,10 @@ export interface components {
             tempus_time_id?: number;
             verified: boolean;
         };
+        TimeWithPlayer: {
+            player: components["schemas"]["Player"];
+            time: components["schemas"]["Time"];
+        };
     };
     responses: never;
     parameters: never;
@@ -777,6 +801,7 @@ export type Player = components['schemas']['Player'];
 export type Session = components['schemas']['Session'];
 export type SteamProfile = components['schemas']['SteamProfile'];
 export type Time = components['schemas']['Time'];
+export type TimeWithPlayer = components['schemas']['TimeWithPlayer'];
 export type $defs = Record<string, never>;
 export interface operations {
     "get-full-events": {
@@ -974,7 +999,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Time"][] | null;
+                    "application/json": components["schemas"]["TimeWithPlayer"][] | null;
                 };
             };
             /** @description Error */
@@ -1630,6 +1655,33 @@ export interface operations {
             };
         };
     };
+    "update-avatar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
     "steam-callback": {
         parameters: {
             query?: never;
@@ -1717,6 +1769,7 @@ export enum ApiPaths {
     set_tempus_id = "/internal/session/players/tempusid/{tempus_id}",
     sign_out = "/internal/session/sign-out",
     steam_profile = "/internal/session/steam/profile",
+    update_avatar = "/internal/sessionplayers/avatar_url",
     steam_callback = "/internal/steam/callback",
     steam_discover = "/internal/steam/discover"
 }
