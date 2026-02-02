@@ -10,6 +10,11 @@
   src: url('$lib/assets/fonts/fredoka/static/Fredoka-Regular.ttf') format('truetype');
 }
 
+@font-face {
+  font-family: 'chivomono';
+  src: url('$lib/assets/fonts/chivo-mono/static/ChivoMono-Regular.ttf') format('truetype');
+}
+
 @theme {
   --color-*: initial;
   /* tailwind colors */
@@ -23,6 +28,7 @@
   --color-error: #f38ba8;
 
   --font-theme: 'fredoka', 'ui-sans-serif', 'sans-serif', 'system-ui';
+  --font-mono: 'chivomono', 'ui-sans-serif', 'sans-serif', 'system-ui';
 
   /* 0.75rem for rounded-xl */
   --radius-layout: 0.5rem;
@@ -98,7 +104,7 @@
   }
 
   .w-rank {
-    @apply w-10;
+    @apply w-8;
   }
 
   .w-event {
