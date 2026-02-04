@@ -213,6 +213,30 @@ func HandleUpdateEvent(ctx context.Context, input *models.EventInput) (*struct{}
 		return nil, huma.Error400BadRequest(fmt.Sprintf("event can't start before it's visible (%s)", ie.VisibleAt.String()))
 	}
 
+	// if changing event kind, kind id needs to be re-calculated
+	kindID := event.KindID
+	if ie.Kind != event.Kind {
+		// set ID for next event
+		kindID, err := db.Queries.CountEventKinds(ctx, ie.Kind)
+		if err != nil {
+			return nil, models.WrapDBErr(err)
+		}
+		kindID++
+	}
+
+	// update event
+	endsAt := ie.EndsAt
+	endsAt = getEndsAt(ie.Kind, ie.EndsAt)
+	err = db.Queries.UpdateEvent(ctx, queries.UpdateEventParams{
+		Kind:      ie.Kind,
+		KindID:    kindID,
+		Class:     ie.PlayerClass,
+		VisibleAt: ie.VisibleAt,
+		StartsAt:  ie.StartsAt,
+		EndsAt:    endsAt,
+		ID:        ie.ID,
+	})
+
 	return nil, nil
 }
 

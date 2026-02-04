@@ -34,6 +34,17 @@ insert into event (kind, kind_id, class, visible_at, starts_at, ends_at)
   values (?, ?, ?, ?, ?, ?)
   returning *;
 
+-- name: UpdateEvent :exec
+update event
+  set kind = ?,
+  kind_id = ?,
+  class = ?,
+  visible_at = ?,
+  starts_at = ?,
+  ends_at = ?
+  where id = ?;
+
+
 -- name: DeleteEvent :exec
 delete from event
   where id = ?;
