@@ -110,12 +110,21 @@ func RegisterSessionRoutes(sessionApi *huma.Group) {
 
 	huma.Register(sessionApi, huma.Operation{
 		Method:      http.MethodPost,
-		Path:        "/events/leaderboards/{leaderboard_id}/times/{duration}",
+		Path:        "/events/leaderboards/{leaderboard_id}/times/{run_time}",
 		Tags:        []string{"times"},
 		Summary:     "submit an unverified time",
 		Description: "submit a time manually for an event's leaderboard",
 		OperationID: "submit-unverified-time",
 	}, HandleSubmitUnverifiedTime)
+
+	huma.Register(sessionApi, huma.Operation{
+		Method:      http.MethodGet,
+		Path:        "/events/{event_id}/leaderboards/times",
+		Tags:        []string{"times"},
+		Summary:     "get leaderboard PR",
+		Description: "get your PR for an event's leaderboard",
+		OperationID: "get-leaderboard-pr",
+	}, HandleGetEventPR)
 }
 
 func RegisterModRoutes(modApi *huma.Group) {
