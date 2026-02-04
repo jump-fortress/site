@@ -64,21 +64,50 @@ func (q *Queries) InsertTime(ctx context.Context, arg InsertTimeParams) error {
 }
 
 const selectPRTime = `-- name: SelectPRTime :one
-select cast(min(duration) as float) as duration from time
-  where leaderboard_id = ?
-  and player_id = ?
+select time.id, time.leaderboard_id, time.player_id, time.tempus_time_id, time.duration, time.verified, time.created_at, event.id, event.kind, event.kind_id, event.class, event.visible_at, event.starts_at, event.ends_at, event.created_at, leaderboard.id, leaderboard.event_id, leaderboard.div, leaderboard.map from time
+  join leaderboard on time.leaderboard_id = leaderboard.id
+  join event on leaderboard.event_id = event.id
+  where event.id = ?
+  and time.player_id = ?
+  order by time.duration asc
 `
 
 type SelectPRTimeParams struct {
-	LeaderboardID int64
-	PlayerID      string
+	ID       int64
+	PlayerID string
 }
 
-func (q *Queries) SelectPRTime(ctx context.Context, arg SelectPRTimeParams) (float64, error) {
-	row := q.db.QueryRowContext(ctx, selectPRTime, arg.LeaderboardID, arg.PlayerID)
-	var duration float64
-	err := row.Scan(&duration)
-	return duration, err
+type SelectPRTimeRow struct {
+	Time        Time
+	Event       Event
+	Leaderboard Leaderboard
+}
+
+func (q *Queries) SelectPRTime(ctx context.Context, arg SelectPRTimeParams) (SelectPRTimeRow, error) {
+	row := q.db.QueryRowContext(ctx, selectPRTime, arg.ID, arg.PlayerID)
+	var i SelectPRTimeRow
+	err := row.Scan(
+		&i.Time.ID,
+		&i.Time.LeaderboardID,
+		&i.Time.PlayerID,
+		&i.Time.TempusTimeID,
+		&i.Time.Duration,
+		&i.Time.Verified,
+		&i.Time.CreatedAt,
+		&i.Event.ID,
+		&i.Event.Kind,
+		&i.Event.KindID,
+		&i.Event.Class,
+		&i.Event.VisibleAt,
+		&i.Event.StartsAt,
+		&i.Event.EndsAt,
+		&i.Event.CreatedAt,
+		&i.Leaderboard.ID,
+		&i.Leaderboard.EventID,
+		&i.Leaderboard.Div,
+		&i.Leaderboard.Map,
+	)
+	return i, err
 }
 
 const selectTime = `-- name: SelectTime :one
@@ -127,6 +156,7 @@ const selectTimesFromLeaderboard = `-- name: SelectTimesFromLeaderboard :many
 select time.id, time.leaderboard_id, time.player_id, time.tempus_time_id, time.duration, time.verified, time.created_at, player.id, player.role, player.alias, player.soldier_div, player.demo_div, player.avatar_url, player.trade_token, player.tempus_id, player.country, player.country_code, player.class_pref, player.map_pref, player.launcher_pref, player.created_at from time
 join player on time.player_id = player.id
 where time.leaderboard_id = ?
+order by time.duration asc
 `
 
 type SelectTimesFromLeaderboardRow struct {

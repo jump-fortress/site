@@ -26,7 +26,12 @@ func ValidateTimeExistsAndPR(ctx context.Context, leaderboard_id int64, player_i
 		return models.WrapDBErr(err)
 	}
 	if timeExists == 1 {
-		return huma.Error400BadRequest(fmt.Sprintf("time has already been submitted (%f.3 seconds)", duration))
+		return huma.Error400BadRequest("time has already been submitted")
+	}
+
+	event, err := db.Queries.SelectEventFromLeaderboardID(ctx, leaderboard_id)
+	if err != nil {
+		return models.WrapDBErr(err)
 	}
 
 	timesSubmitted, err := db.Queries.CountPlayerTimesFromLeaderboard(ctx, queries.CountPlayerTimesFromLeaderboardParams{
@@ -34,15 +39,15 @@ func ValidateTimeExistsAndPR(ctx context.Context, leaderboard_id int64, player_i
 		PlayerID:      player_id,
 	})
 	if timesSubmitted != 0 {
-		prDuration, err := db.Queries.SelectPRTime(ctx, queries.SelectPRTimeParams{
-			LeaderboardID: leaderboard_id,
-			PlayerID:      player_id,
+		prElt, err := db.Queries.SelectPRTime(ctx, queries.SelectPRTimeParams{
+			ID:       event.ID,
+			PlayerID: player_id,
 		})
 		if err != nil {
 			return models.WrapDBErr(err)
 		}
-		if prDuration < duration {
-			return huma.Error400BadRequest(fmt.Sprintf("submitted time (%f.3 seconds) is slower than your current PR (%f.3 seconds)", duration, prDuration))
+		if prElt.Time.Duration < duration {
+			return huma.Error400BadRequest(fmt.Sprintf("submitted time (%.3f seconds) is slower than your current PR (%.3f seconds)", duration, prElt.Time.Duration))
 		}
 	}
 
@@ -100,6 +105,12 @@ func HandleSubmitTime(ctx context.Context, input *models.LeaderboardIDInput) (*s
 		return nil, err
 	}
 
+	// 1 day grace period
+	now := time.Now()
+	if event.EndsAt.Before(now.Add(time.Hour * 24)) {
+		return nil, huma.Error400BadRequest(fmt.Sprintf("%s has ended. please contact a mod if you have an old time to submit!", event.Kind))
+	}
+
 	// validate player Tempus ID
 	if !player.TempusID.Valid {
 		return nil, huma.Error400BadRequest("missing a Tempus ID")
@@ -121,9 +132,6 @@ func HandleSubmitTime(ctx context.Context, input *models.LeaderboardIDInput) (*s
 	ttDate := time.Unix(int64(tt.Date), 0)
 	if ttDate.Before(event.StartsAt) {
 		return nil, huma.Error400BadRequest(fmt.Sprintf("Tempus PR was before this event started! (%s) please submit an unverified time if you're submitting a non-PR time", ttDate.String()))
-	}
-	if ttDate.After(event.EndsAt) {
-		return nil, huma.Error400BadRequest(fmt.Sprintf("Tempus PR was after this event ended! (%s)", ttDate.String()))
 	}
 
 	err = ValidateTimeExistsAndPR(ctx, leaderboard.ID, player.ID, tt.Duration)
@@ -150,12 +158,6 @@ func HandleSubmitTime(ctx context.Context, input *models.LeaderboardIDInput) (*s
 }
 
 func HandleSubmitUnverifiedTime(ctx context.Context, input *models.UnverifiedTimeInput) (*struct{}, error) {
-	// an unverified time skips a few checks from verified ones..
-	// 1. a Tempus ID is not required
-	// 2. a Tempus class isn't needed, and no request is made to Tempus
-	// - a request still could be made to Tempus if a Tempus ID is provided, to make sure there's no valid Tempus PR faster than the submitted time
-	// - but this should be rare, and a result of user error. less external API requests are good!
-
 	principal, ok := principal.Get(ctx)
 	if !ok {
 		return nil, models.SessionErr()
@@ -165,19 +167,53 @@ func HandleSubmitUnverifiedTime(ctx context.Context, input *models.UnverifiedTim
 		return nil, err
 	}
 
+	// check input is correct format
+	var minutes int64
+	var seconds float64
+
+	parsed, err := fmt.Sscanf(input.RunTime, "%d:%f", &minutes, &seconds)
+	if parsed != 2 {
+		return nil, huma.Error400BadRequest("couldn't parse your time correctly. format: MM:SS.ss (include 0 for minutes if time is less than 60 seconds)")
+	}
+
+	var duration float64 = float64(minutes*60) + seconds
+
 	// one day "grace period" for submitting an unverified time
 	now := time.Now()
 	if event.EndsAt.Before(now.Add(time.Hour * 24)) {
 		return nil, huma.Error400BadRequest(fmt.Sprintf("%s has ended. please contact a mod if you have an old time to submit!", event.Kind))
 	}
-	err = ValidateTimeExistsAndPR(ctx, leaderboard.ID, player.ID, input.Duration)
+
+	// validate player Tempus ID
+	if !player.TempusID.Valid {
+		return nil, huma.Error400BadRequest("missing a Tempus ID")
+	}
+	var tempusClassID int64
+	if event.Class == "Soldier" {
+		tempusClassID = 3
+	} else {
+		tempusClassID = 4
+	}
+
+	// todo: support for multiple zone types found in other event kinds (course, bonus)
+	tt, err := tempus.GetPR(leaderboard.Map, player.TempusID.Int64, tempusClassID)
+	if err != nil {
+		return nil, models.WrapTempusErr(err)
+	}
+
+	// submitted time is faster than Tempus PR
+	if tt.Duration > duration {
+		return nil, huma.Error400BadRequest(fmt.Sprintf("couldn't submit a time faster than your tempus PR (%.3f seconds)", tt.Duration))
+	}
+
+	err = ValidateTimeExistsAndPR(ctx, leaderboard.ID, player.ID, duration)
 	if err != nil {
 		return nil, err
 	}
 
 	// validate input duration is positive and less than 10 hours
-	if input.Duration < 0 || input.Duration > 60*60*10 {
-		return nil, models.InvalidDurationErr(input.Duration)
+	if duration < 0 || duration > 60*60*10 {
+		return nil, models.InvalidDurationErr(duration)
 	}
 
 	err = db.Queries.InsertTime(ctx, queries.InsertTimeParams{
@@ -187,11 +223,35 @@ func HandleSubmitUnverifiedTime(ctx context.Context, input *models.UnverifiedTim
 			Int64: 0,
 			Valid: false,
 		},
-		Duration: input.Duration,
+		Duration: duration,
 		Verified: false,
 	})
 
 	return nil, nil
+}
+
+func HandleGetEventPR(ctx context.Context, input *models.EventIDInput) (*models.EventLeaderboardTimeOutput, error) {
+	principal, ok := principal.Get(ctx)
+	if !ok {
+		return nil, models.SessionErr()
+	}
+
+	elt, err := db.Queries.SelectPRTime(ctx, queries.SelectPRTimeParams{
+		ID:       input.ID,
+		PlayerID: principal.SteamID.String(),
+	})
+	if err != nil {
+		return nil, models.WrapDBErr(err)
+	}
+
+	resp := &models.EventLeaderboardTimeOutput{
+		Body: models.EventLeaderboardTime{
+			Event:       models.GetEventResponse(elt.Event),
+			Leaderboard: models.GetLeaderboardResponse(elt.Leaderboard, false),
+			Time:        models.GetTimeResponse(elt.Time),
+		},
+	}
+	return resp, nil
 }
 
 // mod

@@ -265,3 +265,37 @@ func (q *Queries) SelectEvents(ctx context.Context) ([]Event, error) {
 	}
 	return items, nil
 }
+
+const updateEvent = `-- name: UpdateEvent :exec
+update event
+  set kind = ?,
+  kind_id = ?,
+  class = ?,
+  visible_at = ?,
+  starts_at = ?,
+  ends_at = ?
+  where id = ?
+`
+
+type UpdateEventParams struct {
+	Kind      string
+	KindID    int64
+	Class     string
+	VisibleAt time.Time
+	StartsAt  time.Time
+	EndsAt    time.Time
+	ID        int64
+}
+
+func (q *Queries) UpdateEvent(ctx context.Context, arg UpdateEventParams) error {
+	_, err := q.db.ExecContext(ctx, updateEvent,
+		arg.Kind,
+		arg.KindID,
+		arg.Class,
+		arg.VisibleAt,
+		arg.StartsAt,
+		arg.EndsAt,
+		arg.ID,
+	)
+	return err
+}
