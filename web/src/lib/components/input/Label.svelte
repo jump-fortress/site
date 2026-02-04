@@ -11,7 +11,9 @@
 </script>
 
 <label
-  class="relative flex w-full {max_width} mt-1.5 rounded-box border border-base-700 bg-base-800 transition-colors focus-within:border-content/50 focus-within:bg-base-900 hover:border-content/50">
+  class="relative flex w-full rounded-box border border-base-700 bg-base-800 transition-colors focus-within:border-content/50 focus-within:bg-base-900 hover:border-content/50
+   {max_width}
+  {label ? 'mt-1.5' : ''}">
   <!-- label -->
   <span class="absolute -top-1 left-1 bg-base-800 px-2 text-sm leading-1">{label}</span>
   <!-- input container -->
