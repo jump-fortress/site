@@ -51,3 +51,5 @@ export function formatRelative(time: number): string {
 export function datetimeToMs(date: string): number {
   return Temporal.Instant.from(date).epochMilliseconds;
 }
+
+export const specialMs: Map<string, number> = new Map([['player', 1751328000000]]);

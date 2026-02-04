@@ -6,8 +6,10 @@
   import Table from '$lib/components/display/table/Table.svelte';
   import TablePlayer from '$lib/components/display/table/TablePlayer.svelte';
   import TemporalDate from '$lib/components/display/TemporalDate.svelte';
+  import Content from '$lib/components/layout/Content.svelte';
   import Section from '$lib/components/layout/Section.svelte';
-  import { compareBothDivisions, compareDivisions } from '$lib/helpers/divs';
+  import { comparePlayers } from '$lib/helpers/divs';
+  import { twTableGradients } from '$lib/helpers/times';
   import type { Player } from '$lib/schema';
   import type { PageData } from './$types';
 
@@ -18,50 +20,57 @@
   let sort_class = $state('Soldier');
 
   // todo: abstractly split class sorting tables / styles
+  function sortPlayers(players: Player[]): Player[] {
+    return players.sort((a, b) => comparePlayers(a, b, sort_class));
+  }
 </script>
 
 {#if data.players}
-  <Section label="players">
-    {#key sort_class}
-      <Table
-        data={data.players.sort((a, b) =>
-          sort_class === 'Soldier'
-            ? compareDivisions(a.soldier_div ?? '', b.soldier_div ?? '')
-            : compareDivisions(a.demo_div ?? '', b.demo_div ?? '')
-        )}>
-        {#snippet header()}
-          <th class="w-12 text-start">pref</th>
-          <th></th>
-          {#if sort_class === 'Soldier'}
-            <th class="w-div"></th>
-          {/if}
-          <th
-            class="w-div cursor-pointer text-start hover:text-primary {sort_class === 'Soldier'
-              ? 'text-primary'
-              : ''}"
-            onclick={() => {
-              sort_class = 'Soldier';
-            }}>soldier</th>
-          <th
-            class="w-div cursor-pointer text-start hover:text-primary {sort_class === 'Demo'
-              ? 'text-primary'
-              : ''}"
-            onclick={() => {
-              sort_class = 'Demo';
-            }}>demo</th>
-          <th class="w-date"></th>
-        {/snippet}
-        {#snippet row(player: Player, i)}
-          <td class="h-8"><ClassImage player_class={player.class_pref} /></td>
-          <td><TablePlayer {player} /></td>
-          {#if sort_class === 'Soldier'}
-            <td class="h-6"><Launcher launcher={player.launcher_pref ?? ''} /></td>
-          {/if}
-          <td class="text-start"><Div div={player.soldier_div} /></td>
-          <td class="text-start"><Div div={player.demo_div} /></td>
-          <td class="text-content/75"><TemporalDate datetime={player.created_at} /></td>
-        {/snippet}
-      </Table>
-    {/key}
-  </Section>
+  <Content>
+    <Section label="ladder">
+      <span class="text-content/75">players are sorted by div, then alphabetically.</span>
+      {#key sort_class}
+        <Table data={sortPlayers(data.players)}>
+          {#snippet header()}
+            <th class="w-rank"></th>
+            <th></th>
+            {#if sort_class === 'Soldier'}
+              <th class="w-div"></th>
+            {/if}
+            <th
+              class="w-div cursor-pointer text-start hover:text-primary {sort_class === 'Soldier'
+                ? 'text-primary  after:font-normal after:text-content after:content-["_v"]'
+                : ''}"
+              onclick={() => {
+                sort_class = 'Soldier';
+              }}>soldier</th>
+            <th
+              class="w-div cursor-pointer text-start hover:text-primary {sort_class === 'Demo'
+                ? 'text-primary  after:font-normal after:text-content after:content-["_v"]'
+                : ''}"
+              onclick={() => {
+                sort_class = 'Demo';
+              }}>demo</th>
+            <th class="w-date">here since</th>
+          {/snippet}
+          {#snippet row(player: Player, i)}
+            <td
+              class={twTableGradients.get(
+                `r${sort_class === 'Soldier' ? player.soldier_div?.toLowerCase() : player.demo_div?.toLowerCase()}`
+              )}></td>
+            <td
+              class={twTableGradients.get(
+                `t${sort_class === 'Soldier' ? player.soldier_div?.toLowerCase() : player.demo_div?.toLowerCase()}`
+              )}><TablePlayer {player} link={true} /></td>
+            {#if sort_class === 'Soldier'}
+              <td class="h-6"><Launcher launcher={player.launcher_pref ?? ''} /></td>
+            {/if}
+            <td class="text-start"><Div div={player.soldier_div} /></td>
+            <td class="text-start"><Div div={player.demo_div} /></td>
+            <td class="table-date"><TemporalDate datetime={player.created_at} player={true} /></td>
+          {/snippet}
+        </Table>
+      {/key}
+    </Section>
+  </Content>
 {/if}
