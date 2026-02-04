@@ -45,8 +45,8 @@ type LeaderboardIDInput struct {
 }
 
 type UnverifiedTimeInput struct {
-	ID       int64   `path:"leaderboard_id"`
-	Duration float64 `path:"duration"`
+	ID      int64  `path:"leaderboard_id"`
+	RunTime string `path:"run_time"`
 }
 
 type PlayerTimeInput struct {

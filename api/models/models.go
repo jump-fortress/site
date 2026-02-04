@@ -76,3 +76,9 @@ type TimeWithPlayer struct {
 	Time   Time   `json:"time"`
 	Player Player `json:"player"`
 }
+
+type EventLeaderboardTime struct {
+	Event       Event       `json:"event"`
+	Leaderboard Leaderboard `json:"leaderboard"`
+	Time        Time        `json:"time"`
+}

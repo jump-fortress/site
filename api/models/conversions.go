@@ -67,6 +67,31 @@ func GetEventWithLeaderboardsResponse(els []queries.SelectEventLeaderboardsRow, 
 	return ewl
 }
 
+func GetEventResponse(e queries.Event) Event {
+	return Event{
+		ID:          e.ID,
+		Kind:        e.Kind,
+		KindID:      e.KindID,
+		PlayerClass: e.Class,
+		VisibleAt:   e.VisibleAt,
+		StartsAt:    e.StartsAt,
+		EndsAt:      e.EndsAt,
+		CreatedAt:   e.CreatedAt,
+	}
+}
+
+func GetLeaderboardResponse(l queries.Leaderboard, sensitive bool) Leaderboard {
+	if sensitive {
+		l.Map = ""
+	}
+	return Leaderboard{
+		ID:      l.ID,
+		EventID: l.EventID,
+		Div:     l.Div.String,
+		Map:     l.Map,
+	}
+}
+
 func GetMapResponse(m queries.Map) Map {
 	return Map{
 		Name:          m.Name,

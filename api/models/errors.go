@@ -31,5 +31,5 @@ func EventKindErr(kind string) error {
 }
 
 func InvalidDurationErr(duration float64) error {
-	return huma.Error400BadRequest(fmt.Sprintf("%f.3 is negative or over 10 hours. please check your time again", duration))
+	return huma.Error400BadRequest(fmt.Sprintf("%.3f is negative or over 10 hours. please check your time again", duration))
 }

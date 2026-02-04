@@ -20,6 +20,10 @@ type EventsOutput struct {
 	Body []Event
 }
 
+type EventLeaderboardTimeOutput struct {
+	Body EventLeaderboardTime
+}
+
 type TimesWithPlayerOutput struct {
 	Body []TimeWithPlayer
 }
