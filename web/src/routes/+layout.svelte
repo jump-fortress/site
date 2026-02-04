@@ -4,6 +4,7 @@
   import Nav from '$lib/components/layout/nav/Nav.svelte';
   import type { PageData } from './$types';
   import type { Snippet } from 'svelte';
+  import Logo from '$lib/components/layout/Logo.svelte';
 
   type Props = {
     data: PageData;
@@ -21,4 +22,8 @@
       {@render children()}
     </main>
   </div>
+</div>
+
+<div class="fixed -bottom-36 -left-36 -z-10">
+  <Logo />
 </div>
