@@ -22,6 +22,7 @@ go run .
 ```
 ```sh
 cd web
+npm i
 npm run dev
 ```
 
