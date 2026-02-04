@@ -1,6 +1,4 @@
 <script lang="ts">
-  import ClassImage from '$lib/components/display/ClassImage.svelte';
-  import ClassSelect from '$lib/components/display/ClassSelect.svelte';
   import Div from '$lib/components/display/Div.svelte';
   import Launcher from '$lib/components/display/Launcher.svelte';
   import Table from '$lib/components/display/table/Table.svelte';
@@ -19,7 +17,6 @@
   let { data }: Props = $props();
   let sort_class = $state('Soldier');
 
-  // todo: abstractly split class sorting tables / styles
   function sortPlayers(players: Player[]): Player[] {
     return players.sort((a, b) => comparePlayers(a, b, sort_class));
   }

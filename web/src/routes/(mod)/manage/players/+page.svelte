@@ -11,12 +11,14 @@
   import Input from '$lib/components/input/Input.svelte';
   import Errors from '$lib/components/input/Errors.svelte';
   import Select from '$lib/components/input/Select.svelte';
-  import { divs } from '$lib/helpers/divs';
+  import { comparePlayers, divs } from '$lib/helpers/divs';
   import type { PageData } from './$types';
 
   type Props = {
     data: PageData;
   };
+
+  let { data }: Props = $props();
 
   let player: Player = $state({
     id: '0',
@@ -29,7 +31,10 @@
 
   let oerror: OpenAPIError = $state(undefined);
 
-  let { data }: Props = $props();
+  // todo: preset players table
+  export function sortPlayers(players: Player[]): Player[] {
+    return players.sort((a, b) => comparePlayers(a, b, 'Soldier'));
+  }
 </script>
 
 <PlayerHeader {player} />
@@ -104,7 +109,7 @@
     <span></span>
   {:then { data: players }}
     {#if players}
-      <Table data={players}>
+      <Table data={sortPlayers(players)}>
         {#snippet header()}
           <th class="w-div">role</th>
           <th></th>
