@@ -16,5 +16,8 @@
     href="https://tempus2.xyz/records/{time.tempus_time_id}"
     target="_blank">{runTime}</a>
 {:else}
-  <span class="font-mono text-sm">{runTime}</span>
+  <span
+    class="font-mono text-sm {time.verified
+      ? ''
+      : "text-content/75 after:absolute after:ml-2 after:content-['?']"}">{runTime}</span>
 {/if}

@@ -5,16 +5,16 @@
 
   type Props = {
     event: Event;
-    link?: boolean;
+    href?: string;
   };
 
-  let { event, link = false }: Props = $props();
+  let { event, href = '' }: Props = $props();
 </script>
 
-{#if link}
+{#if href}
   <a
     class="group flex h-9 cursor-pointer items-center gap-2 rounded-box px-2 hover:bg-base-900"
-    href="/formats/{event.kind}/{event.kind_id}">
+    href="/{href}/{event.kind_id}">
     <ClassImage player_class={event.player_class} />
     <span class="truncate group-hover:underline">{event.kind} #{event.kind_id}</span>
   </a>

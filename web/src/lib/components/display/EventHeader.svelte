@@ -6,10 +6,10 @@
 
   type Props = {
     event: EventWithLeaderboards;
-    link?: boolean;
+    href?: string;
   };
 
-  let { event, link = false }: Props = $props();
+  let { event, href = '' }: Props = $props();
 
   function leaderbaordToMaps(l: EventWithLeaderboards['leaderboards']) {
     const maps: Map<string, string[]> = new Map();
@@ -44,10 +44,8 @@
     <!-- map wrapper -->
     <div class="relative flex size-full items-end justify-center">
       <!-- absolute map bg image -->
-      {#if link}
-        <a
-          class="relative flex size-full overflow-hidden"
-          href="/formats/{event.event.kind}/{event.event.kind_id}">
+      {#if href}
+        <a class="relative flex size-full overflow-hidden" href="/{href}/{event.event.kind_id}">
           <img
             class="over absolute z-10 h-48 w-full scale-105 object-cover brightness-75 transition-all not-first:mask-x-from-98% not-last:mask-x-from-98% group-hover:brightness-100"
             src="https://tempusplaza.com/map-backgrounds/{map}.jpg"
