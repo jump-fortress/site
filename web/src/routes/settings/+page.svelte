@@ -79,7 +79,6 @@
           {/if}
         {/await}
 
-        <span>under construction</span>
         <Button
           onsubmit={async () => {
             let resp = await Client.POST(ApiPaths.update_avatar);
@@ -109,7 +108,6 @@
             return resp.response.ok;
           }} />
 
-        <span>under construction</span>
         <Input
           label="Steam Trade URL"
           type="text"
