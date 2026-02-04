@@ -5,6 +5,7 @@
   import type { EventWithLeaderboards } from '$lib/schema';
   import Section from '$lib/components/layout/Section.svelte';
   import EventHeader from '$lib/components/display/EventHeader.svelte';
+  import Content from '$lib/components/layout/Content.svelte';
 
   type Props = {
     data: PageData;
@@ -22,16 +23,18 @@
   );
 </script>
 
-{#if currEvents.length}
-  <Section label="ongoing {pluralKind}">
-    {#each currEvents as ewl}
-      <EventHeader event={ewl} />
-    {/each}
-  </Section>
-{/if}
+<Content>
+  {#if currEvents.length}
+    <Section label="current {currEvents.length > 1 ? pluralKind : currEvents.at(0)?.event.kind}">
+      {#each currEvents as ewl}
+        <EventHeader event={ewl} href="formats/{params.kind}" />
+      {/each}
+    </Section>
+  {/if}
 
-{#if prevEvents.length}
-  <Section label="past {pluralKind}">
-    <TableEvents data={prevEvents} link={true} onclick={() => {}}></TableEvents>
-  </Section>
-{/if}
+  {#if prevEvents.length}
+    <Section label="past {pluralKind}">
+      <TableEvents data={prevEvents} href="formats/{params.kind}" onclick={() => {}}></TableEvents>
+    </Section>
+  {/if}
+</Content>

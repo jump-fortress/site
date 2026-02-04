@@ -81,7 +81,7 @@
   <Errors {oerror} />
 
   <span class="text-content/75"
-    >leaderboards can be edited, but not removed. if you have too many divisions, please delete the
+    >leaderboards can be edited, but not removed. if you have too many divs, please delete the
     event.</span>
   {#await Client.GET(ApiPaths.get_maps)}
     <span></span>
@@ -146,7 +146,7 @@
       <span></span>
     {:then { data: ewls }}
       {@const now = Temporal.Now.instant().epochMilliseconds}
-      {@const editable = ewls?.filter(({ event }) => datetimeToMs(event.starts_at) < now) ?? []}
+      {@const editable = ewls?.filter(({ event }) => datetimeToMs(event.starts_at) > now) ?? []}
       <TableEvents
         data={editable}
         onclick={(ewl) => {
