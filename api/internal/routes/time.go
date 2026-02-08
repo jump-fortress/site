@@ -107,7 +107,7 @@ func HandleSubmitTime(ctx context.Context, input *models.LeaderboardIDInput) (*s
 
 	// 1 day grace period
 	now := time.Now()
-	if event.EndsAt.Before(now.Add(time.Hour * 24)) {
+	if event.EndsAt.Add(time.Hour * 24).Before(now) {
 		return nil, huma.Error400BadRequest(fmt.Sprintf("%s has ended. please contact a mod if you have an old time to submit!", event.Kind))
 	}
 
@@ -180,7 +180,7 @@ func HandleSubmitUnverifiedTime(ctx context.Context, input *models.UnverifiedTim
 
 	// one day "grace period" for submitting an unverified time
 	now := time.Now()
-	if event.EndsAt.Before(now.Add(time.Hour * 24)) {
+	if event.EndsAt.Add(time.Hour * 24).Before(now) {
 		return nil, huma.Error400BadRequest(fmt.Sprintf("%s has ended. please contact a mod if you have an old time to submit!", event.Kind))
 	}
 

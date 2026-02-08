@@ -42,6 +42,12 @@ join player on time.player_id = player.id
 where time.leaderboard_id = ?
 order by time.duration asc;
 
+-- name: SelectPRTimesFromLeaderboard :many
+select sqlc.embed(time), sqlc.embed(player), cast(rank() over (order by duration) as integer) time_rank from time
+join player on time.player_id = player.id
+where time.leaderboard_id = ?
+group by player.id;
+
 -- name: UpdateTimeFromTempus :exec
 update time
   set duration = ?,

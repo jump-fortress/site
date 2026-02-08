@@ -143,7 +143,7 @@ func HandleUpdateLeaderboards(ctx context.Context, input *models.LeaderboardsInp
 }
 
 func HandleGetLeaderboardTimes(ctx context.Context, input *models.LeaderboardIDInput) (*models.TimesWithPlayerOutput, error) {
-	twps, err := db.Queries.SelectTimesFromLeaderboard(ctx, input.ID)
+	twps, err := db.Queries.SelectPRTimesFromLeaderboard(ctx, input.ID)
 	if err != nil {
 		return nil, models.WrapDBErr(err)
 	}
@@ -156,6 +156,7 @@ func HandleGetLeaderboardTimes(ctx context.Context, input *models.LeaderboardIDI
 		resp.Body = append(resp.Body, models.TimeWithPlayer{
 			Time:   models.GetTimeResponse(twp.Time),
 			Player: models.GetPlayerResponse(twp.Player, true),
+			Rank:   twp.TimeRank,
 		})
 	}
 	return resp, nil

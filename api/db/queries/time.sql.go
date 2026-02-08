@@ -110,6 +110,65 @@ func (q *Queries) SelectPRTime(ctx context.Context, arg SelectPRTimeParams) (Sel
 	return i, err
 }
 
+const selectPRTimesFromLeaderboard = `-- name: SelectPRTimesFromLeaderboard :many
+select time.id, time.leaderboard_id, time.player_id, time.tempus_time_id, time.duration, time.verified, time.created_at, player.id, player.role, player.alias, player.soldier_div, player.demo_div, player.avatar_url, player.trade_token, player.tempus_id, player.country, player.country_code, player.class_pref, player.map_pref, player.launcher_pref, player.created_at, cast(rank() over (order by duration) as integer) time_rank from time
+join player on time.player_id = player.id
+where time.leaderboard_id = ?
+group by player.id
+`
+
+type SelectPRTimesFromLeaderboardRow struct {
+	Time     Time
+	Player   Player
+	TimeRank int64
+}
+
+func (q *Queries) SelectPRTimesFromLeaderboard(ctx context.Context, leaderboardID int64) ([]SelectPRTimesFromLeaderboardRow, error) {
+	rows, err := q.db.QueryContext(ctx, selectPRTimesFromLeaderboard, leaderboardID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []SelectPRTimesFromLeaderboardRow
+	for rows.Next() {
+		var i SelectPRTimesFromLeaderboardRow
+		if err := rows.Scan(
+			&i.Time.ID,
+			&i.Time.LeaderboardID,
+			&i.Time.PlayerID,
+			&i.Time.TempusTimeID,
+			&i.Time.Duration,
+			&i.Time.Verified,
+			&i.Time.CreatedAt,
+			&i.Player.ID,
+			&i.Player.Role,
+			&i.Player.Alias,
+			&i.Player.SoldierDiv,
+			&i.Player.DemoDiv,
+			&i.Player.AvatarUrl,
+			&i.Player.TradeToken,
+			&i.Player.TempusID,
+			&i.Player.Country,
+			&i.Player.CountryCode,
+			&i.Player.ClassPref,
+			&i.Player.MapPref,
+			&i.Player.LauncherPref,
+			&i.Player.CreatedAt,
+			&i.TimeRank,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const selectTime = `-- name: SelectTime :one
 select id, leaderboard_id, player_id, tempus_time_id, duration, verified, created_at from time
   where id = ?

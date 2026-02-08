@@ -321,7 +321,7 @@ func HandleUpdateLeaderboardTempusTimes(ctx context.Context, input *models.Leade
 	if err != nil {
 		return nil, models.WrapDBErr(err)
 	}
-	twps, err := db.Queries.SelectTimesFromLeaderboard(ctx, leaderboard.ID)
+	twps, err := db.Queries.SelectPRTimesFromLeaderboard(ctx, leaderboard.ID)
 	if err != nil {
 		return nil, models.WrapDBErr(err)
 	}
@@ -339,7 +339,7 @@ func HandleUpdateLeaderboardTempusTimes(ctx context.Context, input *models.Leade
 			tDate := time.UnixMilli(int64(tt.Date) * 1000)
 			timeDiff := math.Abs(twp.Time.Duration - tt.Duration)
 			// assume margins of error
-			if timeDiff < 0.015 && tDate.Add(time.Hour*48).After(event.StartsAt) && tDate.Before(event.EndsAt.Add(time.Hour*48)) {
+			if timeDiff < 0.015 && tDate.Add(time.Hour*24).After(event.StartsAt) && tDate.Before(event.EndsAt.Add(time.Hour*24)) {
 				fmt.Println("found valid.")
 				err = db.Queries.UpdateTimeFromTempus(ctx, queries.UpdateTimeFromTempusParams{
 					Duration: tt.Duration,
