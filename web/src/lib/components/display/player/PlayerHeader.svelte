@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ApiPaths, type Player } from '$lib/schema';
+  import { type Player } from '$lib/schema';
   import ClassSelect from '$lib/components/display/ClassSelect.svelte';
   import Div from '$lib/components/display/Div.svelte';
   import ExternalLink from '$lib/components/display/ExternalLink.svelte';
@@ -27,7 +27,7 @@
     <div class="h-36 w-full bg-base-900 mask-b-from-98%">
       <div class="size-full mask-x-from-50% mask-x-to-95%">
         <div
-          class="filter-purelavender size-[1476px] animate-[nomap_360s_linear_infinite] bg-size-[30%] bg-repeat"
+          class="filter-purelavender size-[1476px] rotate-5 animate-[nomap_360s_linear_infinite] bg-size-[30%] bg-repeat"
           style:background-image={`url(${no_map})`}>
         </div>
       </div>
