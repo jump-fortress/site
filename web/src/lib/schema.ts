@@ -528,6 +528,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/internal/session/players/self": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * get player self
+         * @description get a player self from session
+         */
+        get: operations["get-player-self"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/internal/session/players/tempusid/{tempus_id}": {
         parameters: {
             query?: never;
@@ -542,6 +562,26 @@ export interface paths {
         get: operations["set-tempus-id"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/internal/session/players/tradetoken/{steam_trade_url}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * set Steam trade token
+         * @description set your own Steam trade token from your Steam Trade URL, found at https://steamcommunity.com/id/{steamid}/tradeoffers/privacy
+         */
+        post: operations["set-trade-token"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1666,6 +1706,35 @@ export interface operations {
             };
         };
     };
+    "get-player-self": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Player"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
     "set-tempus-id": {
         parameters: {
             query?: never;
@@ -1673,6 +1742,35 @@ export interface operations {
             path: {
                 /** @description see: https://tempus2.xyz/ */
                 tempus_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "set-trade-token": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                steam_trade_url: string;
             };
             cookie?: never;
         };
@@ -1884,7 +1982,9 @@ export enum ApiPaths {
     update_class_pref = "/internal/session/players/class/{player_class}",
     update_launcher_pref = "/internal/session/players/launcher/{launcher}",
     update_map_pref = "/internal/session/players/map/{map_name}",
+    get_player_self = "/internal/session/players/self",
     set_tempus_id = "/internal/session/players/tempusid/{tempus_id}",
+    set_trade_token = "/internal/session/players/tradetoken/{steam_trade_url}",
     sign_out = "/internal/session/sign-out",
     steam_profile = "/internal/session/steam/profile",
     update_avatar = "/internal/sessionplayers/avatar_url",
