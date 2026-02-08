@@ -67,7 +67,7 @@
             <Select
               label="fav map"
               type="text"
-              options={maps.map((m) => m.name)}
+              options={['none'].concat(maps.map((m) => m.name))}
               placeholder={player.map_pref}
               onsubmit={async (value) => {
                 let resp = await Client.GET(ApiPaths.update_map_pref, {

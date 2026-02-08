@@ -48,7 +48,7 @@
               onclick={() => {
                 sort_class = 'Demo';
               }}>demo</th>
-            <th class="w-date">here since</th>
+            <th class="w-date">here since..</th>
           {/snippet}
           {#snippet row(player: Player, i)}
             <td

@@ -5,23 +5,44 @@
   import { onMount } from 'svelte';
   import type { PageData } from './$types';
   import Table from '$lib/components/display/table/Table.svelte';
-  import Div from '$lib/components/display/Div.svelte';
   import Section from '$lib/components/layout/Section.svelte';
   import TablePlayer from '$lib/components/display/table/TablePlayer.svelte';
-  import { filterBestTimes, twTableGradients } from '$lib/helpers/times';
+  import { filterBestTimes, twTableGradients, validDuration } from '$lib/helpers/times';
   import TableTime from '$lib/components/display/table/TableTime.svelte';
   import TemporalDate from '$lib/components/display/TemporalDate.svelte';
   import Content from '$lib/components/layout/Content.svelte';
+  import Button from '$lib/components/input/Button.svelte';
+  import Errors from '$lib/components/input/Errors.svelte';
+  import Input from '$lib/components/input/Input.svelte';
+  import Collapse from '$lib/components/input/Collapse.svelte';
+  import { Temporal } from 'temporal-polyfill';
+  import LeaderboardButtons from '$lib/components/input/LeaderboardButtons.svelte';
 
   type Props = {
     data: PageData;
   };
   let { data }: Props = $props();
+  const now = Temporal.Now.instant();
 
   let selectedLeaderboardID: number = $state(0);
-  let playerLeaderboard: Leaderboard | undefined = $state();
-  let prPlayer: Player | undefined = $state();
 
+  let playerLeaderboard: Leaderboard | undefined = $state(undefined);
+  let prPlayer: Player | undefined = $state(undefined);
+
+  let refreshPR: boolean = $state(true);
+  let refreshLeaderboard: boolean = $state(true);
+
+  let ended_days: number = $derived(
+    Math.floor(now.since(data?.ewl?.event.ends_at ?? '').seconds / 60 / 60 / 24)
+  );
+
+  let mod: boolean = $derived(
+    data.session?.role === 'mod' || data.session?.role === 'admin' || data.session?.role === 'dev'
+  );
+
+  let oerror: OpenAPIError = $state(undefined);
+
+  // set selectedLeaderboardID & playerLeaderboard
   onMount(async () => {
     if (data.ewl) {
       selectedLeaderboardID = data.ewl.leaderboards?.at(0)?.id ?? 0;
@@ -53,67 +74,140 @@
   <Content>
     {#if data.session}
       <Section>
-        {#await Client.GET( ApiPaths.get_leaderboard_pr, { params: { path: { event_id: data.ewl.event.id } } } )}
-          <span></span>
-        {:then { data: pr }}
-          {#if prPlayer && pr}
-            <Table data={[pr]}>
-              {#snippet header()}
-                <th class="w-rank"></th>
-                <th class="w-32"></th>
-                <th class=""></th>
-                <th class="w-date"></th>
-              {/snippet}
-              {#snippet row({ _, leaderboard, time })}
-                <td class={twTableGradients.get(`r${leaderboard.div?.toLowerCase()}`)}>PR</td>
-                <td class={twTableGradients.get(`t${leaderboard.div?.toLowerCase()}`)}
-                  ><TableTime {time} /></td>
-                <td><TablePlayer player={prPlayer as Player} link={true} /></td>
-                <td class="table-date"><TemporalDate datetime={time.created_at} /></td>
-              {/snippet}
-            </Table>
-          {/if}
-        {/await}
+        {#key refreshPR}
+          {#await Client.GET( ApiPaths.get_leaderboard_pr, { params: { path: { event_id: data.ewl.event.id } } } )}
+            <span></span>
+          {:then { data: pr }}
+            {#if prPlayer && pr}
+              <Table data={[pr]}>
+                {#snippet header()}
+                  <th class="w-rank"></th>
+                  <th class="w-32"></th>
+                  <th class=""></th>
+                  <th class="w-date"></th>
+                {/snippet}
+                {#snippet row({ _, leaderboard, time })}
+                  <td class={twTableGradients.get(`r${leaderboard.div?.toLowerCase()}`)}>PR</td>
+                  <td class={twTableGradients.get(`t${leaderboard.div?.toLowerCase()}`)}
+                    ><TableTime {time} /></td>
+                  <td><TablePlayer player={prPlayer as Player} link={true} /></td>
+                  <td class="table-date"><TemporalDate datetime={time.created_at} /></td>
+                {/snippet}
+              </Table>
+            {/if}
+          {/await}
+        {/key}
+
+        <Errors {oerror} />
+
+        {#if ended_days < 1 && playerLeaderboard}
+          <Button
+            onsubmit={async () => {
+              let resp = await Client.POST(ApiPaths.submit_time, {
+                params: { path: { leaderboard_id: selectedLeaderboardID } }
+              });
+              oerror = resp.error;
+              if (resp.response.ok) {
+                refreshPR = !refreshPR;
+              }
+              return resp.response.ok;
+            }}>refresh from Tempus PR</Button>
+
+          <Collapse label="manually submit time">
+            <Input
+              type="text"
+              label="manual submit"
+              placeholder={'MM:SS.ss'}
+              max_width="max-w-58"
+              onsubmit={async (value) => {
+                const valid = validDuration(value);
+                if (valid) {
+                  const resp = await Client.POST(ApiPaths.submit_unverified_time, {
+                    params: {
+                      path: { leaderboard_id: playerLeaderboard!.id, run_time: value }
+                    }
+                  });
+                  oerror = resp.error;
+                  if (resp.response.ok) {
+                    refreshPR = !refreshPR;
+                  }
+                  return resp.response.ok;
+                } else {
+                  oerror = {
+                    detail: "time isn't in the expected format. format: MM:SS.ss",
+                    type: 'error'
+                  };
+                }
+                return false;
+              }} />
+          </Collapse>
+        {/if}
       </Section>
     {/if}
     <Section label={'leaderboards'}>
       <!-- select leaderboard buttons -->
-      <div class="flex rounded-box border border-base-700">
-        {#if data.ewl.leaderboards?.length}
-          {#each data.ewl.leaderboards as leaderboard}
-            <button
-              class="items-center} flex h-9 grow cursor-pointer items-center justify-center rounded-box
-          {selectedLeaderboardID === leaderboard.id
-                ? 'border-b border-b-content/50 bg-base-900'
-                : 'bg-base-800 opacity-50 hover:opacity-100'}"
-              onclick={() => {
-                selectedLeaderboardID = leaderboard.id;
-              }}>
-              <Div div={leaderboard.div} />
-            </button>
-          {/each}
-        {/if}
-      </div>
+      {#if data.ewl.leaderboards?.length}
+        <LeaderboardButtons
+          leaderboards={data.ewl.leaderboards}
+          bind:selected={selectedLeaderboardID} />
+      {/if}
 
-      {#await Client.GET( ApiPaths.get_leaderboard_times, { params: { path: { leaderboard_id: selectedLeaderboardID } } } )}
-        <span>under construction..</span>
-      {:then { data: times }}
-        {@const bestTimes = filterBestTimes(times ?? [])}
-        <Table data={bestTimes}>
-          {#snippet header()}
-            <th class="w-rank"></th>
-            <th class="w-32"></th>
-            <th class=""></th>
-            <th class="w-date"></th>
-          {/snippet}
-          {#snippet row({ player, time }: TimeWithPlayer, i)}
-            <td class={twTableGradients.get(`r${i}`)}>{i}</td>
-            <td class={twTableGradients.get(`t${i}`)}><TableTime {time} /></td>
-            <td><TablePlayer {player} link={true} /></td>
-            <td class="table-date"><TemporalDate datetime={time.created_at} /></td>
-          {/snippet}
-        </Table>
-      {/await}
+      {#key refreshLeaderboard && refreshPR}
+        {#await Client.GET( ApiPaths.get_leaderboard_times, { params: { path: { leaderboard_id: selectedLeaderboardID } } } )}
+          <span>under construction..</span>
+        {:then { data: times }}
+          <Table data={times ?? []}>
+            {#snippet header()}
+              <th class="w-rank"></th>
+              <th class="w-32"></th>
+              <th class=""></th>
+              <th class="w-date"></th>
+              {#if mod}
+                <th class="w-0"></th>
+                <th class="w-0"></th>
+              {/if}
+            {/snippet}
+            {#snippet row({ player, time, rank }: TimeWithPlayer)}
+              <td class={twTableGradients.get(`r${rank}`)}>{rank}</td>
+              <td class={twTableGradients.get(`t${rank}`)}><TableTime {time} /></td>
+              <td><TablePlayer {player} link={true} /></td>
+              <td class="table-date"><TemporalDate datetime={time.created_at} /></td>
+              {#if mod && !time.verified}
+                <td
+                  ><Button
+                    table={true}
+                    onsubmit={async () => {
+                      const resp = await Client.POST(ApiPaths.verify_player_time, {
+                        params: { path: { time_id: time.id } }
+                      });
+                      oerror = resp.error;
+                      if (resp.response.ok) {
+                        refreshLeaderboard = !refreshLeaderboard;
+                      }
+                      return resp.response.ok;
+                    }}><span class="icon-[mdi--check]"></span></Button
+                  ></td>
+              {/if}
+              {#if mod && !time.tempus_time_id && ended_days < 7}
+                <td
+                  ><Button
+                    table={true}
+                    onsubmit={async () => {
+                      const resp = await Client.DELETE(ApiPaths.delete_player_time, {
+                        params: { path: { time_id: time.id } }
+                      });
+                      oerror = resp.error;
+                      if (resp.response.ok) {
+                        refreshLeaderboard = !refreshLeaderboard;
+                      }
+                      return resp.response.ok;
+                    }}><span class="icon-[mdi--close]"></span></Button
+                  ></td>
+              {/if}
+            {/snippet}
+          </Table>
+        {/await}
+      {/key}
     </Section>
   </Content>
 {/if}

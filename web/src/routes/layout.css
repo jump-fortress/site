@@ -49,12 +49,23 @@
 @source inline('text-div-{wood,steel,bronze,silver,gold,platinum,diamond}');
 @source inline('bg-div-{wood,steel,bronze,silver,gold,platinum,diamond}{/25}');
 
-/* reverse spin for spinning logo */
 @theme {
+  /* reverse spin for spinning logo */
   --animate-reverse-spin: reverse-spin 1s infinite;
   @keyframes reverse-spin {
     from {
       transform: rotate(360deg);
+    }
+  }
+
+  /* animation on firefox ignores subpixel rendering, rotation is one way to force it to */
+  --animate-nomap: nomap 1s infinite;
+  @keyframes nomap {
+    0% {
+      transform: translateX(0) translateY(0) rotate(0.1deg);
+    }
+    100% {
+      transform: translateX(-738px) translateY(-738px) rotate(0.1deg);
     }
   }
 }
@@ -84,7 +95,7 @@
 @layer base {
   th,
   td {
-    @apply text-center text-nowrap first:rounded-l-box last:rounded-r-box;
+    @apply text-center text-nowrap;
   }
 
   th {

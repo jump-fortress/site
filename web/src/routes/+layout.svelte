@@ -15,15 +15,15 @@
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
 
-<div class="flex w-full justify-center">
-  <div class="flex w-full max-w-5xl flex-col gap-1 bg-base-900">
+<div class="pointer-events-none flex justify-center">
+  <div class="pointer-events-auto flex w-full max-w-5xl flex-col gap-1 bg-base-900">
     <Nav session={data.session} />
-    <main class="flex flex-col bg-base-800">
+    <main class="relative z-10 flex flex-col bg-base-800">
       {@render children()}
     </main>
   </div>
 </div>
 
-<div class="fixed -bottom-36 -left-36 -z-10">
+<div class="fixed -bottom-36 -left-36">
   <Logo />
 </div>

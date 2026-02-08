@@ -29,11 +29,12 @@
     created_at: '2026-01-01T00:00:00Z'
   });
 
+  let sort_class = $state('Soldier');
+
   let oerror: OpenAPIError = $state(undefined);
 
-  // todo: preset players table
   export function sortPlayers(players: Player[]): Player[] {
-    return players.sort((a, b) => comparePlayers(a, b, 'Soldier'));
+    return players.sort((a, b) => comparePlayers(a, b, sort_class));
   }
 </script>
 
@@ -109,27 +110,41 @@
     <span></span>
   {:then { data: players }}
     {#if players}
-      <Table data={sortPlayers(players)}>
-        {#snippet header()}
-          <th class="w-div">role</th>
-          <th></th>
-          <th class="w-div">soldier</th>
-          <th class="w-div">demo</th>
-          <th class="w-date">joined</th>
-        {/snippet}
-        {#snippet row(p: Player)}
-          <td>{p.role === 'player' ? '' : p.role}</td>
-          <td
-            onclick={() => {
-              player = p;
-              // jump to top
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}><TablePlayer player={p} link={false} /></td>
-          <td><Div div={p.soldier_div} /></td>
-          <td><Div div={p.demo_div} /></td>
-          <td class="table-date"><TemporalDate datetime={p.created_at} /></td>
-        {/snippet}
-      </Table>
+      {#key sort_class}
+        <Table data={sortPlayers(players)}>
+          {#snippet header()}
+            <th class="w-div">role</th>
+            <th></th>
+            <th
+              class="w-div cursor-pointer text-start hover:text-primary {sort_class === 'Soldier'
+                ? 'text-primary  after:font-normal after:text-content after:content-["_v"]'
+                : ''}"
+              onclick={() => {
+                sort_class = 'Soldier';
+              }}>soldier</th>
+            <th
+              class="w-div cursor-pointer text-start hover:text-primary {sort_class === 'Demo'
+                ? 'text-primary  after:font-normal after:text-content after:content-["_v"]'
+                : ''}"
+              onclick={() => {
+                sort_class = 'Demo';
+              }}>demo</th>
+            <th class="w-date">here since..</th>
+          {/snippet}
+          {#snippet row(p: Player)}
+            <td>{p.role === 'player' ? '' : p.role}</td>
+            <td
+              onclick={() => {
+                player = p;
+                // jump to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}><TablePlayer player={p} link={false} /></td>
+            <td><Div div={p.soldier_div} /></td>
+            <td><Div div={p.demo_div} /></td>
+            <td class="table-date"><TemporalDate datetime={p.created_at} player={true} /></td>
+          {/snippet}
+        </Table>
+      {/key}
     {/if}
   {/await}
 </Section>

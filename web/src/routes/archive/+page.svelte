@@ -14,12 +14,12 @@
 
 <Content>
   {#if data.events}
-    <Section label="archived events">
+    <Section label="Jump Fortress archives">
       <TableEvents data={data.events} href={'archive'} onclick={() => {}}></TableEvents>
     </Section>
   {/if}
 
-  <Section label="third party archives">
+  <Section label="other events">
     <span>under construction..</span>
   </Section>
 </Content>
