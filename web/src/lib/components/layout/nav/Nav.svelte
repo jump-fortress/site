@@ -32,8 +32,7 @@
       subpages={[
         { label: 'monthly', href: '/formats/monthly' },
         { label: 'motw', href: '/formats/motw' },
-        { label: 'bounty', href: '/formats/bounty' },
-        { label: 'quest', href: '/formats/quest' }
+        { label: 'bounty', href: '/formats/bounty' }
       ]}
       {route} />
     <NavPage
@@ -50,13 +49,12 @@
       href={'/help/faq'}
       subpages={[
         { label: 'faq', href: '/help/faq' },
-        { label: 'rules', href: '/help/rules' },
         { label: 'resources', href: '/help/resources' }
       ]}
       {route} />
     <!-- subpages dropdown background -->
     <div
-      class="invisible absolute top-0 left-0 -z-20 flex h-46 w-full cursor-default flex-col gap-px border-b border-primary/75 bg-base-900/90 px-1 py-1 shadow-sm shadow-primary/50 backdrop-blur-none peer-hover:visible">
+      class="invisible absolute top-0 left-0 -z-20 flex h-38 w-full cursor-default flex-col gap-px border-b border-primary/75 bg-base-900/90 px-1 py-1 shadow-sm shadow-primary/50 backdrop-blur-none peer-hover:visible">
     </div>
   </div>
   <!-- right nav -->

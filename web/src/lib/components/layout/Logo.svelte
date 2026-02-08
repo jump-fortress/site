@@ -4,7 +4,9 @@
   import overlay from '$lib/assets/logo/overlay.png';
 </script>
 
-<div class="group size-128 animate-[spin_120s_linear_infinite] select-none">
+<div
+  class="group size-128 animate-[spin_120s_linear_infinite] select-none"
+  style:clip-path="circle(50%)">
   <img class="absolute z-10 select-none" src={overlay} alt="" draggable="false" />
   <div
     class="mask-alpha mask-center mask-no-repeat transition-opacity select-none group-hover:opacity-0"

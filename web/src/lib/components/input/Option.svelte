@@ -11,7 +11,7 @@
 
   $effect(() => {
     if (selected && button) {
-      button.scrollIntoView({ behavior: 'auto' });
+      button.scrollIntoView({ block: 'nearest' });
     }
   });
 </script>

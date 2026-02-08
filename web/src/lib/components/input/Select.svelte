@@ -87,6 +87,7 @@
     }}
     onfocus={() => {
       focusOptions = true;
+      index = 0;
     }}
     onclick={() => {
       focusOptions = true;
@@ -116,7 +117,7 @@
   <!-- options -->
   {#if focusOptions && autofillOptions.length}
     <div
-      class="absolute top-full -left-px z-40 flex max-h-40 w-7/8 flex-col overflow-x-hidden overflow-y-auto rounded-b-box border border-t-0 border-content/50 bg-base-900 py-1 pr-3">
+      class="absolute top-full -left-px z-40 flex max-h-40 w-7/8 flex-col overflow-y-scroll rounded-b-box border border-t-0 border-content/50 bg-base-900 py-1 pr-3">
       {#each autofillOptions as option, i}
         <Option
           value={option}

@@ -6,6 +6,7 @@
   import Flag from '$lib/components/display/Flag.svelte';
   import tempus from '$lib/assets/components/profile/tempus.png';
   import plaza from '$lib/assets/components/profile/plaza.png';
+  import no_map from '$lib/assets/no_map.png';
 
   type Props = {
     player: Player;
@@ -15,11 +16,23 @@
   let { player, class_pref = $bindable(player.class_pref) }: Props = $props();
 </script>
 
-<div class="relative h-56 flex-col bg-base-800 inset-shadow-sm inset-shadow-base-700">
-  <div
-    class="h-36 w-full mask-b-from-98% bg-cover bg-center"
-    style:background-image={`url("https://tempusplaza.com/map-backgrounds/${player.map_pref}.jpg")`}>
-  </div>
+<div
+  class="relative h-56 flex-col overflow-hidden bg-base-800 inset-shadow-sm inset-shadow-base-700">
+  {#if player.map_pref}
+    <div
+      class="h-36 w-full mask-b-from-98% bg-cover bg-center"
+      style:background-image={`url("https://tempusplaza.com/map-backgrounds/${player.map_pref}.jpg")`}>
+    </div>
+  {:else}
+    <div class="h-36 w-full bg-base-900 mask-b-from-98%">
+      <div class="size-full mask-x-from-50% mask-x-to-95%">
+        <div
+          class="filter-purelavender size-[1476px] animate-[nomap_360s_linear_infinite] bg-size-[30%] bg-repeat"
+          style:background-image={`url(${no_map})`}>
+        </div>
+      </div>
+    </div>
+  {/if}
   <!-- avatar -->
   <img
     class="absolute top-22 left-4 z-10 h-24 rounded-box object-cover"
