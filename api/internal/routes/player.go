@@ -103,6 +103,24 @@ func HandleGetPlayer(ctx context.Context, input *models.PlayerIDInput) (*models.
 	return resp, nil
 }
 
+// include full info for self
+func HandleGetPlayerSelf(ctx context.Context, input *struct{}) (*models.PlayerOutput, error) {
+	principal, ok := principal.Get(ctx)
+	if !ok {
+		return nil, models.SessionErr()
+	}
+
+	player, err := db.Queries.SelectPlayer(ctx, principal.SteamID.String())
+	if err != nil {
+		return nil, models.WrapDBErr(err)
+	}
+
+	resp := &models.PlayerOutput{
+		Body: models.GetPlayerResponse(player, false),
+	}
+	return resp, nil
+}
+
 func HandleGetPlayers(ctx context.Context, input *struct{}) (*models.PlayersOutput, error) {
 	resp, err := GetPlayersResponse(ctx, true)
 	if err != nil {
@@ -159,6 +177,42 @@ func HandleSetTempusID(ctx context.Context, input *models.TempusIDInput) (*struc
 		ID: principal.SteamID.String(),
 	})
 	if err != nil {
+		return nil, models.WrapDBErr(err)
+	}
+
+	return nil, nil
+}
+
+// todo implement
+func HandleSetTradeToken(ctx context.Context, input *models.TradeTokenInput) (*struct{}, error) {
+	principal, ok := principal.Get(ctx)
+	if !ok {
+		return nil, models.SessionErr()
+	}
+
+	if len(input.SteamTradeURL) > 100 {
+		return nil, huma.Error400BadRequest("URL is too long. please paste the full Steam Trade URL.")
+	}
+
+	// extract steam3ID and token from input
+	var scannedSteam3ID uint32
+	var token string
+	_, err := fmt.Sscanf(input.SteamTradeURL, "https://steamcommunity.com/tradeoffer/new/?partner=%d&token=%s", &scannedSteam3ID, &token)
+	if err != nil {
+		return nil, huma.Error400BadRequest("URL couldn't be resolved. please paste the full Steam Trade URL.")
+	}
+
+	if principal.SteamID.AccountId() != scannedSteam3ID {
+		return nil, huma.Error400BadRequest(fmt.Sprintf("URL didn't match your profile's SteamID (%d). please check if you're logged in to the correct Steam account.", scannedSteam3ID))
+	}
+
+	if err := db.Queries.UpdatePlayerTradeToken(ctx, queries.UpdatePlayerTradeTokenParams{
+		TradeToken: sql.NullString{
+			String: token,
+			Valid:  true,
+		},
+		ID: principal.SteamID.String(),
+	}); err != nil {
 		return nil, models.WrapDBErr(err)
 	}
 

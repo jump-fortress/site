@@ -65,12 +65,30 @@ func RegisterOpenRoutes(internalApi *huma.Group) {
 func RegisterSessionRoutes(sessionApi *huma.Group) {
 	huma.Register(sessionApi, huma.Operation{
 		Method:      http.MethodGet,
+		Path:        "/players/self",
+		Tags:        []string{"players"},
+		Summary:     "get player self",
+		Description: "get a player self from session",
+		OperationID: "get-player-self",
+	}, HandleGetPlayerSelf)
+
+	huma.Register(sessionApi, huma.Operation{
+		Method:      http.MethodGet,
 		Path:        "/players/tempusid/{tempus_id}",
 		Tags:        []string{"players"},
 		Summary:     "set Tempus ID",
 		Description: "set your Tempus ID and country",
 		OperationID: "set-tempus-id",
 	}, HandleSetTempusID)
+
+	huma.Register(sessionApi, huma.Operation{
+		Method:      http.MethodPost,
+		Path:        "/players/tradetoken/{steam_trade_url}",
+		Tags:        []string{"player"},
+		Summary:     "set Steam trade token",
+		Description: "set your own Steam trade token from your Steam Trade URL, found at https://steamcommunity.com/id/{steamid}/tradeoffers/privacy",
+		OperationID: "set-trade-token",
+	}, HandleSetTradeToken)
 
 	huma.Register(sessionApi, huma.Operation{
 		Method:      http.MethodGet,

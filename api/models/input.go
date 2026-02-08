@@ -19,6 +19,10 @@ type TempusIDInput struct {
 	TempusID int64 `path:"tempus_id" doc:"see: https://tempus2.xyz/"`
 }
 
+type TradeTokenInput struct {
+	SteamTradeURL string `path:"steam_trade_url"`
+}
+
 type EventIDInput struct {
 	ID int64 `path:"event_id"`
 }
