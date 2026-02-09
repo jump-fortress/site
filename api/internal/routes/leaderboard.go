@@ -5,12 +5,15 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"math"
 	"slices"
+	"strconv"
 	"time"
 
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/jump-fortress/site/db"
 	"github.com/jump-fortress/site/db/queries"
+	"github.com/jump-fortress/site/internal/tempus"
 	"github.com/jump-fortress/site/models"
 )
 
@@ -76,10 +79,10 @@ func HandleUpdateLeaderboards(ctx context.Context, input *models.LeaderboardsInp
 			return nil, models.WrapDBErr(err)
 		}
 	}
-	inputDivless := len(ilbs) == 1 && ilbs[0].Div == ""
 
 	// only events with one leaderboard can be divless
 	// can't be divless if event has more than 1 leaderboard, or if it has a single leaderboard with a div
+	inputDivless := len(ilbs) == 1 && ilbs[0].Div == ""
 	if !inputDivless && !slices.Contains(models.Divs, ilbs[0].Div) {
 		return nil, models.DivErr(ilbs[0].Div)
 	}
@@ -160,4 +163,60 @@ func HandleGetLeaderboardTimes(ctx context.Context, input *models.LeaderboardIDI
 		})
 	}
 	return resp, nil
+}
+
+// dev
+
+func HandleUpdateLeaderboardTempusTimes(ctx context.Context, input *models.LeaderboardIDInput) (*struct{}, error) {
+	event, err := db.Queries.SelectEventFromLeaderboardID(ctx, input.ID)
+	if err != nil {
+		return nil, models.WrapDBErr(err)
+	}
+	tClassID := 3
+	if event.Class == "Demo" {
+		tClassID = 4
+	}
+	leaderboard, err := db.Queries.SelectLeaderboard(ctx, input.ID)
+	if err != nil {
+		return nil, models.WrapDBErr(err)
+	}
+	twps, err := db.Queries.SelectPRTimesFromLeaderboard(ctx, leaderboard.ID)
+	if err != nil {
+		return nil, models.WrapDBErr(err)
+	}
+
+	fmt.Println("found " + strconv.Itoa(len(twps)) + " times")
+	for _, twp := range twps {
+		if !twp.Time.TempusTimeID.Valid {
+			fmt.Printf("attempt: %f by %s\n", twp.Time.Duration, twp.Player.Alias.String)
+			time.Sleep(time.Second)
+			tt, err := tempus.GetPR(leaderboard.Map, twp.Player.TempusID.Int64, int64(tClassID))
+			if err != nil {
+				fmt.Println("not found.")
+				continue
+			}
+			tDate := time.UnixMilli(int64(tt.Date) * 1000)
+			timeDiff := math.Abs(twp.Time.Duration - tt.Duration)
+			// assume margins of error
+			if timeDiff < 0.015 && tDate.Add(time.Hour*24).After(event.StartsAt) && tDate.Before(event.EndsAt.Add(time.Hour*24)) {
+				fmt.Println("found valid.")
+				err = db.Queries.UpdateTimeFromTempus(ctx, queries.UpdateTimeFromTempusParams{
+					Duration: tt.Duration,
+					TempusTimeID: sql.NullInt64{
+						Int64: tt.ID,
+						Valid: true,
+					},
+					CreatedAt: tDate,
+					ID:        twp.Time.ID,
+				})
+				if err != nil {
+					return nil, models.WrapDBErr(err)
+				}
+			} else {
+				fmt.Println("not during event.")
+			}
+		}
+	}
+
+	return nil, nil
 }
