@@ -15,6 +15,11 @@ import (
 	"github.com/jump-fortress/site/models"
 )
 
+var (
+	timeSubmitExtension = time.Hour * 24     // player submissions grace period
+	timeManageExtension = time.Hour * 24 * 7 // mod / admin updates grace period
+)
+
 // validate that a time isn't already submitted, and isn't larger duration than current PR
 func ValidateTimeExistsAndPR(ctx context.Context, leaderboard_id int64, player_id string, duration float64) error {
 	timeExists, err := db.Queries.SelectTimeExists(ctx, queries.SelectTimeExistsParams{
@@ -105,9 +110,8 @@ func HandleSubmitTime(ctx context.Context, input *models.LeaderboardIDInput) (*s
 		return nil, err
 	}
 
-	// 1 day grace period
 	now := time.Now()
-	if event.EndsAt.Add(time.Hour * 24).Before(now) {
+	if event.EndsAt.Add(timeSubmitExtension).Before(now) {
 		return nil, huma.Error400BadRequest(fmt.Sprintf("%s has ended. please contact a mod if you have an old time to submit!", event.Kind))
 	}
 
@@ -178,9 +182,8 @@ func HandleSubmitUnverifiedTime(ctx context.Context, input *models.UnverifiedTim
 
 	var duration float64 = float64(minutes*60) + seconds
 
-	// one day "grace period" for submitting an unverified time
 	now := time.Now()
-	if event.EndsAt.Add(time.Hour * 24).Before(now) {
+	if event.EndsAt.Add(timeSubmitExtension).Before(now) {
 		return nil, huma.Error400BadRequest(fmt.Sprintf("%s has ended. please contact a mod if you have an old time to submit!", event.Kind))
 	}
 
@@ -265,9 +268,8 @@ func HandleSubmitPlayerTime(ctx context.Context, input *models.PlayerTimeInput) 
 		return nil, err
 	}
 
-	// one week "grace period" for submitting a verified time
 	now := time.Now()
-	if event.EndsAt.Before(now.Add(time.Hour * 24 * 7)) {
+	if event.EndsAt.Before(now.Add(timeManageExtension)) {
 		return nil, huma.Error400BadRequest(fmt.Sprintf("%s ended more than one week ago. can't submit a time this old", event.Kind))
 	}
 
