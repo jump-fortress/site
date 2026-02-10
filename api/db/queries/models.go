@@ -10,6 +10,15 @@ import (
 	"time"
 )
 
+type Bounty struct {
+	EventID        int64
+	Course         sql.NullInt64
+	Bonus          sql.NullInt64
+	TargetDuration sql.NullFloat64
+	Complete       bool
+	CreatedAt      time.Time
+}
+
 type DeletedRow struct {
 	ID          int64
 	SourceTable string
@@ -74,6 +83,21 @@ type Player struct {
 	MapPref      sql.NullString
 	LauncherPref sql.NullString
 	CreatedAt    time.Time
+}
+
+type Point struct {
+	TimeID   int64
+	PrizeID  sql.NullInt64
+	Points   float64
+	Position int64
+}
+
+type Prize struct {
+	LeaderboardID int64
+	PlayerID      int64
+	Position      int64
+	Amount        float64
+	Keys          bool
 }
 
 type Session struct {

@@ -11,14 +11,6 @@ select count(*) from time
   where leaderboard_id = ?
   and player_id = ?;
 
--- name: SelectPRTime :one
-select sqlc.embed(time), sqlc.embed(event), sqlc.embed(leaderboard) from time
-  join leaderboard on time.leaderboard_id = leaderboard.id
-  join event on leaderboard.event_id = event.id
-  where event.id = ?
-  and time.player_id = ?
-  order by time.duration asc;
-
 -- name: SelectTimeExists :one
 select exists(
   select 1 from time
@@ -38,15 +30,15 @@ delete from time
 
 -- name: SelectTimesFromLeaderboard :many
 select sqlc.embed(time), sqlc.embed(player) from time
-join player on time.player_id = player.id
-where time.leaderboard_id = ?
-order by time.duration asc;
+  join player on time.player_id = player.id
+  where time.leaderboard_id = ?
+  order by time.duration asc;
 
 -- name: SelectPRTimesFromLeaderboard :many
-select sqlc.embed(time), sqlc.embed(player), cast(rank() over (order by duration) as integer) time_rank from time
-join player on time.player_id = player.id
-where time.leaderboard_id = ?
-group by player.id;
+select sqlc.embed(time), sqlc.embed(player), cast(rank() over (order by duration) as integer) time_position from time
+  join player on time.player_id = player.id
+  where time.leaderboard_id = ?
+  group by player.id;
 
 -- name: UpdateTimeFromTempus :exec
 update time

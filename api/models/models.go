@@ -73,14 +73,21 @@ type EventWithLeaderboards struct {
 }
 
 type TimeWithPlayer struct {
-	Time   Time   `json:"time"`
-	Player Player `json:"player"`
-	Rank   int64  `json:"rank"`
+	Time     Time   `json:"time"`
+	Player   Player `json:"player"`
+	Position int64  `json:"position"`
 }
 
 type EventLeaderboardTime struct {
 	Event       Event       `json:"event"`
 	Leaderboard Leaderboard `json:"leaderboard"`
 	Time        Time        `json:"time"`
-	Rank        int64       `json:"rank"`
+	Position    int64       `json:"position"`
+}
+
+type TimeWithLeaderboard struct {
+	Leaderboard Leaderboard `json:"leaderboard"`
+	Time        Time        `json:"time"`
+	Player      Player      `json:"player"`
+	Position    int64       `json:"position"`
 }

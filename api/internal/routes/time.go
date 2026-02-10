@@ -34,28 +34,28 @@ func ValidateTimeExistsAndPR(ctx context.Context, leaderboard_id int64, player_i
 		return huma.Error400BadRequest("time has already been submitted")
 	}
 
-	event, err := db.Queries.SelectEventFromLeaderboardID(ctx, leaderboard_id)
-	if err != nil {
-		return models.WrapDBErr(err)
-	}
-
 	timesSubmitted, err := db.Queries.CountPlayerTimesFromLeaderboard(ctx, queries.CountPlayerTimesFromLeaderboardParams{
 		LeaderboardID: leaderboard_id,
 		PlayerID:      player_id,
 	})
+
+	// get time
 	if timesSubmitted != 0 {
-		prElt, err := db.Queries.SelectPRTime(ctx, queries.SelectPRTimeParams{
-			ID:       event.ID,
-			PlayerID: player_id,
-		})
+		twps, err := db.Queries.SelectPRTimesFromLeaderboard(ctx, leaderboard_id)
 		if err != nil {
 			return models.WrapDBErr(err)
 		}
-		if prElt.Time.Duration < duration {
-			return huma.Error400BadRequest(fmt.Sprintf("submitted time (%.3f seconds) is slower than your current PR (%.3f seconds)", duration, prElt.Time.Duration))
-		}
-	}
 
+		for _, twp := range twps {
+			if twp.Player.ID == player_id {
+				if twp.Time.Duration < duration {
+					return huma.Error400BadRequest(fmt.Sprintf("submitted time (%.3f seconds) is slower than your current PR (%.3f seconds)", duration, twp.Time.Duration))
+				}
+				return nil
+			}
+		}
+		return huma.Error404NotFound(fmt.Sprintf("%d time(s) found submitted, but couldn't find their details.", timesSubmitted))
+	}
 	return nil
 }
 
@@ -233,28 +233,38 @@ func HandleSubmitUnverifiedTime(ctx context.Context, input *models.UnverifiedTim
 	return nil, nil
 }
 
-func HandleGetEventPR(ctx context.Context, input *models.EventIDInput) (*models.EventLeaderboardTimeOutput, error) {
+func HandleGetEventPR(ctx context.Context, input *models.EventIDInput) (*models.TimeWithLeaderboardOutput, error) {
 	principal, ok := principal.Get(ctx)
 	if !ok {
 		return nil, models.SessionErr()
 	}
 
-	elt, err := db.Queries.SelectPRTime(ctx, queries.SelectPRTimeParams{
-		ID:       input.ID,
-		PlayerID: principal.SteamID.String(),
-	})
+	leaderboards, err := db.Queries.SelectLeaderboards(ctx, input.ID)
 	if err != nil {
 		return nil, models.WrapDBErr(err)
 	}
 
-	resp := &models.EventLeaderboardTimeOutput{
-		Body: models.EventLeaderboardTime{
-			Event:       models.GetEventResponse(elt.Event),
-			Leaderboard: models.GetLeaderboardResponse(elt.Leaderboard, false),
-			Time:        models.GetTimeResponse(elt.Time),
-		},
+	for _, l := range leaderboards {
+		twps, err := db.Queries.SelectPRTimesFromLeaderboard(ctx, l.ID)
+		if err != nil {
+			return nil, models.WrapDBErr(err)
+		}
+
+		for _, twp := range twps {
+			if twp.Player.ID == principal.SteamID.String() {
+				resp := &models.TimeWithLeaderboardOutput{
+					Body: models.TimeWithLeaderboard{
+						Leaderboard: models.GetLeaderboardResponse(l, false),
+						Time:        models.GetTimeResponse(twp.Time),
+						Player:      models.GetPlayerResponse(twp.Player, false),
+						Position:    twp.TimePosition,
+					},
+				}
+				return resp, nil
+			}
+		}
 	}
-	return resp, nil
+	return nil, huma.Error404NotFound("no PR found")
 }
 
 // mod
