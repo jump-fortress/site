@@ -137,11 +137,11 @@ func RegisterSessionRoutes(sessionApi *huma.Group) {
 
 	huma.Register(sessionApi, huma.Operation{
 		Method:      http.MethodGet,
-		Path:        "/events/{event_id}/leaderboards/times",
+		Path:        "/events/{event_id}/leaderboards/times/pr",
 		Tags:        []string{"times"},
-		Summary:     "get leaderboard PR",
-		Description: "get your PR for an event's leaderboard",
-		OperationID: "get-leaderboard-pr",
+		Summary:     "get event PR",
+		Description: "get your PR for an event",
+		OperationID: "get-event-pr",
 	}, HandleGetEventPR)
 }
 

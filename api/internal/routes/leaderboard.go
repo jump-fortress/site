@@ -157,9 +157,9 @@ func HandleGetLeaderboardTimes(ctx context.Context, input *models.LeaderboardIDI
 
 	for _, twp := range twps {
 		resp.Body = append(resp.Body, models.TimeWithPlayer{
-			Time:   models.GetTimeResponse(twp.Time),
-			Player: models.GetPlayerResponse(twp.Player, true),
-			Rank:   twp.TimeRank,
+			Time:     models.GetTimeResponse(twp.Time),
+			Player:   models.GetPlayerResponse(twp.Player, true),
+			Position: twp.TimePosition,
 		})
 	}
 	return resp, nil

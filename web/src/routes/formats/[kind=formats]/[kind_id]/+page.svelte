@@ -1,7 +1,13 @@
 <script lang="ts">
   import { Client } from '$lib/api/api';
   import EventHeader from '$lib/components/display/EventHeader.svelte';
-  import { ApiPaths, type Leaderboard, type Player, type TimeWithPlayer } from '$lib/schema';
+  import {
+    ApiPaths,
+    type Leaderboard,
+    type Player,
+    type TimeWithLeaderboard,
+    type TimeWithPlayer
+  } from '$lib/schema';
   import { onMount } from 'svelte';
   import type { PageData } from './$types';
   import Table from '$lib/components/display/table/Table.svelte';
@@ -75,7 +81,7 @@
     {#if data.session}
       <Section>
         {#key refreshPR}
-          {#await Client.GET( ApiPaths.get_leaderboard_pr, { params: { path: { event_id: data.ewl.event.id } } } )}
+          {#await Client.GET( ApiPaths.get_event_pr, { params: { path: { event_id: data.ewl.event.id } } } )}
             <span></span>
           {:then { data: pr }}
             {#if prPlayer && pr}
@@ -86,11 +92,12 @@
                   <th class=""></th>
                   <th class="w-date"></th>
                 {/snippet}
-                {#snippet row({ _, leaderboard, time })}
-                  <td class={twTableGradients.get(`r${leaderboard.div?.toLowerCase()}`)}>PR</td>
+                {#snippet row({ player, time, leaderboard, position }: TimeWithLeaderboard)}
+                  <td class={twTableGradients.get(`r${leaderboard.div?.toLowerCase()}`)}
+                    >{position}</td>
                   <td class={twTableGradients.get(`t${leaderboard.div?.toLowerCase()}`)}
                     ><TableTime {time} /></td>
-                  <td><TablePlayer player={prPlayer as Player} link={true} /></td>
+                  <td><TablePlayer {player} /></td>
                   <td class="table-date"><TemporalDate datetime={time.created_at} /></td>
                 {/snippet}
               </Table>
@@ -167,9 +174,9 @@
                 <th class="w-0"></th>
               {/if}
             {/snippet}
-            {#snippet row({ player, time, rank }: TimeWithPlayer)}
-              <td class={twTableGradients.get(`r${rank}`)}>{rank}</td>
-              <td class={twTableGradients.get(`t${rank}`)}><TableTime {time} /></td>
+            {#snippet row({ player, time, position }: TimeWithPlayer)}
+              <td class={twTableGradients.get(`r${position}`)}>{position}</td>
+              <td class={twTableGradients.get(`t${position}`)}><TableTime {time} /></td>
               <td><TablePlayer {player} link={true} /></td>
               <td class="table-date"><TemporalDate datetime={time.created_at} /></td>
               {#if mod && !time.verified}
