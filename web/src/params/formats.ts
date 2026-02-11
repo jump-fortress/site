@@ -1,3 +1,5 @@
+const formats = ['monthly', 'motw', 'archive'];
+
 export function match(value: string) {
-  return value === 'monthly';
+  return formats.includes(value);
 }

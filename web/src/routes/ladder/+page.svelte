@@ -24,7 +24,7 @@
 
 {#if data.players}
   <Content>
-    <Section label="ladder">
+    <Section label="ladder" indent="/">
       <span class="text-content/75">players are sorted by div, then alphabetically.</span>
       {#key sort_class}
         <Table data={sortPlayers(data.players)}>

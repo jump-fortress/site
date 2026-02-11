@@ -1,13 +1,7 @@
 <script lang="ts">
   import { Client } from '$lib/api/api';
   import EventHeader from '$lib/components/display/EventHeader.svelte';
-  import {
-    ApiPaths,
-    type Leaderboard,
-    type Player,
-    type TimeWithLeaderboard,
-    type TimeWithPlayer
-  } from '$lib/schema';
+  import { ApiPaths, type Leaderboard, type Player, type TimeWithPlayer } from '$lib/schema';
   import { onMount } from 'svelte';
   import type { PageData } from './$types';
   import Table from '$lib/components/display/table/Table.svelte';
@@ -23,6 +17,7 @@
   import Collapse from '$lib/components/input/Collapse.svelte';
   import { Temporal } from 'temporal-polyfill';
   import LeaderboardButtons from '$lib/components/input/LeaderboardButtons.svelte';
+  import TableSkeleton from '$lib/components/display/table/presets/TableSkeleton.svelte';
 
   type Props = {
     data: PageData;
@@ -88,15 +83,13 @@
               <Table data={[pr]}>
                 {#snippet header()}
                   <th class="w-rank"></th>
-                  <th class="w-32"></th>
+                  <th class="w-time"></th>
                   <th class=""></th>
                   <th class="w-date"></th>
                 {/snippet}
-                {#snippet row({ player, time, leaderboard, position }: TimeWithLeaderboard)}
-                  <td class={twTableGradients.get(`r${leaderboard.div?.toLowerCase()}`)}
-                    >{position}</td>
-                  <td class={twTableGradients.get(`t${leaderboard.div?.toLowerCase()}`)}
-                    ><TableTime {time} /></td>
+                {#snippet row({ player, time, position }: TimeWithPlayer)}
+                  <td class={twTableGradients.get(`r${position}`)}>{position}</td>
+                  <td class={twTableGradients.get(`t${position}`)}><TableTime {time} /></td>
                   <td><TablePlayer {player} /></td>
                   <td class="table-date"><TemporalDate datetime={time.created_at} /></td>
                 {/snippet}
@@ -161,12 +154,12 @@
 
       {#key refreshLeaderboard && refreshPR}
         {#await Client.GET( ApiPaths.get_leaderboard_times, { params: { path: { leaderboard_id: selectedLeaderboardID } } } )}
-          <span>under construction..</span>
+          <TableSkeleton></TableSkeleton>
         {:then { data: times }}
           <Table data={times ?? []}>
             {#snippet header()}
               <th class="w-rank"></th>
-              <th class="w-32"></th>
+              <th class="w-time"></th>
               <th class=""></th>
               <th class="w-date"></th>
               {#if mod}

@@ -18,7 +18,7 @@
   const currEvents: EventWithLeaderboards[] = $derived(
     data.events?.filter(({ event }) => now.since(event.ends_at).seconds <= 0) ?? []
   );
-  const prevEvents: EventWithLeaderboards[] = $derived(
+  const pastEvents: EventWithLeaderboards[] = $derived(
     data.events?.filter(({ event }) => now.since(event.ends_at).seconds > 0) ?? []
   );
 </script>
@@ -27,14 +27,14 @@
   {#if currEvents.length}
     <Section label="current {currEvents.length > 1 ? pluralKind : currEvents.at(0)?.event.kind}">
       {#each currEvents as ewl}
-        <EventHeader event={ewl} href="formats/{params.kind}" />
+        <EventHeader event={ewl} />
       {/each}
     </Section>
   {/if}
 
-  {#if prevEvents.length}
+  {#if pastEvents.length}
     <Section label="past {pluralKind}">
-      <TableEvents data={prevEvents} href="formats/{params.kind}" onclick={() => {}}></TableEvents>
+      <TableEvents data={pastEvents} href="formats/{params.kind}" onclick={() => {}}></TableEvents>
     </Section>
   {/if}
 </Content>
