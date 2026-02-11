@@ -233,7 +233,7 @@ func HandleSubmitUnverifiedTime(ctx context.Context, input *models.UnverifiedTim
 	return nil, nil
 }
 
-func HandleGetEventPR(ctx context.Context, input *models.EventIDInput) (*models.TimeWithLeaderboardOutput, error) {
+func HandleGetEventPR(ctx context.Context, input *models.EventIDInput) (*models.TimeWithPlayerOutput, error) {
 	principal, ok := principal.Get(ctx)
 	if !ok {
 		return nil, models.SessionErr()
@@ -252,12 +252,11 @@ func HandleGetEventPR(ctx context.Context, input *models.EventIDInput) (*models.
 
 		for _, twp := range twps {
 			if twp.Player.ID == principal.SteamID.String() {
-				resp := &models.TimeWithLeaderboardOutput{
-					Body: models.TimeWithLeaderboard{
-						Leaderboard: models.GetLeaderboardResponse(l, false),
-						Time:        models.GetTimeResponse(twp.Time),
-						Player:      models.GetPlayerResponse(twp.Player, false),
-						Position:    twp.TimePosition,
+				resp := &models.TimeWithPlayerOutput{
+					Body: models.TimeWithPlayer{
+						Time:     models.GetTimeResponse(twp.Time),
+						Player:   models.GetPlayerResponse(twp.Player, false),
+						Position: twp.TimePosition,
 					},
 				}
 				return resp, nil
@@ -265,6 +264,38 @@ func HandleGetEventPR(ctx context.Context, input *models.EventIDInput) (*models.
 		}
 	}
 	return nil, huma.Error404NotFound("no PR found")
+}
+
+func HandleGetPlayerPRs(ctx context.Context, input *models.PlayerIDInput) (*models.EventLeaderboardTimesOutput, error) {
+	elts, err := db.Queries.SelectParticipatedEvents(ctx, input.PlayerID)
+	if err != nil {
+		return nil, models.WrapDBErr(err)
+	}
+
+	resp := &models.EventLeaderboardTimesOutput{
+		Body: []models.EventLeaderboardTime{},
+	}
+
+	for _, elt := range elts {
+		// get time rank
+		twps, err := db.Queries.SelectPRTimesFromLeaderboard(ctx, elt.Leaderboard.ID)
+		if err != nil {
+			return nil, models.WrapDBErr(err)
+		}
+
+		for _, twp := range twps {
+			if twp.Player.ID == input.PlayerID {
+				resp.Body = append(resp.Body, models.EventLeaderboardTime{
+					Event:       models.GetEventResponse(elt.Event),
+					Leaderboard: models.GetLeaderboardResponse(elt.Leaderboard, false),
+					Time:        models.GetTimeResponse(elt.Time),
+					Position:    twp.TimePosition,
+				})
+			}
+		}
+	}
+
+	return resp, nil
 }
 
 // mod

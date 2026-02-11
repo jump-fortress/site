@@ -122,6 +122,64 @@ func (q *Queries) SelectPRTimesFromLeaderboard(ctx context.Context, leaderboardI
 	return items, nil
 }
 
+const selectParticipatedEvents = `-- name: SelectParticipatedEvents :many
+select event.id, event.kind, event.kind_id, event.class, event.visible_at, event.starts_at, event.ends_at, event.created_at, leaderboard.id, leaderboard.event_id, leaderboard.div, leaderboard.map, time.id, time.leaderboard_id, time.player_id, time.tempus_time_id, time.duration, time.verified, time.created_at from time
+join leaderboard on time.leaderboard_id = leaderboard.id
+join event on leaderboard.event_id = event.id
+where time.player_id = ?
+group by leaderboard.id
+order by event.starts_at desc
+`
+
+type SelectParticipatedEventsRow struct {
+	Event       Event
+	Leaderboard Leaderboard
+	Time        Time
+}
+
+func (q *Queries) SelectParticipatedEvents(ctx context.Context, playerID string) ([]SelectParticipatedEventsRow, error) {
+	rows, err := q.db.QueryContext(ctx, selectParticipatedEvents, playerID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []SelectParticipatedEventsRow
+	for rows.Next() {
+		var i SelectParticipatedEventsRow
+		if err := rows.Scan(
+			&i.Event.ID,
+			&i.Event.Kind,
+			&i.Event.KindID,
+			&i.Event.Class,
+			&i.Event.VisibleAt,
+			&i.Event.StartsAt,
+			&i.Event.EndsAt,
+			&i.Event.CreatedAt,
+			&i.Leaderboard.ID,
+			&i.Leaderboard.EventID,
+			&i.Leaderboard.Div,
+			&i.Leaderboard.Map,
+			&i.Time.ID,
+			&i.Time.LeaderboardID,
+			&i.Time.PlayerID,
+			&i.Time.TempusTimeID,
+			&i.Time.Duration,
+			&i.Time.Verified,
+			&i.Time.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const selectTime = `-- name: SelectTime :one
 select id, leaderboard_id, player_id, tempus_time_id, duration, verified, created_at from time
   where id = ?

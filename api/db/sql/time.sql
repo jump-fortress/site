@@ -46,3 +46,11 @@ update time
   tempus_time_id = ?,
   created_at = ?
   where id = ?;
+
+-- name: SelectParticipatedEvents :many
+select sqlc.embed(event), sqlc.embed(leaderboard), sqlc.embed(time) from time
+join leaderboard on time.leaderboard_id = leaderboard.id
+join event on leaderboard.event_id = event.id
+where time.player_id = ?
+group by leaderboard.id
+order by event.starts_at desc;

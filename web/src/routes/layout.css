@@ -99,7 +99,7 @@
   }
 
   th {
-    @apply px-1;
+    @apply px-1 text-start;
   }
 
   td {
@@ -112,6 +112,10 @@
 
   .table-date {
     @apply pr-3 text-end text-content/75;
+  }
+
+  .table-div {
+    @apply text-start;
   }
 
   .w-rank {
@@ -131,6 +135,6 @@
   }
 
   .w-time {
-    @apply w-20;
+    @apply w-36;
   }
 }

@@ -60,6 +60,15 @@ func RegisterOpenRoutes(internalApi *huma.Group) {
 		Description: "get all times for an event's leaderboard",
 		OperationID: "get-leaderboard-times",
 	}, HandleGetLeaderboardTimes)
+
+	huma.Register(internalApi, huma.Operation{
+		Method:      http.MethodGet,
+		Path:        "/events/players/{player_id}",
+		Tags:        []string{"times"},
+		Summary:     "get player PRs",
+		Description: "get a player's PRs for all events",
+		OperationID: "get-player-prs",
+	}, HandleGetPlayerPRs)
 }
 
 func RegisterSessionRoutes(sessionApi *huma.Group) {

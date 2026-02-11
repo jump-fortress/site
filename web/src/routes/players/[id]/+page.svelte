@@ -1,20 +1,79 @@
 <script lang="ts">
-  import { page } from '$app/state';
-  import { Client } from '$lib/api/api';
+  import { Client } from '$lib/api/api.js';
   import PlayerHeader from '$lib/components/display/player/PlayerHeader.svelte';
-  import { ApiPaths } from '$lib/schema';
+  import Table from '$lib/components/display/table/Table.svelte';
+  import TableEvent from '$lib/components/display/table/TableEvent.svelte';
+  import TableMap from '$lib/components/display/table/TableMap.svelte';
+  import TableTime from '$lib/components/display/table/TableTime.svelte';
+  import TemporalDate from '$lib/components/display/TemporalDate.svelte';
+  import Content from '$lib/components/layout/Content.svelte';
+  import Section from '$lib/components/layout/Section.svelte';
+  import { twTableGradients } from '$lib/helpers/times.js';
+  import { ApiPaths, type EventLeaderboardTime } from '$lib/schema.js';
 
-  const player_id = $derived(page.params.id);
+  let { data } = $props();
+
+  let selected_class = $derived(data.player?.class_pref ?? 'Soldier');
 </script>
 
-{#if player_id}
-  {#await Client.GET(ApiPaths.get_player, { params: { path: { player_id: player_id } } })}
-    <span></span>
-  {:then { data: player }}
-    {#if player}
-      <PlayerHeader {player} />
-    {:else}
-      <span>no player :(</span>
-    {/if}
-  {/await}
+{#if data.player}
+  <PlayerHeader player={data.player} bind:class_pref={selected_class} />
+
+  <Content>
+    {#await Client.GET( ApiPaths.get_player_prs, { params: { path: { player_id: data.player.id } } } )}
+      <span></span>
+    {:then { data: prs }}
+      {@const monthlies =
+        prs?.filter(
+          ({ event }) => event.player_class === selected_class && event.kind === 'monthly'
+        ) ?? []}
+      {@const archives =
+        prs?.filter(
+          ({ event }) => event.player_class === selected_class && event.kind === 'archive'
+        ) ?? []}
+      {#if monthlies.length}
+        <Section label="past monthlies">
+          <Table data={monthlies}>
+            {#snippet header()}
+              <th class="w-rank"></th>
+              <th class="w-time"></th>
+              <th class=""></th>
+              <th class="w-event"></th>
+              <th class="w-date"></th>
+            {/snippet}
+            {#snippet row({ event, leaderboard, time, position }: EventLeaderboardTime)}
+              <td class={twTableGradients.get(`r${position}`)}>{position}</td>
+              <td class={twTableGradients.get(`t${position}`)}><TableTime {time} /></td>
+              <td class="overflow-hidden"
+                ><TableMap map={leaderboard.map} div={leaderboard.div} /></td>
+              <td><TableEvent {event} href={'formats/monthly'} /></td>
+              <td class="table-date"><TemporalDate datetime={time.created_at} /></td>
+            {/snippet}
+          </Table>
+        </Section>
+      {/if}
+
+      {#if archives.length}
+        <Section label="past archives">
+          <Table data={archives}>
+            {#snippet header()}
+              <th class="w-rank"></th>
+              <th class="w-time"></th>
+              <th class=""></th>
+              <th class="w-event"></th>
+              <th class="w-date"></th>
+            {/snippet}
+            {#snippet row({ event, leaderboard, time, position }: EventLeaderboardTime)}
+              <td class={twTableGradients.get(`r${position}`)}>{position}</td>
+              <td class={twTableGradients.get(`t${position}`)}><TableTime {time} /></td>
+              <td class="overflow-hidden"
+                ><TableMap map={leaderboard.map} div={leaderboard.div} /></td>
+              <td><TableEvent {event} href={'formats/archive'} /></td>
+              <td class="table-date"><TemporalDate datetime={time.created_at} /></td>
+            {/snippet}
+          </Table>
+        </Section>
+      {/if}
+    {/await}
+  </Content>
 {/if}
