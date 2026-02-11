@@ -164,6 +164,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/internal/events/players/{player_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * get player PRs
+         * @description get a player's PRs for all events
+         */
+        get: operations["get-player-prs"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/internal/events/{event_kind}": {
         parameters: {
             query?: never;
@@ -763,6 +783,13 @@ export interface components {
             /** Format: date-time */
             visible_at: string;
         };
+        EventLeaderboardTime: {
+            event: components["schemas"]["Event"];
+            leaderboard: components["schemas"]["Leaderboard"];
+            /** Format: int64 */
+            position: number;
+            time: components["schemas"]["Time"];
+        };
         EventWithLeaderboards: {
             /**
              * Format: uri
@@ -860,20 +887,13 @@ export interface components {
             tempus_time_id?: number;
             verified: boolean;
         };
-        TimeWithLeaderboard: {
+        TimeWithPlayer: {
             /**
              * Format: uri
              * @description A URL to the JSON Schema for this object.
-             * @example https://example.com/schemas/TimeWithLeaderboard.json
+             * @example https://example.com/schemas/TimeWithPlayer.json
              */
             readonly $schema?: string;
-            leaderboard: components["schemas"]["Leaderboard"];
-            player: components["schemas"]["Player"];
-            /** Format: int64 */
-            position: number;
-            time: components["schemas"]["Time"];
-        };
-        TimeWithPlayer: {
             player: components["schemas"]["Player"];
             /** Format: int64 */
             position: number;
@@ -889,6 +909,7 @@ export interface components {
 export type ErrorDetail = components['schemas']['ErrorDetail'];
 export type ErrorModel = components['schemas']['ErrorModel'];
 export type Event = components['schemas']['Event'];
+export type EventLeaderboardTime = components['schemas']['EventLeaderboardTime'];
 export type EventWithLeaderboards = components['schemas']['EventWithLeaderboards'];
 export type Leaderboard = components['schemas']['Leaderboard'];
 export type Map = components['schemas']['Map'];
@@ -896,7 +917,6 @@ export type Player = components['schemas']['Player'];
 export type Session = components['schemas']['Session'];
 export type SteamProfile = components['schemas']['SteamProfile'];
 export type Time = components['schemas']['Time'];
-export type TimeWithLeaderboard = components['schemas']['TimeWithLeaderboard'];
 export type TimeWithPlayer = components['schemas']['TimeWithPlayer'];
 export type $defs = Record<string, never>;
 export interface operations {
@@ -1125,6 +1145,38 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["TimeWithPlayer"][] | null;
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "get-player-prs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description player id, SteamID64 */
+                player_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EventLeaderboardTime"][] | null;
                 };
             };
             /** @description Error */
@@ -1605,7 +1657,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["TimeWithLeaderboard"];
+                    "application/json": components["schemas"]["TimeWithPlayer"];
                 };
             };
             /** @description Error */
@@ -1963,6 +2015,7 @@ export enum ApiPaths {
     update_maps = "/internal/admin/maps",
     update_leaderboard_tempus_times = "/internal/devevents/leaderboards/{leaderboard_id}",
     get_leaderboard_times = "/internal/events/leaderboards/{leaderboard_id}/times",
+    get_player_prs = "/internal/events/players/{player_id}",
     get_event_kinds = "/internal/events/{event_kind}",
     get_event = "/internal/events/{event_kind}/{kind_id}",
     get_maps = "/internal/maps",
