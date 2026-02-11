@@ -4,907 +4,907 @@
  */
 
 export interface paths {
-    "/internal/admin/events": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * get all events
-         * @description get all events
-         */
-        get: operations["get-full-events"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+  '/internal/admin/events': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/internal/admin/events/create": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * create event
-         * @description create an event (competition)
-         */
-        post: operations["create-event"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /**
+     * get all events
+     * @description get all events
+     */
+    get: operations['get-full-events'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/internal/admin/events/create': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/internal/admin/events/leaderboards": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * update leaderboards
-         * @description update an event's leaderboards
-         */
-        post: operations["update-leaderboards"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /**
+     * create event
+     * @description create an event (competition)
+     */
+    post: operations['create-event'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/internal/admin/events/leaderboards': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/internal/admin/events/update": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * update event
-         * @description update an event (competition)
-         */
-        post: operations["update-event"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /**
+     * update leaderboards
+     * @description update an event's leaderboards
+     */
+    post: operations['update-leaderboards'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/internal/admin/events/update': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/internal/admin/events/{event_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        /**
-         * cancel event
-         * @description cancel an event (competition) that hasn't started
-         */
-        delete: operations["cancel-event"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /**
+     * update event
+     * @description update an event (competition)
+     */
+    post: operations['update-event'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/internal/admin/events/{event_id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/internal/admin/maps": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * update maps
-         * @description update map list from Tempus
-         */
-        post: operations["update-maps"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    post?: never;
+    /**
+     * cancel event
+     * @description cancel an event (competition) that hasn't started
+     */
+    delete: operations['cancel-event'];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/internal/admin/maps': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/internal/devevents/leaderboards/{leaderboard_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * update leaderboard Tempus times
-         * @description update Tempus time IDs for a leaderboard's times
-         */
-        post: operations["update-leaderboard-tempus-times"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /**
+     * update maps
+     * @description update map list from Tempus
+     */
+    post: operations['update-maps'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/internal/devevents/leaderboards/{leaderboard_id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/internal/events/leaderboards/{leaderboard_id}/times": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * get leaderboard times
-         * @description get all times for an event's leaderboard
-         */
-        get: operations["get-leaderboard-times"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /**
+     * update leaderboard Tempus times
+     * @description update Tempus time IDs for a leaderboard's times
+     */
+    post: operations['update-leaderboard-tempus-times'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/internal/events/leaderboards/{leaderboard_id}/times': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/internal/events/players/{player_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * get player PRs
-         * @description get a player's PRs for all events
-         */
-        get: operations["get-player-prs"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /**
+     * get leaderboard times
+     * @description get all times for an event's leaderboard
+     */
+    get: operations['get-leaderboard-times'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/internal/events/players/{player_id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/internal/events/{event_kind}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * get all of event kind
-         * @description get all of a kind of event
-         */
-        get: operations["get-event-kinds"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /**
+     * get player PRs
+     * @description get a player's PRs for all events
+     */
+    get: operations['get-player-prs'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/internal/events/{event_kind}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/internal/events/{event_kind}/{kind_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * get event
-         * @description get an event by its kind and kind_id
-         */
-        get: operations["get-event"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /**
+     * get all of event kind
+     * @description get all of a kind of event
+     */
+    get: operations['get-event-kinds'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/internal/events/{event_kind}/{kind_id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/internal/maps": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * get maps
-         * @description get all maps
-         */
-        get: operations["get-maps"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /**
+     * get event
+     * @description get an event by its kind and kind_id
+     */
+    get: operations['get-event'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/internal/maps': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/internal/mod/events/leaderboards/times/{time_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * verify player time
-         * @description verify a player's time for an event's leaderboard
-         */
-        post: operations["verify-player-time"];
-        /**
-         * delete player time
-         * @description delete a player's unverified time for an event's leaderboard
-         */
-        delete: operations["delete-player-time"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /**
+     * get maps
+     * @description get all maps
+     */
+    get: operations['get-maps'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/internal/mod/events/leaderboards/times/{time_id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/internal/mod/events/leaderboards/{leaderboard_id}/times/{duration}/{player_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * submit player time
-         * @description submit a player's time for an event's leaderboard (up to one week after event end)
-         */
-        post: operations["submit-player-time"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /**
+     * verify player time
+     * @description verify a player's time for an event's leaderboard
+     */
+    post: operations['verify-player-time'];
+    /**
+     * delete player time
+     * @description delete a player's unverified time for an event's leaderboard
+     */
+    delete: operations['delete-player-time'];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/internal/mod/events/leaderboards/{leaderboard_id}/times/{duration}/{player_id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/internal/mod/players": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * get all players
-         * @description get all players
-         */
-        get: operations["get-full-players"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /**
+     * submit player time
+     * @description submit a player's time for an event's leaderboard (up to one week after event end)
+     */
+    post: operations['submit-player-time'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/internal/mod/players': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/internal/mod/players/{player_id}/{alias}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * update alias
-         * @description update player div
-         */
-        post: operations["update-alias"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /**
+     * get all players
+     * @description get all players
+     */
+    get: operations['get-full-players'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/internal/mod/players/{player_id}/{alias}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/internal/mod/players/{player_id}/{player_class}/{div}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * update div
-         * @description update player div
-         */
-        post: operations["update-div"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /**
+     * update alias
+     * @description update player div
+     */
+    post: operations['update-alias'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/internal/mod/players/{player_id}/{player_class}/{div}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/internal/players": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * get all players
-         * @description get all players
-         */
-        get: operations["get-players"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /**
+     * update div
+     * @description update player div
+     */
+    post: operations['update-div'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/internal/players': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/internal/players/{player_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * get player
-         * @description get a player by player_id
-         */
-        get: operations["get-player"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /**
+     * get all players
+     * @description get all players
+     */
+    get: operations['get-players'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/internal/players/{player_id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/internal/readyz": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * get readiness
-         * @description get whether or not the API is ready to process requests
-         */
-        get: operations["readyz"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /**
+     * get player
+     * @description get a player by player_id
+     */
+    get: operations['get-player'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/internal/readyz': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/internal/session": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * get session
-         * @description get session info
-         */
-        get: operations["get-session"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /**
+     * get readiness
+     * @description get whether or not the API is ready to process requests
+     */
+    get: operations['readyz'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/internal/session': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/internal/session/events/leaderboards/{leaderboard_id}/times": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * submit a time
-         * @description submit a time for an event's leaderboard
-         */
-        post: operations["submit-time"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /**
+     * get session
+     * @description get session info
+     */
+    get: operations['get-session'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/internal/session/events/leaderboards/{leaderboard_id}/times': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/internal/session/events/leaderboards/{leaderboard_id}/times/{run_time}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * submit an unverified time
-         * @description submit a time manually for an event's leaderboard
-         */
-        post: operations["submit-unverified-time"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /**
+     * submit a time
+     * @description submit a time for an event's leaderboard
+     */
+    post: operations['submit-time'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/internal/session/events/leaderboards/{leaderboard_id}/times/{run_time}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/internal/session/events/{event_id}/leaderboards/times/pr": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * get event PR
-         * @description get your PR for an event
-         */
-        get: operations["get-event-pr"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /**
+     * submit an unverified time
+     * @description submit a time manually for an event's leaderboard
+     */
+    post: operations['submit-unverified-time'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/internal/session/events/{event_id}/leaderboards/times/pr': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/internal/session/players/class/{player_class}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * update class pref
-         * @description update your class preference
-         */
-        get: operations["update-class-pref"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /**
+     * get event PR
+     * @description get your PR for an event
+     */
+    get: operations['get-event-pr'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/internal/session/players/class/{player_class}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/internal/session/players/launcher/{launcher}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * update launcher pref
-         * @description update your soldier launcher preference
-         */
-        get: operations["update-launcher-pref"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /**
+     * update class pref
+     * @description update your class preference
+     */
+    get: operations['update-class-pref'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/internal/session/players/launcher/{launcher}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/internal/session/players/map/{map_name}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * update map pref
-         * @description update your map preference
-         */
-        get: operations["update-map-pref"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /**
+     * update launcher pref
+     * @description update your soldier launcher preference
+     */
+    get: operations['update-launcher-pref'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/internal/session/players/map/{map_name}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/internal/session/players/self": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * get player self
-         * @description get a player self from session
-         */
-        get: operations["get-player-self"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /**
+     * update map pref
+     * @description update your map preference
+     */
+    get: operations['update-map-pref'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/internal/session/players/self': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/internal/session/players/tempusid/{tempus_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * set Tempus ID
-         * @description set your Tempus ID and country
-         */
-        get: operations["set-tempus-id"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /**
+     * get player self
+     * @description get a player self from session
+     */
+    get: operations['get-player-self'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/internal/session/players/tempusid/{tempus_id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/internal/session/players/tradetoken/{steam_trade_url}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * set Steam trade token
-         * @description set your own Steam trade token from your Steam Trade URL, found at https://steamcommunity.com/id/{steamid}/tradeoffers/privacy
-         */
-        post: operations["set-trade-token"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /**
+     * set Tempus ID
+     * @description set your Tempus ID and country
+     */
+    get: operations['set-tempus-id'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/internal/session/players/tradetoken/{steam_trade_url}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/internal/session/sign-out": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * sign out
-         * @description sign out & clear session
-         */
-        post: operations["sign-out"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /**
+     * set Steam trade token
+     * @description set your own Steam trade token from your Steam Trade URL, found at https://steamcommunity.com/id/{steamid}/tradeoffers/privacy
+     */
+    post: operations['set-trade-token'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/internal/session/sign-out': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/internal/session/steam/profile": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Steam profile
-         * @description get the authenticated user's steam profile info
-         */
-        get: operations["steam-profile"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /**
+     * sign out
+     * @description sign out & clear session
+     */
+    post: operations['sign-out'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/internal/session/steam/profile': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/internal/sessionplayers/avatar_url": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * update avatar url
-         * @description update avatar url from Steam
-         */
-        post: operations["update-avatar"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /**
+     * Steam profile
+     * @description get the authenticated user's steam profile info
+     */
+    get: operations['steam-profile'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/internal/sessionplayers/avatar_url': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/internal/steam/callback": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Steam callback
-         * @description steam callback
-         */
-        get: operations["steam-callback"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /**
+     * update avatar url
+     * @description update avatar url from Steam
+     */
+    post: operations['update-avatar'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/internal/steam/callback': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/internal/steam/discover": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Steam discover
-         * @description steam discover
-         */
-        get: operations["steam-discover"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /**
+     * Steam callback
+     * @description steam callback
+     */
+    get: operations['steam-callback'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/internal/steam/discover': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
+    /**
+     * Steam discover
+     * @description steam discover
+     */
+    get: operations['steam-discover'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
-    schemas: {
-        ErrorDetail: {
-            /** @description Where the error occurred, e.g. 'body.items[3].tags' or 'path.thing-id' */
-            location?: string;
-            /** @description Error message text */
-            message?: string;
-            /** @description The value at the given location */
-            value?: unknown;
-        };
-        ErrorModel: {
-            /**
-             * Format: uri
-             * @description A URL to the JSON Schema for this object.
-             * @example https://example.com/schemas/ErrorModel.json
-             */
-            readonly $schema?: string;
-            /**
-             * @description A human-readable explanation specific to this occurrence of the problem.
-             * @example Property foo is required but is missing.
-             */
-            detail?: string;
-            /** @description Optional list of individual error details */
-            errors?: components["schemas"]["ErrorDetail"][] | null;
-            /**
-             * Format: uri
-             * @description A URI reference that identifies the specific occurrence of the problem.
-             * @example https://example.com/error-log/abc123
-             */
-            instance?: string;
-            /**
-             * Format: int64
-             * @description HTTP status code
-             * @example 400
-             */
-            status?: number;
-            /**
-             * @description A short, human-readable summary of the problem type. This value should not change between occurrences of the error.
-             * @example Bad Request
-             */
-            title?: string;
-            /**
-             * Format: uri
-             * @description A URI reference to human-readable documentation for the error.
-             * @default about:blank
-             * @example https://example.com/errors/example
-             */
-            type: string;
-        };
-        Event: {
-            /**
-             * Format: uri
-             * @description A URL to the JSON Schema for this object.
-             * @example https://example.com/schemas/Event.json
-             */
-            readonly $schema?: string;
-            /** Format: date-time */
-            created_at: string;
-            /** Format: date-time */
-            ends_at: string;
-            /** Format: int64 */
-            id: number;
-            /** @enum {string} */
-            kind: "monthly" | "archive";
-            /** Format: int64 */
-            kind_id: number;
-            /** @enum {string} */
-            player_class: "Soldier" | "Demo";
-            /** Format: date-time */
-            starts_at: string;
-            /** Format: date-time */
-            visible_at: string;
-        };
-        EventLeaderboardTime: {
-            event: components["schemas"]["Event"];
-            leaderboard: components["schemas"]["Leaderboard"];
-            /** Format: int64 */
-            position: number;
-            time: components["schemas"]["Time"];
-        };
-        EventWithLeaderboards: {
-            /**
-             * Format: uri
-             * @description A URL to the JSON Schema for this object.
-             * @example https://example.com/schemas/EventWithLeaderboards.json
-             */
-            readonly $schema?: string;
-            event: components["schemas"]["Event"];
-            leaderboards: components["schemas"]["Leaderboard"][] | null;
-        };
-        Leaderboard: {
-            div?: string;
-            /** Format: int64 */
-            event_id: number;
-            /** Format: int64 */
-            id: number;
-            map: string;
-        };
-        Map: {
-            /** Format: int64 */
-            bonuses: number;
-            /** Format: int64 */
-            courses: number;
-            /** Format: int64 */
-            demo_rating: number;
-            /** Format: int64 */
-            demo_tier: number;
-            name: string;
-            /** Format: int64 */
-            soldier_rating: number;
-            /** Format: int64 */
-            soldier_tier: number;
-        };
-        Player: {
-            /**
-             * Format: uri
-             * @description A URL to the JSON Schema for this object.
-             * @example https://example.com/schemas/Player.json
-             */
-            readonly $schema?: string;
-            alias: string;
-            avatar_url: string;
-            class_pref: string;
-            country?: string;
-            country_code?: string;
-            /** Format: date-time */
-            created_at: string;
-            demo_div?: string;
-            id: string;
-            launcher_pref?: string;
-            map_pref?: string;
-            role: string;
-            soldier_div?: string;
-            /** Format: int64 */
-            tempus_id?: number;
-            trade_token?: string;
-        };
-        Session: {
-            /**
-             * Format: uri
-             * @description A URL to the JSON Schema for this object.
-             * @example https://example.com/schemas/Session.json
-             */
-            readonly $schema?: string;
-            alias: string;
-            avatar_url: string;
-            id: string;
-            role: string;
-        };
-        SteamProfile: {
-            /**
-             * Format: uri
-             * @description A URL to the JSON Schema for this object.
-             * @example https://example.com/schemas/SteamProfile.json
-             */
-            readonly $schema?: string;
-            avatarFullUrl: string;
-            avatarMediumUrl: string;
-            avatarUrl: string;
-            personaName: string;
-            profileUrl: string;
-            steamId: string;
-        };
-        Time: {
-            /** Format: date-time */
-            created_at: string;
-            /** Format: double */
-            duration: number;
-            /** Format: int64 */
-            id: number;
-            /** Format: int64 */
-            leaderboard_id: number;
-            player_id: string;
-            /** Format: int64 */
-            tempus_time_id?: number;
-            verified: boolean;
-        };
-        TimeWithPlayer: {
-            /**
-             * Format: uri
-             * @description A URL to the JSON Schema for this object.
-             * @example https://example.com/schemas/TimeWithPlayer.json
-             */
-            readonly $schema?: string;
-            player: components["schemas"]["Player"];
-            /** Format: int64 */
-            position: number;
-            time: components["schemas"]["Time"];
-        };
+  schemas: {
+    ErrorDetail: {
+      /** @description Where the error occurred, e.g. 'body.items[3].tags' or 'path.thing-id' */
+      location?: string;
+      /** @description Error message text */
+      message?: string;
+      /** @description The value at the given location */
+      value?: unknown;
     };
-    responses: never;
-    parameters: never;
-    requestBodies: never;
-    headers: never;
-    pathItems: never;
+    ErrorModel: {
+      /**
+       * Format: uri
+       * @description A URL to the JSON Schema for this object.
+       * @example https://example.com/schemas/ErrorModel.json
+       */
+      readonly $schema?: string;
+      /**
+       * @description A human-readable explanation specific to this occurrence of the problem.
+       * @example Property foo is required but is missing.
+       */
+      detail?: string;
+      /** @description Optional list of individual error details */
+      errors?: components['schemas']['ErrorDetail'][] | null;
+      /**
+       * Format: uri
+       * @description A URI reference that identifies the specific occurrence of the problem.
+       * @example https://example.com/error-log/abc123
+       */
+      instance?: string;
+      /**
+       * Format: int64
+       * @description HTTP status code
+       * @example 400
+       */
+      status?: number;
+      /**
+       * @description A short, human-readable summary of the problem type. This value should not change between occurrences of the error.
+       * @example Bad Request
+       */
+      title?: string;
+      /**
+       * Format: uri
+       * @description A URI reference to human-readable documentation for the error.
+       * @default about:blank
+       * @example https://example.com/errors/example
+       */
+      type: string;
+    };
+    Event: {
+      /**
+       * Format: uri
+       * @description A URL to the JSON Schema for this object.
+       * @example https://example.com/schemas/Event.json
+       */
+      readonly $schema?: string;
+      /** Format: date-time */
+      created_at: string;
+      /** Format: date-time */
+      ends_at: string;
+      /** Format: int64 */
+      id: number;
+      /** @enum {string} */
+      kind: 'monthly' | 'archive';
+      /** Format: int64 */
+      kind_id: number;
+      /** @enum {string} */
+      player_class: 'Soldier' | 'Demo';
+      /** Format: date-time */
+      starts_at: string;
+      /** Format: date-time */
+      visible_at: string;
+    };
+    EventLeaderboardTime: {
+      event: components['schemas']['Event'];
+      leaderboard: components['schemas']['Leaderboard'];
+      /** Format: int64 */
+      position: number;
+      time: components['schemas']['Time'];
+    };
+    EventWithLeaderboards: {
+      /**
+       * Format: uri
+       * @description A URL to the JSON Schema for this object.
+       * @example https://example.com/schemas/EventWithLeaderboards.json
+       */
+      readonly $schema?: string;
+      event: components['schemas']['Event'];
+      leaderboards: components['schemas']['Leaderboard'][] | null;
+    };
+    Leaderboard: {
+      div?: string;
+      /** Format: int64 */
+      event_id: number;
+      /** Format: int64 */
+      id: number;
+      map: string;
+    };
+    Map: {
+      /** Format: int64 */
+      bonuses: number;
+      /** Format: int64 */
+      courses: number;
+      /** Format: int64 */
+      demo_rating: number;
+      /** Format: int64 */
+      demo_tier: number;
+      name: string;
+      /** Format: int64 */
+      soldier_rating: number;
+      /** Format: int64 */
+      soldier_tier: number;
+    };
+    Player: {
+      /**
+       * Format: uri
+       * @description A URL to the JSON Schema for this object.
+       * @example https://example.com/schemas/Player.json
+       */
+      readonly $schema?: string;
+      alias: string;
+      avatar_url: string;
+      class_pref: string;
+      country?: string;
+      country_code?: string;
+      /** Format: date-time */
+      created_at: string;
+      demo_div?: string;
+      id: string;
+      launcher_pref?: string;
+      map_pref?: string;
+      role: string;
+      soldier_div?: string;
+      /** Format: int64 */
+      tempus_id?: number;
+      trade_token?: string;
+    };
+    Session: {
+      /**
+       * Format: uri
+       * @description A URL to the JSON Schema for this object.
+       * @example https://example.com/schemas/Session.json
+       */
+      readonly $schema?: string;
+      alias: string;
+      avatar_url: string;
+      id: string;
+      role: string;
+    };
+    SteamProfile: {
+      /**
+       * Format: uri
+       * @description A URL to the JSON Schema for this object.
+       * @example https://example.com/schemas/SteamProfile.json
+       */
+      readonly $schema?: string;
+      avatarFullUrl: string;
+      avatarMediumUrl: string;
+      avatarUrl: string;
+      personaName: string;
+      profileUrl: string;
+      steamId: string;
+    };
+    Time: {
+      /** Format: date-time */
+      created_at: string;
+      /** Format: double */
+      duration: number;
+      /** Format: int64 */
+      id: number;
+      /** Format: int64 */
+      leaderboard_id: number;
+      player_id: string;
+      /** Format: int64 */
+      tempus_time_id?: number;
+      verified: boolean;
+    };
+    TimeWithPlayer: {
+      /**
+       * Format: uri
+       * @description A URL to the JSON Schema for this object.
+       * @example https://example.com/schemas/TimeWithPlayer.json
+       */
+      readonly $schema?: string;
+      player: components['schemas']['Player'];
+      /** Format: int64 */
+      position: number;
+      time: components['schemas']['Time'];
+    };
+  };
+  responses: never;
+  parameters: never;
+  requestBodies: never;
+  headers: never;
+  pathItems: never;
 }
 export type ErrorDetail = components['schemas']['ErrorDetail'];
 export type ErrorModel = components['schemas']['ErrorModel'];
@@ -920,1127 +920,1127 @@ export type Time = components['schemas']['Time'];
 export type TimeWithPlayer = components['schemas']['TimeWithPlayer'];
 export type $defs = Record<string, never>;
 export interface operations {
-    "get-full-events": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["EventWithLeaderboards"][] | null;
-                };
-            };
-            /** @description Error */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorModel"];
-                };
-            };
-        };
+  'get-full-events': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "create-event": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["Event"];
-            };
+        content: {
+          'application/json': components['schemas']['EventWithLeaderboards'][] | null;
         };
-        responses: {
-            /** @description No Content */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Error */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorModel"];
-                };
-            };
+      };
+      /** @description Error */
+      default: {
+        headers: {
+          [name: string]: unknown;
         };
+        content: {
+          'application/problem+json': components['schemas']['ErrorModel'];
+        };
+      };
     };
-    "update-leaderboards": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["Leaderboard"][] | null;
-            };
-        };
-        responses: {
-            /** @description No Content */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Error */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorModel"];
-                };
-            };
-        };
+  };
+  'create-event': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "update-event": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["Event"];
-            };
-        };
-        responses: {
-            /** @description No Content */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Error */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorModel"];
-                };
-            };
-        };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['Event'];
+      };
     };
-    "cancel-event": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                event_id: number;
-            };
-            cookie?: never;
+    responses: {
+      /** @description No Content */
+      204: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description No Content */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Error */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorModel"];
-                };
-            };
+        content?: never;
+      };
+      /** @description Error */
+      default: {
+        headers: {
+          [name: string]: unknown;
         };
+        content: {
+          'application/problem+json': components['schemas']['ErrorModel'];
+        };
+      };
     };
-    "update-maps": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No Content */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Error */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorModel"];
-                };
-            };
-        };
+  };
+  'update-leaderboards': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "update-leaderboard-tempus-times": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                leaderboard_id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No Content */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Error */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorModel"];
-                };
-            };
-        };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['Leaderboard'][] | null;
+      };
     };
-    "get-leaderboard-times": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                leaderboard_id: number;
-            };
-            cookie?: never;
+    responses: {
+      /** @description No Content */
+      204: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["TimeWithPlayer"][] | null;
-                };
-            };
-            /** @description Error */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorModel"];
-                };
-            };
+        content?: never;
+      };
+      /** @description Error */
+      default: {
+        headers: {
+          [name: string]: unknown;
         };
+        content: {
+          'application/problem+json': components['schemas']['ErrorModel'];
+        };
+      };
     };
-    "get-player-prs": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description player id, SteamID64 */
-                player_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["EventLeaderboardTime"][] | null;
-                };
-            };
-            /** @description Error */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorModel"];
-                };
-            };
-        };
+  };
+  'update-event': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "get-event-kinds": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                event_kind: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["EventWithLeaderboards"][] | null;
-                };
-            };
-            /** @description Error */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorModel"];
-                };
-            };
-        };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['Event'];
+      };
     };
-    "get-event": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                event_kind: string;
-                kind_id: number;
-            };
-            cookie?: never;
+    responses: {
+      /** @description No Content */
+      204: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["EventWithLeaderboards"];
-                };
-            };
-            /** @description Error */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorModel"];
-                };
-            };
+        content?: never;
+      };
+      /** @description Error */
+      default: {
+        headers: {
+          [name: string]: unknown;
         };
+        content: {
+          'application/problem+json': components['schemas']['ErrorModel'];
+        };
+      };
     };
-    "get-maps": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Map"][] | null;
-                };
-            };
-            /** @description Error */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorModel"];
-                };
-            };
-        };
+  };
+  'cancel-event': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        event_id: number;
+      };
+      cookie?: never;
     };
-    "verify-player-time": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                time_id: number;
-            };
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description No Content */
+      204: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description No Content */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Error */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorModel"];
-                };
-            };
+        content?: never;
+      };
+      /** @description Error */
+      default: {
+        headers: {
+          [name: string]: unknown;
         };
+        content: {
+          'application/problem+json': components['schemas']['ErrorModel'];
+        };
+      };
     };
-    "delete-player-time": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                time_id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No Content */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Error */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorModel"];
-                };
-            };
-        };
+  };
+  'update-maps': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "submit-player-time": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                leaderboard_id: number;
-                player_id: string;
-                duration: number;
-            };
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description No Content */
+      204: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description No Content */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Error */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorModel"];
-                };
-            };
+        content?: never;
+      };
+      /** @description Error */
+      default: {
+        headers: {
+          [name: string]: unknown;
         };
+        content: {
+          'application/problem+json': components['schemas']['ErrorModel'];
+        };
+      };
     };
-    "get-full-players": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Player"][] | null;
-                };
-            };
-            /** @description Error */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorModel"];
-                };
-            };
-        };
+  };
+  'update-leaderboard-tempus-times': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        leaderboard_id: number;
+      };
+      cookie?: never;
     };
-    "update-alias": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description player id, SteamID64 */
-                player_id: string;
-                alias: string;
-            };
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description No Content */
+      204: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description No Content */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Error */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorModel"];
-                };
-            };
+        content?: never;
+      };
+      /** @description Error */
+      default: {
+        headers: {
+          [name: string]: unknown;
         };
+        content: {
+          'application/problem+json': components['schemas']['ErrorModel'];
+        };
+      };
     };
-    "update-div": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description player id, SteamID64 */
-                player_id: string;
-                player_class: "Soldier" | "Demo";
-                div: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No Content */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Error */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorModel"];
-                };
-            };
-        };
+  };
+  'get-leaderboard-times': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        leaderboard_id: number;
+      };
+      cookie?: never;
     };
-    "get-players": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Player"][] | null;
-                };
-            };
-            /** @description Error */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorModel"];
-                };
-            };
+        content: {
+          'application/json': components['schemas']['TimeWithPlayer'][] | null;
         };
+      };
+      /** @description Error */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ErrorModel'];
+        };
+      };
     };
-    "get-player": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description player id, SteamID64 */
-                player_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Player"];
-                };
-            };
-            /** @description Error */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorModel"];
-                };
-            };
-        };
+  };
+  'get-player-prs': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description player id, SteamID64 */
+        player_id: string;
+      };
+      cookie?: never;
     };
-    readyz: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description No Content */
-            204: {
-                headers: {
-                    OK?: boolean;
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Error */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorModel"];
-                };
-            };
+        content: {
+          'application/json': components['schemas']['EventLeaderboardTime'][] | null;
         };
+      };
+      /** @description Error */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ErrorModel'];
+        };
+      };
     };
-    "get-session": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Session"];
-                };
-            };
-            /** @description Error */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorModel"];
-                };
-            };
-        };
+  };
+  'get-event-kinds': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        event_kind: string;
+      };
+      cookie?: never;
     };
-    "submit-time": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                leaderboard_id: number;
-            };
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description No Content */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Error */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorModel"];
-                };
-            };
+        content: {
+          'application/json': components['schemas']['EventWithLeaderboards'][] | null;
         };
+      };
+      /** @description Error */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ErrorModel'];
+        };
+      };
     };
-    "submit-unverified-time": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                leaderboard_id: number;
-                run_time: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No Content */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Error */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorModel"];
-                };
-            };
-        };
+  };
+  'get-event': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        event_kind: string;
+        kind_id: number;
+      };
+      cookie?: never;
     };
-    "get-event-pr": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                event_id: number;
-            };
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["TimeWithPlayer"];
-                };
-            };
-            /** @description Error */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorModel"];
-                };
-            };
+        content: {
+          'application/json': components['schemas']['EventWithLeaderboards'];
         };
+      };
+      /** @description Error */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ErrorModel'];
+        };
+      };
     };
-    "update-class-pref": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                player_class: "Soldier" | "Demo";
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No Content */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Error */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorModel"];
-                };
-            };
-        };
+  };
+  'get-maps': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "update-launcher-pref": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                launcher: "stock" | "original" | "mangler" | "none";
-            };
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description No Content */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Error */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorModel"];
-                };
-            };
+        content: {
+          'application/json': components['schemas']['Map'][] | null;
         };
+      };
+      /** @description Error */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ErrorModel'];
+        };
+      };
     };
-    "update-map-pref": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                map_name: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No Content */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Error */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorModel"];
-                };
-            };
-        };
+  };
+  'verify-player-time': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        time_id: number;
+      };
+      cookie?: never;
     };
-    "get-player-self": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description No Content */
+      204: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Player"];
-                };
-            };
-            /** @description Error */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorModel"];
-                };
-            };
+        content?: never;
+      };
+      /** @description Error */
+      default: {
+        headers: {
+          [name: string]: unknown;
         };
+        content: {
+          'application/problem+json': components['schemas']['ErrorModel'];
+        };
+      };
     };
-    "set-tempus-id": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description see: https://tempus2.xyz/ */
-                tempus_id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No Content */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Error */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorModel"];
-                };
-            };
-        };
+  };
+  'delete-player-time': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        time_id: number;
+      };
+      cookie?: never;
     };
-    "set-trade-token": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                steam_trade_url: string;
-            };
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description No Content */
+      204: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description No Content */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Error */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorModel"];
-                };
-            };
+        content?: never;
+      };
+      /** @description Error */
+      default: {
+        headers: {
+          [name: string]: unknown;
         };
+        content: {
+          'application/problem+json': components['schemas']['ErrorModel'];
+        };
+      };
     };
-    "sign-out": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No Content */
-            204: {
-                headers: {
-                    "Set-Cookie"?: string;
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorModel"];
-                };
-            };
-            /** @description Internal Server Error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorModel"];
-                };
-            };
-        };
+  };
+  'submit-player-time': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        leaderboard_id: number;
+        player_id: string;
+        duration: number;
+      };
+      cookie?: never;
     };
-    "steam-profile": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description No Content */
+      204: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SteamProfile"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorModel"];
-                };
-            };
-            /** @description Internal Server Error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorModel"];
-                };
-            };
+        content?: never;
+      };
+      /** @description Error */
+      default: {
+        headers: {
+          [name: string]: unknown;
         };
+        content: {
+          'application/problem+json': components['schemas']['ErrorModel'];
+        };
+      };
     };
-    "update-avatar": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No Content */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Error */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorModel"];
-                };
-            };
-        };
+  };
+  'get-full-players': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "steam-callback": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description No Content */
-            204: {
-                headers: {
-                    Location?: string;
-                    "Set-Cookie"?: string;
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Error */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorModel"];
-                };
-            };
+        content: {
+          'application/json': components['schemas']['Player'][] | null;
         };
+      };
+      /** @description Error */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ErrorModel'];
+        };
+      };
     };
-    "steam-discover": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No Content */
-            204: {
-                headers: {
-                    Location?: string;
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Error */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorModel"];
-                };
-            };
-        };
+  };
+  'update-alias': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description player id, SteamID64 */
+        player_id: string;
+        alias: string;
+      };
+      cookie?: never;
     };
+    requestBody?: never;
+    responses: {
+      /** @description No Content */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Error */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ErrorModel'];
+        };
+      };
+    };
+  };
+  'update-div': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description player id, SteamID64 */
+        player_id: string;
+        player_class: 'Soldier' | 'Demo';
+        div: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description No Content */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Error */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ErrorModel'];
+        };
+      };
+    };
+  };
+  'get-players': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Player'][] | null;
+        };
+      };
+      /** @description Error */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ErrorModel'];
+        };
+      };
+    };
+  };
+  'get-player': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description player id, SteamID64 */
+        player_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Player'];
+        };
+      };
+      /** @description Error */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ErrorModel'];
+        };
+      };
+    };
+  };
+  readyz: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description No Content */
+      204: {
+        headers: {
+          OK?: boolean;
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Error */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ErrorModel'];
+        };
+      };
+    };
+  };
+  'get-session': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Session'];
+        };
+      };
+      /** @description Error */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ErrorModel'];
+        };
+      };
+    };
+  };
+  'submit-time': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        leaderboard_id: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description No Content */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Error */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ErrorModel'];
+        };
+      };
+    };
+  };
+  'submit-unverified-time': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        leaderboard_id: number;
+        run_time: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description No Content */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Error */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ErrorModel'];
+        };
+      };
+    };
+  };
+  'get-event-pr': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        event_id: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['TimeWithPlayer'];
+        };
+      };
+      /** @description Error */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ErrorModel'];
+        };
+      };
+    };
+  };
+  'update-class-pref': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        player_class: 'Soldier' | 'Demo';
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description No Content */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Error */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ErrorModel'];
+        };
+      };
+    };
+  };
+  'update-launcher-pref': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        launcher: 'stock' | 'original' | 'mangler' | 'none';
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description No Content */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Error */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ErrorModel'];
+        };
+      };
+    };
+  };
+  'update-map-pref': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        map_name: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description No Content */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Error */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ErrorModel'];
+        };
+      };
+    };
+  };
+  'get-player-self': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Player'];
+        };
+      };
+      /** @description Error */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ErrorModel'];
+        };
+      };
+    };
+  };
+  'set-tempus-id': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description see: https://tempus2.xyz/ */
+        tempus_id: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description No Content */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Error */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ErrorModel'];
+        };
+      };
+    };
+  };
+  'set-trade-token': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        steam_trade_url: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description No Content */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Error */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ErrorModel'];
+        };
+      };
+    };
+  };
+  'sign-out': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description No Content */
+      204: {
+        headers: {
+          'Set-Cookie'?: string;
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Unauthorized */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ErrorModel'];
+        };
+      };
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ErrorModel'];
+        };
+      };
+    };
+  };
+  'steam-profile': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['SteamProfile'];
+        };
+      };
+      /** @description Unauthorized */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ErrorModel'];
+        };
+      };
+      /** @description Internal Server Error */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ErrorModel'];
+        };
+      };
+    };
+  };
+  'update-avatar': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description No Content */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Error */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ErrorModel'];
+        };
+      };
+    };
+  };
+  'steam-callback': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description No Content */
+      204: {
+        headers: {
+          Location?: string;
+          'Set-Cookie'?: string;
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Error */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ErrorModel'];
+        };
+      };
+    };
+  };
+  'steam-discover': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description No Content */
+      204: {
+        headers: {
+          Location?: string;
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Error */
+      default: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/problem+json': components['schemas']['ErrorModel'];
+        };
+      };
+    };
+  };
 }
 export enum ApiPaths {
-    get_full_events = "/internal/admin/events",
-    create_event = "/internal/admin/events/create",
-    update_leaderboards = "/internal/admin/events/leaderboards",
-    update_event = "/internal/admin/events/update",
-    cancel_event = "/internal/admin/events/{event_id}",
-    update_maps = "/internal/admin/maps",
-    update_leaderboard_tempus_times = "/internal/devevents/leaderboards/{leaderboard_id}",
-    get_leaderboard_times = "/internal/events/leaderboards/{leaderboard_id}/times",
-    get_player_prs = "/internal/events/players/{player_id}",
-    get_event_kinds = "/internal/events/{event_kind}",
-    get_event = "/internal/events/{event_kind}/{kind_id}",
-    get_maps = "/internal/maps",
-    delete_player_time = "/internal/mod/events/leaderboards/times/{time_id}",
-    verify_player_time = "/internal/mod/events/leaderboards/times/{time_id}",
-    submit_player_time = "/internal/mod/events/leaderboards/{leaderboard_id}/times/{duration}/{player_id}",
-    get_full_players = "/internal/mod/players",
-    update_alias = "/internal/mod/players/{player_id}/{alias}",
-    update_div = "/internal/mod/players/{player_id}/{player_class}/{div}",
-    get_players = "/internal/players",
-    get_player = "/internal/players/{player_id}",
-    readyz = "/internal/readyz",
-    get_session = "/internal/session",
-    submit_time = "/internal/session/events/leaderboards/{leaderboard_id}/times",
-    submit_unverified_time = "/internal/session/events/leaderboards/{leaderboard_id}/times/{run_time}",
-    get_event_pr = "/internal/session/events/{event_id}/leaderboards/times/pr",
-    update_class_pref = "/internal/session/players/class/{player_class}",
-    update_launcher_pref = "/internal/session/players/launcher/{launcher}",
-    update_map_pref = "/internal/session/players/map/{map_name}",
-    get_player_self = "/internal/session/players/self",
-    set_tempus_id = "/internal/session/players/tempusid/{tempus_id}",
-    set_trade_token = "/internal/session/players/tradetoken/{steam_trade_url}",
-    sign_out = "/internal/session/sign-out",
-    steam_profile = "/internal/session/steam/profile",
-    update_avatar = "/internal/sessionplayers/avatar_url",
-    steam_callback = "/internal/steam/callback",
-    steam_discover = "/internal/steam/discover"
+  get_full_events = '/internal/admin/events',
+  create_event = '/internal/admin/events/create',
+  update_leaderboards = '/internal/admin/events/leaderboards',
+  update_event = '/internal/admin/events/update',
+  cancel_event = '/internal/admin/events/{event_id}',
+  update_maps = '/internal/admin/maps',
+  update_leaderboard_tempus_times = '/internal/devevents/leaderboards/{leaderboard_id}',
+  get_leaderboard_times = '/internal/events/leaderboards/{leaderboard_id}/times',
+  get_player_prs = '/internal/events/players/{player_id}',
+  get_event_kinds = '/internal/events/{event_kind}',
+  get_event = '/internal/events/{event_kind}/{kind_id}',
+  get_maps = '/internal/maps',
+  delete_player_time = '/internal/mod/events/leaderboards/times/{time_id}',
+  verify_player_time = '/internal/mod/events/leaderboards/times/{time_id}',
+  submit_player_time = '/internal/mod/events/leaderboards/{leaderboard_id}/times/{duration}/{player_id}',
+  get_full_players = '/internal/mod/players',
+  update_alias = '/internal/mod/players/{player_id}/{alias}',
+  update_div = '/internal/mod/players/{player_id}/{player_class}/{div}',
+  get_players = '/internal/players',
+  get_player = '/internal/players/{player_id}',
+  readyz = '/internal/readyz',
+  get_session = '/internal/session',
+  submit_time = '/internal/session/events/leaderboards/{leaderboard_id}/times',
+  submit_unverified_time = '/internal/session/events/leaderboards/{leaderboard_id}/times/{run_time}',
+  get_event_pr = '/internal/session/events/{event_id}/leaderboards/times/pr',
+  update_class_pref = '/internal/session/players/class/{player_class}',
+  update_launcher_pref = '/internal/session/players/launcher/{launcher}',
+  update_map_pref = '/internal/session/players/map/{map_name}',
+  get_player_self = '/internal/session/players/self',
+  set_tempus_id = '/internal/session/players/tempusid/{tempus_id}',
+  set_trade_token = '/internal/session/players/tradetoken/{steam_trade_url}',
+  sign_out = '/internal/session/sign-out',
+  steam_profile = '/internal/session/steam/profile',
+  update_avatar = '/internal/sessionplayers/avatar_url',
+  steam_callback = '/internal/steam/callback',
+  steam_discover = '/internal/steam/discover'
 }
