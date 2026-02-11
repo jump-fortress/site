@@ -10,7 +10,7 @@
   const maps: Set<string> = $derived(new Set(leaderboards.map((l) => l.map)));
 </script>
 
-<div class="flex w-full overflow-hidden">
+<div class="group flex w-full overflow-hidden">
   {#each maps as map}
     <TableMap {map} />
   {/each}

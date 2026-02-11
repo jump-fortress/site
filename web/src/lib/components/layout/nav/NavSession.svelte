@@ -41,10 +41,7 @@
 
 <!-- extra left padding for dropdown -->
 <!-- svelte-ignore a11y_consider_explicit_label -->
-<a
-  class="flex items-center px-2 py-1 text-content/75 hover:text-content"
-  href="https://discord.gg/tusBc64wnv"
-  target="_blank">
+<a class="flex items-center px-2 py-1 text-content/75 hover:text-content" href="/" target="_blank">
   <span class="icon-[mdi--discord]"></span>
 </a>
 

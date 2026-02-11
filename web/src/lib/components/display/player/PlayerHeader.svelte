@@ -7,6 +7,7 @@
   import tempus from '$lib/assets/components/profile/tempus.png';
   import plaza from '$lib/assets/components/profile/plaza.png';
   import no_map from '$lib/assets/no_map.png';
+  import Launcher from '../Launcher.svelte';
 
   type Props = {
     player: Player;
@@ -16,15 +17,14 @@
   let { player, class_pref = $bindable(player.class_pref) }: Props = $props();
 </script>
 
-<div
-  class="relative h-56 flex-col overflow-hidden bg-base-800 inset-shadow-sm inset-shadow-base-700">
+<div class="relative z-10 h-56 flex-col overflow-hidden bg-base-900">
   {#if player.map_pref}
     <div
       class="h-36 w-full mask-b-from-98% bg-cover bg-center"
       style:background-image={`url("https://tempusplaza.com/map-backgrounds/${player.map_pref}.jpg")`}>
     </div>
   {:else}
-    <div class="h-36 w-full bg-base-900 mask-b-from-98%">
+    <div class="h-36 w-full mask-b-from-98%">
       <div class="size-full mask-x-from-50% mask-x-to-95%">
         <div
           class="filter-purelavender size-[1476px] rotate-5 animate-[nomap_360s_linear_infinite] bg-size-[30%] bg-repeat"
@@ -38,8 +38,17 @@
     class="absolute top-22 left-4 z-10 h-24 rounded-box object-cover"
     src={player.avatar_url}
     alt="" />
-  <div class="relative -top-4 flex flex-col gap-1">
-    <span class="w-fit rounded-tr-box bg-base-800 pr-2 pl-30 text-lg">{player.alias}</span>
+  <div class="relative -top-5.5 flex flex-col gap-1">
+    <div class="flex">
+      <div class="relative w-fit rounded-tr-box bg-base-900 pr-2 pl-30 text-lg">
+        <span>{player.alias}</span>
+        {#if class_pref === 'Soldier'}
+          <div class="absolute -top-3 -right-16 rotate-15">
+            <Launcher launcher={player.launcher_pref} />
+          </div>
+        {/if}
+      </div>
+    </div>
     <div class="ml-30 flex items-center gap-2">
       <!-- div -->
       {#if class_pref === 'Soldier'}
@@ -73,7 +82,7 @@
     {/if}
 
     <!-- class select -->
-    <div class="absolute top-4 right-2 ml-auto flex">
+    <div class="absolute top-5 right-2 ml-auto flex">
       <ClassSelect bind:player_class={class_pref} />
     </div>
   </div>

@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { fade } from 'svelte/transition';
-
   import type { Snippet } from 'svelte';
 
   type Props = {

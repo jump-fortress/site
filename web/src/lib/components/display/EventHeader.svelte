@@ -48,30 +48,15 @@
       {#if href}
         <a class="relative flex size-full overflow-hidden" href="/{href}/{event.event.kind_id}">
           {#if map}
-            <img
-              class="over absolute z-10 h-48 w-full scale-105 object-cover brightness-75 transition-all not-first:mask-x-from-98% not-last:mask-x-from-98% group-hover:brightness-100"
-              src="https://tempusplaza.com/map-backgrounds/{map}.jpg"
-              alt=""
-              draggable="false" />
+            {@render mapimage(map)}
           {:else}
-            <div class="h-48 w-full bg-base-900">
-              <div class="size-full mask-x-from-50% mask-x-to-95%">
-                <div
-                  class=" filter-purelavender size-[1476px] rotate-5 animate-[nomap_360s_linear_infinite] bg-size-[30%] bg-repeat"
-                  style:background-image={`url(${no_map})`}>
-                </div>
-              </div>
-            </div>
+            {@render nomap()}
           {/if}
         </a>
+      {:else if map}
+        {@render mapimage(map)}
       {:else}
-        <div class="relative flex size-full overflow-hidden">
-          <img
-            class="over absolute z-10 h-48 w-full scale-105 object-cover brightness-75 transition-all not-first:mask-x-from-98% not-last:mask-x-from-98% group-hover:brightness-100"
-            src="https://tempusplaza.com/map-backgrounds/{map}.jpg"
-            alt=""
-            draggable="false" />
-        </div>
+        {@render nomap()}
       {/if}
       <div
         class="absolute z-10 flex flex-col items-center gap-1
@@ -90,7 +75,7 @@
   {/each}
   <!-- absolute details container -->
   <div
-    class="absolute top-0 flex w-full justify-between p-2 text-shadow-xs/100 text-shadow-base-900">
+    class="absolute top-0 z-10 flex w-full justify-between bg-linear-to-b from-base-900/50 from-50% to-base-900/0 p-2 text-shadow-xs/100 text-shadow-base-900">
     <!-- competition name -->
     <div class="z-10 flex h-12 items-center gap-1">
       <ClassImage player_class={event.event.player_class} />
@@ -113,3 +98,22 @@
     </div>
   </div>
 </div>
+
+{#snippet mapimage(map: string)}
+  <img
+    class="over absolute z-10 h-48 w-full scale-105 object-cover brightness-75 transition-all not-first:mask-x-from-98% not-last:mask-x-from-98% group-hover:brightness-100"
+    src="https://tempusplaza.com/map-backgrounds/{map}.jpg"
+    alt=""
+    draggable="false" />
+{/snippet}
+
+{#snippet nomap()}
+  <div class="h-48 w-full bg-base-900">
+    <div class="size-full mask-x-from-50% mask-x-to-95%">
+      <div
+        class=" filter-purelavender size-[1476px] rotate-5 animate-[nomap_360s_linear_infinite] bg-size-[30%] bg-repeat"
+        style:background-image={`url(${no_map})`}>
+      </div>
+    </div>
+  </div>
+{/snippet}

@@ -1,18 +1,24 @@
 <script lang="ts">
+  import Div from '../Div.svelte';
+
   type Props = {
     map: string;
+    div?: string;
   };
 
-  let { map }: Props = $props();
+  let { map, div = '' }: Props = $props();
 </script>
 
 <div
-  class="relative grid size-full scale-x-105 place-content-center text-shadow-xs/100 text-shadow-base-900 not-first:mask-l-from-97% not-last:mask-r-from-97%">
+  class="group relative grid size-full scale-x-105 place-content-center text-shadow-xs/100 text-shadow-base-900 not-first:mask-l-from-97% not-last:mask-r-from-97%">
   <span class="relative z-10 truncate">{map}</span>
   <img
-    class="absolute size-full object-cover brightness-75"
+    class="absolute size-full object-cover brightness-75 transition-all group-hover:brightness-100"
     src="https://tempusplaza.com/map-backgrounds/{map}.jpg"
     alt=""
     draggable="false"
     loading="lazy" />
+  {#if div}
+    <div class="absolute ml-4 flex h-full items-center"><Div {div} /></div>
+  {/if}
 </div>

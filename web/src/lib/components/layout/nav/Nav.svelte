@@ -12,7 +12,7 @@
   };
   let { session }: Props = $props();
 
-  let route = $state(page.url.pathname);
+  let route = $derived(page.url.pathname);
 
   onMount(() => {
     if (!session) {
@@ -32,9 +32,10 @@
       subpages={[
         { label: 'monthly', href: '/formats/monthly' },
         { label: 'motw', href: '/formats/motw' },
-        { label: 'bounty', href: '/formats/bounty' }
+        { label: 'archive', href: '/formats/archive' }
       ]}
       {route} />
+    <NavPage label={'bounties'} href={'/bounty'} {route} />
     <NavPage
       label={'invitationals'}
       href={'/invitationals'}
@@ -43,7 +44,6 @@
         { label: 'playoffs', href: '/invitationals/playoffs' }
       ]}
       {route} />
-    <NavPage label="archive" href="/archive" {route} />
     <NavPage
       label={'help'}
       href={'/help/faq'}
