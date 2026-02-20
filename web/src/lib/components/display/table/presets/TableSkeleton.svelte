@@ -2,7 +2,7 @@
   import Table from '../Table.svelte';
 </script>
 
-<Table data={[{}, {}, {}, {}, {}, {}, {}, {}]}>
+<Table data={[{}, {}, {}]}>
   {#snippet header()}
     <th></th>
   {/snippet}
