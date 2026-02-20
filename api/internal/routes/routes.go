@@ -171,7 +171,23 @@ func RegisterSessionRoutes(sessionApi *huma.Group) {
 		OperationID: "update-timeslot-pref",
 	}, HandleUpdateTimeslotPref)
 
-	// todo: get info for motw with current session
+	huma.Register(sessionApi, huma.Operation{
+		Method:      http.MethodGet,
+		Path:        "/events/{event_kind}/{kind_id}",
+		Tags:        []string{"events"},
+		Summary:     "get motw",
+		Description: "get a motw accounting for player timeslot",
+		OperationID: "get-motw",
+	}, HandleGetMotw)
+
+	huma.Register(sessionApi, huma.Operation{
+		Method:      http.MethodGet,
+		Path:        "/events/leaderboards/{leaderboard_id}/times",
+		Tags:        []string{"times"},
+		Summary:     "get motw leaderboard times",
+		Description: "get all times for an motw's leaderboard",
+		OperationID: "get-motw-leaderboard-times",
+	}, HandleGetMotwLeaderboardTimes)
 }
 
 func RegisterModRoutes(modApi *huma.Group) {

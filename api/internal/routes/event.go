@@ -9,6 +9,7 @@ import (
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/jump-fortress/site/db"
 	"github.com/jump-fortress/site/db/queries"
+	"github.com/jump-fortress/site/internal/principal"
 	"github.com/jump-fortress/site/internal/rows"
 	"github.com/jump-fortress/site/models"
 )
@@ -103,6 +104,45 @@ func HandleGetEventKinds(ctx context.Context, input *models.EventKindInput) (*mo
 		return nil, huma.Error400BadRequest("no events visible")
 	}
 	return resp, nil
+}
+
+// session
+func HandleGetMotw(ctx context.Context, input *models.EventKindAndIDInput) (*models.EventWithLeaderboardsOutput, error) {
+	principal, ok := principal.Get(ctx)
+	if !ok {
+		return nil, models.SessionErr()
+	}
+
+	// get player timeslot
+	playerTimeslot, err := db.Queries.SelectPlayerTimeslot(ctx, principal.SteamID.String())
+	if err != nil {
+		return nil, models.WrapDBErr(err)
+	}
+	ptsStarts, _ := GetTimeslotDatetimes(playerTimeslot.MotwTimeslot)
+
+	// get motw and leaderboards
+	els, err := db.Queries.SelectEventLeaderboards(ctx, queries.SelectEventLeaderboardsParams{
+		Kind:   "motw",
+		KindID: input.KindID,
+	})
+	if err != nil {
+		return nil, models.WrapDBErr(err)
+	}
+
+	now := time.Now()
+
+	// motw starts after player timeslot
+	sensitive := els[0].Event.StartsAt.After(ptsStarts)
+	if sensitive && els[0].Event.VisibleAt.After(now) {
+		return nil, huma.Error400BadRequest("event not visible")
+	}
+
+	resp := &models.EventWithLeaderboardsOutput{
+		Body: models.GetEventWithLeaderboardsResponse(els, sensitive),
+	}
+
+	return resp, nil
+
 }
 
 // admin

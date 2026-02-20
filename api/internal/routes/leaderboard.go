@@ -13,6 +13,7 @@ import (
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/jump-fortress/site/db"
 	"github.com/jump-fortress/site/db/queries"
+	"github.com/jump-fortress/site/internal/principal"
 	"github.com/jump-fortress/site/internal/tempus"
 	"github.com/jump-fortress/site/models"
 )
@@ -149,6 +150,47 @@ func HandleGetLeaderboardTimes(ctx context.Context, input *models.LeaderboardIDI
 	event, err := db.Queries.SelectEventFromLeaderboardID(ctx, input.ID)
 	sensitive := motwNotEnded(event.Kind, event.EndsAt)
 	// hide motw times if motw hasn't ended
+	if sensitive {
+		return nil, nil
+	}
+
+	twps, err := db.Queries.SelectPRTimesFromLeaderboard(ctx, input.ID)
+	if err != nil {
+		return nil, models.WrapDBErr(err)
+	}
+
+	resp := &models.TimesWithPlayerOutput{
+		Body: []models.TimeWithPlayer{},
+	}
+
+	for _, twp := range twps {
+		resp.Body = append(resp.Body, models.TimeWithPlayer{
+			Time:     models.GetTimeResponse(twp.Time),
+			Player:   models.GetPlayerResponse(twp.Player, true),
+			Position: twp.TimePosition,
+		})
+	}
+	return resp, nil
+}
+
+// session
+
+func HandleGetMotwLeaderboardTimes(ctx context.Context, input *models.LeaderboardIDInput) (*models.TimesWithPlayerOutput, error) {
+	principal, ok := principal.Get(ctx)
+	if !ok {
+		return nil, models.SessionErr()
+	}
+	event, err := db.Queries.SelectEventFromLeaderboardID(ctx, input.ID)
+
+	// get player timeslot
+	playerTimeslot, err := db.Queries.SelectPlayerTimeslot(ctx, principal.SteamID.String())
+	if err != nil {
+		return nil, models.WrapDBErr(err)
+	}
+	ptsStarts, _ := GetTimeslotDatetimes(playerTimeslot.MotwTimeslot)
+
+	// motw starts after player timeslot
+	sensitive := event.StartsAt.After(ptsStarts)
 	if sensitive {
 		return nil, nil
 	}

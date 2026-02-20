@@ -137,6 +137,17 @@ func HandleSubmitTime(ctx context.Context, input *models.LeaderboardIDInput) (*s
 	if ttDate.Before(event.StartsAt) {
 		return nil, huma.Error400BadRequest(fmt.Sprintf("Tempus PR was before this event started! (%s) please submit an unverified time if you're submitting a non-PR time", ttDate.String()))
 	}
+	// for motws, additionally check if Tempus PR is during player's timeslot
+	if event.Kind == "motw" {
+		playerTimeslot, err := db.Queries.SelectPlayerTimeslot(ctx, principal.SteamID.String())
+		if err != nil {
+			return nil, huma.Error400BadRequest("no timeslot found, please select one when a motw isn't in progress")
+		}
+		ptsStarts, ptsEnds := GetTimeslotDatetimes(playerTimeslot.MotwTimeslot)
+		if ttDate.Before(ptsStarts) || ttDate.After(ptsEnds) {
+			return nil, huma.Error400BadRequest(fmt.Sprintf("Tempus PR wasn't during your timeslot! (%s) please submit an unverified time if submitting a non-PR time.", ttDate.String()))
+		}
+	}
 
 	err = ValidateTimeExistsAndPR(ctx, leaderboard.ID, player.ID, tt.Duration)
 	if err != nil {
@@ -181,6 +192,18 @@ func HandleSubmitUnverifiedTime(ctx context.Context, input *models.UnverifiedTim
 	}
 
 	var duration float64 = float64(minutes*60) + seconds
+
+	// additionally don't allow submitting before a player's timeslot
+	if event.Kind == "motw" {
+		playerTimeslot, err := db.Queries.SelectPlayerTimeslot(ctx, principal.SteamID.String())
+		if err != nil {
+			return nil, huma.Error400BadRequest("no timeslot found, please select one when a motw isn't in progress")
+		}
+		ptsStarts, _ := GetTimeslotDatetimes(playerTimeslot.MotwTimeslot)
+		if event.StartsAt.After(ptsStarts) {
+			return nil, huma.Error400BadRequest("motw hasn't started in your timeslot yet")
+		}
+	}
 
 	now := time.Now()
 	if event.EndsAt.Add(timeSubmitExtension).Before(now) {
