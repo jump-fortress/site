@@ -266,6 +266,28 @@ func (q *Queries) SelectEvents(ctx context.Context) ([]Event, error) {
 	return items, nil
 }
 
+const selectLastMOTW = `-- name: SelectLastMOTW :one
+select id, kind, kind_id, class, visible_at, starts_at, ends_at, created_at from event
+  where kind = 'motw'
+  order by starts_at asc
+`
+
+func (q *Queries) SelectLastMOTW(ctx context.Context) (Event, error) {
+	row := q.db.QueryRowContext(ctx, selectLastMOTW)
+	var i Event
+	err := row.Scan(
+		&i.ID,
+		&i.Kind,
+		&i.KindID,
+		&i.Class,
+		&i.VisibleAt,
+		&i.StartsAt,
+		&i.EndsAt,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
 const updateEvent = `-- name: UpdateEvent :exec
 update event
   set kind = ?,

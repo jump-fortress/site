@@ -19,6 +19,11 @@ select * from event
   where kind = ?
   and kind_id = ?;
 
+-- name: SelectLastMOTW :one
+select * from event
+  where kind = 'motw'
+  order by starts_at asc;
+
 -- name: SelectEventLeaderboards :many
 select sqlc.embed(event), sqlc.embed(leaderboard) from event
   join leaderboard on leaderboard.event_id = event.id
@@ -43,7 +48,6 @@ update event
   starts_at = ?,
   ends_at = ?
   where id = ?;
-
 
 -- name: DeleteEvent :exec
 delete from event
