@@ -67,6 +67,9 @@ func HandleUpdateTimeslot(ctx context.Context, input *models.TimeslotInput) (*st
 		ID:       input.Body.ID,
 		StartsAt: input.Body.StartsAt,
 	})
+	if err != nil {
+		return nil, models.WrapDBErr(err)
+	}
 
 	return nil, nil
 }
