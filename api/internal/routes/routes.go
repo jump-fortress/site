@@ -170,6 +170,8 @@ func RegisterSessionRoutes(sessionApi *huma.Group) {
 		Description: "update your map of the week timeslot preference",
 		OperationID: "update-timeslot-pref",
 	}, HandleUpdateTimeslotPref)
+
+	// todo: get info for motw with current session
 }
 
 func RegisterModRoutes(modApi *huma.Group) {

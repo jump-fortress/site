@@ -6,6 +6,14 @@ where player_motw_timeslot.player_id = ?;
 -- name: SelectTimeslots :many
 select * from motw_timeslot;
 
+-- name: SelectFirstTimeslot :one
+select * from motw_timeslot
+order by id asc;
+
+-- name: SelectLastTimeslot :one
+select * from motw_timeslot
+order by id desc;
+
 -- name: UpdatePlayerTimeslot :exec
 update player_motw_timeslot
   set timeslot_id = ?

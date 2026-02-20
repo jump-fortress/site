@@ -13,10 +13,17 @@ import (
 	"github.com/jump-fortress/site/models"
 )
 
+func motwNotEnded(kind string, endsAt time.Time) bool {
+	return kind == "motw" && endsAt.After(time.Now())
+}
+
 func getEndsAt(kind string, starts_at time.Time) time.Time {
 	switch kind {
 	case "monthly":
 		return starts_at.Add(time.Hour * 24 * 2)
+	case "motw":
+		// already calculated
+		return starts_at
 	default:
 		// return, since ends_at was actually passed in
 		return starts_at
@@ -36,6 +43,7 @@ func HandleGetEvent(ctx context.Context, input *models.EventKindAndIDInput) (*mo
 	now := time.Now()
 
 	sensitive := els[0].Event.StartsAt.After(now)
+	sensitive = motwNotEnded(els[0].Event.Kind, els[0].Event.EndsAt)
 	if sensitive && els[0].Event.VisibleAt.After(now) {
 		return nil, huma.Error400BadRequest("event not visible")
 	}
@@ -85,6 +93,7 @@ func HandleGetEventKinds(ctx context.Context, input *models.EventKindInput) (*mo
 		}
 
 		sensitive := e.StartsAt.After(now)
+		sensitive = motwNotEnded(els[0].Event.Kind, els[0].Event.EndsAt)
 		if len(els) != 0 {
 			resp.Body = append(resp.Body, models.GetEventWithLeaderboardsResponse(els, sensitive))
 		}
@@ -169,6 +178,20 @@ func HandleCreateEvent(ctx context.Context, input *models.EventInput) (*struct{}
 	kindID++
 
 	endsAt := ie.EndsAt
+	// set motw start and end times based on current timeslots
+	// todo: will break if timeslots are updated mid motw? don't allow it?
+	if ie.Kind == "motw" {
+		firstTimeslot, err := db.Queries.SelectFirstTimeslot(ctx)
+		if err != nil {
+			return nil, models.WrapDBErr(err)
+		}
+		lastTimeslot, err := db.Queries.SelectLastTimeslot(ctx)
+		if err != nil {
+			return nil, models.WrapDBErr(err)
+		}
+		ie.StartsAt, _ = GetTimeslotDatetimes(firstTimeslot)
+		_, endsAt = GetTimeslotDatetimes(lastTimeslot)
+	}
 	endsAt = getEndsAt(ie.Kind, ie.EndsAt)
 
 	// create event

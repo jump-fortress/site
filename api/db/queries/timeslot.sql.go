@@ -10,6 +10,30 @@ import (
 	"time"
 )
 
+const selectFirstTimeslot = `-- name: SelectFirstTimeslot :one
+select id, starts_at from motw_timeslot
+order by id asc
+`
+
+func (q *Queries) SelectFirstTimeslot(ctx context.Context) (MotwTimeslot, error) {
+	row := q.db.QueryRowContext(ctx, selectFirstTimeslot)
+	var i MotwTimeslot
+	err := row.Scan(&i.ID, &i.StartsAt)
+	return i, err
+}
+
+const selectLastTimeslot = `-- name: SelectLastTimeslot :one
+select id, starts_at from motw_timeslot
+order by id desc
+`
+
+func (q *Queries) SelectLastTimeslot(ctx context.Context) (MotwTimeslot, error) {
+	row := q.db.QueryRowContext(ctx, selectLastTimeslot)
+	var i MotwTimeslot
+	err := row.Scan(&i.ID, &i.StartsAt)
+	return i, err
+}
+
 const selectPlayerTimeslot = `-- name: SelectPlayerTimeslot :one
 select motw_timeslot.id, motw_timeslot.starts_at, player_motw_timeslot.timeslot_id, player_motw_timeslot.player_id from player_motw_timeslot
   join motw_timeslot on player_motw_timeslot.timeslot_id = motw_timeslot.id

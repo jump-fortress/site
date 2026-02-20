@@ -3,7 +3,7 @@ package models
 import "time"
 
 var Divs = []string{"Diamond", "Platinum", "Gold", "Silver", "Bronze", "Steel", "Wood"}
-var EventKinds = []string{"monthly", "archive"}
+var EventKinds = []string{"monthly", "archive", "motw"}
 
 type Session struct {
 	ID        string `json:"id"`

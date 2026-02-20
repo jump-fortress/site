@@ -43,6 +43,7 @@ func HandleUpdateTimeslotPref(ctx context.Context, input *models.TimeslotIDInput
 
 func HandleUpdateTimeslot(ctx context.Context, input *models.TimeslotInput) (*struct{}, error) {
 	its := input.Body
+	itsStarts, itsEnds := GetTimeslotDatetimes(queries.MotwTimeslot(its))
 
 	// validate input timeslot doesn't overlap with other timeslots
 	timeslots, err := db.Queries.SelectTimeslots(ctx)
@@ -55,8 +56,13 @@ func HandleUpdateTimeslot(ctx context.Context, input *models.TimeslotInput) (*st
 		if ts.ID == input.Body.ID {
 			continue
 		}
-		itsStarts, itsEnds := GetTimeslotDatetimes(queries.MotwTimeslot(its))
 		tsStarts, tsEnds := GetTimeslotDatetimes(ts)
+		if its.ID < ts.ID && itsStarts.After(tsStarts) {
+			return nil, huma.Error400BadRequest("input timeslot can't start after a timeslot with a higher ID.")
+		}
+		if its.ID > ts.ID && itsStarts.Before(tsStarts) {
+			return nil, huma.Error400BadRequest("input timeslot can't start before a timeslot with a lower ID.")
+		}
 		// input timeslot starts or ends during another
 		if itsStarts.After(tsStarts) && itsStarts.Before(tsEnds) || itsEnds.After(tsStarts) && itsEnds.Before(tsEnds) {
 			return nil, huma.Error400BadRequest("input timeslot overlaps with an existing timeslot")
@@ -65,7 +71,7 @@ func HandleUpdateTimeslot(ctx context.Context, input *models.TimeslotInput) (*st
 
 	err = db.Queries.UpsertTimeslot(ctx, queries.UpsertTimeslotParams{
 		ID:       input.Body.ID,
-		StartsAt: input.Body.StartsAt,
+		StartsAt: itsStarts,
 	})
 	if err != nil {
 		return nil, models.WrapDBErr(err)

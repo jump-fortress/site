@@ -146,6 +146,13 @@ func HandleUpdateLeaderboards(ctx context.Context, input *models.LeaderboardsInp
 }
 
 func HandleGetLeaderboardTimes(ctx context.Context, input *models.LeaderboardIDInput) (*models.TimesWithPlayerOutput, error) {
+	event, err := db.Queries.SelectEventFromLeaderboardID(ctx, input.ID)
+	sensitive := motwNotEnded(event.Kind, event.EndsAt)
+	// hide motw times if motw hasn't ended
+	if sensitive {
+		return nil, nil
+	}
+
 	twps, err := db.Queries.SelectPRTimesFromLeaderboard(ctx, input.ID)
 	if err != nil {
 		return nil, models.WrapDBErr(err)

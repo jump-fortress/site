@@ -277,6 +277,11 @@ func HandleGetPlayerPRs(ctx context.Context, input *models.PlayerIDInput) (*mode
 	}
 
 	for _, elt := range elts {
+		// hide motw times if motw hasn't ended
+		sensitive := motwNotEnded(elt.Event.Kind, elt.Event.EndsAt)
+		if sensitive {
+			continue
+		}
 		// get time rank
 		twps, err := db.Queries.SelectPRTimesFromLeaderboard(ctx, elt.Leaderboard.ID)
 		if err != nil {
