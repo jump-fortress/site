@@ -31,7 +31,7 @@ type Player struct {
 
 type Event struct {
 	ID          int64     `json:"id"`
-	Kind        string    `json:"kind" enum:"monthly,archive"`
+	Kind        string    `json:"kind" enum:"monthly,archive,motw"`
 	KindID      int64     `json:"kind_id"`
 	PlayerClass string    `json:"player_class" enum:"Soldier,Demo"`
 	VisibleAt   time.Time `json:"visible_at"`

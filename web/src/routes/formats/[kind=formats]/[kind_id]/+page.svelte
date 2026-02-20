@@ -70,7 +70,18 @@
 </script>
 
 {#if data.ewl}
-  <EventHeader event={data.ewl} />
+  <!-- consider motw timeslots -->
+  {#if data.ewl.event.kind == 'motw' && data.session}
+    {#await Client.GET( ApiPaths.get_motw, { params: { path: { event_kind: 'motw', kind_id: data.ewl.event.kind_id } } } )}
+      <span></span>
+    {:then { data: motw }}
+      {#if motw}
+        <EventHeader event={motw} />
+      {/if}
+    {/await}
+  {:else}
+    <EventHeader event={data.ewl} />
+  {/if}
 
   <Content>
     {#if data.session}
@@ -153,7 +164,12 @@
       {/if}
 
       {#key refreshLeaderboard && refreshPR}
-        {#await Client.GET( ApiPaths.get_leaderboard_times, { params: { path: { leaderboard_id: selectedLeaderboardID } } } )}
+        <!-- call motw leaderboards with session if applicable -->
+        {@const motwWithSession: boolean = (data.session !== undefined && data.ewl.event.kind === "motw")}
+        {@const leaderboardPath = motwWithSession
+          ? ApiPaths.get_motw_leaderboard_times
+          : ApiPaths.get_leaderboard_times}
+        {#await Client.GET( leaderboardPath, { params: { path: { leaderboard_id: selectedLeaderboardID } } } )}
           <TableSkeleton></TableSkeleton>
         {:then { data: times }}
           <Table data={times ?? []}>

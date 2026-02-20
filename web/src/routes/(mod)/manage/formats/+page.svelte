@@ -95,13 +95,17 @@
     <Select
       label="kind"
       type="button"
-      options={['monthly', 'archive']}
+      options={['monthly', 'archive', 'motw']}
       bind:value={event_kind}
       withSubmit={false}
       onsubmit={async () => {
         return true;
       }} />
 
+    {#if event_kind === 'motw'}
+      <span class="text-content/75"
+        >motw start time doesn't matter, as it uses the earliest timeslot's start time.</span>
+    {/if}
     <div class="flex justify-between">
       <div class="flex grow flex-col gap-1">
         <div class="flex gap-1">
@@ -133,7 +137,7 @@
               return true;
             }} />
           <Input
-            label="visible time"
+            label="start time"
             type="time"
             withSubmit={false}
             bind:value={start_time}
@@ -142,7 +146,7 @@
             }} />
         </div>
 
-        {#if event_kind !== 'monthly'}
+        {#if event_kind === 'archive'}
           <div class="flex gap-1">
             <Input
               label="end date"
