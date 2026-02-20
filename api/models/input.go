@@ -74,3 +74,12 @@ type MapNameInput struct {
 type LauncherInput struct {
 	Launcher string `path:"launcher" enum:"stock,original,mangler,none"`
 }
+
+type RequestInput struct {
+	Kind    string `path:"request_kind" enum:"alias update,soldier div,demo div"`
+	Content string `path:"content"`
+}
+
+type RequestIDInput struct {
+	ID int64 `path:"request_id"`
+}

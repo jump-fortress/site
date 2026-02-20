@@ -152,6 +152,15 @@ func RegisterSessionRoutes(sessionApi *huma.Group) {
 		Description: "get your PR for an event",
 		OperationID: "get-event-pr",
 	}, HandleGetEventPR)
+
+	huma.Register(sessionApi, huma.Operation{
+		Method:      http.MethodPost,
+		Path:        "/players/requests/{request_kind}/{content}",
+		Tags:        []string{"players"},
+		Summary:     "submit a request",
+		Description: "submit an alias or div update request",
+		OperationID: "submit-request",
+	}, HandleSubmitRequest)
 }
 
 func RegisterModRoutes(modApi *huma.Group) {
@@ -208,6 +217,15 @@ func RegisterModRoutes(modApi *huma.Group) {
 		Description: "delete a player's unverified time for an event's leaderboard",
 		OperationID: "delete-player-time",
 	}, HandleDeletePlayerTime)
+
+	huma.Register(modApi, huma.Operation{
+		Method:      http.MethodPost,
+		Path:        "/players/requests/{request_id}",
+		Tags:        []string{"mod"},
+		Summary:     "resolve player request",
+		Description: "resolve a player's request as no longer pending",
+		OperationID: "resolve-request",
+	}, HandleResolveRequest)
 }
 
 func RegisterAdminRoutes(adminApi *huma.Group) {

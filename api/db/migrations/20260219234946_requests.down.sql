@@ -1,1 +1,1 @@
-drop table requests;
+drop table request;
