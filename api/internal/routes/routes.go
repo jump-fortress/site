@@ -161,6 +161,15 @@ func RegisterSessionRoutes(sessionApi *huma.Group) {
 		Description: "submit an alias or div update request",
 		OperationID: "submit-request",
 	}, HandleSubmitRequest)
+
+	huma.Register(sessionApi, huma.Operation{
+		Method:      http.MethodPost,
+		Path:        "/events/motw/timeslots/{timeslot_id}",
+		Tags:        []string{"players"},
+		Summary:     "update timeslot pref",
+		Description: "update your map of the week timeslot preference",
+		OperationID: "update-timeslot-pref",
+	}, HandleUpdateTimeslotPref)
 }
 
 func RegisterModRoutes(modApi *huma.Group) {
@@ -232,7 +241,7 @@ func RegisterAdminRoutes(adminApi *huma.Group) {
 	huma.Register(adminApi, huma.Operation{
 		Method:      http.MethodGet,
 		Path:        "/events",
-		Tags:        []string{"events"},
+		Tags:        []string{"admin"},
 		Summary:     "get all events",
 		Description: "get all events",
 		OperationID: "get-full-events",
@@ -282,6 +291,15 @@ func RegisterAdminRoutes(adminApi *huma.Group) {
 		Description: "update map list from Tempus",
 		OperationID: "update-maps",
 	}, HandleUpdateMaps)
+
+	huma.Register(adminApi, huma.Operation{
+		Method:      http.MethodPost,
+		Path:        "/events/motw/timeslots",
+		Tags:        []string{"admin"},
+		Summary:     "update timeslot",
+		Description: "update motw timeslot",
+		OperationID: "update-timeslot",
+	}, HandleUpdateTimeslot)
 }
 
 func RegisterDevRoutes(devApi *huma.Group) {

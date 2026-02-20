@@ -91,3 +91,8 @@ type TimeWithLeaderboard struct {
 	Player      Player      `json:"player"`
 	Position    int64       `json:"position"`
 }
+
+type MOTW_Timeslot struct {
+	ID       int64     `json:"id"`
+	StartsAt time.Time `json:"starts_at"`
+}

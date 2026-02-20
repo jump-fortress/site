@@ -83,3 +83,11 @@ type RequestInput struct {
 type RequestIDInput struct {
 	ID int64 `path:"request_id"`
 }
+
+type TimeslotIDInput struct {
+	ID int64 `path:"timeslot_id"`
+}
+
+type TimeslotInput struct {
+	Body MOTW_Timeslot
+}

@@ -51,6 +51,11 @@ type Map struct {
 	DemoRating    int64
 }
 
+type MotwTimeslot struct {
+	ID       int64
+	StartsAt time.Time
+}
+
 type OpenidNonce struct {
 	ID          int64
 	Endpoint    string
@@ -74,6 +79,11 @@ type Player struct {
 	MapPref      sql.NullString
 	LauncherPref sql.NullString
 	CreatedAt    time.Time
+}
+
+type PlayerMotwTimeslot struct {
+	TimeslotID int64
+	PlayerID   string
 }
 
 type Request struct {
