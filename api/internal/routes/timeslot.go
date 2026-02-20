@@ -28,7 +28,17 @@ func HandleUpdateTimeslotPref(ctx context.Context, input *models.TimeslotIDInput
 		return nil, models.SessionErr()
 	}
 
-	err := db.Queries.UpdatePlayerTimeslot(ctx, queries.UpdatePlayerTimeslotParams{
+	// validate that an motw isn't in progress first
+	recentMotw, err := db.Queries.SelectLastMOTW(ctx)
+	if err != nil {
+		return nil, models.WrapDBErr(err)
+	}
+	now := time.Now()
+	if recentMotw.StartsAt.Before(now) && recentMotw.EndsAt.After(now) {
+		return nil, huma.Error400BadRequest("can't update timeslot while a motw is in progress")
+	}
+
+	err = db.Queries.UpdatePlayerTimeslot(ctx, queries.UpdatePlayerTimeslotParams{
 		TimeslotID: input.ID,
 		PlayerID:   principal.SteamID.String(),
 	})
@@ -42,6 +52,16 @@ func HandleUpdateTimeslotPref(ctx context.Context, input *models.TimeslotIDInput
 // admin
 
 func HandleUpdateTimeslot(ctx context.Context, input *models.TimeslotInput) (*struct{}, error) {
+	// validate that an motw isn't upcoming first
+	recentMotw, err := db.Queries.SelectLastMOTW(ctx)
+	if err != nil {
+		return nil, models.WrapDBErr(err)
+	}
+	now := time.Now()
+	if recentMotw.EndsAt.After(now) {
+		return nil, huma.Error400BadRequest("can't update timeslots while a motw is upcoming")
+	}
+
 	its := input.Body
 	itsStarts, itsEnds := GetTimeslotDatetimes(queries.MotwTimeslot(its))
 
