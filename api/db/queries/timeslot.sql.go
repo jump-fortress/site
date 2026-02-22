@@ -10,6 +10,16 @@ import (
 	"time"
 )
 
+const insertDefaultTimeslot = `-- name: InsertDefaultTimeslot :exec
+insert or ignore into player_motw_timeslot (player_id)
+  values (?)
+`
+
+func (q *Queries) InsertDefaultTimeslot(ctx context.Context, playerID string) error {
+	_, err := q.db.ExecContext(ctx, insertDefaultTimeslot, playerID)
+	return err
+}
+
 const selectFirstTimeslot = `-- name: SelectFirstTimeslot :one
 select id, starts_at from motw_timeslot
 order by id asc

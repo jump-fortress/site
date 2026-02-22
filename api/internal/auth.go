@@ -126,9 +126,15 @@ func handleSteamCallback(ctx context.Context, input *CallbackInput) (*CallbackOu
 	}
 
 	// if the user doesn't already exist in the database, we need to ensure they exist
-	_, err = db.Queries.InsertPlayer(ctx, steamID.String())
+	player, err := db.Queries.InsertPlayer(ctx, steamID.String())
 	if err != nil {
 		return nil, eris.Wrap(err, "Error creating new user")
+	}
+
+	// set default timeslot for player
+	err = db.Queries.InsertDefaultTimeslot(ctx, player.ID)
+	if err != nil {
+		return nil, eris.Wrap(err, "Error setting user's default timezone")
 	}
 
 	// AddSession will create a new session UUIDv7 token entry and link it to the user.

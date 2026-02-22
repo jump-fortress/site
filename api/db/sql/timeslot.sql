@@ -14,6 +14,10 @@ order by id asc;
 select * from motw_timeslot
 order by id desc;
 
+-- name: InsertDefaultTimeslot :exec
+insert or ignore into player_motw_timeslot (player_id)
+  values (?);
+
 -- name: UpdatePlayerTimeslot :exec
 update player_motw_timeslot
   set timeslot_id = ?
