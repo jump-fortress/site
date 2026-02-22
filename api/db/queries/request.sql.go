@@ -9,6 +9,25 @@ import (
 	"context"
 )
 
+const checkPendingRequestExists = `-- name: CheckPendingRequestExists :one
+select exists (
+  select 1
+  from request
+  where player_id = ? and kind = ? and pending = true)
+`
+
+type CheckPendingRequestExistsParams struct {
+	PlayerID string
+	Kind     string
+}
+
+func (q *Queries) CheckPendingRequestExists(ctx context.Context, arg CheckPendingRequestExistsParams) (int64, error) {
+	row := q.db.QueryRowContext(ctx, checkPendingRequestExists, arg.PlayerID, arg.Kind)
+	var column_1 int64
+	err := row.Scan(&column_1)
+	return column_1, err
+}
+
 const insertRequest = `-- name: InsertRequest :exec
 insert into request (player_id, kind, content)
   values (?, ?, ?)

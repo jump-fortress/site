@@ -15,6 +15,7 @@
   import Select from '$lib/components/input/Select.svelte';
   import Errors from '$lib/components/input/Errors.svelte';
   import Content from '$lib/components/layout/Content.svelte';
+  import { divs } from '$lib/helpers/divs';
 
   let { data }: { data: PageData } = $props();
 
@@ -91,7 +92,43 @@
         </Section>
 
         <Section label="requests">
-          <span>under construction</span>
+          <Input
+            label="alias change"
+            type="text"
+            placeholder={player.alias}
+            onsubmit={async (value) => {
+              let resp = await Client.POST(ApiPaths.submit_request, {
+                params: { path: { request_kind: 'alias update', content: value } }
+              });
+              oerror = resp.error;
+              return resp.response.ok;
+            }} />
+
+          <Select
+            label="soldier div"
+            type="text"
+            placeholder={player.soldier_div}
+            options={divs.concat('none')}
+            onsubmit={async (value) => {
+              let resp = await Client.POST(ApiPaths.submit_request, {
+                params: { path: { request_kind: 'soldier div', content: value } }
+              });
+              oerror = resp.error;
+              return resp.response.ok;
+            }} />
+
+          <Select
+            label="demo div"
+            type="text"
+            placeholder={player.demo_div}
+            options={divs.concat('none')}
+            onsubmit={async (value) => {
+              let resp = await Client.POST(ApiPaths.submit_request, {
+                params: { path: { request_kind: 'demo div', content: value } }
+              });
+              oerror = resp.error;
+              return resp.response.ok;
+            }} />
         </Section>
 
         <Section label="connections">
