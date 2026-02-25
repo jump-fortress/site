@@ -115,3 +115,14 @@ func GetTimeResponse(t queries.Time) Time {
 		CreatedAt:     t.CreatedAt,
 	}
 }
+
+func GetRequestResponse(r queries.Request) Request {
+	return Request{
+		ID:        r.ID,
+		PlayerID:  r.PlayerID,
+		Kind:      r.Kind,
+		Content:   r.Content,
+		Pending:   r.Pending,
+		CreatedAt: r.CreatedAt,
+	}
+}

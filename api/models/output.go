@@ -43,3 +43,11 @@ type EventWithLeaderboardsOutput struct {
 type EventsWithLeaderboardsOutput struct {
 	Body []EventWithLeaderboards
 }
+
+type RequestsWithPlayerOutput struct {
+	Body []RequestWithPlayer
+}
+
+type TimeslotInfoOutput struct {
+	Body TimeslotInfo
+}

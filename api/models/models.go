@@ -67,6 +67,15 @@ type Time struct {
 	CreatedAt     time.Time `json:"created_at"`
 }
 
+type Request struct {
+	ID        int64     `json:"id"`
+	PlayerID  string    `json:"player_id"`
+	Kind      string    `json:"kind"`
+	Content   string    `json:"content"`
+	Pending   bool      `json:"pending"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
 type EventWithLeaderboards struct {
 	Event        Event         `json:"event"`
 	Leaderboards []Leaderboard `json:"leaderboards"`
@@ -92,7 +101,22 @@ type TimeWithLeaderboard struct {
 	Position    int64       `json:"position"`
 }
 
-type MOTW_Timeslot struct {
+type MOTWTimeslot struct {
 	ID       int64     `json:"id"`
 	StartsAt time.Time `json:"starts_at"`
+}
+
+type PlayerTimeslot struct {
+	TimeslotID int64  `json:"timeslot_id"`
+	PlayerID   string `json:"player_id"`
+}
+
+type TimeslotInfo struct {
+	Timeslots      []MOTWTimeslot `json:"timeslots"`
+	PlayerTimeslot PlayerTimeslot `json:"player_timeslot"`
+}
+
+type RequestWithPlayer struct {
+	Request Request `json:"request"`
+	Player  Player  `json:"player"`
 }

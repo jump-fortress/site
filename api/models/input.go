@@ -89,5 +89,5 @@ type TimeslotIDInput struct {
 }
 
 type TimeslotInput struct {
-	Body MOTW_Timeslot
+	Body MOTWTimeslot
 }
