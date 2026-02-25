@@ -12,7 +12,7 @@
     placeholder?: string;
     value?: string;
     withSubmit?: boolean;
-    onsubmit: (value: string) => Promise<boolean>;
+    onsubmit: (value: string, index: number) => Promise<boolean>;
   };
 
   let {
@@ -51,7 +51,7 @@
 
 <Label {label} {max_width}>
   <input
-    class="size-full px-2 text-primary"
+    class="size-full px-2 text-left text-primary"
     {type}
     {placeholder}
     bind:value
@@ -74,7 +74,7 @@
       } else {
         if (key === 'Enter' && value) {
           event.preventDefault();
-          valid = onsubmit(value);
+          valid = onsubmit(value, index);
           if (await valid) {
             placeholder = value;
             value = '';
@@ -103,7 +103,7 @@
       class="relative grid size-9 cursor-pointer place-content-center"
       onclick={async () => {
         if (value) {
-          valid = onsubmit(value);
+          valid = onsubmit(value, index);
           if (await valid) {
             placeholder = value;
             value = '';
