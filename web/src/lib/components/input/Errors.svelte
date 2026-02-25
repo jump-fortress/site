@@ -20,10 +20,12 @@
       </div>
       <span class="text-content">{oerror.detail}</span>
       {#each oerror?.errors as error}
-        <div class="text flex gap-1 text-content/75">
-          <span>{error.location}</span>
-          <span>{error.message}</span>
-        </div>
+        {#if error}
+          <div class="text flex gap-1 text-content/75">
+            <span>{error.location}</span>
+            <span>{error.message}</span>
+          </div>
+        {/if}
       {/each}
     </div>
   {/if}
