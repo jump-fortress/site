@@ -8,7 +8,7 @@
   import TemporalDate from '$lib/components/display/TemporalDate.svelte';
   import Content from '$lib/components/layout/Content.svelte';
   import Section from '$lib/components/layout/Section.svelte';
-  import { twTableGradients } from '$lib/helpers/times.js';
+  import { formatPosition, twTableGradients } from '$lib/helpers/times.js';
   import { ApiPaths, type EventLeaderboardTime } from '$lib/schema.js';
 
   let { data } = $props();
@@ -42,7 +42,7 @@
               <th class="w-date"></th>
             {/snippet}
             {#snippet row({ event, leaderboard, time, position }: EventLeaderboardTime)}
-              <td class={twTableGradients.get(`r${position}`)}>{position}</td>
+              <td class={twTableGradients.get(`r${position}`)}>{formatPosition(position)}</td>
               <td class={twTableGradients.get(`t${position}`)}><TableTime {time} /></td>
               <td class="overflow-hidden"
                 ><TableMap map={leaderboard.map} div={leaderboard.div} /></td>
@@ -64,7 +64,7 @@
               <th class="w-date"></th>
             {/snippet}
             {#snippet row({ event, leaderboard, time, position }: EventLeaderboardTime)}
-              <td class={twTableGradients.get(`r${position}`)}>{position}</td>
+              <td class={twTableGradients.get(`r${position}`)}>{formatPosition(position)}</td>
               <td class={twTableGradients.get(`t${position}`)}><TableTime {time} /></td>
               <td class="overflow-hidden"
                 ><TableMap map={leaderboard.map} div={leaderboard.div} /></td>

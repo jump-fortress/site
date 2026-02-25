@@ -119,7 +119,7 @@
   }
 
   .w-rank {
-    @apply w-8;
+    @apply w-10;
   }
 
   .w-event {

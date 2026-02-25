@@ -13,6 +13,7 @@ export function validDuration(duration: string): boolean {
   return /^((\d{0,2}):)?(\d{2}).(\d{1,3})$/g.test(duration);
 }
 
+// note: not in use, backend should sort
 export function filterBestTimes(twps: TimeWithPlayer[]): TimeWithPlayer[] {
   // get unique players via set conversion
   const players: Player[] = Array.from(
@@ -59,3 +60,16 @@ export const twTableGradients: Map<string, string> = new Map([
   ['tsteel', 'bg-linear-to-r from-div-steel/25 from-0% to-div-steel/0 to-25%'],
   ['twood', 'bg-linear-to-r from-div-wood/25 from-0% to-div-wood/0 to-25%']
 ]);
+
+const positionPR = new Intl.PluralRules('en-US', { type: 'ordinal' });
+const suffixes = new Map([
+  ['one', 'st'],
+  ['two', 'nd'],
+  ['few', 'rd'],
+  ['other', 'th']
+]);
+export function formatPosition(n: number): string {
+  const rule = positionPR.select(n);
+  const suffix = suffixes.get(rule);
+  return `${n}${suffix}`;
+}
