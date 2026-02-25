@@ -10,7 +10,7 @@
   label="manage"
   {route}
   parentRoute="manage"
-  pages={['formats', 'leaderboards', 'players']} />
+  pages={['formats', 'leaderboards', 'players', 'requests', 'timeslots']} />
 
 <div class="flex flex-col px-1">
   {@render children()}
