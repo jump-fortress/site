@@ -3,7 +3,7 @@
   import Input from '$lib/components/input/Input.svelte';
   import SelectButtons from '$lib/components/input/SelectButtons.svelte';
   import Section from '$lib/components/layout/Section.svelte';
-  import { ApiPaths, type Player } from '$lib/schema.js';
+  import { ApiPaths, type RequestWithPlayer } from '$lib/schema.js';
 
   import soldier from '$lib/assets/tf/soldier.png';
   import demo from '$lib/assets/tf/demo.png';
@@ -16,19 +16,52 @@
   import Errors from '$lib/components/input/Errors.svelte';
   import Content from '$lib/components/layout/Content.svelte';
   import { divs } from '$lib/helpers/divs';
+  import Table from '$lib/components/display/table/Table.svelte';
+  import TemporalDate from '$lib/components/display/TemporalDate.svelte';
+  import { datetimeToMs, formatTime } from '$lib/helpers/temporal';
 
   let { data }: { data: PageData } = $props();
 
   let oerror: OpenAPIError = $state(undefined);
+  let refreshRequests: boolean = $state(false);
 </script>
 
-{#if data.session}
-  <Content>
+<Errors {oerror} />
+
+<Content>
+  {#if data.session}
     {#await Client.GET(ApiPaths.get_player_self)}
       <span></span>
     {:then { data: player }}
       {#if player}
-        <Errors {oerror} />
+        <Section label="settings" indent="/">
+          <!-- motw timeslot -->
+          {#await Client.GET(ApiPaths.get_timeslot)}
+            <span></span>
+          {:then { data: timeslotInfo }}
+            {#if timeslotInfo && timeslotInfo.timeslots}
+              {@const playerTimeslot: string = formatTime(
+                  datetimeToMs(
+                    timeslotInfo.timeslots!.at(timeslotInfo.player_timeslot.timeslot_id - 1)!
+                      .starts_at
+                  )
+                )}
+              <Select
+                type="button"
+                value={playerTimeslot}
+                label="motw timeslot"
+                options={timeslotInfo.timeslots.map((t) => formatTime(datetimeToMs(t.starts_at)))}
+                onsubmit={async (_, i) => {
+                  let resp = await Client.POST(ApiPaths.update_timeslot_pref, {
+                    params: { path: { timeslot_id: i + 1 } }
+                  });
+                  oerror = resp.error;
+                  return resp.response.ok;
+                }} />
+            {/if}
+          {/await}
+        </Section>
+
         <Section label="profile">
           <SelectButtons
             label="fav class"
@@ -38,7 +71,7 @@
             ]}
             selected={player.class_pref}
             onsubmit={async (value) => {
-              let resp = await Client.GET(ApiPaths.update_class_pref, {
+              let resp = await Client.POST(ApiPaths.update_class_pref, {
                 params: { path: { player_class: value as 'Soldier' | 'Demo' } }
               });
               oerror = resp.error;
@@ -55,7 +88,7 @@
             withNone={true}
             selected={player.launcher_pref ?? 'none'}
             onsubmit={async (value) => {
-              let resp = await Client.GET(ApiPaths.update_launcher_pref, {
+              let resp = await Client.POST(ApiPaths.update_launcher_pref, {
                 params: { path: { launcher: value as 'none' | 'stock' | 'original' | 'mangler' } }
               });
               oerror = resp.error;
@@ -71,7 +104,7 @@
                 options={['none'].concat(maps.map((m) => m.name))}
                 placeholder={player.map_pref}
                 onsubmit={async (value) => {
-                  let resp = await Client.GET(ApiPaths.update_map_pref, {
+                  let resp = await Client.POST(ApiPaths.update_map_pref, {
                     params: { path: { map_name: value } }
                   });
                   oerror = resp.error;
@@ -92,6 +125,29 @@
         </Section>
 
         <Section label="requests">
+          {#key refreshRequests}
+            {#await Client.GET(ApiPaths.get_requests)}
+              <span></span>
+            {:then { data: rwps }}
+              {#if rwps && rwps.length > 0}
+                <div class="w-full max-w-xl">
+                  <Table data={rwps}>
+                    {#snippet header()}
+                      <th>kind</th>
+                      <th>content</th>
+                      <th class="w-date"></th>
+                    {/snippet}
+                    {#snippet row({ player, request }: RequestWithPlayer)}
+                      <td>{request.kind}</td>
+                      <td>{request.content}</td>
+                      <td class="table-date"><TemporalDate datetime={request.created_at} /></td>
+                    {/snippet}
+                  </Table>
+                </div>
+              {/if}
+            {/await}
+          {/key}
+
           <Input
             label="alias change"
             type="text"
@@ -101,6 +157,9 @@
                 params: { path: { request_kind: 'alias update', content: value } }
               });
               oerror = resp.error;
+              if (resp.response.ok) {
+                refreshRequests = !refreshRequests;
+              }
               return resp.response.ok;
             }} />
 
@@ -114,6 +173,9 @@
                 params: { path: { request_kind: 'soldier div', content: value } }
               });
               oerror = resp.error;
+              if (resp.response.ok) {
+                refreshRequests = !refreshRequests;
+              }
               return resp.response.ok;
             }} />
 
@@ -127,6 +189,9 @@
                 params: { path: { request_kind: 'demo div', content: value } }
               });
               oerror = resp.error;
+              if (resp.response.ok) {
+                refreshRequests = !refreshRequests;
+              }
               return resp.response.ok;
             }} />
         </Section>
@@ -161,5 +226,5 @@
         <span>no player :(</span>
       {/if}
     {/await}
-  </Content>
-{/if}
+  {/if}
+</Content>
