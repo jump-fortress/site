@@ -4,8 +4,8 @@
   import {
     ApiPaths,
     type Leaderboard,
-    type MotwTimeslot,
     type Player,
+    type TimeslotDatetimes,
     type TimeWithPlayer
   } from '$lib/schema';
   import { onMount } from 'svelte';
@@ -24,7 +24,6 @@
   import { Temporal } from 'temporal-polyfill';
   import LeaderboardButtons from '$lib/components/input/LeaderboardButtons.svelte';
   import TableSkeleton from '$lib/components/display/table/presets/TableSkeleton.svelte';
-  import { datetimeToMs } from '$lib/helpers/temporal';
 
   type Props = {
     data: PageData;
@@ -83,43 +82,12 @@
       <span></span>
     {:then { data: motw }}
       {#if motw}
-        <EventHeader event={motw} />
+        {#await Client.GET( ApiPaths.get_timeslot_info, { params: { path: { event_id: data.ewl.event.id } } } )}
+          <span></span>
+        {:then { data: timeslotInfo }}
+          <EventHeader event={motw} timeslots={timeslotInfo} />
+        {/await}
       {/if}
-      <!-- motw timeslot info -->
-      <!-- todo: get timeslots for motw instead of current date -->
-      <Content>
-        <Section>
-          <Collapse label="view timeslots">
-            {#await Client.GET(ApiPaths.get_timeslot)}
-              <span></span>
-            {:then { data: timeslotInfo }}
-              {#if timeslotInfo && timeslotInfo.timeslots}
-                <div class="w-full max-w-sm">
-                  <Table data={timeslotInfo.timeslots}>
-                    {#snippet header()}
-                      <th class="w-rank">#</th>
-                      <th class="w-date">start</th>
-                      <th class="w-date">end</th>
-                    {/snippet}
-
-                    {#snippet row(ts: MotwTimeslot, i)}
-                      {@const twSelected: string = i === timeslotInfo.player_timeslot.timeslot_id ? "text-content/100" : "text-content/50"}
-                      <!-- todo: replace hardcoded 3 hour duration with motw timeslots -->
-                      {@const tsEndsAt = Temporal.Instant.fromEpochMilliseconds(
-                        datetimeToMs(ts.starts_at) + 1000 * 60 * 60 * 3
-                      ).toString()}
-                      <td class={twSelected}>{i}</td>
-                      <td class="table-date {twSelected}"
-                        ><TemporalDate datetime={ts.starts_at} /></td>
-                      <td class="table-date {twSelected}"><TemporalDate datetime={tsEndsAt} /></td>
-                    {/snippet}
-                  </Table>
-                </div>
-              {/if}
-            {/await}
-          </Collapse>
-        </Section>
-      </Content>
     {/await}
   {:else}
     <EventHeader event={data.ewl} />

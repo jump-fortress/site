@@ -17,10 +17,10 @@ var (
 	MotwDuration = time.Hour * 3
 )
 
-func GetTimeslotDatetimes(timeslot queries.MotwTimeslot, date time.Time) models.MOTWTimeslot {
+func GetTimeslotDatetimes(timeslot queries.MotwTimeslot, date time.Time) models.TimeslotDatetimes {
 	starts := time.Date(date.Year(), date.Month(), date.Day(), timeslot.StartsAt.Hour(), timeslot.StartsAt.Minute(), timeslot.StartsAt.Second(), timeslot.StartsAt.Nanosecond(), time.UTC)
 	ends := starts.Add(MotwDuration)
-	return models.MOTWTimeslot{
+	return models.TimeslotDatetimes{
 		ID:       timeslot.ID,
 		StartsAt: starts,
 		EndsAt:   ends,
@@ -55,7 +55,7 @@ func HandleUpdateTimeslotPref(ctx context.Context, input *models.TimeslotIDInput
 	return nil, nil
 }
 
-func HandleGetTimeslot(ctx context.Context, _ *struct{}) (*models.TimeslotInfoOutput, error) {
+func HandleGetTimeslotInfo(ctx context.Context, input *models.EventIDInput) (*models.TimeslotInfoOutput, error) {
 	principal, ok := principal.Get(ctx)
 	if !ok {
 		return nil, models.SessionErr()
@@ -72,17 +72,30 @@ func HandleGetTimeslot(ctx context.Context, _ *struct{}) (*models.TimeslotInfoOu
 
 	resp := &models.TimeslotInfoOutput{
 		Body: models.TimeslotInfo{
-			Timeslots: []models.MOTWTimeslot{},
+			Timeslots: []models.TimeslotDatetimes{},
 			PlayerTimeslot: models.PlayerTimeslot{
 				TimeslotID: playerTimeslot.MotwTimeslot.ID,
 				PlayerID:   playerTimeslot.PlayerMotwTimeslot.PlayerID,
 			},
 		},
 	}
+
+	// use event start date for timeslots, unless event id was 0
+	timeslotDate := time.Now().UTC()
+	if input.ID != 0 {
+		event, err := db.Queries.SelectEvent(ctx, input.ID)
+		if err != nil {
+			return nil, huma.Error404NotFound("event not found")
+		}
+		timeslotDate = event.StartsAt
+	}
+
 	for _, t := range timeslots {
-		resp.Body.Timeslots = append(resp.Body.Timeslots, models.MOTWTimeslot{
-			ID:       t.ID,
-			StartsAt: t.StartsAt,
+		ets := GetTimeslotDatetimes(t, timeslotDate)
+		resp.Body.Timeslots = append(resp.Body.Timeslots, models.TimeslotDatetimes{
+			ID:       ets.ID,
+			StartsAt: ets.StartsAt,
+			EndsAt:   ets.EndsAt,
 		})
 	}
 	return resp, nil

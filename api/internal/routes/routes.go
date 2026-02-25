@@ -83,12 +83,12 @@ func RegisterSessionRoutes(sessionApi *huma.Group) {
 
 	huma.Register(sessionApi, huma.Operation{
 		Method:      http.MethodGet,
-		Path:        "/players/timeslot",
+		Path:        "/players/timeslot/{event_id}",
 		Tags:        []string{"players"},
-		Summary:     "get timeslot",
-		Description: "get your timeslot and all timeslots",
-		OperationID: "get-timeslot",
-	}, HandleGetTimeslot)
+		Summary:     "get timeslot info for an event",
+		Description: "get your timeslot info for an event (or without an event)",
+		OperationID: "get-timeslot-info",
+	}, HandleGetTimeslotInfo)
 
 	huma.Register(sessionApi, huma.Operation{
 		Method:      http.MethodGet,

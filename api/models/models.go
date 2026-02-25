@@ -101,7 +101,7 @@ type TimeWithLeaderboard struct {
 	Position    int64       `json:"position"`
 }
 
-type MOTWTimeslot struct {
+type TimeslotDatetimes struct {
 	ID       int64     `json:"id"`
 	StartsAt time.Time `json:"starts_at"`
 	EndsAt   time.Time `json:"ends_at"`
@@ -113,8 +113,8 @@ type PlayerTimeslot struct {
 }
 
 type TimeslotInfo struct {
-	Timeslots      []MOTWTimeslot `json:"timeslots"`
-	PlayerTimeslot PlayerTimeslot `json:"player_timeslot"`
+	Timeslots      []TimeslotDatetimes `json:"timeslots"`
+	PlayerTimeslot PlayerTimeslot      `json:"player_timeslot"`
 }
 
 type RequestWithPlayer struct {

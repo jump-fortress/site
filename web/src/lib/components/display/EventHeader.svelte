@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { EventWithLeaderboards } from '$lib/schema';
+  import type { EventWithLeaderboards, TimeslotInfo } from '$lib/schema';
   import ClassImage from './ClassImage.svelte';
   import Div from './Div.svelte';
   import TemporalDate from './TemporalDate.svelte';
@@ -8,9 +8,10 @@
   type Props = {
     event: EventWithLeaderboards;
     href?: string;
+    timeslots?: TimeslotInfo | null;
   };
 
-  let { event, href = '' }: Props = $props();
+  let { event, href = '', timeslots = null }: Props = $props();
 
   function leaderbaordToMaps(l: EventWithLeaderboards['leaderboards']) {
     const maps: Map<string, string[]> = new Map();
@@ -83,18 +84,35 @@
     </div>
     <!-- date / prizepool -->
     <div class="z-10 flex flex-col items-end">
-      <div class="flex items-center gap-2">
-        <span class="relative z-10">
-          <TemporalDate datetime={event.event.starts_at} />
-        </span>
-        <span class="mt-auto icon-[mdi--calendar-outline]"></span>
-      </div>
-      <div class="flex items-center gap-2">
-        <span class="relative z-10">
-          <TemporalDate datetime={event.event.ends_at} />
-        </span>
-        <span class="icon-[mdi--clock-outline]"></span>
-      </div>
+      {#if timeslots}
+        {#each timeslots.timeslots as ts}
+          {@const twPlayerTs =
+            timeslots.player_timeslot.timeslot_id === ts.id ? 'text-primary' : 'text-content/75'}
+          <div class="flex items-center gap-2 text-nowrap {twPlayerTs}">
+            <span class="relative z-10 text-end">
+              <TemporalDate datetime={ts.starts_at} />
+            </span>
+            <span>-</span>
+            <span class="relative z-10 min-w-32 text-start text-nowrap">
+              <TemporalDate datetime={ts.ends_at} />
+            </span>
+            <span class="mt-auto icon-[mdi--clock-outline]"></span>
+          </div>
+        {/each}
+      {:else}
+        <div class="flex items-center gap-2">
+          <span class="relative z-10">
+            <TemporalDate datetime={event.event.starts_at} />
+          </span>
+          <span class="mt-auto icon-[mdi--calendar-outline]"></span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="relative z-10">
+            <TemporalDate datetime={event.event.ends_at} />
+          </span>
+          <span class="icon-[mdi--clock-outline]"></span>
+        </div>
+      {/if}
     </div>
   </div>
 </div>
