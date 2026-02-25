@@ -83,6 +83,15 @@ func RegisterSessionRoutes(sessionApi *huma.Group) {
 
 	huma.Register(sessionApi, huma.Operation{
 		Method:      http.MethodGet,
+		Path:        "/players/timeslot",
+		Tags:        []string{"players"},
+		Summary:     "get timeslot",
+		Description: "get your timeslot and all timeslots",
+		OperationID: "get-timeslot",
+	}, HandleGetTimeslot)
+
+	huma.Register(sessionApi, huma.Operation{
+		Method:      http.MethodGet,
 		Path:        "/players/tempusid/{tempus_id}",
 		Tags:        []string{"players"},
 		Summary:     "set Tempus ID",
@@ -100,7 +109,7 @@ func RegisterSessionRoutes(sessionApi *huma.Group) {
 	}, HandleSetTradeToken)
 
 	huma.Register(sessionApi, huma.Operation{
-		Method:      http.MethodGet,
+		Method:      http.MethodPost,
 		Path:        "/players/class/{player_class}",
 		Tags:        []string{"players"},
 		Summary:     "update class pref",
@@ -109,7 +118,7 @@ func RegisterSessionRoutes(sessionApi *huma.Group) {
 	}, HandleUpdateClassPref)
 
 	huma.Register(sessionApi, huma.Operation{
-		Method:      http.MethodGet,
+		Method:      http.MethodPost,
 		Path:        "/players/map/{map_name}",
 		Tags:        []string{"players"},
 		Summary:     "update map pref",
@@ -118,7 +127,7 @@ func RegisterSessionRoutes(sessionApi *huma.Group) {
 	}, HandleUpdateMapPref)
 
 	huma.Register(sessionApi, huma.Operation{
-		Method:      http.MethodGet,
+		Method:      http.MethodPost,
 		Path:        "/players/launcher/{launcher}",
 		Tags:        []string{"players"},
 		Summary:     "update launcher pref",
@@ -161,6 +170,15 @@ func RegisterSessionRoutes(sessionApi *huma.Group) {
 		Description: "submit an alias or div update request",
 		OperationID: "submit-request",
 	}, HandleSubmitRequest)
+
+	huma.Register(sessionApi, huma.Operation{
+		Method:      http.MethodGet,
+		Path:        "/players/requests",
+		Tags:        []string{"players"},
+		Summary:     "get requests",
+		Description: "get your own pending requests",
+		OperationID: "get-requests",
+	}, HandleGetRequestsSelf)
 
 	huma.Register(sessionApi, huma.Operation{
 		Method:      http.MethodPost,
@@ -244,6 +262,15 @@ func RegisterModRoutes(modApi *huma.Group) {
 		Description: "delete a player's unverified time for an event's leaderboard",
 		OperationID: "delete-player-time",
 	}, HandleDeletePlayerTime)
+
+	huma.Register(modApi, huma.Operation{
+		Method:      http.MethodGet,
+		Path:        "/players/requests",
+		Tags:        []string{"players"},
+		Summary:     "get pending player requests",
+		Description: "get all pending player requests",
+		OperationID: "get-all-requests",
+	}, HandleGetRequests)
 
 	huma.Register(modApi, huma.Operation{
 		Method:      http.MethodPost,

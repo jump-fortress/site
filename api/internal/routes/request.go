@@ -47,7 +47,7 @@ func HandleSubmitRequest(ctx context.Context, input *models.RequestInput) (*stru
 		if !player.TempusID.Valid {
 			return nil, huma.Error400BadRequest("missing a Tempus ID")
 		}
-		if !slices.Contains(models.Divs, input.Content) || input.Content != "none" {
+		if !slices.Contains(models.Divs, input.Content) && input.Content != "none" {
 			return nil, huma.Error400BadRequest(fmt.Sprintf("%s isn't a div", input.Content))
 		}
 	}
@@ -64,13 +64,56 @@ func HandleSubmitRequest(ctx context.Context, input *models.RequestInput) (*stru
 	return nil, nil
 }
 
+func HandleGetRequestsSelf(ctx context.Context, _ *struct{}) (*models.RequestsWithPlayerOutput, error) {
+	principal, ok := principal.Get(ctx)
+	if !ok {
+		return nil, models.SessionErr()
+	}
+
+	requests, err := db.Queries.SelectPlayerRequests(ctx, principal.SteamID.String())
+	if err != nil {
+		return nil, models.WrapDBErr(err)
+	}
+
+	resp := &models.RequestsWithPlayerOutput{
+		Body: []models.RequestWithPlayer{},
+	}
+	for _, rwp := range requests {
+		resp.Body = append(resp.Body, models.RequestWithPlayer{
+			Request: models.GetRequestResponse(rwp.Request),
+			Player:  models.GetPlayerResponse(rwp.Player, false),
+		})
+	}
+
+	return resp, nil
+}
+
 // mod
+
+func HandleGetRequests(ctx context.Context, _ *struct{}) (*models.RequestsWithPlayerOutput, error) {
+	requests, err := db.Queries.SelectPendingRequests(ctx)
+	if err != nil {
+		return nil, models.WrapDBErr(err)
+	}
+
+	resp := &models.RequestsWithPlayerOutput{
+		Body: []models.RequestWithPlayer{},
+	}
+	for _, rwp := range requests {
+		resp.Body = append(resp.Body, models.RequestWithPlayer{
+			Request: models.GetRequestResponse(rwp.Request),
+			Player:  models.GetPlayerResponse(rwp.Player, false),
+		})
+	}
+
+	return resp, nil
+
+}
 
 func HandleResolveRequest(ctx context.Context, input *models.RequestIDInput) (*struct{}, error) {
 	err := db.Queries.ResolveRequest(ctx, input.ID)
 	if err != nil {
 		return nil, models.WrapDBErr(err)
 	}
-
 	return nil, nil
 }
