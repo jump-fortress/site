@@ -104,6 +104,7 @@ type TimeWithLeaderboard struct {
 type MOTWTimeslot struct {
 	ID       int64     `json:"id"`
 	StartsAt time.Time `json:"starts_at"`
+	EndsAt   time.Time `json:"ends_at"`
 }
 
 type PlayerTimeslot struct {

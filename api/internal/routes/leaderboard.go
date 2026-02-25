@@ -185,11 +185,11 @@ func HandleGetMotwLeaderboardTimes(ctx context.Context, input *models.Leaderboar
 	if err != nil {
 		return nil, models.WrapDBErr(err)
 	}
-	ptsStarts, _ := GetTimeslotDatetimes(playerTimeslot.MotwTimeslot, event.StartsAt)
+	eventPts := GetTimeslotDatetimes(playerTimeslot.MotwTimeslot, event.StartsAt)
 
 	now := time.Now().UTC()
 	// motw starts after player timeslot
-	sensitive := ptsStarts.After(now)
+	sensitive := eventPts.StartsAt.After(now)
 	if sensitive {
 		return nil, nil
 	}

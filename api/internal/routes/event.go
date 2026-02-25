@@ -127,12 +127,12 @@ func HandleGetMotw(ctx context.Context, input *models.EventKindAndIDInput) (*mod
 	if err != nil {
 		return nil, models.WrapDBErr(err)
 	}
-	ptsStarts, _ := GetTimeslotDatetimes(playerTimeslot.MotwTimeslot, els[0].Event.StartsAt)
+	eventPts := GetTimeslotDatetimes(playerTimeslot.MotwTimeslot, els[0].Event.StartsAt)
 
 	now := time.Now().UTC()
 
 	// if motw hasn't started for player's timeslot
-	sensitive := ptsStarts.After(now)
+	sensitive := eventPts.StartsAt.After(now)
 	if sensitive && els[0].Event.VisibleAt.After(now) {
 		return nil, huma.Error400BadRequest("event not visible")
 	}
@@ -228,8 +228,10 @@ func HandleCreateEvent(ctx context.Context, input *models.EventInput) (*struct{}
 		if err != nil {
 			return nil, models.WrapDBErr(err)
 		}
-		ie.StartsAt, _ = GetTimeslotDatetimes(firstTimeslot, ie.StartsAt)
-		_, endsAt = GetTimeslotDatetimes(lastTimeslot, ie.EndsAt)
+		eventStartTs := GetTimeslotDatetimes(firstTimeslot, ie.StartsAt)
+		ie.StartsAt = eventStartTs.StartsAt
+		eventEndTs := GetTimeslotDatetimes(lastTimeslot, ie.EndsAt)
+		endsAt = eventEndTs.EndsAt
 	}
 	endsAt = getEndsAt(ie.Kind, endsAt)
 

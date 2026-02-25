@@ -17,10 +17,14 @@ var (
 	MotwDuration = time.Hour * 3
 )
 
-func GetTimeslotDatetimes(timeslot queries.MotwTimeslot, date time.Time) (time.Time, time.Time) {
+func GetTimeslotDatetimes(timeslot queries.MotwTimeslot, date time.Time) models.MOTWTimeslot {
 	starts := time.Date(date.Year(), date.Month(), date.Day(), timeslot.StartsAt.Hour(), timeslot.StartsAt.Minute(), timeslot.StartsAt.Second(), timeslot.StartsAt.Nanosecond(), time.UTC)
 	ends := starts.Add(MotwDuration)
-	return starts, ends
+	return models.MOTWTimeslot{
+		ID:       timeslot.ID,
+		StartsAt: starts,
+		EndsAt:   ends,
+	}
 }
 
 func HandleUpdateTimeslotPref(ctx context.Context, input *models.TimeslotIDInput) (*struct{}, error) {
@@ -101,7 +105,7 @@ func HandleUpdateTimeslot(ctx context.Context, input *models.TimeslotInput) (*st
 	}
 
 	its := input.Body
-	itsStarts, itsEnds := GetTimeslotDatetimes(queries.MotwTimeslot(its), now)
+	inputTimeslot := GetTimeslotDatetimes(queries.MotwTimeslot(its), now)
 
 	// validate input timeslot doesn't overlap with other timeslots, if any exist
 	timeslots, err := db.Queries.SelectTimeslots(ctx)
@@ -114,22 +118,22 @@ func HandleUpdateTimeslot(ctx context.Context, input *models.TimeslotInput) (*st
 		if ts.ID == input.Body.ID {
 			continue
 		}
-		tsStarts, tsEnds := GetTimeslotDatetimes(ts, now)
-		if its.ID < ts.ID && itsStarts.After(tsStarts) {
+		cts := GetTimeslotDatetimes(ts, now)
+		if its.ID < ts.ID && inputTimeslot.StartsAt.After(cts.StartsAt) {
 			return nil, huma.Error400BadRequest("input timeslot can't start after a timeslot with a higher ID.")
 		}
-		if its.ID > ts.ID && itsStarts.Before(tsStarts) {
+		if its.ID > ts.ID && inputTimeslot.StartsAt.Before(cts.StartsAt) {
 			return nil, huma.Error400BadRequest("input timeslot can't start before a timeslot with a lower ID.")
 		}
 		// input timeslot starts or ends during another
-		if itsStarts.After(tsStarts) && itsStarts.Before(tsEnds) || itsEnds.After(tsStarts) && itsEnds.Before(tsEnds) {
+		if inputTimeslot.StartsAt.After(cts.StartsAt) && inputTimeslot.StartsAt.Before(cts.EndsAt) || inputTimeslot.EndsAt.After(cts.StartsAt) && inputTimeslot.EndsAt.Before(cts.EndsAt) {
 			return nil, huma.Error400BadRequest("input timeslot overlaps with an existing timeslot")
 		}
 	}
 
 	err = db.Queries.UpsertTimeslot(ctx, queries.UpsertTimeslotParams{
 		ID:       input.Body.ID,
-		StartsAt: itsStarts,
+		StartsAt: inputTimeslot.StartsAt,
 	})
 	if err != nil {
 		return nil, models.WrapDBErr(err)

@@ -144,8 +144,8 @@ func HandleSubmitTime(ctx context.Context, input *models.LeaderboardIDInput) (*s
 			return nil, huma.Error400BadRequest("no timeslot found, please select one when a motw isn't in progress")
 		}
 
-		ptsStarts, ptsEnds := GetTimeslotDatetimes(playerTimeslot.MotwTimeslot, event.StartsAt)
-		if ttDate.Before(ptsStarts) || ttDate.After(ptsEnds) {
+		eventPts := GetTimeslotDatetimes(playerTimeslot.MotwTimeslot, event.StartsAt)
+		if ttDate.Before(eventPts.StartsAt) || ttDate.After(eventPts.EndsAt) {
 			return nil, huma.Error400BadRequest(fmt.Sprintf("Tempus PR wasn't during your timeslot! (%s) please submit an unverified time if submitting a non-PR time.", ttDate.String()))
 		}
 	}
@@ -202,11 +202,11 @@ func HandleSubmitUnverifiedTime(ctx context.Context, input *models.UnverifiedTim
 		}
 
 		now := time.Now().UTC()
-		ptsStarts, ptsEnds := GetTimeslotDatetimes(playerTimeslot.MotwTimeslot, event.StartsAt)
-		if ptsStarts.After(now) {
+		eventPts := GetTimeslotDatetimes(playerTimeslot.MotwTimeslot, event.StartsAt)
+		if eventPts.StartsAt.After(now) {
 			return nil, huma.Error400BadRequest("motw hasn't started in your timeslot yet")
 		}
-		if ptsEnds.Before(now) {
+		if eventPts.EndsAt.Before(now) {
 			return nil, huma.Error400BadRequest("motw has ended in your timeslot. please contact a mod if you have an old time to submit!")
 		}
 	}
