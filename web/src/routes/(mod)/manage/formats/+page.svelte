@@ -29,7 +29,7 @@
   const visible_at: string = $derived(validDateTime(`${visible_date}T${visible_time}:00Z`));
   const starts_at: string = $derived(validDateTime(`${start_date}T${start_time}:00Z`));
   const ends_at: string = $derived(
-    event_kind === 'monthly'
+    event_kind === 'monthly' || event_kind === 'motw'
       ? validDateTime(`${start_date}T${start_time}:00Z`)
       : validDateTime(`${end_date}T${end_time}:00Z`)
   );
