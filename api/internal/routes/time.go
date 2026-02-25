@@ -75,7 +75,7 @@ func GetEventDetailsForLeaderboard(ctx context.Context, leaderboard_id int64, pl
 	}
 
 	// Tempus PRs have a timestamp, so checking if a competition has ended isn't necessary
-	now := time.Now()
+	now := time.Now().UTC()
 	if event.StartsAt.After(now) {
 		return nil, nil, nil, huma.Error400BadRequest(fmt.Sprintf("%s hasn't started", event.Kind))
 	}
@@ -110,7 +110,7 @@ func HandleSubmitTime(ctx context.Context, input *models.LeaderboardIDInput) (*s
 		return nil, err
 	}
 
-	now := time.Now()
+	now := time.Now().UTC()
 	if event.EndsAt.Add(timeSubmitExtension).Before(now) {
 		return nil, huma.Error400BadRequest(fmt.Sprintf("%s has ended. please contact a mod if you have an old time to submit!", event.Kind))
 	}
@@ -143,7 +143,8 @@ func HandleSubmitTime(ctx context.Context, input *models.LeaderboardIDInput) (*s
 		if err != nil {
 			return nil, huma.Error400BadRequest("no timeslot found, please select one when a motw isn't in progress")
 		}
-		ptsStarts, ptsEnds := GetTimeslotDatetimes(playerTimeslot.MotwTimeslot)
+
+		ptsStarts, ptsEnds := GetTimeslotDatetimes(playerTimeslot.MotwTimeslot, event.StartsAt)
 		if ttDate.Before(ptsStarts) || ttDate.After(ptsEnds) {
 			return nil, huma.Error400BadRequest(fmt.Sprintf("Tempus PR wasn't during your timeslot! (%s) please submit an unverified time if submitting a non-PR time.", ttDate.String()))
 		}
@@ -199,13 +200,18 @@ func HandleSubmitUnverifiedTime(ctx context.Context, input *models.UnverifiedTim
 		if err != nil {
 			return nil, huma.Error400BadRequest("no timeslot found, please select one when a motw isn't in progress")
 		}
-		ptsStarts, _ := GetTimeslotDatetimes(playerTimeslot.MotwTimeslot)
-		if event.StartsAt.After(ptsStarts) {
+
+		now := time.Now().UTC()
+		ptsStarts, ptsEnds := GetTimeslotDatetimes(playerTimeslot.MotwTimeslot, event.StartsAt)
+		if ptsStarts.After(now) {
 			return nil, huma.Error400BadRequest("motw hasn't started in your timeslot yet")
+		}
+		if ptsEnds.Before(now) {
+			return nil, huma.Error400BadRequest("motw has ended in your timeslot. please contact a mod if you have an old time to submit!")
 		}
 	}
 
-	now := time.Now()
+	now := time.Now().UTC()
 	if event.EndsAt.Add(timeSubmitExtension).Before(now) {
 		return nil, huma.Error400BadRequest(fmt.Sprintf("%s has ended. please contact a mod if you have an old time to submit!", event.Kind))
 	}
@@ -337,7 +343,7 @@ func HandleSubmitPlayerTime(ctx context.Context, input *models.PlayerTimeInput) 
 		return nil, err
 	}
 
-	now := time.Now()
+	now := time.Now().UTC()
 	if event.EndsAt.Before(now.Add(timeManageExtension)) {
 		return nil, huma.Error400BadRequest(fmt.Sprintf("%s ended more than one week ago. can't submit a time this old", event.Kind))
 	}

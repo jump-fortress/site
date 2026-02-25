@@ -69,16 +69,14 @@ func HandleUpdateLeaderboards(ctx context.Context, input *models.LeaderboardsInp
 	}
 
 	// if event has started, leaderboards can't be changed
-	now := time.Now()
+	now := time.Now().UTC()
 	if event.StartsAt.Before(now) {
 		return nil, huma.Error400BadRequest(fmt.Sprintf("event has already started (%s)", event.StartsAt))
 	}
 
 	elbs, err := db.Queries.SelectLeaderboards(ctx, eventID)
-	if err != nil {
-		if !errors.Is(err, sql.ErrNoRows) {
-			return nil, models.WrapDBErr(err)
-		}
+	if err != nil && !errors.Is(err, sql.ErrNoRows) {
+		return nil, models.WrapDBErr(err)
 	}
 
 	// only events with one leaderboard can be divless
@@ -187,10 +185,11 @@ func HandleGetMotwLeaderboardTimes(ctx context.Context, input *models.Leaderboar
 	if err != nil {
 		return nil, models.WrapDBErr(err)
 	}
-	ptsStarts, _ := GetTimeslotDatetimes(playerTimeslot.MotwTimeslot)
+	ptsStarts, _ := GetTimeslotDatetimes(playerTimeslot.MotwTimeslot, event.StartsAt)
 
+	now := time.Now().UTC()
 	// motw starts after player timeslot
-	sensitive := event.StartsAt.After(ptsStarts)
+	sensitive := ptsStarts.After(now)
 	if sensitive {
 		return nil, nil
 	}

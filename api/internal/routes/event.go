@@ -15,7 +15,7 @@ import (
 )
 
 func motwNotEnded(kind string, endsAt time.Time) bool {
-	return kind == "motw" && endsAt.After(time.Now())
+	return kind == "motw" && endsAt.After(time.Now().UTC())
 }
 
 func getEndsAt(kind string, starts_at time.Time) time.Time {
@@ -41,7 +41,7 @@ func HandleGetEvent(ctx context.Context, input *models.EventKindAndIDInput) (*mo
 		return nil, models.WrapDBErr(err)
 	}
 
-	now := time.Now()
+	now := time.Now().UTC()
 
 	sensitive := els[0].Event.StartsAt.After(now)
 	sensitive = motwNotEnded(els[0].Event.Kind, els[0].Event.EndsAt)
@@ -69,7 +69,7 @@ func HandleGetEventKinds(ctx context.Context, input *models.EventKindInput) (*mo
 		return nil, models.WrapDBErr(err)
 	}
 
-	now := time.Now()
+	now := time.Now().UTC()
 	resp := &models.EventsWithLeaderboardsOutput{
 		Body: []models.EventWithLeaderboards{},
 	}
@@ -113,13 +113,6 @@ func HandleGetMotw(ctx context.Context, input *models.EventKindAndIDInput) (*mod
 		return nil, models.SessionErr()
 	}
 
-	// get player timeslot
-	playerTimeslot, err := db.Queries.SelectPlayerTimeslot(ctx, principal.SteamID.String())
-	if err != nil {
-		return nil, models.WrapDBErr(err)
-	}
-	ptsStarts, _ := GetTimeslotDatetimes(playerTimeslot.MotwTimeslot)
-
 	// get motw and leaderboards
 	els, err := db.Queries.SelectEventLeaderboards(ctx, queries.SelectEventLeaderboardsParams{
 		Kind:   "motw",
@@ -129,10 +122,17 @@ func HandleGetMotw(ctx context.Context, input *models.EventKindAndIDInput) (*mod
 		return nil, models.WrapDBErr(err)
 	}
 
-	now := time.Now()
+	// get player timeslot
+	playerTimeslot, err := db.Queries.SelectPlayerTimeslot(ctx, principal.SteamID.String())
+	if err != nil {
+		return nil, models.WrapDBErr(err)
+	}
+	ptsStarts, _ := GetTimeslotDatetimes(playerTimeslot.MotwTimeslot, els[0].Event.StartsAt)
 
-	// motw starts after player timeslot
-	sensitive := els[0].Event.StartsAt.After(ptsStarts)
+	now := time.Now().UTC()
+
+	// if motw hasn't started for player's timeslot
+	sensitive := ptsStarts.After(now)
 	if sensitive && els[0].Event.VisibleAt.After(now) {
 		return nil, huma.Error400BadRequest("event not visible")
 	}
@@ -199,7 +199,7 @@ func HandleCreateEvent(ctx context.Context, input *models.EventInput) (*struct{}
 		return nil, models.PlayerClassErr(ie.PlayerClass)
 	}
 
-	now := time.Now()
+	now := time.Now().UTC()
 	if ie.EndsAt.Before(ie.StartsAt) {
 		return nil, huma.Error400BadRequest(fmt.Sprintf("event can't end before it starts (%s)", ie.EndsAt.String()))
 	}
@@ -219,7 +219,6 @@ func HandleCreateEvent(ctx context.Context, input *models.EventInput) (*struct{}
 
 	endsAt := ie.EndsAt
 	// set motw start and end times based on current timeslots
-	// todo: will break if timeslots are updated mid motw? don't allow it?
 	if ie.Kind == "motw" {
 		firstTimeslot, err := db.Queries.SelectFirstTimeslot(ctx)
 		if err != nil {
@@ -229,10 +228,10 @@ func HandleCreateEvent(ctx context.Context, input *models.EventInput) (*struct{}
 		if err != nil {
 			return nil, models.WrapDBErr(err)
 		}
-		ie.StartsAt, _ = GetTimeslotDatetimes(firstTimeslot)
-		_, endsAt = GetTimeslotDatetimes(lastTimeslot)
+		ie.StartsAt, _ = GetTimeslotDatetimes(firstTimeslot, ie.StartsAt)
+		_, endsAt = GetTimeslotDatetimes(lastTimeslot, ie.EndsAt)
 	}
-	endsAt = getEndsAt(ie.Kind, ie.EndsAt)
+	endsAt = getEndsAt(ie.Kind, endsAt)
 
 	// create event
 	_, err = db.Queries.InsertEvent(ctx, queries.InsertEventParams{
@@ -262,7 +261,7 @@ func HandleUpdateEvent(ctx context.Context, input *models.EventInput) (*struct{}
 		return nil, huma.Error400BadRequest("can't modify the event kind or kind_id")
 	}
 
-	now := time.Now()
+	now := time.Now().UTC()
 	if event.StartsAt.Before(now) {
 		return nil, huma.Error400BadRequest("event has already started")
 	}
@@ -310,7 +309,7 @@ func HandleCancelEvent(ctx context.Context, input *models.EventIDInput) (*struct
 		return nil, models.WrapDBErr(err)
 	}
 
-	now := time.Now()
+	now := time.Now().UTC()
 	if event.StartsAt.Before(now) {
 		return nil, huma.Error400BadRequest("event has already started")
 	}
