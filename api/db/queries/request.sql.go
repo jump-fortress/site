@@ -13,7 +13,9 @@ const checkPendingRequestExists = `-- name: CheckPendingRequestExists :one
 select exists (
   select 1
   from request
-  where player_id = ? and kind = ? and pending = true)
+  where player_id = ?
+  and kind = ?
+  and pending = true)
 `
 
 type CheckPendingRequestExistsParams struct {
@@ -56,26 +58,46 @@ func (q *Queries) ResolveRequest(ctx context.Context, id int64) error {
 }
 
 const selectPendingRequests = `-- name: SelectPendingRequests :many
-select id, player_id, kind, content, pending, created_at from request
+select player.id, player.role, player.alias, player.soldier_div, player.demo_div, player.avatar_url, player.trade_token, player.tempus_id, player.country, player.country_code, player.class_pref, player.map_pref, player.launcher_pref, player.created_at, request.id, request.player_id, request.kind, request.content, request.pending, request.created_at from request
+  join player on player.id = request.player_id
   where pending = true
 `
 
-func (q *Queries) SelectPendingRequests(ctx context.Context) ([]Request, error) {
+type SelectPendingRequestsRow struct {
+	Player  Player
+	Request Request
+}
+
+func (q *Queries) SelectPendingRequests(ctx context.Context) ([]SelectPendingRequestsRow, error) {
 	rows, err := q.db.QueryContext(ctx, selectPendingRequests)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Request
+	var items []SelectPendingRequestsRow
 	for rows.Next() {
-		var i Request
+		var i SelectPendingRequestsRow
 		if err := rows.Scan(
-			&i.ID,
-			&i.PlayerID,
-			&i.Kind,
-			&i.Content,
-			&i.Pending,
-			&i.CreatedAt,
+			&i.Player.ID,
+			&i.Player.Role,
+			&i.Player.Alias,
+			&i.Player.SoldierDiv,
+			&i.Player.DemoDiv,
+			&i.Player.AvatarUrl,
+			&i.Player.TradeToken,
+			&i.Player.TempusID,
+			&i.Player.Country,
+			&i.Player.CountryCode,
+			&i.Player.ClassPref,
+			&i.Player.MapPref,
+			&i.Player.LauncherPref,
+			&i.Player.CreatedAt,
+			&i.Request.ID,
+			&i.Request.PlayerID,
+			&i.Request.Kind,
+			&i.Request.Content,
+			&i.Request.Pending,
+			&i.Request.CreatedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -91,26 +113,47 @@ func (q *Queries) SelectPendingRequests(ctx context.Context) ([]Request, error) 
 }
 
 const selectPlayerRequests = `-- name: SelectPlayerRequests :many
-select id, player_id, kind, content, pending, created_at from request
+select player.id, player.role, player.alias, player.soldier_div, player.demo_div, player.avatar_url, player.trade_token, player.tempus_id, player.country, player.country_code, player.class_pref, player.map_pref, player.launcher_pref, player.created_at, request.id, request.player_id, request.kind, request.content, request.pending, request.created_at from request
+  join player on player.id = request.player_id
   where player_id = ?
+  and pending = true
 `
 
-func (q *Queries) SelectPlayerRequests(ctx context.Context, playerID string) ([]Request, error) {
+type SelectPlayerRequestsRow struct {
+	Player  Player
+	Request Request
+}
+
+func (q *Queries) SelectPlayerRequests(ctx context.Context, playerID string) ([]SelectPlayerRequestsRow, error) {
 	rows, err := q.db.QueryContext(ctx, selectPlayerRequests, playerID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Request
+	var items []SelectPlayerRequestsRow
 	for rows.Next() {
-		var i Request
+		var i SelectPlayerRequestsRow
 		if err := rows.Scan(
-			&i.ID,
-			&i.PlayerID,
-			&i.Kind,
-			&i.Content,
-			&i.Pending,
-			&i.CreatedAt,
+			&i.Player.ID,
+			&i.Player.Role,
+			&i.Player.Alias,
+			&i.Player.SoldierDiv,
+			&i.Player.DemoDiv,
+			&i.Player.AvatarUrl,
+			&i.Player.TradeToken,
+			&i.Player.TempusID,
+			&i.Player.Country,
+			&i.Player.CountryCode,
+			&i.Player.ClassPref,
+			&i.Player.MapPref,
+			&i.Player.LauncherPref,
+			&i.Player.CreatedAt,
+			&i.Request.ID,
+			&i.Request.PlayerID,
+			&i.Request.Kind,
+			&i.Request.Content,
+			&i.Request.Pending,
+			&i.Request.CreatedAt,
 		); err != nil {
 			return nil, err
 		}

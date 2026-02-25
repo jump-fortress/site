@@ -43,7 +43,7 @@ func (n NonceStore) Accept(endpoint, nonce string) error {
 		return eris.Wrap(err, "invalid nonce")
 	}
 
-	now := time.Now()
+	now := time.Now().UTC()
 	diff := now.Sub(ts)
 	if diff > maxNonceAge {
 		return eris.Errorf("nonce too old: %.2fs", diff.Seconds())

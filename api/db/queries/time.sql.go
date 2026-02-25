@@ -64,7 +64,7 @@ func (q *Queries) InsertTime(ctx context.Context, arg InsertTimeParams) error {
 }
 
 const selectPRTimesFromLeaderboard = `-- name: SelectPRTimesFromLeaderboard :many
-select time.id, time.leaderboard_id, time.player_id, time.tempus_time_id, time.duration, time.verified, time.created_at, player.id, player.role, player.alias, player.soldier_div, player.demo_div, player.avatar_url, player.trade_token, player.tempus_id, player.country, player.country_code, player.class_pref, player.map_pref, player.launcher_pref, player.created_at, cast(rank() over (order by duration) as integer) time_position from time
+select time.id, time.leaderboard_id, time.player_id, time.tempus_time_id, time.duration, time.verified, time.created_at, player.id, player.role, player.alias, player.soldier_div, player.demo_div, player.avatar_url, player.trade_token, player.tempus_id, player.country, player.country_code, player.class_pref, player.map_pref, player.launcher_pref, player.created_at, cast(rank() over (order by min(duration)) as integer) time_position from time
   join player on time.player_id = player.id
   where time.leaderboard_id = ?
   group by player.id

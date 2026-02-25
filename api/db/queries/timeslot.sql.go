@@ -22,7 +22,7 @@ func (q *Queries) InsertDefaultTimeslot(ctx context.Context, playerID string) er
 
 const selectFirstTimeslot = `-- name: SelectFirstTimeslot :one
 select id, starts_at from motw_timeslot
-order by id asc
+order by id asc limit 1
 `
 
 func (q *Queries) SelectFirstTimeslot(ctx context.Context) (MotwTimeslot, error) {
@@ -34,7 +34,7 @@ func (q *Queries) SelectFirstTimeslot(ctx context.Context) (MotwTimeslot, error)
 
 const selectLastTimeslot = `-- name: SelectLastTimeslot :one
 select id, starts_at from motw_timeslot
-order by id desc
+order by id desc limit 1
 `
 
 func (q *Queries) SelectLastTimeslot(ctx context.Context) (MotwTimeslot, error) {

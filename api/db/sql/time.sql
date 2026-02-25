@@ -35,7 +35,7 @@ select sqlc.embed(time), sqlc.embed(player) from time
   order by time.duration asc;
 
 -- name: SelectPRTimesFromLeaderboard :many
-select sqlc.embed(time), sqlc.embed(player), cast(rank() over (order by duration) as integer) time_position from time
+select sqlc.embed(time), sqlc.embed(player), cast(rank() over (order by min(duration)) as integer) time_position from time
   join player on time.player_id = player.id
   where time.leaderboard_id = ?
   group by player.id;

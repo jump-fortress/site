@@ -8,11 +8,11 @@ select * from motw_timeslot;
 
 -- name: SelectFirstTimeslot :one
 select * from motw_timeslot
-order by id asc;
+order by id asc limit 1;
 
 -- name: SelectLastTimeslot :one
 select * from motw_timeslot
-order by id desc;
+order by id desc limit 1;
 
 -- name: InsertDefaultTimeslot :exec
 insert or ignore into player_motw_timeslot (player_id)

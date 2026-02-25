@@ -3,17 +3,22 @@ insert into request (player_id, kind, content)
   values (?, ?, ?);
 
 -- name: SelectPlayerRequests :many
-select * from request
-  where player_id = ?;
+select sqlc.embed(player), sqlc.embed(request) from request
+  join player on player.id = request.player_id
+  where player_id = ?
+  and pending = true;
 
 -- name: CheckPendingRequestExists :one
 select exists (
   select 1
   from request
-  where player_id = ? and kind = ? and pending = true);
+  where player_id = ?
+  and kind = ?
+  and pending = true);
 
 -- name: SelectPendingRequests :many
-select * from request
+select sqlc.embed(player), sqlc.embed(request) from request
+  join player on player.id = request.player_id
   where pending = true;
 
 -- name: ResolveRequest :exec
