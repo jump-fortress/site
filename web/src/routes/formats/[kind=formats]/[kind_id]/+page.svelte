@@ -13,7 +13,7 @@
   import Table from '$lib/components/display/table/Table.svelte';
   import Section from '$lib/components/layout/Section.svelte';
   import TablePlayer from '$lib/components/display/table/TablePlayer.svelte';
-  import { filterBestTimes, twTableGradients, validDuration } from '$lib/helpers/times';
+  import { twTableGradients, validDuration } from '$lib/helpers/times';
   import TableTime from '$lib/components/display/table/TableTime.svelte';
   import TemporalDate from '$lib/components/display/TemporalDate.svelte';
   import Content from '$lib/components/layout/Content.svelte';
@@ -24,7 +24,7 @@
   import { Temporal } from 'temporal-polyfill';
   import LeaderboardButtons from '$lib/components/input/LeaderboardButtons.svelte';
   import TableSkeleton from '$lib/components/display/table/presets/TableSkeleton.svelte';
-  import { formatTime, datetimeToMs } from '$lib/helpers/temporal';
+  import { datetimeToMs } from '$lib/helpers/temporal';
 
   type Props = {
     data: PageData;

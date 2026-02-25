@@ -973,12 +973,8 @@ export interface components {
             map: string;
         };
         MOTWTimeslot: {
-            /**
-             * Format: uri
-             * @description A URL to the JSON Schema for this object.
-             * @example https://example.com/schemas/MOTWTimeslot.json
-             */
-            readonly $schema?: string;
+            /** Format: date-time */
+            ends_at: string;
             /** Format: int64 */
             id: number;
             /** Format: date-time */
@@ -998,6 +994,18 @@ export interface components {
             soldier_rating: number;
             /** Format: int64 */
             soldier_tier: number;
+        };
+        MotwTimeslot: {
+            /**
+             * Format: uri
+             * @description A URL to the JSON Schema for this object.
+             * @example https://example.com/schemas/MotwTimeslot.json
+             */
+            readonly $schema?: string;
+            /** Format: int64 */
+            ID: number;
+            /** Format: date-time */
+            StartsAt: string;
         };
         Player: {
             /**
@@ -1117,7 +1125,7 @@ export type Event = components['schemas']['Event'];
 export type EventLeaderboardTime = components['schemas']['EventLeaderboardTime'];
 export type EventWithLeaderboards = components['schemas']['EventWithLeaderboards'];
 export type Leaderboard = components['schemas']['Leaderboard'];
-export type MotwTimeslot = components['schemas']['MOTWTimeslot'];
+export type MotwTimeslot = components['schemas']['MotwTimeslot'];
 export type Map = components['schemas']['Map'];
 export type Player = components['schemas']['Player'];
 export type PlayerTimeslot = components['schemas']['PlayerTimeslot'];
@@ -1230,7 +1238,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["MOTWTimeslot"];
+                "application/json": components["schemas"]["MotwTimeslot"];
             };
         };
         responses: {
