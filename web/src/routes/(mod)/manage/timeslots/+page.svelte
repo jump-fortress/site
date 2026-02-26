@@ -83,7 +83,8 @@
           const resp = await Client.POST(ApiPaths.update_timeslot, {
             body: {
               id: id,
-              starts_at: timeslotDatetime
+              starts_at: timeslotDatetime,
+              ends_at: timeslotDatetime
             }
           });
           oerror = resp.error;

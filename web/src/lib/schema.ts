@@ -64,6 +64,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/internal/admin/events/leaderboards/{leaderboard_id}/prizepool": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * update prizepool
+         * @description update an event leaderboard's prizepool
+         */
+        post: operations["update-leaderboard-prizepool"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/internal/admin/events/motw/timeslots": {
         parameters: {
             query?: never;
@@ -164,6 +184,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/internal/events/leaderboards/{leaderboard_id}/prizepool": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * get prizepool
+         * @description get an event leaderboard's prizepool
+         */
+        get: operations["get-leaderboard-prizepool"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/internal/events/leaderboards/{leaderboard_id}/times": {
         parameters: {
             query?: never;
@@ -196,6 +236,26 @@ export interface paths {
          * @description get a player's PRs for all events
          */
         get: operations["get-player-prs"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/internal/events/{event_id}/prizepool": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * get prizepool total
+         * @description get an event's prizepool total
+         */
+        get: operations["get-prizepool-total"];
         put?: never;
         post?: never;
         delete?: never;
@@ -987,18 +1047,6 @@ export interface components {
             /** Format: int64 */
             soldier_tier: number;
         };
-        MotwTimeslot: {
-            /**
-             * Format: uri
-             * @description A URL to the JSON Schema for this object.
-             * @example https://example.com/schemas/MotwTimeslot.json
-             */
-            readonly $schema?: string;
-            /** Format: int64 */
-            ID: number;
-            /** Format: date-time */
-            StartsAt: string;
-        };
         Player: {
             /**
              * Format: uri
@@ -1027,6 +1075,25 @@ export interface components {
             player_id: string;
             /** Format: int64 */
             timeslot_id: number;
+        };
+        Prize: {
+            /** Format: int64 */
+            keys: number;
+            /** Format: int64 */
+            leaderboard_id: number;
+            player_id?: string;
+            /** Format: int64 */
+            position: number;
+        };
+        PrizepoolTotal: {
+            /**
+             * Format: uri
+             * @description A URL to the JSON Schema for this object.
+             * @example https://example.com/schemas/PrizepoolTotal.json
+             */
+            readonly $schema?: string;
+            /** Format: int64 */
+            total: number;
         };
         Request: {
             content: string;
@@ -1095,6 +1162,12 @@ export interface components {
             time: components["schemas"]["Time"];
         };
         TimeslotDatetimes: {
+            /**
+             * Format: uri
+             * @description A URL to the JSON Schema for this object.
+             * @example https://example.com/schemas/TimeslotDatetimes.json
+             */
+            readonly $schema?: string;
             /** Format: date-time */
             ends_at: string;
             /** Format: int64 */
@@ -1126,9 +1199,10 @@ export type EventLeaderboardTime = components['schemas']['EventLeaderboardTime']
 export type EventWithLeaderboards = components['schemas']['EventWithLeaderboards'];
 export type Leaderboard = components['schemas']['Leaderboard'];
 export type Map = components['schemas']['Map'];
-export type MotwTimeslot = components['schemas']['MotwTimeslot'];
 export type Player = components['schemas']['Player'];
 export type PlayerTimeslot = components['schemas']['PlayerTimeslot'];
+export type Prize = components['schemas']['Prize'];
+export type PrizepoolTotal = components['schemas']['PrizepoolTotal'];
 export type Request = components['schemas']['Request'];
 export type RequestWithPlayer = components['schemas']['RequestWithPlayer'];
 export type Session = components['schemas']['Session'];
@@ -1230,6 +1304,33 @@ export interface operations {
             };
         };
     };
+    "update-leaderboard-prizepool": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
     "update-timeslot": {
         parameters: {
             query?: never;
@@ -1239,7 +1340,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["MotwTimeslot"];
+                "application/json": components["schemas"]["TimeslotDatetimes"];
             };
         };
         responses: {
@@ -1377,6 +1478,37 @@ export interface operations {
             };
         };
     };
+    "get-leaderboard-prizepool": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                leaderboard_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Prize"][] | null;
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
     "get-leaderboard-times": {
         parameters: {
             query?: never;
@@ -1427,6 +1559,37 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["EventLeaderboardTime"][] | null;
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "get-prizepool-total": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                event_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PrizepoolTotal"];
                 };
             };
             /** @description Error */
@@ -2500,13 +2663,16 @@ export enum ApiPaths {
     get_full_events = "/internal/admin/events",
     create_event = "/internal/admin/events/create",
     update_leaderboards = "/internal/admin/events/leaderboards",
+    update_leaderboard_prizepool = "/internal/admin/events/leaderboards/{leaderboard_id}/prizepool",
     update_timeslot = "/internal/admin/events/motw/timeslots",
     update_event = "/internal/admin/events/update",
     cancel_event = "/internal/admin/events/{event_id}",
     update_maps = "/internal/admin/maps",
     update_leaderboard_tempus_times = "/internal/devevents/leaderboards/{leaderboard_id}",
+    get_leaderboard_prizepool = "/internal/events/leaderboards/{leaderboard_id}/prizepool",
     get_leaderboard_times = "/internal/events/leaderboards/{leaderboard_id}/times",
     get_player_prs = "/internal/events/players/{player_id}",
+    get_prizepool_total = "/internal/events/{event_id}/prizepool",
     get_event_kinds = "/internal/events/{event_kind}",
     get_event = "/internal/events/{event_kind}/{kind_id}",
     get_maps = "/internal/maps",
