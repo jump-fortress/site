@@ -126,3 +126,12 @@ func GetRequestResponse(r queries.Request) Request {
 		CreatedAt: r.CreatedAt,
 	}
 }
+
+func GetPrizeResponse(p queries.Prize) Prize {
+	return Prize{
+		LeaderboardID: p.LeaderboardID,
+		PlayerID:      p.PlayerID.String,
+		Position:      p.Position,
+		Keys:          p.Keys,
+	}
+}

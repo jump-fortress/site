@@ -118,7 +118,11 @@ func HandleUpdateTimeslot(ctx context.Context, input *models.TimeslotInput) (*st
 	}
 
 	its := input.Body
-	inputTimeslot := GetTimeslotDatetimes(queries.MotwTimeslot(its), now)
+
+	inputTimeslot := GetTimeslotDatetimes(queries.MotwTimeslot{
+		ID:       its.ID,
+		StartsAt: its.StartsAt,
+	}, now)
 
 	// validate input timeslot doesn't overlap with other timeslots, if any exist
 	timeslots, err := db.Queries.SelectTimeslots(ctx)

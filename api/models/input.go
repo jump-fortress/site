@@ -1,9 +1,5 @@
 package models
 
-import (
-	"github.com/jump-fortress/site/db/queries"
-)
-
 type PlayerIDInput struct {
 	PlayerID string `path:"player_id" doc:"player id, SteamID64"`
 }
@@ -93,5 +89,10 @@ type TimeslotIDInput struct {
 }
 
 type TimeslotInput struct {
-	Body queries.MotwTimeslot
+	Body TimeslotDatetimes
+}
+
+type PrizepoolInput struct {
+	ID   int64 `path:"leaderboard_id"`
+	Body []Prize
 }

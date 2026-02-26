@@ -51,3 +51,11 @@ type RequestsWithPlayerOutput struct {
 type TimeslotInfoOutput struct {
 	Body TimeslotInfo
 }
+
+type PrizepoolTotalOutput struct {
+	Body PrizepoolTotal
+}
+
+type PrizepoolOutput struct {
+	Body []Prize
+}

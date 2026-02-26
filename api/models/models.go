@@ -121,3 +121,14 @@ type RequestWithPlayer struct {
 	Request Request `json:"request"`
 	Player  Player  `json:"player"`
 }
+
+type PrizepoolTotal struct {
+	Total int64 `json:"total"`
+}
+
+type Prize struct {
+	LeaderboardID int64  `json:"leaderboard_id"`
+	PlayerID      string `json:"player_id,omitempty"`
+	Position      int64  `json:"position"`
+	Keys          int64  `json:"keys"`
+}

@@ -86,6 +86,13 @@ type PlayerMotwTimeslot struct {
 	PlayerID   string
 }
 
+type Prize struct {
+	LeaderboardID int64
+	PlayerID      sql.NullString
+	Position      int64
+	Keys          int64
+}
+
 type Request struct {
 	ID        int64
 	PlayerID  string

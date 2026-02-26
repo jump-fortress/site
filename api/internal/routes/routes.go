@@ -69,6 +69,24 @@ func RegisterOpenRoutes(internalApi *huma.Group) {
 		Description: "get a player's PRs for all events",
 		OperationID: "get-player-prs",
 	}, HandleGetPlayerPRs)
+
+	huma.Register(internalApi, huma.Operation{
+		Method:      http.MethodGet,
+		Path:        "/events/leaderboards/{leaderboard_id}/prizepool",
+		Tags:        []string{"times"},
+		Summary:     "get prizepool",
+		Description: "get an event leaderboard's prizepool",
+		OperationID: "get-leaderboard-prizepool",
+	}, HandleGetLeaderboardPrizepool)
+
+	huma.Register(internalApi, huma.Operation{
+		Method:      http.MethodGet,
+		Path:        "/events/{event_id}/prizepool",
+		Tags:        []string{"times"},
+		Summary:     "get prizepool total",
+		Description: "get an event's prizepool total",
+		OperationID: "get-prizepool-total",
+	}, HandleGetPrizepoolTotal)
 }
 
 func RegisterSessionRoutes(sessionApi *huma.Group) {
@@ -345,6 +363,16 @@ func RegisterAdminRoutes(adminApi *huma.Group) {
 		Description: "update motw timeslot",
 		OperationID: "update-timeslot",
 	}, HandleUpdateTimeslot)
+
+	huma.Register(adminApi, huma.Operation{
+		Method:      http.MethodPost,
+		Path:        "/events/leaderboards/{leaderboard_id}/prizepool",
+		Tags:        []string{"admin"},
+		Summary:     "update prizepool",
+		Description: "update an event leaderboard's prizepool",
+		OperationID: "update-leaderboard-prizepool",
+	}, HandleUpdateLeaderboardPrizepool)
+
 }
 
 func RegisterDevRoutes(devApi *huma.Group) {
