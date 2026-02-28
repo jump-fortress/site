@@ -43,6 +43,7 @@ func HandleUpdateLeaderboardPrizepool(ctx context.Context, input *models.Prizepo
 	if err != nil {
 		return nil, models.WrapDBErr(err)
 	}
+	// todo: remove bypass
 	// now := time.Now().UTC()
 	// if event.EndsAt.Before(now) {
 	// 	return nil, huma.Error400BadRequest(fmt.Sprintf("event has ended (%s)", event.EndsAt))

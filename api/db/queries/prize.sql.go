@@ -105,3 +105,21 @@ func (q *Queries) SelectPrizepoolTotal(ctx context.Context, id int64) (int64, er
 	err := row.Scan(&column_1)
 	return column_1, err
 }
+
+const updatePrize = `-- name: UpdatePrize :exec
+update prize
+  set player_id = ?
+  where leaderboard_id = ?
+  and position = ?
+`
+
+type UpdatePrizeParams struct {
+	PlayerID      sql.NullString
+	LeaderboardID int64
+	Position      int64
+}
+
+func (q *Queries) UpdatePrize(ctx context.Context, arg UpdatePrizeParams) error {
+	_, err := q.db.ExecContext(ctx, updatePrize, arg.PlayerID, arg.LeaderboardID, arg.Position)
+	return err
+}

@@ -373,6 +373,14 @@ func RegisterAdminRoutes(adminApi *huma.Group) {
 		OperationID: "update-leaderboard-prizepool",
 	}, HandleUpdateLeaderboardPrizepool)
 
+	huma.Register(adminApi, huma.Operation{
+		Method:      http.MethodPost,
+		Path:        "/events/{event_id}/refresh-results",
+		Tags:        []string{"admin"},
+		Summary:     "update event results",
+		Description: "update an event's prizes / points after it's ended",
+		OperationID: "update-event-results",
+	}, HandleUpdateEventResults)
 }
 
 func RegisterDevRoutes(devApi *huma.Group) {

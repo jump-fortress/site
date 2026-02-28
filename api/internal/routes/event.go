@@ -2,6 +2,7 @@ package routes
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"slices"
 	"time"
@@ -323,4 +324,46 @@ func HandleCancelEvent(ctx context.Context, input *models.EventIDInput) (*struct
 
 	// backup event
 	return nil, rows.InsertDeleted(ctx, event, "event", event.ID)
+}
+
+func HandleUpdateEventResults(ctx context.Context, input *models.EventIDInput) (*struct{}, error) {
+	event, err := db.Queries.SelectEvent(ctx, input.ID)
+	if err != nil {
+		return nil, models.WrapDBErr(err)
+	}
+
+	ewls, err := db.Queries.SelectEventLeaderboards(ctx, queries.SelectEventLeaderboardsParams{
+		Kind:   event.Kind,
+		KindID: event.KindID,
+	})
+	if err != nil {
+		return nil, models.WrapDBErr(err)
+	}
+
+	for _, ewl := range ewls {
+		placements, err := db.Queries.SelectPrizepool(ctx, ewl.Leaderboard.ID)
+		if err != nil {
+			return nil, models.WrapDBErr(err)
+		}
+
+		twps, err := db.Queries.SelectPRTimesFromLeaderboard(ctx, ewl.Leaderboard.ID)
+		if err != nil {
+			return nil, models.WrapDBErr(err)
+		}
+
+		for i, placement := range placements {
+			if len(twps) > i {
+				err = db.Queries.UpdatePrize(ctx, queries.UpdatePrizeParams{
+					PlayerID: sql.NullString{
+						String: twps[i].Player.ID,
+						Valid:  true,
+					},
+					LeaderboardID: ewl.Leaderboard.ID,
+					Position:      placement.Position,
+				})
+			}
+		}
+	}
+
+	return nil, nil
 }

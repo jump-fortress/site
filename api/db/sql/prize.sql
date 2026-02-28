@@ -7,6 +7,12 @@ select * from prize
   where leaderboard_id = ?
   and player_id = ?;
 
+-- name: UpdatePrize :exec
+update prize
+  set player_id = ?
+  where leaderboard_id = ?
+  and position = ?;
+
 -- name: DeletePrizepool :exec
 delete from prize
   where leaderboard_id = ?;
