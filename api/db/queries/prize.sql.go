@@ -7,6 +7,7 @@ package queries
 
 import (
 	"context"
+	"database/sql"
 )
 
 const deletePrizepool = `-- name: DeletePrizepool :exec
@@ -33,6 +34,29 @@ type InsertPrizeParams struct {
 func (q *Queries) InsertPrize(ctx context.Context, arg InsertPrizeParams) error {
 	_, err := q.db.ExecContext(ctx, insertPrize, arg.LeaderboardID, arg.Position, arg.Keys)
 	return err
+}
+
+const selectPrize = `-- name: SelectPrize :one
+select leaderboard_id, player_id, position, keys from prize
+  where leaderboard_id = ?
+  and player_id = ?
+`
+
+type SelectPrizeParams struct {
+	LeaderboardID int64
+	PlayerID      sql.NullString
+}
+
+func (q *Queries) SelectPrize(ctx context.Context, arg SelectPrizeParams) (Prize, error) {
+	row := q.db.QueryRowContext(ctx, selectPrize, arg.LeaderboardID, arg.PlayerID)
+	var i Prize
+	err := row.Scan(
+		&i.LeaderboardID,
+		&i.PlayerID,
+		&i.Position,
+		&i.Keys,
+	)
+	return i, err
 }
 
 const selectPrizepool = `-- name: SelectPrizepool :many

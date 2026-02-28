@@ -1012,6 +1012,7 @@ export interface components {
             leaderboard: components["schemas"]["Leaderboard"];
             /** Format: int64 */
             position: number;
+            prize: components["schemas"]["Prize"];
             time: components["schemas"]["Time"];
         };
         EventWithLeaderboards: {
@@ -1159,6 +1160,7 @@ export interface components {
             player: components["schemas"]["Player"];
             /** Format: int64 */
             position: number;
+            prize: components["schemas"]["Prize"];
             time: components["schemas"]["Time"];
         };
         TimeslotDatetimes: {

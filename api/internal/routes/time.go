@@ -3,6 +3,7 @@ package routes
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	"time"
 
@@ -319,12 +320,37 @@ func HandleGetPlayerPRs(ctx context.Context, input *models.PlayerIDInput) (*mode
 
 		for _, twp := range twps {
 			if twp.Player.ID == input.PlayerID {
+				prize, err := db.Queries.SelectPrize(ctx, queries.SelectPrizeParams{
+					LeaderboardID: elt.Leaderboard.ID,
+					PlayerID: sql.NullString{
+						String: twp.Player.ID,
+						Valid:  true,
+					},
+				})
+				if err != nil {
+					// return blank prize if none exists..
+					if errors.Is(err, sql.ErrNoRows) {
+						prize = queries.Prize{
+							LeaderboardID: 0,
+							PlayerID: sql.NullString{
+								String: "",
+								Valid:  false,
+							},
+							Position: 0,
+							Keys:     0,
+						}
+					} else {
+						return nil, models.WrapDBErr(err)
+					}
+				}
 				resp.Body = append(resp.Body, models.EventLeaderboardTime{
 					Event:       models.GetEventResponse(elt.Event),
 					Leaderboard: models.GetLeaderboardResponse(elt.Leaderboard, false),
 					Time:        models.GetTimeResponse(elt.Time),
 					Position:    twp.TimePosition,
-				})
+					Prize:       models.GetPrizeResponse(prize),
+				},
+				)
 			}
 		}
 	}

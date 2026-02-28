@@ -2,6 +2,11 @@
 insert into prize (leaderboard_id, position, keys)
   values (?, ?, ?);
 
+-- name: SelectPrize :one
+select * from prize
+  where leaderboard_id = ?
+  and player_id = ?;
+
 -- name: DeletePrizepool :exec
 delete from prize
   where leaderboard_id = ?;

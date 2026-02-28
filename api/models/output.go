@@ -28,10 +28,6 @@ type TimeWithPlayerOutput struct {
 	Body TimeWithPlayer
 }
 
-type TimeWithLeaderboardOutput struct {
-	Body TimeWithLeaderboard
-}
-
 type TimesWithPlayerOutput struct {
 	Body []TimeWithPlayer
 }
