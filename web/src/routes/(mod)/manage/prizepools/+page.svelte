@@ -4,11 +4,19 @@
   import TableEvents from '$lib/components/display/table/presets/TableEvents.svelte';
   import Button from '$lib/components/input/Button.svelte';
   import Errors from '$lib/components/input/Errors.svelte';
+  import Input from '$lib/components/input/Input.svelte';
+  import LeaderboardButtons from '$lib/components/input/LeaderboardButtons.svelte';
   import Select from '$lib/components/input/Select.svelte';
   import Section from '$lib/components/layout/Section.svelte';
   import { divs } from '$lib/helpers/divs';
   import { datetimeToMs, validDateTime } from '$lib/helpers/temporal';
-  import { ApiPaths, type Event, type EventWithLeaderboards, type Leaderboard } from '$lib/schema';
+  import {
+    ApiPaths,
+    type Event,
+    type EventWithLeaderboards,
+    type Leaderboard,
+    type Prize
+  } from '$lib/schema';
   import { Temporal } from 'temporal-polyfill';
 
   let event_id: number = $state(0);
@@ -34,6 +42,7 @@
   });
 
   let leaderboards: Leaderboard[] = $state([]);
+  let selectedLeaderboardID: number = $derived(leaderboards?.at(0)?.id ?? 0);
 
   // key to fetch updated events
   let reloadEvents: boolean = $state(true);
@@ -71,6 +80,8 @@
     };
     return event;
   });
+
+  let selectedPrizepool: Prize[] | null = $state(null);
 </script>
 
 <!-- todo: placeholder page -->
@@ -78,47 +89,69 @@
   <EventHeader event={{ event: event, leaderboards: leaderboards }} />
 
   <Errors {oerror} />
-  <div class="flex flex-col gap-1">
-    {#each leaderboards as l, i}
-      <div class="flex">
-        <Select
-          label="div"
+</Section>
+<Section label={'div prizepools'}>
+  <!-- select leaderboard buttons -->
+  <LeaderboardButtons
+    {leaderboards}
+    bind:selected={selectedLeaderboardID}
+    onclick={async () => {
+      const { data } = await Client.GET(ApiPaths.get_leaderboard_prizepool, {
+        params: { path: { leaderboard_id: selectedLeaderboardID } }
+      });
+      selectedPrizepool = data ?? null;
+    }} />
+  {#key selectedLeaderboardID}
+    {#await Client.GET(ApiPaths.get_prizepool_total, { params: { path: { event_id: event_id } } })}
+      <span></span>
+    {:then { data: pp }}
+      {#if pp && selectedPrizepool}
+        <div class="flex gap-1">
+          <span class="text-primary">total</span>
+          <span>{pp.total} keys</span>
+        </div>
+      {/if}
+    {/await}
+    {#each selectedPrizepool as p}
+      <div class="flex items-center">
+        <span class="grid w-6 justify-self-center">{p.position}</span>
+        <Input
+          max_width={'max-w-40'}
           type="text"
-          options={divs}
-          placeholder={leaderboards[i]?.div}
+          placeholder={`${p.keys} keys`}
           onsubmit={async (value) => {
-            leaderboards[i]!.div = value;
+            p.keys = parseInt(value);
             return true;
           }} />
       </div>
     {/each}
-
-    <!-- buttons -->
-    <div class="flex gap-1">
-      {#if leaderboards.length > 0 && leaderboards.length < divs.length && leaderboards[0]?.div}
-        <Button
-          onsubmit={async () => {
-            leaderboards = leaderboards.concat(divless);
-            return true;
-          }}>add div</Button>
-      {/if}
-      <Button
-        onsubmit={async () => {
-          const resp = await Client.POST(ApiPaths.update_leaderboards, {
-            body: leaderboards
-          });
-          oerror = resp.error;
-          // reset, since leaderboard IDs can't be updated
-          leaderboards = divless;
-          if (resp.response.ok) {
-            reloadEvents = !reloadEvents;
-          }
-          return resp.response.ok;
-        }}>
-        <span>update</span>
-      </Button>
-    </div>
-  </div>
+  {/key}
+  {#if selectedPrizepool !== null}
+    <Button
+      onsubmit={async () => {
+        selectedPrizepool!.push({
+          keys: 0,
+          leaderboard_id: selectedLeaderboardID,
+          position: selectedPrizepool!.length + 1
+        });
+        return true;
+      }}><span>add placement</span></Button>
+    <Button
+      onsubmit={async () => {
+        const resp = await Client.POST(ApiPaths.update_leaderboard_prizepool, {
+          params: { path: { leaderboard_id: selectedLeaderboardID } },
+          body: selectedPrizepool
+        });
+        oerror = resp.error;
+        // reset
+        selectedPrizepool = null;
+        if (resp.response.ok) {
+          reloadEvents = !reloadEvents;
+        }
+        return resp.response.ok;
+      }}>
+      <span>update prizepool</span></Button>
+  {/if}
 </Section>
 <Section label={'updatable event prizepools'}>
   {#key reloadEvents}
@@ -129,8 +162,12 @@
       {@const editable = ewls?.filter(({ event }) => datetimeToMs(event.ends_at) < now) ?? []}
       <TableEvents
         data={editable}
-        onclick={(ewl) => {
+        onclick={async (ewl) => {
           loadEvent(ewl);
+          const { data } = await Client.GET(ApiPaths.get_leaderboard_prizepool, {
+            params: { path: { leaderboard_id: selectedLeaderboardID } }
+          });
+          selectedPrizepool = data ?? null;
         }}>
       </TableEvents>
     {/await}

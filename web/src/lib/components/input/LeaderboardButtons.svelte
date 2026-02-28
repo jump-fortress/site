@@ -5,9 +5,10 @@
   type Props = {
     leaderboards: Leaderboard[];
     selected: number;
+    onclick?: () => void;
   };
 
-  let { leaderboards, selected = $bindable() }: Props = $props();
+  let { leaderboards, selected = $bindable(), onclick = () => {} }: Props = $props();
 </script>
 
 <div class="flex overflow-hidden rounded-t-box">
@@ -19,6 +20,7 @@
         : 'bg-base-800 opacity-50 hover:opacity-100'}"
       onclick={() => {
         selected = l.id;
+        onclick();
       }}>
       <Div div={l.div} />
     </button>
