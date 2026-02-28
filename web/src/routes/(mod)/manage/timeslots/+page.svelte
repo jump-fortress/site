@@ -1,14 +1,12 @@
 <script lang="ts">
   import { Client } from '$lib/api/api';
-  import Table from '$lib/components/display/table/Table.svelte';
-  import TemporalDate from '$lib/components/display/TemporalDate.svelte';
   import Button from '$lib/components/input/Button.svelte';
   import Errors from '$lib/components/input/Errors.svelte';
   import Input from '$lib/components/input/Input.svelte';
   import Select from '$lib/components/input/Select.svelte';
   import Content from '$lib/components/layout/Content.svelte';
   import { datetimeToMs, formatTime, validDateTime } from '$lib/helpers/temporal';
-  import { ApiPaths, type MotwTimeslot } from '$lib/schema';
+  import { ApiPaths } from '$lib/schema';
   import { Temporal } from 'temporal-polyfill';
 
   let oerror: OpenAPIError = $state(undefined);
@@ -31,7 +29,7 @@
 <Content>
   <Errors {oerror} />
   {#key refreshTimeslots}
-    {#await Client.GET(ApiPaths.get_timeslot)}
+    {#await Client.GET(ApiPaths.get_timeslot_info, { params: { path: { event_id: 0 } } })}
       <span></span>
     {:then { data: timeslotInfo }}
       {#if timeslotInfo?.timeslots}

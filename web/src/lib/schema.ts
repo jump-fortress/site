@@ -1308,10 +1308,16 @@ export interface operations {
         parameters: {
             query?: never;
             header?: never;
-            path?: never;
+            path: {
+                leaderboard_id: number;
+            };
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Prize"][] | null;
+            };
+        };
         responses: {
             /** @description No Content */
             204: {

@@ -36,7 +36,7 @@
       {#if player}
         <Section label="settings" indent="/">
           <!-- motw timeslot -->
-          {#await Client.GET(ApiPaths.get_timeslot)}
+          {#await Client.GET(ApiPaths.get_timeslot_info, { params: { path: { event_id: 0 } } })}
             <span></span>
           {:then { data: timeslotInfo }}
             {#if timeslotInfo && timeslotInfo.timeslots}
