@@ -229,8 +229,17 @@ func RegisterSessionRoutes(sessionApi *huma.Group) {
 func RegisterModRoutes(modApi *huma.Group) {
 	huma.Register(modApi, huma.Operation{
 		Method:      http.MethodGet,
+		Path:        "/player/{player_id}",
+		Tags:        []string{"mod"},
+		Summary:     "get full player",
+		Description: "get full player",
+		OperationID: "get-full-player",
+	}, HandleGetFullPlayer)
+
+	huma.Register(modApi, huma.Operation{
+		Method:      http.MethodGet,
 		Path:        "/players",
-		Tags:        []string{"players"},
+		Tags:        []string{"mod"},
 		Summary:     "get all players",
 		Description: "get all players",
 		OperationID: "get-full-players",

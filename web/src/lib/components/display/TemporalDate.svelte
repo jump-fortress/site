@@ -24,7 +24,7 @@
     <span class="peer">{formatRelative(ms)}</span>
   {/if}
   <div
-    class="absolute -top-1 right-0 rounded-box bg-base-900 px-2 py-1 text-nowrap text-content opacity-0 drop-shadow-sm/100 drop-shadow-base-900 transition-opacity peer-hover:opacity-100 hover:opacity-100">
+    class="invisible absolute -top-1 right-0 rounded-box bg-base-900 px-2 py-1 text-nowrap text-content opacity-0 drop-shadow-sm/100 drop-shadow-base-900 transition-opacity peer-hover:visible peer-hover:opacity-100 hover:visible hover:opacity-100">
     <span>
       {formatDate(ms)}
       <span class="text-primary">{formatTime(ms)}</span>

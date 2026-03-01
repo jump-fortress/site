@@ -93,7 +93,7 @@
               <TemporalDate datetime={ts.starts_at} />
             </span>
             <span>-</span>
-            <span class="relative z-10 min-w-32 text-start text-nowrap">
+            <span class="relative z-10 text-start text-nowrap">
               <TemporalDate datetime={ts.ends_at} />
             </span>
             <span class="mt-auto icon-[mdi--clock-outline]"></span>

@@ -286,6 +286,17 @@ func HandleUpdateLauncherPref(ctx context.Context, input *models.LauncherInput) 
 }
 
 // mod
+func HandleGetFullPlayer(ctx context.Context, input *models.PlayerIDInput) (*models.PlayerOutput, error) {
+	player, err := db.Queries.SelectPlayer(ctx, input.PlayerID)
+	if err != nil {
+		return nil, models.WrapDBErr(err)
+	}
+
+	resp := &models.PlayerOutput{
+		Body: models.GetPlayerResponse(player, false),
+	}
+	return resp, nil
+}
 
 func HandleGetFullPlayers(ctx context.Context, input *struct{}) (*models.PlayersOutput, error) {
 	resp, err := GetPlayersResponse(ctx, false)

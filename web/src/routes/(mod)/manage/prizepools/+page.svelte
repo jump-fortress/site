@@ -1,7 +1,10 @@
 <script lang="ts">
   import { Client } from '$lib/api/api';
   import EventHeader from '$lib/components/display/EventHeader.svelte';
+  import ExternalLink from '$lib/components/display/ExternalLink.svelte';
+  import PlayerHeader from '$lib/components/display/player/PlayerHeader.svelte';
   import TableEvents from '$lib/components/display/table/presets/TableEvents.svelte';
+  import TablePlayer from '$lib/components/display/table/TablePlayer.svelte';
   import Button from '$lib/components/input/Button.svelte';
   import Errors from '$lib/components/input/Errors.svelte';
   import Input from '$lib/components/input/Input.svelte';
@@ -112,6 +115,17 @@
         </div>
       {/if}
     {/await}
+    {#if selectedPrizepool !== null}
+      <Button
+        onsubmit={async () => {
+          selectedPrizepool!.push({
+            keys: 0,
+            leaderboard_id: selectedLeaderboardID,
+            position: selectedPrizepool!.length + 1
+          });
+          return true;
+        }}><span>add placement</span></Button>
+    {/if}
     {#each selectedPrizepool as p}
       <div class="flex items-center">
         <span class="grid w-6 justify-self-center">{p.position}</span>
@@ -123,19 +137,25 @@
             p.keys = parseInt(value);
             return true;
           }} />
+        {#if p.player_id}
+          {#await Client.GET( ApiPaths.get_full_player, { params: { path: { player_id: p.player_id } } } )}
+            <span></span>
+          {:then { data: player }}
+            {#if player}
+              <TablePlayer {player} flag={false} />
+              {#if player.trade_token}
+                {@const steamID3: number = Number(BigInt(player.id) - 76561197960265728n)}
+                <ExternalLink
+                  label="send trade offer"
+                  href={`https://steamcommunity.com/tradeoffer/new/?partner=${steamID3}&token=${player.trade_token}`} />
+              {/if}
+            {/if}
+          {/await}
+        {/if}
       </div>
     {/each}
   {/key}
   {#if selectedPrizepool !== null}
-    <Button
-      onsubmit={async () => {
-        selectedPrizepool!.push({
-          keys: 0,
-          leaderboard_id: selectedLeaderboardID,
-          position: selectedPrizepool!.length + 1
-        });
-        return true;
-      }}><span>add placement</span></Button>
     <Button
       onsubmit={async () => {
         const resp = await Client.POST(ApiPaths.update_leaderboard_prizepool, {

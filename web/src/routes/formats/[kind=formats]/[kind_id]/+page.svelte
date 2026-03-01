@@ -121,6 +121,20 @@
 
         <Errors {oerror} />
 
+        {#if (ended_days > 0 && data.session.role === 'admin') || data.session.role === 'dev'}
+          <Button
+            onsubmit={async () => {
+              let resp = await Client.POST(ApiPaths.update_event_results, {
+                params: { path: { event_id: data.ewl?.event.id ?? 0 } }
+              });
+              oerror = resp.error;
+              if (resp.response.ok) {
+                refreshPR = !refreshPR;
+              }
+              return resp.response.ok;
+            }}>refresh event results</Button>
+        {/if}
+
         {#if ended_days < 1 && playerLeaderboard}
           <Button
             onsubmit={async () => {

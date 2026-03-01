@@ -24,12 +24,12 @@
     <span class="truncate group-hover:underline">{player.alias}</span>
   </a>
 {:else}
-  <div class="group flex size-full cursor-pointer items-center gap-1">
+  <div class="group flex size-full items-center gap-1">
     {#if flag}
       <Flag code={player.country_code} />
       <div class="w-0"></div>
     {/if}
     <img class="ml-1 size-8 rounded-box" src={player.avatar_url} alt="" loading="lazy" />
-    <span class="truncate group-hover:underline">{player.alias}</span>
+    <span class="truncate">{player.alias}</span>
   </div>
 {/if}

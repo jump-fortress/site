@@ -144,6 +144,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/internal/admin/events/{event_id}/refresh-results": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * update event results
+         * @description update an event's prizes / points after it's ended
+         */
+        post: operations["update-event-results"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/internal/admin/maps": {
         parameters: {
             query?: never;
@@ -362,6 +382,26 @@ export interface paths {
          * @description submit a player's time for an event's leaderboard (up to one week after event end)
          */
         post: operations["submit-player-time"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/internal/mod/player/{player_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * get full player
+         * @description get full player
+         */
+        get: operations["get-full-player"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -1430,6 +1470,35 @@ export interface operations {
             };
         };
     };
+    "update-event-results": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                event_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
     "update-maps": {
         parameters: {
             query?: never;
@@ -1780,6 +1849,38 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "get-full-player": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description player id, SteamID64 */
+                player_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Player"];
+                };
             };
             /** @description Error */
             default: {
@@ -2675,6 +2776,7 @@ export enum ApiPaths {
     update_timeslot = "/internal/admin/events/motw/timeslots",
     update_event = "/internal/admin/events/update",
     cancel_event = "/internal/admin/events/{event_id}",
+    update_event_results = "/internal/admin/events/{event_id}/refresh-results",
     update_maps = "/internal/admin/maps",
     update_leaderboard_tempus_times = "/internal/devevents/leaderboards/{leaderboard_id}",
     get_leaderboard_prizepool = "/internal/events/leaderboards/{leaderboard_id}/prizepool",
@@ -2687,6 +2789,7 @@ export enum ApiPaths {
     delete_player_time = "/internal/mod/events/leaderboards/times/{time_id}",
     verify_player_time = "/internal/mod/events/leaderboards/times/{time_id}",
     submit_player_time = "/internal/mod/events/leaderboards/{leaderboard_id}/times/{duration}/{player_id}",
+    get_full_player = "/internal/mod/player/{player_id}",
     get_full_players = "/internal/mod/players",
     get_all_requests = "/internal/mod/players/requests",
     resolve_request = "/internal/mod/players/requests/{request_id}",

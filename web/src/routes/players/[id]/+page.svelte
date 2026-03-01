@@ -39,7 +39,7 @@
               <th class="w-time"></th>
               <th class=""></th>
               <th class="w-event"></th>
-              <th class=""></th>
+              <th class="w-0"></th>
               <th class="w-date"></th>
             {/snippet}
             {#snippet row({ event, leaderboard, time, position, prize }: EventLeaderboardTime)}
@@ -48,7 +48,11 @@
               <td class="overflow-hidden"
                 ><TableMap map={leaderboard.map} div={leaderboard.div} /></td>
               <td><TableEvent {event} href={'formats/monthly'} /></td>
-              <td>{prize.keys} keys</td>
+              {#if prize.keys !== 0}
+                <td>{prize.keys} keys</td>
+              {:else}
+                <td></td>
+              {/if}
               <td class="table-date"><TemporalDate datetime={time.created_at} /></td>
             {/snippet}
           </Table>
@@ -63,7 +67,7 @@
               <th class="w-time"></th>
               <th class=""></th>
               <th class="w-event"></th>
-              <th class=""></th>
+              <th class="w-0"></th>
               <th class="w-date"></th>
             {/snippet}
             {#snippet row({ event, leaderboard, time, position, prize }: EventLeaderboardTime)}
@@ -72,7 +76,11 @@
               <td class="overflow-hidden"
                 ><TableMap map={leaderboard.map} div={leaderboard.div} /></td>
               <td><TableEvent {event} href={'formats/archive'} /></td>
-              <td>{prize.keys} keys</td>
+              {#if prize.keys !== 0}
+                <td>{prize.keys} keys</td>
+              {:else}
+                <td></td>
+              {/if}
               <td class="table-date"><TemporalDate datetime={time.created_at} /></td>
             {/snippet}
           </Table>
