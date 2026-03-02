@@ -134,6 +134,7 @@
           {#snippet row(p: Player)}
             <td>{p.role === 'player' ? '' : p.role}</td>
             <td
+              class="cursor-pointer hover:underline"
               onclick={() => {
                 player = p;
                 // jump to top

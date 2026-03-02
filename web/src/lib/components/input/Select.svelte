@@ -44,7 +44,9 @@
   // filter options for autofill
   $effect(() => {
     if (type === 'text' && value) {
-      autofillOptions = options.filter((option) => option.includes(value!));
+      autofillOptions = options
+        .map((option) => option.toLowerCase())
+        .filter((option) => option.includes(value!.toLowerCase()));
     }
   });
 </script>
@@ -62,8 +64,10 @@
       if (focusOptions) {
         if (key === 'Tab' || key === 'Enter') {
           event.preventDefault();
-          value = pendingOption;
-          focusOptions = false;
+          if (pendingOption) {
+            value = pendingOption;
+            focusOptions = false;
+          }
         } else if (key === 'ArrowDown') {
           event.preventDefault();
           clamp(index + 1);
@@ -81,7 +85,6 @@
           }
           return;
         }
-
         focusOptions = true;
       }
     }}
@@ -91,6 +94,7 @@
     }}
     onclick={() => {
       focusOptions = true;
+      index = 0;
     }}
     onfocusout={() => {
       focusOptions = false;

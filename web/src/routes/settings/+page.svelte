@@ -221,6 +221,8 @@
               oerror = resp.error;
               return resp.response.ok;
             }} />
+          <span class="text-sm text-content/75"
+            >Your Steam Trade URL is used to send trade offers for event winnings.</span>
         </Section>
       {:else}
         <span>no player :(</span>
