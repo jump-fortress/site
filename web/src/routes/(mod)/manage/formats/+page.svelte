@@ -222,7 +222,6 @@
   </div>
 </Section>
 
-<!-- todo: get all events! -->
 <Section label={'updatable events'}>
   {#key reloadEvents}
     {#await Client.GET(ApiPaths.get_full_events)}

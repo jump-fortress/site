@@ -127,7 +127,7 @@ func HandleSubmitTime(ctx context.Context, input *models.LeaderboardIDInput) (*s
 		tempusClassID = 4
 	}
 
-	// todo: support for multiple zone types found in other event kinds (course, bonus)
+	// todo: support for multiple zone types found in other event kinds (course, bonus) for bounties
 	tt, err := tempus.GetPR(leaderboard.Map, player.TempusID.Int64, tempusClassID)
 	if err != nil {
 		return nil, models.WrapTempusErr(err)
@@ -228,7 +228,7 @@ func HandleSubmitUnverifiedTime(ctx context.Context, input *models.UnverifiedTim
 		tempusClassID = 4
 	}
 
-	// todo: support for multiple zone types found in other event kinds (course, bonus)
+	// todo: support for multiple zone types found in other event kinds (course, bonus) for bounties
 	tt, err := tempus.GetPR(leaderboard.Map, player.TempusID.Int64, tempusClassID)
 	if err != nil {
 		return nil, models.WrapTempusErr(err)

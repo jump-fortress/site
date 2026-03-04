@@ -180,7 +180,6 @@ func HandleSetTempusID(ctx context.Context, input *models.TempusIDInput) (*struc
 	return nil, nil
 }
 
-// todo implement
 func HandleSetTradeToken(ctx context.Context, input *models.TradeTokenInput) (*struct{}, error) {
 	principal, ok := principal.Get(ctx)
 	if !ok {

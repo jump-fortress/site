@@ -2,7 +2,10 @@ package routes
 
 import (
 	"context"
+	"fmt"
+	"time"
 
+	"github.com/danielgtaylor/huma/v2"
 	"github.com/jump-fortress/site/db"
 	"github.com/jump-fortress/site/db/queries"
 	"github.com/jump-fortress/site/models"
@@ -39,15 +42,15 @@ func HandleGetLeaderboardPrizepool(ctx context.Context, input *models.Leaderboar
 
 func HandleUpdateLeaderboardPrizepool(ctx context.Context, input *models.PrizepoolInput) (*struct{}, error) {
 	// validate event hasn't ended
-	_, err := db.Queries.SelectEventFromLeaderboardID(ctx, input.ID)
+	event, err := db.Queries.SelectEventFromLeaderboardID(ctx, input.ID)
 	if err != nil {
 		return nil, models.WrapDBErr(err)
 	}
-	// todo: remove bypass
-	// now := time.Now().UTC()
-	// if event.EndsAt.Before(now) {
-	// 	return nil, huma.Error400BadRequest(fmt.Sprintf("event has ended (%s)", event.EndsAt))
-	// }
+
+	now := time.Now().UTC()
+	if event.EndsAt.Before(now) {
+		return nil, huma.Error400BadRequest(fmt.Sprintf("event has ended (%s)", event.EndsAt))
+	}
 
 	// delete existing prizepool
 	err = db.Queries.DeletePrizepool(ctx, input.ID)

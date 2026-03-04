@@ -86,7 +86,7 @@
         }
         return resp.response.ok;
       }} />
-    <!-- todo: fix? -->
+
     {#if data.session?.role === 'admin' || data.session?.role === 'dev'}
       <Select
         label="role"
