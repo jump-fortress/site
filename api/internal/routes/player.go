@@ -369,3 +369,18 @@ func HandleUpdatePlayerAlias(ctx context.Context, input *models.UpdatePlayerAlia
 
 	return nil, nil
 }
+
+// admin
+
+func HandleUpdatePlayerRole(ctx context.Context, input *models.UpdatePlayerRoleInput) (*struct{}, error) {
+	// update role
+	err := db.Queries.UpdatePlayerRole(ctx, queries.UpdatePlayerRoleParams{
+		Role: input.Role,
+		ID:   input.PlayerID,
+	})
+	if err != nil {
+		return nil, models.WrapDBErr(err)
+	}
+
+	return nil, nil
+}

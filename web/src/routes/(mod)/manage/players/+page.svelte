@@ -86,18 +86,21 @@
         }
         return resp.response.ok;
       }} />
+    <!-- todo: fix? -->
     {#if data.session?.role === 'admin' || data.session?.role === 'dev'}
-      <span>under construction</span>
       <Select
         label="role"
         type="text"
         placeholder={player.role}
         options={['player', 'mod', 'admin']}
         onsubmit={async (value) => {
-          const resp = await Client.GET(ApiPaths.readyz);
+          const resp = await Client.POST(ApiPaths.update_role, {
+            // @ts-ignore
+            params: { path: { role: value, player_id: player.id } }
+          });
           oerror = resp.error;
           if (resp.response.ok) {
-            //player.alias = value;
+            player.role = value;
           }
           return resp.response.ok;
         }} />

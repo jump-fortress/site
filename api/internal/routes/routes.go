@@ -321,6 +321,15 @@ func RegisterAdminRoutes(adminApi *huma.Group) {
 
 	huma.Register(adminApi, huma.Operation{
 		Method:      http.MethodPost,
+		Path:        "/players/{player_id}/role/{role}",
+		Tags:        []string{"admin"},
+		Summary:     "update role",
+		Description: "update player role",
+		OperationID: "update-role",
+	}, HandleUpdatePlayerRole)
+
+	huma.Register(adminApi, huma.Operation{
+		Method:      http.MethodPost,
 		Path:        "/events/create",
 		Tags:        []string{"admin"},
 		Summary:     "create event",

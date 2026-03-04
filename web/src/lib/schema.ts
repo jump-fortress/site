@@ -184,6 +184,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/internal/admin/players/{player_id}/role/{role}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * update role
+         * @description update player role
+         */
+        post: operations["update-role"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/internal/devevents/leaderboards/{leaderboard_id}": {
         parameters: {
             query?: never;
@@ -1526,6 +1546,37 @@ export interface operations {
             };
         };
     };
+    "update-role": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description player id, SteamID64 */
+                player_id: string;
+                role: "player" | "mod" | "admin";
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
     "update-leaderboard-tempus-times": {
         parameters: {
             query?: never;
@@ -2778,6 +2829,7 @@ export enum ApiPaths {
     cancel_event = "/internal/admin/events/{event_id}",
     update_event_results = "/internal/admin/events/{event_id}/refresh-results",
     update_maps = "/internal/admin/maps",
+    update_role = "/internal/admin/players/{player_id}/role/{role}",
     update_leaderboard_tempus_times = "/internal/devevents/leaderboards/{leaderboard_id}",
     get_leaderboard_prizepool = "/internal/events/leaderboards/{leaderboard_id}/prizepool",
     get_leaderboard_times = "/internal/events/leaderboards/{leaderboard_id}/times",
