@@ -41,6 +41,7 @@
   },
   "dependencies": {
     "@iconify-json/mdi": "^1.2.3",
+    "nprogress": "^0.2.0",
     "openapi-fetch": "^0.15.0",
     "temporal-polyfill": "^0.3.0"
   }
