@@ -222,7 +222,10 @@
               return resp.response.ok;
             }} />
           <span class="text-sm text-content/75"
-            >Your Steam Trade URL is used to send trade offers for event winnings.</span>
+            >Your <a
+              class="text-primary/75 hover:text-primary hover:underline"
+              href="https://steamcommunity.com/profiles/{player.id}/tradeoffers/privacy"
+              target="_blank">Steam Trade URL's</a> token is used to send trade offers for event winnings.</span>
         </Section>
       {:else}
         <span>no player :(</span>
