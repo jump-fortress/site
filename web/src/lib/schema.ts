@@ -284,6 +284,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/internal/events/recent": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * get recent events
+         * @description get most recent reoccuring events
+         */
+        get: operations["get-recent-events"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/internal/events/{event_id}/prizepool": {
         parameters: {
             query?: never;
@@ -952,6 +972,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/internal/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * get site stats
+         * @description get site stats
+         */
+        get: operations["get-stats"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/internal/steam/callback": {
         parameters: {
             query?: never;
@@ -1182,6 +1222,20 @@ export interface components {
             id: string;
             role: string;
         };
+        SiteStats: {
+            /**
+             * Format: uri
+             * @description A URL to the JSON Schema for this object.
+             * @example https://example.com/schemas/SiteStats.json
+             */
+            readonly $schema?: string;
+            /** Format: int64 */
+            event_count: number;
+            /** Format: int64 */
+            player_count: number;
+            /** Format: int64 */
+            times_count: number;
+        };
         SteamProfile: {
             /**
              * Format: uri
@@ -1268,6 +1322,7 @@ export type PrizepoolTotal = components['schemas']['PrizepoolTotal'];
 export type Request = components['schemas']['Request'];
 export type RequestWithPlayer = components['schemas']['RequestWithPlayer'];
 export type Session = components['schemas']['Session'];
+export type SiteStats = components['schemas']['SiteStats'];
 export type SteamProfile = components['schemas']['SteamProfile'];
 export type Time = components['schemas']['Time'];
 export type TimeWithPlayer = components['schemas']['TimeWithPlayer'];
@@ -1687,6 +1742,35 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["EventLeaderboardTime"][] | null;
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "get-recent-events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EventWithLeaderboards"][] | null;
                 };
             };
             /** @description Error */
@@ -2761,6 +2845,35 @@ export interface operations {
             };
         };
     };
+    "get-stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SiteStats"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
     "steam-callback": {
         parameters: {
             query?: never;
@@ -2834,6 +2947,7 @@ export enum ApiPaths {
     get_leaderboard_prizepool = "/internal/events/leaderboards/{leaderboard_id}/prizepool",
     get_leaderboard_times = "/internal/events/leaderboards/{leaderboard_id}/times",
     get_player_prs = "/internal/events/players/{player_id}",
+    get_recent_events = "/internal/events/recent",
     get_prizepool_total = "/internal/events/{event_id}/prizepool",
     get_event_kinds = "/internal/events/{event_kind}",
     get_event = "/internal/events/{event_kind}/{kind_id}",
@@ -2869,6 +2983,7 @@ export enum ApiPaths {
     sign_out = "/internal/session/sign-out",
     steam_profile = "/internal/session/steam/profile",
     update_avatar = "/internal/sessionplayers/avatar_url",
+    get_stats = "/internal/stats",
     steam_callback = "/internal/steam/callback",
     steam_discover = "/internal/steam/discover"
 }
