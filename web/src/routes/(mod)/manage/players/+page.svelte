@@ -39,73 +39,75 @@
 </script>
 
 <PlayerHeader {player} />
-{#if player.id !== '0'}
-  <Section label="update player">
-    <Errors {oerror} />
-    <Input
-      label="alias"
-      type="text"
-      placeholder={player.alias}
-      onsubmit={async (value) => {
-        const resp = await Client.POST(ApiPaths.update_alias, {
-          params: { path: { player_id: player.id, alias: value } }
-        });
-        oerror = resp.error;
-        if (resp.response.ok) {
-          player.alias = value;
-        }
-        return resp.response.ok;
-      }} />
-    <Select
-      label="soldier div"
-      type="text"
-      placeholder={player.soldier_div}
-      options={divs.concat('none')}
-      onsubmit={async (value) => {
-        const resp = await Client.POST(ApiPaths.update_div, {
-          params: { path: { player_id: player.id, player_class: 'Soldier', div: value } }
-        });
-        oerror = resp.error;
-        if (resp.response.ok) {
-          player.soldier_div = value;
-        }
-        return resp.response.ok;
-      }} />
-    <Select
-      label="demo div"
-      type="text"
-      placeholder={player.demo_div}
-      options={divs.concat('none')}
-      onsubmit={async (value) => {
-        const resp = await Client.POST(ApiPaths.update_div, {
-          params: { path: { player_id: player.id, player_class: 'Demo', div: value } }
-        });
-        oerror = resp.error;
-        if (resp.response.ok) {
-          player.demo_div = value;
-        }
-        return resp.response.ok;
-      }} />
-
-    {#if data.session?.role === 'admin' || data.session?.role === 'dev'}
-      <Select
-        label="role"
+{#if player.id !== '0' && data.session}
+  {#if data.session.role === 'mod' || data.session.role === 'admin' || data.session.role === 'dev'}
+    <Section label="update player">
+      <Errors {oerror} />
+      <Input
+        label="alias"
         type="text"
-        placeholder={player.role}
-        options={['player', 'mod', 'admin']}
+        placeholder={player.alias}
         onsubmit={async (value) => {
-          const resp = await Client.POST(ApiPaths.update_role, {
-            // @ts-ignore
-            params: { path: { role: value, player_id: player.id } }
+          const resp = await Client.POST(ApiPaths.update_alias, {
+            params: { path: { player_id: player.id, alias: value } }
           });
           oerror = resp.error;
           if (resp.response.ok) {
-            player.role = value;
+            player.alias = value;
           }
           return resp.response.ok;
         }} />
-    {/if}
-  </Section>
+      <Select
+        label="soldier div"
+        type="text"
+        placeholder={player.soldier_div}
+        options={divs.concat('none')}
+        onsubmit={async (value) => {
+          const resp = await Client.POST(ApiPaths.update_div, {
+            params: { path: { player_id: player.id, player_class: 'Soldier', div: value } }
+          });
+          oerror = resp.error;
+          if (resp.response.ok) {
+            player.soldier_div = value;
+          }
+          return resp.response.ok;
+        }} />
+      <Select
+        label="demo div"
+        type="text"
+        placeholder={player.demo_div}
+        options={divs.concat('none')}
+        onsubmit={async (value) => {
+          const resp = await Client.POST(ApiPaths.update_div, {
+            params: { path: { player_id: player.id, player_class: 'Demo', div: value } }
+          });
+          oerror = resp.error;
+          if (resp.response.ok) {
+            player.demo_div = value;
+          }
+          return resp.response.ok;
+        }} />
+
+      {#if data.session.role === 'admin' || data.session.role === 'dev'}
+        <Select
+          label="role"
+          type="text"
+          placeholder={player.role}
+          options={['player', 'mod', 'admin']}
+          onsubmit={async (value) => {
+            const resp = await Client.POST(ApiPaths.update_role, {
+              // @ts-ignore
+              params: { path: { role: value, player_id: player.id } }
+            });
+            oerror = resp.error;
+            if (resp.response.ok) {
+              player.role = value;
+            }
+            return resp.response.ok;
+          }} />
+      {/if}
+    </Section>
+  {/if}
 {/if}
 
 <Section label="player list">

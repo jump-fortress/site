@@ -25,57 +25,61 @@
   let refreshRequests = $state(false);
 
   let oerror: OpenAPIError = $state(undefined);
+
+  let { data } = $props();
 </script>
 
 <PlayerHeader player={selectedPlayer} />
-{#if selectedPlayer.id !== '0'}
-  <Section label="update player">
-    <Errors {oerror} />
-    <Input
-      label="alias"
-      type="text"
-      placeholder={selectedPlayer.alias}
-      onsubmit={async (value) => {
-        const resp = await Client.POST(ApiPaths.update_alias, {
-          params: { path: { player_id: selectedPlayer.id, alias: value } }
-        });
-        oerror = resp.error;
-        if (resp.response.ok) {
-          selectedPlayer.alias = value;
-        }
-        return resp.response.ok;
-      }} />
-    <Select
-      label="soldier div"
-      type="text"
-      placeholder={selectedPlayer.soldier_div}
-      options={divs.concat('none')}
-      onsubmit={async (value) => {
-        const resp = await Client.POST(ApiPaths.update_div, {
-          params: { path: { player_id: selectedPlayer.id, player_class: 'Soldier', div: value } }
-        });
-        oerror = resp.error;
-        if (resp.response.ok) {
-          selectedPlayer.soldier_div = value;
-        }
-        return resp.response.ok;
-      }} />
-    <Select
-      label="demo div"
-      type="text"
-      placeholder={selectedPlayer.demo_div}
-      options={divs.concat('none')}
-      onsubmit={async (value) => {
-        const resp = await Client.POST(ApiPaths.update_div, {
-          params: { path: { player_id: selectedPlayer.id, player_class: 'Demo', div: value } }
-        });
-        oerror = resp.error;
-        if (resp.response.ok) {
-          selectedPlayer.demo_div = value;
-        }
-        return resp.response.ok;
-      }} />
-  </Section>
+{#if selectedPlayer.id !== '0' && data.session}
+  {#if data.session.role === 'mod' || data.session.role === 'admin' || data.session.role === 'dev'}
+    <Section label="update player">
+      <Errors {oerror} />
+      <Input
+        label="alias"
+        type="text"
+        placeholder={selectedPlayer.alias}
+        onsubmit={async (value) => {
+          const resp = await Client.POST(ApiPaths.update_alias, {
+            params: { path: { player_id: selectedPlayer.id, alias: value } }
+          });
+          oerror = resp.error;
+          if (resp.response.ok) {
+            selectedPlayer.alias = value;
+          }
+          return resp.response.ok;
+        }} />
+      <Select
+        label="soldier div"
+        type="text"
+        placeholder={selectedPlayer.soldier_div}
+        options={divs.concat('none')}
+        onsubmit={async (value) => {
+          const resp = await Client.POST(ApiPaths.update_div, {
+            params: { path: { player_id: selectedPlayer.id, player_class: 'Soldier', div: value } }
+          });
+          oerror = resp.error;
+          if (resp.response.ok) {
+            selectedPlayer.soldier_div = value;
+          }
+          return resp.response.ok;
+        }} />
+      <Select
+        label="demo div"
+        type="text"
+        placeholder={selectedPlayer.demo_div}
+        options={divs.concat('none')}
+        onsubmit={async (value) => {
+          const resp = await Client.POST(ApiPaths.update_div, {
+            params: { path: { player_id: selectedPlayer.id, player_class: 'Demo', div: value } }
+          });
+          oerror = resp.error;
+          if (resp.response.ok) {
+            selectedPlayer.demo_div = value;
+          }
+          return resp.response.ok;
+        }} />
+    </Section>
+  {/if}
 {/if}
 
 <Section label="request list">
