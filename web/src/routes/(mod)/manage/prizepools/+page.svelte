@@ -87,7 +87,6 @@
   let selectedPrizepool: Prize[] | null = $state(null);
 </script>
 
-<!-- todo: placeholder page -->
 <Section label="update">
   <EventHeader event={{ event: event, leaderboards: leaderboards }} />
 
@@ -179,7 +178,7 @@
       <span></span>
     {:then { data: ewls }}
       {@const now = Temporal.Now.instant().epochMilliseconds}
-      {@const editable = ewls?.filter(({ event }) => datetimeToMs(event.ends_at) < now) ?? []}
+      {@const editable = ewls?.filter(({ event }) => datetimeToMs(event.ends_at) > now) ?? []}
       <TableEvents
         data={editable}
         onclick={async (ewl) => {
