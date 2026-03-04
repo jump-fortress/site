@@ -31,7 +31,11 @@
   let index: number = $state(0);
 
   // filtered for autofill
-  let autofillOptions: string[] = $derived(options);
+  let autofillOptions: string[] = $derived.by(() => {
+    return type === 'text' && value
+      ? options.filter((option) => option.toLowerCase().includes(value!.toLowerCase()))
+      : options;
+  });
   let pendingOption: string | undefined = $derived(autofillOptions[index]);
   let focusOptions: boolean = $state(false);
 
@@ -40,15 +44,6 @@
   function clamp(n: number) {
     index = n < 0 ? 0 : n >= autofillOptions.length ? autofillOptions.length - 1 : n;
   }
-
-  // filter options for autofill
-  $effect(() => {
-    if (type === 'text' && value) {
-      autofillOptions = options
-        .map((option) => option.toLowerCase())
-        .filter((option) => option.includes(value!.toLowerCase()));
-    }
-  });
 </script>
 
 <Label {label} {max_width}>
