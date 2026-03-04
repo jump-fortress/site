@@ -19,10 +19,10 @@ select * from event
   where kind = ?
   and kind_id = ?;
 
--- name: SelectLastMOTW :one
+-- name: SelectLastEventKind :one
 select * from event
-  where kind = 'motw'
-  order by starts_at asc;
+  where kind = ?
+  order by starts_at desc;
 
 -- name: SelectEventLeaderboards :many
 select sqlc.embed(event), sqlc.embed(leaderboard) from event

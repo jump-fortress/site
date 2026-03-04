@@ -3,6 +3,7 @@ package routes
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	"slices"
 	"time"
@@ -16,7 +17,7 @@ import (
 )
 
 func motwNotEnded(kind string, endsAt time.Time) bool {
-	return kind == "motw" && endsAt.After(time.Now().UTC())
+	return endsAt.After(time.Now().UTC())
 }
 
 func getEndsAt(kind string, starts_at time.Time) time.Time {
@@ -45,7 +46,9 @@ func HandleGetEvent(ctx context.Context, input *models.EventKindAndIDInput) (*mo
 	now := time.Now().UTC()
 
 	sensitive := els[0].Event.StartsAt.After(now)
-	sensitive = motwNotEnded(els[0].Event.Kind, els[0].Event.EndsAt)
+	if els[0].Event.Kind == "motw" {
+		sensitive = motwNotEnded(els[0].Event.Kind, els[0].Event.EndsAt)
+	}
 	if sensitive && els[0].Event.VisibleAt.After(now) {
 		return nil, huma.Error400BadRequest("event not visible")
 	}
@@ -95,7 +98,9 @@ func HandleGetEventKinds(ctx context.Context, input *models.EventKindInput) (*mo
 		}
 
 		sensitive := e.StartsAt.After(now)
-		sensitive = motwNotEnded(els[0].Event.Kind, els[0].Event.EndsAt)
+		if els[0].Event.Kind == "motw" {
+			sensitive = motwNotEnded(els[0].Event.Kind, els[0].Event.EndsAt)
+		}
 		if len(els) != 0 {
 			resp.Body = append(resp.Body, models.GetEventWithLeaderboardsResponse(els, sensitive))
 		}
@@ -104,6 +109,51 @@ func HandleGetEventKinds(ctx context.Context, input *models.EventKindInput) (*mo
 	if len(resp.Body) == 0 {
 		return nil, huma.Error400BadRequest("no events visible")
 	}
+	return resp, nil
+}
+
+func HandleGetRecentEvents(ctx context.Context, _ *struct{}) (*models.EventsWithLeaderboardsOutput, error) {
+	// prepare response
+	resp := &models.EventsWithLeaderboardsOutput{
+		Body: []models.EventWithLeaderboards{},
+	}
+
+	now := time.Now().UTC()
+
+	// get monthly
+	monthly, err := db.Queries.SelectLastEventKind(ctx, "monthly")
+	if err != nil && !errors.Is(err, sql.ErrNoRows) {
+		return nil, models.WrapDBErr(err)
+	}
+	if err == nil {
+		mewls, err := db.Queries.SelectEventLeaderboards(ctx, queries.SelectEventLeaderboardsParams{
+			Kind:   "monthly",
+			KindID: monthly.KindID,
+		})
+		if err != nil {
+			return nil, models.WrapDBErr(err)
+		}
+		sensitive := mewls[0].Event.StartsAt.After(now)
+		resp.Body = append(resp.Body, models.GetEventWithLeaderboardsResponse(mewls, sensitive))
+	}
+
+	// get motw
+	motw, err := db.Queries.SelectLastEventKind(ctx, "motw")
+	if err != nil && !errors.Is(err, sql.ErrNoRows) {
+		return nil, models.WrapDBErr(err)
+	}
+	if err == nil {
+		mewls, err := db.Queries.SelectEventLeaderboards(ctx, queries.SelectEventLeaderboardsParams{
+			Kind:   "motw",
+			KindID: motw.KindID,
+		})
+		if err != nil {
+			return nil, models.WrapDBErr(err)
+		}
+		sensitive := motwNotEnded(mewls[0].Event.Kind, mewls[0].Event.EndsAt)
+		resp.Body = append(resp.Body, models.GetEventWithLeaderboardsResponse(mewls, sensitive))
+	}
+
 	return resp, nil
 }
 

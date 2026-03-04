@@ -34,7 +34,7 @@ func HandleUpdateTimeslotPref(ctx context.Context, input *models.TimeslotIDInput
 	}
 
 	// validate that an motw isn't upcoming first
-	recentMotw, err := db.Queries.SelectLastMOTW(ctx)
+	recentMotw, err := db.Queries.SelectLastEventKind(ctx, "motw")
 	if err != nil && !errors.Is(err, sql.ErrNoRows) {
 		return nil, models.WrapDBErr(err)
 	}
@@ -105,7 +105,7 @@ func HandleGetTimeslotInfo(ctx context.Context, input *models.EventIDInput) (*mo
 
 func HandleUpdateTimeslot(ctx context.Context, input *models.TimeslotInput) (*struct{}, error) {
 	// validate that an motw isn't upcoming first
-	recentMotw, err := db.Queries.SelectLastMOTW(ctx)
+	recentMotw, err := db.Queries.SelectLastEventKind(ctx, "motw")
 	if err != nil && !errors.Is(err, sql.ErrNoRows) {
 		return nil, models.WrapDBErr(err)
 	}

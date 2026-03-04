@@ -45,6 +45,15 @@ func RegisterOpenRoutes(internalApi *huma.Group) {
 
 	huma.Register(internalApi, huma.Operation{
 		Method:      http.MethodGet,
+		Path:        "/events/{event_kind}",
+		Tags:        []string{"events"},
+		Summary:     "get recent events",
+		Description: "get most recent reoccuring events",
+		OperationID: "get-recent-events",
+	}, HandleGetRecentEvents)
+
+	huma.Register(internalApi, huma.Operation{
+		Method:      http.MethodGet,
 		Path:        "/maps",
 		Tags:        []string{"maps"},
 		Summary:     "get maps",
