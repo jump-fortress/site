@@ -17,7 +17,7 @@ type UpdatePlayerAliasInput struct {
 
 type UpdatePlayerRoleInput struct {
 	PlayerID string `path:"player_id" doc:"player id, SteamID64"`
-	Role     string `path:"role" enum:"player,mod,admin"`
+	Role     string `path:"role" enum:"player,consultant,mod,admin"`
 }
 
 type TempusIDInput struct {

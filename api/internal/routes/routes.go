@@ -243,24 +243,36 @@ func RegisterSessionRoutes(sessionApi *huma.Group) {
 	}, HandleGetMotwLeaderboardTimes)
 }
 
-func RegisterModRoutes(modApi *huma.Group) {
-	huma.Register(modApi, huma.Operation{
+func RegisterConsultantRoutes(consultantApi *huma.Group) {
+	huma.Register(consultantApi, huma.Operation{
+		Method:      http.MethodGet,
+		Path:        "/players/requests",
+		Tags:        []string{"consultant"},
+		Summary:     "get pending player requests",
+		Description: "get all pending player requests",
+		OperationID: "get-all-requests",
+	}, HandleGetRequests)
+
+	huma.Register(consultantApi, huma.Operation{
 		Method:      http.MethodGet,
 		Path:        "/player/{player_id}",
-		Tags:        []string{"mod"},
+		Tags:        []string{"consultant"},
 		Summary:     "get full player",
 		Description: "get full player",
 		OperationID: "get-full-player",
 	}, HandleGetFullPlayer)
 
-	huma.Register(modApi, huma.Operation{
+	huma.Register(consultantApi, huma.Operation{
 		Method:      http.MethodGet,
 		Path:        "/players",
-		Tags:        []string{"mod"},
+		Tags:        []string{"consultant"},
 		Summary:     "get all players",
 		Description: "get all players",
 		OperationID: "get-full-players",
 	}, HandleGetFullPlayers)
+}
+
+func RegisterModRoutes(modApi *huma.Group) {
 
 	huma.Register(modApi, huma.Operation{
 		Method:      http.MethodPost,
@@ -306,15 +318,6 @@ func RegisterModRoutes(modApi *huma.Group) {
 		Description: "delete a player's unverified time for an event's leaderboard",
 		OperationID: "delete-player-time",
 	}, HandleDeletePlayerTime)
-
-	huma.Register(modApi, huma.Operation{
-		Method:      http.MethodGet,
-		Path:        "/players/requests",
-		Tags:        []string{"players"},
-		Summary:     "get pending player requests",
-		Description: "get all pending player requests",
-		OperationID: "get-all-requests",
-	}, HandleGetRequests)
 
 	huma.Register(modApi, huma.Operation{
 		Method:      http.MethodPost,

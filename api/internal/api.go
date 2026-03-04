@@ -14,12 +14,13 @@ import (
 )
 
 var (
-	api                       huma.API
-	sessionCookieSecurityMap  = []map[string][]string{{"Steam": {}}}
-	requireSessionMiddlewares huma.Middlewares
-	requireModMiddlewares     huma.Middlewares
-	requireAdminMiddlewares   huma.Middlewares
-	requireDevMiddlewares     huma.Middlewares
+	api                          huma.API
+	sessionCookieSecurityMap     = []map[string][]string{{"Steam": {}}}
+	requireSessionMiddlewares    huma.Middlewares
+	requireConsultantMiddlewares huma.Middlewares
+	requireModMiddlewares        huma.Middlewares
+	requireAdminMiddlewares      huma.Middlewares
+	requireDevMiddlewares        huma.Middlewares
 )
 
 func setupRouter() *chi.Mux {
@@ -91,15 +92,18 @@ func registerRoutes() {
 	internalApi := huma.NewGroup(api, "/internal")
 	sessionApi := huma.NewGroup(internalApi, "/session")
 	modApi := huma.NewGroup(internalApi, "/mod")
+	consultantApi := huma.NewGroup(internalApi, "/consultant")
 	adminApi := huma.NewGroup(internalApi, "/admin")
 	devApi := huma.NewGroup(internalApi, "/dev")
 
 	requireSessionMiddlewares = huma.Middlewares{AuthHandler, RequireUserAuthHandler(internalApi)}
+	requireConsultantMiddlewares = huma.Middlewares{AuthHandler, RequireConsultantHandler(consultantApi)}
 	requireModMiddlewares = huma.Middlewares{AuthHandler, RequireModHandler(modApi)}
 	requireAdminMiddlewares = huma.Middlewares{AuthHandler, RequireAdminHandler(adminApi)}
 	requireDevMiddlewares = huma.Middlewares{AuthHandler, RequireDevHandler(devApi)}
 
 	sessionApi.UseMiddleware(requireSessionMiddlewares...)
+	consultantApi.UseMiddleware(requireConsultantMiddlewares...)
 	modApi.UseMiddleware(requireModMiddlewares...)
 	adminApi.UseMiddleware(requireAdminMiddlewares...)
 	devApi.UseMiddleware(requireDevMiddlewares...)
@@ -111,6 +115,7 @@ func registerRoutes() {
 	// register all other routes
 	routes.RegisterOpenRoutes(internalApi)
 	routes.RegisterSessionRoutes(sessionApi)
+	routes.RegisterConsultantRoutes(consultantApi)
 	routes.RegisterModRoutes(modApi)
 	routes.RegisterAdminRoutes(adminApi)
 	routes.RegisterDevRoutes(devApi)

@@ -15,7 +15,7 @@ create table player(
 
   created_at datetime not null default current_timestamp,
 
-  check (role in ('player', 'mod', 'dev', 'admin')),
+  check (role in ('player', 'consultant', 'mod', 'dev', 'admin')),
   check (class_pref in ('Soldier', 'Demo'))
 );
 

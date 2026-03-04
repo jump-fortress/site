@@ -123,6 +123,16 @@ func RequireUserAuthHandler(api huma.API) func(ctx huma.Context, next func(huma.
 	}
 }
 
+func RequireConsultantHandler(api huma.API) func(ctx huma.Context, next func(huma.Context)) {
+	return func(ctx huma.Context, next func(huma.Context)) {
+		hasRole := checkRoles(ctx, []string{"consultant", "mod", "admin", "dev"})
+		if !hasRole {
+			return
+		}
+		next(ctx)
+	}
+}
+
 func RequireModHandler(api huma.API) func(ctx huma.Context, next func(huma.Context)) {
 	return func(ctx huma.Context, next func(huma.Context)) {
 		hasRole := checkRoles(ctx, []string{"mod", "admin", "dev"})
