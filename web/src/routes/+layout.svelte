@@ -14,8 +14,6 @@
     children: Snippet;
   };
   let { data, children }: Props = $props();
-
-  $inspect(page.url.pathname);
 </script>
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>

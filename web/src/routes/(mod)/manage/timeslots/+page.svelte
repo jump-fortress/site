@@ -14,7 +14,7 @@
   let refreshTimeslots: boolean = $state(false);
 
   let timeslot_date: string = $state(Temporal.Now.plainDateISO().toString());
-  $inspect(oerror);
+
   let timeInput: string = $state('');
   const timeslotDatetime: string = $derived(validDateTime(`${timeslot_date}T${timeInput}:00Z`));
   let id: number = $state(1);

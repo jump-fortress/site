@@ -50,7 +50,7 @@
   style:clip-path="circle(50%)">
   <img class="absolute z-10 select-none" src={overlay} alt="" draggable="false" />
   <div
-    class="mask-alpha mask-center mask-no-repeat transition-opacity select-none"
+    class="mask-alpha mask-center mask-no-repeat transition-opacity select-none group-hover:opacity-0"
     style={`mask-image: url(${mask})`}
     draggable="false">
     <div class="scale-140 animate-[reverse-spin_120s_linear_infinite]">
