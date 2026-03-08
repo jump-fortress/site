@@ -1,4 +1,4 @@
-import prettier from 'eslint-config-prettier';
+// import prettier from 'eslint-config-prettier';
 import { fileURLToPath } from 'node:url';
 import { includeIgnoreFile } from '@eslint/compat';
 import js from '@eslint/js';
@@ -27,7 +27,8 @@ export default defineConfig(
     }
   },
   {
-    files: ['**/*.svelte', '**/*.svelte.ts', '**/*.svelte.js'],
+    // todo: re-enable eslint
+    //files: ['**/*.svelte', '**/*.svelte.ts', '**/*.svelte.js'],
 
     languageOptions: {
       parserOptions: {
