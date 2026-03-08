@@ -6,12 +6,16 @@
   import type { Snippet } from 'svelte';
   import Logo from '$lib/components/layout/Logo.svelte';
   import NavigationProgress from '$lib/components/display/NavigationProgress.svelte';
+  import { page } from '$app/state';
+  import Globe from './invitationals/jwc/Globe.svelte';
 
   type Props = {
     data: PageData;
     children: Snippet;
   };
   let { data, children }: Props = $props();
+
+  $inspect(page.url.pathname);
 </script>
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
@@ -28,5 +32,9 @@
 </div>
 
 <div class="fixed -bottom-36 -left-36">
-  <Logo />
+  {#if page.url.pathname.startsWith('/invitationals/jwc')}
+    <Globe />
+  {:else}
+    <Logo />
+  {/if}
 </div>
