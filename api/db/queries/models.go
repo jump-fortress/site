@@ -10,6 +10,15 @@ import (
 	"time"
 )
 
+type AuditLog struct {
+	FromPlayerID string
+	ToPlayerID   string
+	Kind         string
+	FromContent  string
+	ToContent    string
+	CreatedAt    time.Time
+}
+
 type DeletedRow struct {
 	ID          int64
 	SourceTable string

@@ -133,3 +133,12 @@ type SiteStats struct {
 	TimesCount  int64 `json:"times_count"`
 	EventCount  int64 `json:"event_count"`
 }
+
+type AuditLog struct {
+	FromPlayer  Player    `json:"from_player"`
+	ToPlayer    Player    `json:"to_player"`
+	Kind        string    `json:"kind"`
+	FromContent string    `json:"from_content"`
+	ToContent   string    `json:"to_content"`
+	CreatedAt   time.Time `json:"created_at"`
+}

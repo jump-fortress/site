@@ -270,6 +270,15 @@ func RegisterConsultantRoutes(consultantApi *huma.Group) {
 		Description: "get all players",
 		OperationID: "get-full-players",
 	}, HandleGetFullPlayers)
+
+	huma.Register(consultantApi, huma.Operation{
+		Method:      http.MethodGet,
+		Path:        "/auditlogs",
+		Tags:        []string{"consultant"},
+		Summary:     "get audit logs",
+		Description: "get audit logs for player moderation",
+		OperationID: "get-audit-logs",
+	}, HandleGetAuditLogs)
 }
 
 func RegisterModRoutes(modApi *huma.Group) {

@@ -364,6 +364,12 @@ func HandleSubmitPlayerTime(ctx context.Context, input *models.PlayerTimeInput) 
 	// skips Tempus checks
 	// times submitted by a mod are verified
 
+	// need SteamID for audit log
+	principal, ok := principal.Get(ctx)
+	if !ok {
+		return nil, models.SessionErr()
+	}
+
 	player, leaderboard, event, err := GetEventDetailsForLeaderboard(ctx, input.LeaderboardID, input.PlayerID)
 	if err != nil {
 		return nil, err
@@ -395,18 +401,49 @@ func HandleSubmitPlayerTime(ctx context.Context, input *models.PlayerTimeInput) 
 		Verified: true,
 	})
 
+	// create audit log
+	err = db.Queries.InsertAuditLog(ctx, queries.InsertAuditLogParams{
+		FromPlayerID: principal.SteamID.String(),
+		ToPlayerID:   player.ID,
+		Kind:         "submitted a time",
+		FromContent:  "",
+		ToContent:    fmt.Sprintf("%.3f seconds", input.Duration),
+	})
+
 	return nil, nil
 }
 
 func HandleVerifyPlayerTime(ctx context.Context, input *models.TimeIDInput) (*struct{}, error) {
-	err := db.Queries.VerifyTime(ctx, input.ID)
+	// need SteamID for audit log
+	principal, ok := principal.Get(ctx)
+	if !ok {
+		return nil, models.SessionErr()
+	}
+
+	time, err := db.Queries.VerifyTime(ctx, input.ID)
 	if err != nil {
 		return nil, models.WrapDBErr(err)
 	}
+
+	// create audit log
+	err = db.Queries.InsertAuditLog(ctx, queries.InsertAuditLogParams{
+		FromPlayerID: principal.SteamID.String(),
+		ToPlayerID:   time.PlayerID,
+		Kind:         "verified time",
+		FromContent:  "",
+		ToContent:    fmt.Sprintf("%.3f seconds", time.Duration),
+	})
+
 	return nil, nil
 }
 
 func HandleDeletePlayerTime(ctx context.Context, input *models.TimeIDInput) (*struct{}, error) {
+	// need SteamID for audit log
+	principal, ok := principal.Get(ctx)
+	if !ok {
+		return nil, models.SessionErr()
+	}
+
 	time, err := db.Queries.SelectTime(ctx, input.ID)
 	if err != nil {
 		return nil, models.WrapDBErr(err)
@@ -420,6 +457,15 @@ func HandleDeletePlayerTime(ctx context.Context, input *models.TimeIDInput) (*st
 	if err != nil {
 		return nil, models.WrapDBErr(err)
 	}
+
+	// create audit log
+	err = db.Queries.InsertAuditLog(ctx, queries.InsertAuditLogParams{
+		FromPlayerID: principal.SteamID.String(),
+		ToPlayerID:   time.PlayerID,
+		Kind:         "deleted time",
+		FromContent:  fmt.Sprintf("%.3f seconds", time.Duration),
+		ToContent:    "",
+	})
 
 	err = rows.InsertDeleted(ctx, time, "time", time.ID)
 	if err != nil {

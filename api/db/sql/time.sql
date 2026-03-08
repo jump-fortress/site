@@ -19,10 +19,11 @@ select exists(
   and duration = ?
 );
 
--- name: VerifyTime :exec
+-- name: VerifyTime :one
 update time
   set verified = true
-  where id = ?;
+  where id = ?
+  returning *;
 
 -- name: DeleteTime :exec
 delete from time

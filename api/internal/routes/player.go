@@ -48,46 +48,6 @@ func GetMapNames(ctx context.Context) ([]string, error) {
 	return mapNames, nil
 }
 
-func ValidateModRole(ctx context.Context) (bool, error) {
-	var steamID uint64
-	principal, ok := principal.Get(ctx)
-	if ok {
-		steamID = principal.SteamID.ID()
-	} else {
-		steamID = 0
-	}
-	if steamID != 0 {
-		player, err := db.Queries.SelectPlayer(ctx, principal.SteamID.String())
-		if err != nil {
-			return false, models.WrapDBErr(err)
-		}
-		if player.Role == "admin" || player.Role == "mod" || player.Role == "dev" {
-			return true, nil
-		}
-	}
-	return false, nil
-}
-
-func ValidateAdminRole(ctx context.Context) (bool, error) {
-	var steamID uint64
-	principal, ok := principal.Get(ctx)
-	if ok {
-		steamID = principal.SteamID.ID()
-	} else {
-		steamID = 0
-	}
-	if steamID != 0 {
-		player, err := db.Queries.SelectPlayer(ctx, principal.SteamID.String())
-		if err != nil {
-			return false, models.WrapDBErr(err)
-		}
-		if player.Role == "admin" {
-			return true, nil
-		}
-	}
-	return false, nil
-}
-
 func HandleGetPlayer(ctx context.Context, input *models.PlayerIDInput) (*models.PlayerOutput, error) {
 	player, err := db.Queries.SelectPlayer(ctx, input.PlayerID)
 	if err != nil {
@@ -284,7 +244,8 @@ func HandleUpdateLauncherPref(ctx context.Context, input *models.LauncherInput) 
 	return nil, nil
 }
 
-// mod
+// consultant
+
 func HandleGetFullPlayer(ctx context.Context, input *models.PlayerIDInput) (*models.PlayerOutput, error) {
 	player, err := db.Queries.SelectPlayer(ctx, input.PlayerID)
 	if err != nil {
@@ -302,11 +263,40 @@ func HandleGetFullPlayers(ctx context.Context, input *struct{}) (*models.Players
 	if err != nil {
 		return nil, err
 	}
-
 	return resp, nil
 }
 
+func HandleGetAuditLogs(ctx context.Context, input *struct{}) (*models.AuditLogOutput, error) {
+	logs, err := db.Queries.SelectAuditLogs(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	resp := &models.AuditLogOutput{
+		Body: []models.AuditLog{},
+	}
+	for _, l := range logs {
+		resp.Body = append(resp.Body, models.GetAuditLogResponse(l.AuditLog, l.Player, l.Player_2))
+	}
+	return resp, nil
+}
+
+// mod
+
 func HandleUpdatePlayerDiv(ctx context.Context, input *models.UpdatePlayerDivInput) (*struct{}, error) {
+	// need SteamID for audit log
+	principal, ok := principal.Get(ctx)
+	if !ok {
+		return nil, models.SessionErr()
+	}
+
+	// validate player exists
+	player, err := db.Queries.SelectPlayer(ctx, input.PlayerID)
+	if err != nil {
+		return nil, models.WrapDBErr(err)
+	}
+	fromDiv := "none"
+
 	// validate inputs
 	if input.PlayerClass != "Soldier" && input.PlayerClass != "Demo" {
 		return nil, models.PlayerClassErr(input.PlayerClass)
@@ -319,6 +309,10 @@ func HandleUpdatePlayerDiv(ctx context.Context, input *models.UpdatePlayerDivInp
 
 	// update div
 	if input.PlayerClass == "Soldier" {
+		if player.SoldierDiv.Valid {
+			fromDiv = player.SoldierDiv.String
+		}
+
 		err := db.Queries.UpdatePlayerSoldierDiv(ctx, queries.UpdatePlayerSoldierDivParams{
 			SoldierDiv: sql.NullString{
 				String: input.Div,
@@ -330,6 +324,10 @@ func HandleUpdatePlayerDiv(ctx context.Context, input *models.UpdatePlayerDivInp
 			return nil, models.WrapDBErr(err)
 		}
 	} else {
+		if player.DemoDiv.Valid {
+			fromDiv = player.DemoDiv.String
+		}
+
 		err := db.Queries.UpdatePlayerDemoDiv(ctx, queries.UpdatePlayerDemoDivParams{
 			DemoDiv: sql.NullString{
 				String: input.Div,
@@ -342,10 +340,28 @@ func HandleUpdatePlayerDiv(ctx context.Context, input *models.UpdatePlayerDivInp
 		}
 	}
 
+	// create audit log
+	err = db.Queries.InsertAuditLog(ctx, queries.InsertAuditLogParams{
+		FromPlayerID: principal.SteamID.String(),
+		ToPlayerID:   player.ID,
+		Kind:         fmt.Sprintf("updated %s div", input.PlayerClass),
+		FromContent:  fromDiv,
+		ToContent:    input.Div,
+	})
+	if err != nil {
+		return nil, models.WrapDBErr(err)
+	}
+
 	return nil, nil
 }
 
 func HandleUpdatePlayerAlias(ctx context.Context, input *models.UpdatePlayerAliasInput) (*struct{}, error) {
+	// need SteamID for audit log
+	principal, ok := principal.Get(ctx)
+	if !ok {
+		return nil, models.SessionErr()
+	}
+
 	// validate alias
 	if len(input.Alias) > 32 {
 		return nil, huma.Error400BadRequest("alias is too long (<32 characters)")
@@ -354,13 +370,31 @@ func HandleUpdatePlayerAlias(ctx context.Context, input *models.UpdatePlayerAlia
 		return nil, huma.Error400BadRequest("alias is invalid (alphanumeric only and in-between spaces, dots, underscores)")
 	}
 
+	// validate player exists
+	player, err := db.Queries.SelectPlayer(ctx, input.PlayerID)
+	if err != nil {
+		return nil, models.WrapDBErr(err)
+	}
+
 	// update alias
-	err := db.Queries.UpdatePlayerAlias(ctx, queries.UpdatePlayerAliasParams{
+	err = db.Queries.UpdatePlayerAlias(ctx, queries.UpdatePlayerAliasParams{
 		Alias: sql.NullString{
 			String: input.Alias,
 			Valid:  true,
 		},
 		ID: input.PlayerID,
+	})
+	if err != nil {
+		return nil, models.WrapDBErr(err)
+	}
+
+	// create audit log
+	err = db.Queries.InsertAuditLog(ctx, queries.InsertAuditLogParams{
+		FromPlayerID: principal.SteamID.String(),
+		ToPlayerID:   player.ID,
+		Kind:         "updated alias",
+		FromContent:  player.Alias.String,
+		ToContent:    input.Alias,
 	})
 	if err != nil {
 		return nil, models.WrapDBErr(err)
@@ -372,6 +406,12 @@ func HandleUpdatePlayerAlias(ctx context.Context, input *models.UpdatePlayerAlia
 // admin
 
 func HandleUpdatePlayerRole(ctx context.Context, input *models.UpdatePlayerRoleInput) (*struct{}, error) {
+	// need SteamID for audit log
+	principal, ok := principal.Get(ctx)
+	if !ok {
+		return nil, models.SessionErr()
+	}
+
 	// update role
 	err := db.Queries.UpdatePlayerRole(ctx, queries.UpdatePlayerRoleParams{
 		Role: input.Role,
@@ -380,6 +420,15 @@ func HandleUpdatePlayerRole(ctx context.Context, input *models.UpdatePlayerRoleI
 	if err != nil {
 		return nil, models.WrapDBErr(err)
 	}
+
+	// create audit log
+	err = db.Queries.InsertAuditLog(ctx, queries.InsertAuditLogParams{
+		FromPlayerID: principal.SteamID.String(),
+		ToPlayerID:   input.PlayerID,
+		Kind:         "updated role",
+		FromContent:  "", // no player info
+		ToContent:    input.Role,
+	})
 
 	return nil, nil
 }

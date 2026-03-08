@@ -135,3 +135,14 @@ func GetPrizeResponse(p queries.Prize) Prize {
 		Keys:          p.Keys,
 	}
 }
+
+func GetAuditLogResponse(l queries.AuditLog, fp queries.Player, tp queries.Player) AuditLog {
+	return AuditLog{
+		FromPlayer:  GetPlayerResponse(fp, false),
+		ToPlayer:    GetPlayerResponse(tp, false),
+		Kind:        l.Kind,
+		FromContent: l.FromContent,
+		ToContent:   l.ToContent,
+		CreatedAt:   l.CreatedAt,
+	}
+}

@@ -4,10 +4,10 @@
 
   let route = $derived(page.url.pathname);
   let pages: string[] = $derived.by(() => {
-    let a = ['players, requests'];
+    let a = ['players', 'requests', 'log'];
     if (data.session) {
       if (data.session.role === 'admin' || data.session.role === 'dev') {
-        a = ['formats', 'leaderboards', 'prizepools', 'players', 'requests', 'timeslots'];
+        a = ['formats', 'leaderboards', 'prizepools', 'players', 'requests', 'timeslots', 'log'];
       }
     }
     return a;

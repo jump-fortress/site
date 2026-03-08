@@ -59,3 +59,7 @@ type PrizepoolOutput struct {
 type SiteStatsOutput struct {
 	Body SiteStats
 }
+
+type AuditLogOutput struct {
+	Body []AuditLog
+}

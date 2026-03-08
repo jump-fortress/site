@@ -1,4 +1,4 @@
-create table request(
+ create table request(
   id integer not null primary key autoincrement,
   player_id text not null,
   kind text not null,

@@ -88,7 +88,7 @@ func HandleGetRequestsSelf(ctx context.Context, _ *struct{}) (*models.RequestsWi
 	return resp, nil
 }
 
-// mod
+// consultant
 
 func HandleGetRequests(ctx context.Context, _ *struct{}) (*models.RequestsWithPlayerOutput, error) {
 	requests, err := db.Queries.SelectPendingRequests(ctx)
@@ -109,6 +109,8 @@ func HandleGetRequests(ctx context.Context, _ *struct{}) (*models.RequestsWithPl
 	return resp, nil
 
 }
+
+// mod
 
 func HandleResolveRequest(ctx context.Context, input *models.RequestIDInput) (*struct{}, error) {
 	err := db.Queries.ResolveRequest(ctx, input.ID)

@@ -304,13 +304,24 @@ func (q *Queries) UpdateTimeFromTempus(ctx context.Context, arg UpdateTimeFromTe
 	return err
 }
 
-const verifyTime = `-- name: VerifyTime :exec
+const verifyTime = `-- name: VerifyTime :one
 update time
   set verified = true
   where id = ?
+  returning id, leaderboard_id, player_id, tempus_time_id, duration, verified, created_at
 `
 
-func (q *Queries) VerifyTime(ctx context.Context, id int64) error {
-	_, err := q.db.ExecContext(ctx, verifyTime, id)
-	return err
+func (q *Queries) VerifyTime(ctx context.Context, id int64) (Time, error) {
+	row := q.db.QueryRowContext(ctx, verifyTime, id)
+	var i Time
+	err := row.Scan(
+		&i.ID,
+		&i.LeaderboardID,
+		&i.PlayerID,
+		&i.TempusTimeID,
+		&i.Duration,
+		&i.Verified,
+		&i.CreatedAt,
+	)
+	return i, err
 }

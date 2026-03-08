@@ -16,7 +16,7 @@
   data-nav="true">
   {@render page(session.alias, `/players/${session.id}`)}
   <hr class="relative left-1/24 my-px w-11/12 text-base-700" />
-  {#if session.role === 'admin' || session.role === 'mode' || session.role === 'dev'}
+  {#if session.role === 'admin' || session.role === 'mod' || session.role === 'dev'}
     {@render page('manage', '/manage')}
     <hr class="relative left-1/24 my-px w-11/12 text-base-700" />
   {/if}
