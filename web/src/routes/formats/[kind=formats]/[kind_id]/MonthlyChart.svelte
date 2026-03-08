@@ -150,6 +150,7 @@
   });
 </script>
 
+<!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
   class="relative grid bg-linear-to-b from-base-900/50 to-base-900 select-none"
   onpointermove={(e) => {

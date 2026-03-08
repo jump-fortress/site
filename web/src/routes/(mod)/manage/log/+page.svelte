@@ -2,6 +2,7 @@
   import { Client } from '$lib/api/api';
   import Table from '$lib/components/display/table/Table.svelte';
   import TablePlayer from '$lib/components/display/table/TablePlayer.svelte';
+  import TemporalDate from '$lib/components/display/TemporalDate.svelte';
   import { ApiPaths, type AuditLog } from '$lib/schema';
 </script>
 
@@ -14,10 +15,19 @@
         <th></th>
       {/snippet}
       {#snippet row(l: AuditLog)}
-        <td
-          ><div class="flex">
-            <TablePlayer player={l.from_player} />
-            {l.kind} for <TablePlayer player={l.to_player} /> from {l.from_content} to {l.to_content}
+        <td class="px-2"
+          ><div class="flex items-center gap-1">
+            <div class="flex min-w-fit">
+              <TablePlayer player={l.from_player} flag={false} />
+            </div>
+            <span>{l.kind} for</span>
+            <div class="flex min-w-fit">
+              <TablePlayer player={l.to_player} flag={false} />
+            </div>
+            <span>from {l.from_content} to {l.to_content}</span>
+            <div class="ml-auto">
+              <TemporalDate datetime={l.created_at} />
+            </div>
           </div></td>
       {/snippet}
     </Table>
