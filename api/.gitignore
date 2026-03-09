@@ -24,9 +24,6 @@ profile.cov
 go.work
 go.work.sum
 
-# env file
-.env
-
 # Editor/IDE
 # .idea/
 # .vscode/
@@ -35,6 +32,10 @@ go.work.sum
 *.db
 *.sqlite3
 
-# env
-**/.env.*
-!**/.env.*.example
+# all dotenv files are ignored, except for a few which are MUST NOT contain secrets/credentials
+.env.*
+!.env.example
+!.env.*.example
+!.env.development
+!.env.test
+!.env.production
