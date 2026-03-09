@@ -14,7 +14,6 @@ var (
 )
 
 func OpenDB(path string) *sql.DB {
-	// os.Remove("./db/jump.db")
 	database, err := sql.Open("sqlite3", path)
 	if err != nil {
 		slog.Error("failed to open db", "error", err)
