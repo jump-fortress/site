@@ -17,6 +17,7 @@
   "devDependencies": {
     "@eslint/compat": "^1.4.0",
     "@eslint/js": "^9.39.1",
+    "@flydotio/dockerfile": "^0.7.10",
     "@iconify/tailwind4": "^1.2.1",
     "@sveltejs/adapter-auto": "^7.0.0",
     "@sveltejs/kit": "^2.49.1",
@@ -43,6 +44,7 @@
   },
   "dependencies": {
     "@iconify-json/mdi": "^1.2.3",
+    "@sveltejs/adapter-node": "^5.5.4",
     "globe.gl": "^2.45.0",
     "nprogress": "^0.2.0",
     "openapi-fetch": "^0.15.0",
