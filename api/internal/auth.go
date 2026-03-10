@@ -102,15 +102,27 @@ func handleSteamCallback(ctx context.Context, input *CallbackInput) (*CallbackOu
 	// provide a URL to verify that the incoming callback request has the authority we expect. Here we're
 	// just replacing the `https://blahblah.com` part of the URL with our OidRealm
 
-	fmt.Printf("input openidurl: %v\n", input.OpenIDURL)
+	//fmt.Printf("input openidurl: %v\n", input.OpenIDURL)
+	//
+	//inputUrl, urlErr := url.Parse(input.OpenIDURL)
+	//if urlErr != nil {
+	//	return nil, eris.Wrap(urlErr, "error parsing openid URL")
+	//}
 
-	inputUrl, urlErr := url.Parse(input.OpenIDURL)
-	if urlErr != nil {
-		return nil, eris.Wrap(urlErr, "error parsing openid URL")
-	}
+	fullURL := OidRealmURL.JoinPath(SteamOidRedirectPath)
 
-	fullURL := OidRealmURL.JoinPath(inputUrl.Path)
-	fullURL.RawQuery = inputUrl.RawQuery
+	urlValues := url.Values{}
+	urlValues.Set("openid.ns", input.Ns)
+	urlValues.Set("openid.mode", input.Mode)
+	urlValues.Set("openid.op_endpoint", input.OpEndpoint)
+	urlValues.Set("openid.claimed_id", input.ClaimedId)
+	urlValues.Set("openid.identity", input.Identity)
+	urlValues.Set("openid.return_to", input.ReturnTo)
+	urlValues.Set("openid.response_nonce", input.ResponseNonce)
+	urlValues.Set("openid.assoc_handle", input.AssocHandle)
+	urlValues.Set("openid.signed", input.Signed)
+	urlValues.Set("openid.sig", input.Sig)
+	fullURL.RawQuery = urlValues.Encode()
 
 	// verify the openid callback. The discovery cache caches some response information to make verification
 	// faster if the callback is hit with the same user again. The nonce store ensures that a callback request

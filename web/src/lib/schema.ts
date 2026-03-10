@@ -1348,8 +1348,6 @@ export interface components {
             player_timeslot: components["schemas"]["PlayerTimeslot"];
             timeslots: components["schemas"]["TimeslotDatetimes"][] | null;
         };
-        /** Format: uri */
-        URL: string;
     };
     responses: never;
     parameters: never;
@@ -1380,7 +1378,6 @@ export type Time = components['schemas']['Time'];
 export type TimeWithPlayer = components['schemas']['TimeWithPlayer'];
 export type TimeslotDatetimes = components['schemas']['TimeslotDatetimes'];
 export type TimeslotInfo = components['schemas']['TimeslotInfo'];
-export type Url = components['schemas']['URL'];
 export type $defs = Record<string, never>;
 export interface operations {
     "get-full-events": {
@@ -2959,7 +2956,16 @@ export interface operations {
     "steam-callback": {
         parameters: {
             query?: {
-                openidurl?: components["schemas"]["URL"];
+                "openid.ns"?: string;
+                "openid.mode"?: string;
+                "openid.op_endpoint"?: string;
+                "openid.claimed_id"?: string;
+                "openid.identity"?: string;
+                "openid.return_to"?: string;
+                "openid.response_nonce"?: string;
+                "openid.assoc_handle"?: string;
+                "openid.signed"?: string;
+                "openid.sig"?: string;
             };
             header?: never;
             path?: never;
