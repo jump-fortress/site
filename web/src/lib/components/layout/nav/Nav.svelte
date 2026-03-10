@@ -6,7 +6,7 @@
   import type { Session } from '$lib/schema';
   import { onMount } from 'svelte';
   import { invalidateAll } from '$app/navigation';
-  import { PUBLIC_JUMP_API_URL } from '$env/static/public';
+  import { PUBLIC_JUMP_API_OID_URL } from '$env/static/public';
 
   type Props = {
     session: Session | undefined;
@@ -63,7 +63,7 @@
     {#if session}
       <NavSession {session} />
     {:else}
-      <a class="mb-1" href="{PUBLIC_JUMP_API_URL}/internal/steam/discover">
+      <a class="mb-1" href={PUBLIC_JUMP_API_OID_URL}>
         <img class="cursor-pointer" src={steam_signin} alt="" />
       </a>
     {/if}
