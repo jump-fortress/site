@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { MeshLambertMaterial, DoubleSide, FrontSide } from 'three';
+  import { MeshLambertMaterial, FrontSide } from 'three';
   import * as topojson from 'topojson-client';
 
   import bg from '$lib/assets/logo/bg.png';
@@ -16,7 +16,7 @@
         animateIn: true,
         waitForGlobeReady: true
       })
-        .showGlobe(false)
+        .showGlobe(true)
         .showAtmosphere(false);
 
       fetch('//cdn.jsdelivr.net/npm/world-atlas/land-110m.json')
@@ -29,8 +29,6 @@
             .polygonSideColor(() => 'rgba(0,0,0,0)');
         });
 
-      globeJWC.showAtmosphere(false);
-
       globeJWC.width(512);
       globeJWC.height(512);
 
@@ -38,9 +36,9 @@
 
       globeJWC.controls().autoRotate = true;
       globeJWC.controls().autoRotateSpeed = 1;
-      globeJWC.controls().enableZoom = true;
-      globeJWC.controls().enablePan = true;
-      globeJWC.controls().enableRotate = true;
+      globeJWC.controls().enableZoom = false;
+      globeJWC.controls().enablePan = false;
+      globeJWC.controls().enableRotate = false;
     }
   });
 </script>
