@@ -14,7 +14,7 @@
   <span class="relative z-10 truncate">{map}</span>
   <img
     class="absolute size-full object-cover brightness-75 transition-all group-hover:brightness-100"
-    src="https://tempusplaza.com/map-backgrounds/{map}.jpg"
+    src="https://tempusplaza.com/map-backgrounds/{map}.webp"
     alt=""
     draggable="false"
     loading="lazy" />

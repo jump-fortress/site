@@ -752,6 +752,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/internal/session/players/avatar_url": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * update avatar url
+         * @description update avatar url from Steam
+         */
+        post: operations["update-avatar"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/internal/session/players/class/{player_class}": {
         parameters: {
             query?: never;
@@ -966,26 +986,6 @@ export interface paths {
         get: operations["steam-profile"];
         put?: never;
         post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/internal/sessionplayers/avatar_url": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * update avatar url
-         * @description update avatar url from Steam
-         */
-        post: operations["update-avatar"];
         delete?: never;
         options?: never;
         head?: never;
@@ -2561,6 +2561,33 @@ export interface operations {
             };
         };
     };
+    "update-avatar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
     "update-class-pref": {
         parameters: {
             query?: never;
@@ -2901,33 +2928,6 @@ export interface operations {
             };
         };
     };
-    "update-avatar": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No Content */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Error */
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ErrorModel"];
-                };
-            };
-        };
-    };
     "get-stats": {
         parameters: {
             query?: never;
@@ -3067,6 +3067,7 @@ export enum ApiPaths {
     update_timeslot_pref = "/internal/session/events/motw/timeslots/{timeslot_id}",
     get_event_pr = "/internal/session/events/{event_id}/leaderboards/times/pr",
     get_motw = "/internal/session/events/{event_kind}/{kind_id}",
+    update_avatar = "/internal/session/players/avatar_url",
     update_class_pref = "/internal/session/players/class/{player_class}",
     update_launcher_pref = "/internal/session/players/launcher/{launcher}",
     update_map_pref = "/internal/session/players/map/{map_name}",
@@ -3078,7 +3079,6 @@ export enum ApiPaths {
     set_trade_token = "/internal/session/players/tradetoken/{steam_trade_url}",
     sign_out = "/internal/session/sign-out",
     steam_profile = "/internal/session/steam/profile",
-    update_avatar = "/internal/sessionplayers/avatar_url",
     get_stats = "/internal/stats",
     steam_callback = "/internal/steam/callback",
     steam_discover = "/internal/steam/discover"

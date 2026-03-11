@@ -128,7 +128,7 @@
 {#snippet mapimage(map: string)}
   <img
     class="over absolute z-10 h-48 w-full scale-105 object-cover brightness-75 transition-all select-none not-first:mask-x-from-98% not-last:mask-x-from-98% group-hover:brightness-100"
-    src="https://tempusplaza.com/map-backgrounds/{map}.jpg"
+    src="https://tempusplaza.com/map-backgrounds/{map}.webp"
     alt=""
     draggable="false" />
 {/snippet}

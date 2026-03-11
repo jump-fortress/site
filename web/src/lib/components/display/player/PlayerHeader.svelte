@@ -21,7 +21,7 @@
   {#if player.map_pref}
     <div
       class="h-36 w-full mask-b-from-98% bg-cover bg-center"
-      style:background-image={`url("https://tempusplaza.com/map-backgrounds/${player.map_pref}.jpg")`}>
+      style:background-image={`url("https://tempusplaza.com/map-backgrounds/${player.map_pref}.webp")`}>
     </div>
   {:else}
     <div class="h-36 w-full mask-b-from-98%">
