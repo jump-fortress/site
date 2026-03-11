@@ -137,7 +137,7 @@ func RegisterSessionRoutes(sessionApi *huma.Group) {
 	huma.Register(sessionApi, huma.Operation{
 		Method:      http.MethodPost,
 		Path:        "/players/tradetoken/{steam_trade_url}",
-		Tags:        []string{"player"},
+		Tags:        []string{"players"},
 		Summary:     "set Steam trade token",
 		Description: "set your own Steam trade token from your Steam Trade URL, found at https://steamcommunity.com/id/{steamid}/tradeoffers/privacy",
 		OperationID: "set-trade-token",

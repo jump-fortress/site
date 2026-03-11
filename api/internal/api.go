@@ -103,7 +103,7 @@ func setupRouter() (*chi.Mux, error) {
 }
 
 func setupHumaConfig() huma.Config {
-	config := huma.DefaultConfig("Jump Fortress API", "1.0.0")
+	config := huma.DefaultConfig("Jump Stuff API", "1.0.0")
 
 	// steam security scheme, a JWT with user's OpenID information
 	config.Components.SecuritySchemes = map[string]*huma.SecurityScheme{

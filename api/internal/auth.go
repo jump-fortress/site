@@ -329,8 +329,8 @@ func registerAuth(internalApi *huma.Group, sessionApi *huma.Group) {
 
 	huma.Register(sessionApi, huma.Operation{
 		Method:      http.MethodPost,
-		Path:        "players/avatar_url",
-		Tags:        []string{"auth"},
+		Path:        "/players/avatar_url",
+		Tags:        []string{"players"},
 		Summary:     "update avatar url",
 		Description: "update avatar url from Steam",
 		OperationID: "update-avatar",

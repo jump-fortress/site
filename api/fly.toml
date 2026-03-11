@@ -12,10 +12,11 @@ primary_region = 'lax'
 
 [http_service]
   internal_port = 8000
+  # must be false - Flycast is http-only
   force_https = false
   auto_stop_machines = 'stop'
   auto_start_machines = true
-  min_machines_running = 0
+  min_machines_running = 1
   processes = ['app']
 
 [mounts]
