@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { MeshLambertMaterial, FrontSide } from 'three';
+  import { MeshLambertMaterial, FrontSide, DoubleSide } from 'three';
   import * as topojson from 'topojson-client';
 
   import bg from '$lib/assets/logo/bg.png';
@@ -16,7 +16,7 @@
         animateIn: true,
         waitForGlobeReady: true
       })
-        .showGlobe(true)
+        .showGlobe(false)
         .showAtmosphere(false);
 
       fetch('//cdn.jsdelivr.net/npm/world-atlas/land-110m.json')
