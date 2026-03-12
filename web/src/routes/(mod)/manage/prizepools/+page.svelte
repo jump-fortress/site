@@ -88,7 +88,12 @@
 </script>
 
 <Section label="update">
-  <EventHeader event={{ event: event, leaderboards: leaderboards }} />
+  <!-- get prizepool info for non-motw -->
+  {#await Client.GET(ApiPaths.get_prizepool_total, { params: { path: { event_id: event.id } } })}
+    <EventHeader event={{ event: event, leaderboards: leaderboards }} />
+  {:then { data: prizepoolTotal }}
+    <EventHeader event={{ event: event, leaderboards: leaderboards }} prizepool={prizepoolTotal} />
+  {/await}
 
   <Errors {oerror} />
 </Section>
@@ -154,7 +159,8 @@
       </div>
     {/each}
   {/key}
-  {#if selectedPrizepool !== null}
+  {@const now = Temporal.Now.instant().epochMilliseconds}
+  {#if selectedPrizepool !== null && datetimeToMs(event.ends_at) > now}
     <Button
       onsubmit={async () => {
         const resp = await Client.POST(ApiPaths.update_leaderboard_prizepool, {
@@ -172,13 +178,14 @@
       <span>update prizepool</span></Button>
   {/if}
 </Section>
-<Section label={'updatable event prizepools'}>
-  {#key reloadEvents}
-    {#await Client.GET(ApiPaths.get_full_events)}
-      <span></span>
-    {:then { data: ewls }}
-      {@const now = Temporal.Now.instant().epochMilliseconds}
-      {@const editable = ewls?.filter(({ event }) => datetimeToMs(event.ends_at) > now) ?? []}
+{#key reloadEvents}
+  {#await Client.GET(ApiPaths.get_full_events)}
+    <span></span>
+  {:then { data: ewls }}
+    {@const now = Temporal.Now.instant().epochMilliseconds}
+    {@const editable = ewls?.filter(({ event }) => datetimeToMs(event.ends_at) > now) ?? []}
+    {@const previous = ewls?.filter(({ event }) => datetimeToMs(event.ends_at) < now) ?? []}
+    <Section label={'updatable event prizepools'}>
       <TableEvents
         data={editable}
         onclick={async (ewl) => {
@@ -189,6 +196,18 @@
           selectedPrizepool = data ?? null;
         }}>
       </TableEvents>
-    {/await}
-  {/key}
-</Section>
+    </Section>
+    <Section label={'past event prizepools'}>
+      <TableEvents
+        data={previous}
+        onclick={async (ewl) => {
+          loadEvent(ewl);
+          const { data } = await Client.GET(ApiPaths.get_leaderboard_prizepool, {
+            params: { path: { leaderboard_id: selectedLeaderboardID } }
+          });
+          selectedPrizepool = data ?? null;
+        }}>
+      </TableEvents>
+    </Section>
+  {/await}
+{/key}
