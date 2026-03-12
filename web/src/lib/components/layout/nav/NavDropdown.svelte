@@ -26,6 +26,7 @@
 
 {#snippet page(label: string, href: string)}
   <a
+    data-sveltekit-reload
     class="truncate rounded-box pl-2 hover:bg-base-800"
     {href}
     data-nav="true"

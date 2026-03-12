@@ -61,13 +61,13 @@
         {@render nomap()}
       {/if}
       <div
-        class="absolute z-10 flex flex-col items-center gap-1
+        class="pointer-events-none absolute z-10 flex flex-col items-center gap-1
       p-2">
         <a
-          class="z-10 truncate text-lg text-shadow-xs/100 text-shadow-base-900 hover:text-primary hover:underline"
+          class="pointer-events-auto z-10 truncate text-lg text-shadow-xs/100 text-shadow-base-900 hover:text-primary hover:underline"
           href="https://tempus2.xyz/maps/{map}"
           target="_blank">{map}</a>
-        <div class="flex flex-wrap justify-center gap-2">
+        <div class="pointer-events-auto flex flex-wrap justify-center gap-2">
           {#each divisions as division}
             <Div div={division} />
           {/each}
@@ -77,14 +77,14 @@
   {/each}
   <!-- absolute details container -->
   <div
-    class="absolute top-0 z-10 flex w-full justify-between bg-linear-to-b from-base-900/50 from-50% to-base-900/0 p-2 text-shadow-xs/100 text-shadow-base-900">
+    class="pointer-events-none absolute top-0 z-10 flex w-full justify-between bg-linear-to-b from-base-900/50 from-50% to-base-900/0 p-2 text-shadow-xs/100 text-shadow-base-900">
     <!-- competition name -->
-    <div class="z-10 flex h-12 items-center gap-1">
+    <div class="pointer-events-auto z-10 flex h-12 items-center gap-1">
       <ClassImage player_class={event.event.player_class} />
       <span class="text-lg">{event.event.kind} #{event.event.kind_id}</span>
     </div>
     <!-- date / prizepool -->
-    <div class="z-10 flex flex-col items-end">
+    <div class="pointer-events-auto z-10 flex flex-col items-end">
       {#if timeslots}
         {#each timeslots.timeslots as ts}
           {@const twPlayerTs =
