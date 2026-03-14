@@ -8,7 +8,7 @@ this repo includes a..
 development tracking currently takes place within a private Linear workspace, but help is welcome! contact me at [spiritov_v@pm.me](mailto:spiritov_v@pm.me)
 
 - api docs are provided at `/docs` (see [.env.local.example](api/env/.env.local.example?plain=1#L17))
-- [synq](https://github.com/hibiken/asynq/) with Redis is used for distributed task handling
+- [asynq](https://github.com/hibiken/asynq/) with Redis is used for distributed task handling
 - [migrate cli](https://github.com/golang-migrate/migrate) is used to manage sql migrations
 - [sqlc](https://github.com/sqlc-dev/sqlc) is used to generate Go code from sql
 - [openapi-typescript](https://github.com/openapi-ts/openapi-typescript) is used to generate types from the api's schema
