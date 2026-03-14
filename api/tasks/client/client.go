@@ -14,6 +14,7 @@ func ServeTaskClient() {
 	taskClient := asynq.NewClient(asynq.RedisClientOpt{
 		Addr:     redisAddress,
 		Password: redisPass,
+		DB:       0,
 	})
 
 	readyTask, err := tasks.NewWebhookReadyTask("task handling ready")

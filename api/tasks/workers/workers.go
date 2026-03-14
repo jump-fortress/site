@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"log/slog"
+	"time"
 
 	"github.com/hibiken/asynq"
 	"github.com/jump-fortress/site/env"
@@ -16,8 +17,9 @@ func ServeWorker(ctx context.Context) {
 	srv := asynq.NewServer(
 		asynq.RedisClientOpt{
 			Addr:     redisAddress,
-			Password: redisPass},
-		asynq.Config{Concurrency: 10},
+			Password: redisPass,
+			DB:       0},
+		asynq.Config{Concurrency: 0, TaskCheckInterval: time.Minute, HealthCheckInterval: time.Minute * 5, DelayedTaskCheckInterval: time.Second * 30, JanitorInterval: time.Hour, JanitorBatchSize: 5},
 	)
 
 	mux := asynq.NewServeMux()
